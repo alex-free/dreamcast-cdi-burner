@@ -1,0 +1,111 @@
+#! /bin/sh
+# @(#)cdda2mp3  1.5 10/02/14 Copyright 2010 J. Schilling
+#
+# Demo script for processing all audio tracks with a mp3 decoder
+# based on a news article by Tom Kludy
+#
+# usage: cdda2mp3 <name prefix for all mp3 files>
+#
+# list_audio_tracks is a (symbolic) link to cdda2wav
+# and used to generate a list of audio track numbers and start
+# sectors, which in turn are used in a loop to spawn cdda2wav
+# and the post processor on a track by track basis.
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+
+# specify the sampling program and its options
+# do not specify the track option here!
+CDDA2WAV=cdda2wav
+CDDA2WAV_OPTS='-H -q'
+CDDA2WAV_XOPTS=''
+
+# for normal use, comment out the next line
+#DEBUG='-d1'
+
+# the post processor is fed through a pipe to avoid space waste
+# specify the post processing program and its options
+MP_CODER=lame
+MP_CODER_HELP=--help
+MP_OPTIONS=''
+MP_XOPTS=''
+
+found_fileprefix=FALSE
+
+$MP_CODER $MP_CODER_HELP > /dev/null 2> /dev/null
+if [ $? != 0 ] ; then
+	echo '"'$MP_CODER'"' "not found. Install first!"
+	exit 1
+fi
+
+usage() {
+	echo "Usage: cdda2mp3 [dev=<SCSI-address>] [cdda2wav options] [<name prefix for all mp3 files>] [ogg options]"
+}
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+	-help)
+		usage
+		exit 0
+		;;
+
+	dev=*)
+		CDDA2WAV_DEV="$1"
+		shift
+		;;
+
+	-*)
+		if [ $found_fileprefix = TRUE ]; then
+			MP_XOPTS="$MP_XOPTS $1"
+		else
+			CDDA2WAV_XOPTS="$CDDA2WAV_XOPTS $1"
+		fi
+		shift
+		;;
+
+	*)
+		if [ $found_fileprefix = TRUE ]; then
+			echo "Too many file type args."
+			usage
+			exit 1
+		fi
+		FILEPREFIX=${1-audiotrack}
+		found_fileprefix=TRUE
+		#echo "arg:  $1"
+		#echo "args: $@"
+		shift
+		;;
+	esac
+done
+
+if [ -r /etc/default/cdda2mp3 ]; then
+	. /etc/default/cdda2mp3 2>/dev/null
+fi
+TRACKS=`$CDDA2WAV $CDDA2WAV_DEV -H -J -vtoc -N -g 2>&1 | grep '^T..:' | sed -e 's/T\(..\):.*/\1/g'`
+if [ -z "$TRACKS" ]; then
+	$CDDA2WAV $CDDA2WAV_DEV -H -J -vtoc -N -g
+	exit 1
+fi
+
+for TRACK in $TRACKS; do
+	NAME=$TRACK-$FILEPREFIX.mp3
+	$CDDA2WAV $CDDA2WAV_DEV $CDDA2WAV_OPTS -t$TRACK $DEBUG $CDDA2WAV_XOPTS -Owav - | \
+	$MP_CODER $MP_OPTIONS $MP_XOPTS - > $NAME 
+
+	# check result code
+	RES=$?
+	if [ $RES = 0 ] ; then
+		echo File '"'$NAME'"' finished successfully.
+	else
+		echo File '"'$NAME'"' failed \(result $RES\). Aborted. >&2
+		break
+	fi
+done

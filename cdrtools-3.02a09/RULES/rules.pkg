@@ -1,0 +1,95 @@
+#ident "@(#)rules.pkg	1.6 17/08/04 "
+###########################################################################
+# Written 2005 by J. Schilling
+###########################################################################
+#
+# Rules for creating binary tar packages
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+# A copy of the CDDL is also available via the Internet at
+# http://www.opensource.org/licenses/cddl1.txt
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+
+###########################################################################
+# If we are included before rules.dir, this will stop to propagate
+# the targets "pkg1" & "pkg" to sub makes but handle packaging at this
+# directory bundling level.
+###########################################################################
+PKGTARGETS=
+
+PROTODIR=	proto/$(OARCH)
+$(PROTODIR):
+		$(MKDIR) -p $@
+
+_TARGETAR=	$(TARGET_AR:%=$(OTARSDIR)/%)
+__TARGETAR=	$(_UNIQ)$(_TARGETAR)
+___TARGETAR=	$(__TARGETAR:$(_UNIQ)=$(PROTODIR))
+TARGETAR=	$(___TARGETAR:$(_UNIQ)%=%)
+
+_MCS_PROJECT=	$(_UNIQ)$(PROJECTNAME)
+__MCS_PROJECT=	$(_MCS_PROJECT:$(_UNIQ)=SPS-Generic)
+MCS_PROJECTNAME= $(__MCS_PROJECT:$(_UNIQ)%=%)
+
+ta:
+	echo "'$(TARGETAR)'"
+	echo "'$(TARGETAR).tar'"
+
+pkg: $(PROTODIR) pkg1 package
+
+pkg1:
+	rm -rf $(PROTODIR)
+	mkdir -p $(PROTODIR) $(PROTODIR)/$(INSBASE)/bin $(PROTODIR)/$(INSBASE)/sbin $(PROTODIR)/$(INSBASE)/etc \
+		$(PROTODIR)/$(INSBASE)/lib $(PROTODIR)/$(INSBASE)/share/man
+	ln -s share/man $(PROTODIR)/$(INSBASE)/man
+	if [ ."$(PRE_INST_CMDS)" != . ]; then cd $(PROTODIR) && eval "$(PRE_INST_CMDS)" ; fi
+	"$(MAKE)" $(MAKE_FILE) DESTDIR=`pwd`/$(PROTODIR) install
+	if [ ."$(POST_INST_CMDS)" != . ]; then cd $(PROTODIR) && eval "$(POST_INST_CMDS)" ; fi
+	-if [ ."$(STRIPLIST)" != . ];  then chmod u+w $(STRIPLIST:%=$(PROTODIR)/%); strip $(STRIPLIST:%=$(PROTODIR)/%); fi
+	-if [ ."$(STRIPXLIST)" != . ]; then chmod u+w $(STRIPXLIST:%=$(PROTODIR)/%); strip -x $(STRIPXLIST:%=$(PROTODIR)/%); fi
+	-if [ ."$(MCSLIST)" != . ];    then chmod u+w $(MCSLIST:%=$(PROTODIR)/%); mcs -d -a "$(MCS_PROJECTNAME)" $(MCSLIST:%=$(PROTODIR)/%); fi
+	if [ ."$(POST_STRIP_CMDS)" != . ]; then cd $(PROTODIR) && eval "$(POST_STRIP_CMDS)" ; fi
+	##find $(PROTODIR) -print | sort > /tmp/so.$$; diff filelist /tmp/so.$$; rm -f /tmp/so.$$
+	#echo 'i pkginfo'	>  SV-pkglist
+	#echo 'i depend'		>> SV-pkglist
+	#echo 'i copyright'	>> SV-pkglist
+
+	#cd $(PROTODIR); find . -print | sort | pkgproto | sed 's/joerg bs/root bin/' >> ../../SV-pkglist
+
+_PKGDEF_DIR=	$(_UNIQ)$(PKGTYPE)
+__PKGDEF_DIR=	$(_PKGDEF_DIR:$(_UNIQ)=default)
+PKGDEF_DIR=	$(__PKGDEF_DIR:$(_UNIQ)%=%)
+
+package:
+	echo PKGDEF_DIR $(PKGDEF_DIR)
+	echo DIRNAME: $(DIRNAME) CURDIR: $(CURDIR)
+	#pkgmk -o -b `pwd`/$(PROTODIR)/ -d `pwd`/PKGS -f SV-pkglist
+	#star -C $(PROTODIR)/ pkglist=pkglist -cP > $(TARGETAR).tar
+	#bzip2 -9f $(TARGETAR).tar
+	#rm -rf $(PROTODIR)
+
+	@list="";								\
+	if [ -d $(SRCROOT)/pkgdefs/$(PKGDEF_DIR) ]; then			\
+		list=`echo $(SRCROOT)/pkgdefs/$(PKGDEF_DIR)/*` ;		\
+	fi;									\
+	for DIR in $${list} ;							\
+	do									\
+		(								\
+		echo "	==> MAKING \"$@\" ON SUBDIRECTORY \"$(CURDIR)/$$DIR\"";\
+		if [ -d ./$$DIR -a -r ./$$DIR/Makefile ] ; then			\
+			cd ./$$DIR && "$(MAKE)" $(MAKEMACS) XARCH=$(XARCH) DIRNAME=$(CURDIR)/$$DIR all;		\
+		else								\
+			echo "NOTICE: Partial source ($(CURDIR)/$$DIR) missing";\
+		fi								\
+		);								\
+	done

@@ -1,0 +1,400 @@
+.\"
+.\" @(#)isoinfo.8	1.16 15/11/02 joerg
+.\"
+.\" -*- nroff -*-
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.75n'U
+.if t .ds s \\(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH ISOINFO 8 "2015/11/02" "Version 3.02"
+.SH NAME
+devdump, isoinfo, isovfy, isodump \- Utility programs for dumping and verifying iso9660
+images.
+.SH SYNOPSIS
+.B devdump 
+.I isoimage
+.PP
+.B isodump 
+.I isoimage
+.PP
+.B isoinfo
+[
+.I options
+]
+[
+.B\-find
+[
+.I find expression
+]]
+.PP
+.B isovfy 
+.I isoimage
+.SH DESCRIPTION
+.B devdump
+is a crude utility to interactively display the contents of device or
+filesystem images.
+The initial screen is a display of the first 256 bytes of the first 2048 byte
+sector.
+The commands are the same as with 
+.BR isodump .
+.PP
+.B isodump
+is a crude utility to interactively display the contents of iso9660 images
+in order to verify directory integrity.
+The initial screen is a display of the first part of the root directory,
+and the prompt shows you the extent number and offset in the extent.
+.RS
+.PP
+You can use the 'a' and 'b'
+commands to move backwards and forwards within the image. The 'g' command
+allows you to goto an arbitrary extent, and the 'f' command specifies
+a search string to be used. The '+' command searches forward for the next
+instance of the search string, and the 'q' command exits
+.B devdump
+or
+.BR isodump .
+.RE
+.PP
+.B isoinfo
+is a utility to perform directory like listings of iso9660 images.
+.PP
+.B isovfy
+is a utility to verify the integrity of an iso9660 image. Most of the tests
+in
+.B isovfy
+were added after bugs were discovered in early versions of
+.B mkisofs.
+It isn't all that clear how useful this is anymore, but it doesn't hurt to
+have this around.
+
+.SH OPTIONS
+The options common to all programs are
+.BR \-help , \-h , \-version ,
+.BI i =name, dev =name.
+The
+.B isoinfo
+program has additional command line options. The options are:
+.TP
+.B \-help
+.TP
+.B \-h
+print a summary of all options.
+.TP
+.B \-d
+Print information from the primary volume descriptor (PVD) of the iso9660
+image. This includes information about Rock Ridge, Joliet extensions
+and Eltorito boot information
+if present.
+.TP
+.B \-f
+generate output as if a 'find . -print' command had been run on the iso9660
+image. You should not use the
+.B -l
+image with the
+.B -f
+option.
+The same output is created by calling 
+.I isoinfo
+with
+.B \-find \-print
+.TP
+.BI \-find " find expression
+This option acts a separator. If it is used, all
+.B isoinfo
+options must be to the left of the
+.B \-find
+option. To the right of the
+.B \-find
+option, mkisofs accepts the find command line syntax only.
+If the find expression includes a
+.B \-print
+or 
+.B \-ls
+promary, the
+.B \-l to
+.B isoinfo
+is ignored.
+If the find expression evaluates as true, the selected action (e.g.
+list the ISO-9660 directory) is performed.
+.TP
+.B \-i iso_image
+Specifies the path of the iso9660 image that we wish to examine.
+The options
+.B \-i
+and 
+.BI dev= target
+are mutual exclusive.
+.TP
+.BI \-ignore\-error
+Ignore errors.
+The commands
+by default aborts on several errors, such as read errors. With this option in effect,
+the commands try to continue.
+Use with care.
+.TP
+.BI dev= target
+Sets the SCSI target for the drive, see notes above.
+A typical device specification is
+.BI dev= 6,0
+\&.
+If a filename must be provided together with the numerical target 
+specification, the filename is implementation specific.
+The correct filename in this case can be found in the system specific
+manuals of the target operating system.
+On a 
+.I FreeBSD
+system without 
+.I CAM
+support, you need to use the control device (e.g.
+.IR /dev/rcd0.ctl ).
+A correct device specification in this case may be
+.BI dev= /dev/rcd0.ctl:@
+\&.
+.sp
+On Linux, drives connected to a parallel port adapter are mapped
+to a virtual SCSI bus. Different adapters are mapped to different
+targets on this virtual SCSI bus.
+.sp
+If no 
+.I dev
+option is present, the program
+will try to get the device from the 
+.B CDR_DEVICE
+environment.
+.sp
+If the argument to the
+.B dev=
+option does not contain the characters ',', '/', '@' or ':',
+it is interpreted as an label name that may be found in the file
+/etc/default/cdrecord (see FILES section).
+.sp
+The options
+.B \-i
+and 
+.BI dev= target
+are mutual exclusive.
+.TP
+.B \-debug
+Print additional debug information. This enables e.g. printing
+of all directory entries if a file has more than one directory entry 
+and printing of more information from the primary volume descriptor.
+.sp
+In debug mode, Rock Ridge information is parsed with
+.B \-R
+even if it is not standard compliant.
+.TP
+.B \-l
+generate output as if a 'ls -lR' command had been run on the iso9660 image.
+You should not use the
+.B -f
+image with the
+.B -l
+option.
+.sp
+The numbers in square brackets are the starting sector number as decimal
+number (based on 2048 bytes per sector) and the iso9660 directory flags
+as hexadecimal number as follows:
+.RS
+.TP
+.B 0x00
+A plain file (not really a flag).
+.TP
+.B 0x01
+Hide the file name from directory listings.
+.TP
+.B 0x02
+A directory.
+.TP
+.B 0x04
+An accociated file (e.g. an Apple resource fork).
+.TP
+.B 0x08
+Record format in extended attributes is used.
+.TP
+.B 0x10
+No read/execute permission in extended attributes.
+.TP
+.B 0x20
+reserved
+.TP
+.B 0x40
+reserved
+.TP
+.B 0x80
+Not the final entry of a multi extent file.
+.RE
+.TP
+.B \-N sector
+Quick hack to help examine single session disc files that are to be written to
+a multi-session disc. The sector number specified is the sector number at
+which the iso9660 image should be written when send to the cd-writer. Not
+used for the first session on the disc.
+.TP
+.B \-p
+Print path table information.
+.TP
+.B \-R
+Extract information from Rock Ridge extensions (if present) for permissions,
+file names and ownerships.
+.TP
+.B \-s
+Print file size infos in multiples of sector size (2048 bytes).
+.TP
+.B \-J
+Extract information from Joliet extensions (if present) for file names.
+.TP
+.B \-j charset
+Convert Joliet file names (if present) to the supplied charset. See
+.BR mkisofs (8)
+for details.
+.TP
+.B \-T sector
+Quick hack to help examine multi-session images that have already been burned
+to a multi-session disc. The sector number specified is the sector number for
+the start of the session we wish to display.
+.TP
+.B \-X
+Extract files from the image and put them into the filesystem.
+If the
+.B \-find
+option is not used, all files are extracted.
+.sp
+The
+.B isoinfo
+program supports to extract all files, even multi extent
+files (files > 4 GB).
+.sp
+Before extracting files using the
+.B \-X
+option, it is recommended to change the current directory
+to an empty directory in order to prevent to clobber existing files.
+.TP
+.B \-x pathname
+Extract specified file to stdout.
+The
+.B pathname
+needs to start with a shlash ('/') and in case of iso9660 names, must match 
+the full pathname of the file inluding the version number (usually ';1').
+If the option
+.B \-R
+has been specified and the filesystem carries Rock Ridge attributes, the
+.B pathname
+must match the full Rock Ridge pathname of the file.
+.SH AUTHOR
+The author of the original sources (1993 .\|.\|. 1998) is
+Eric Youngdale <ericy@gnu.ai.mit.edu> or <eric@andante.jic.com> is to blame
+for these shoddy hacks.
+J\*org Schilling wrote the SCSI transport library and its adaptation layer to
+the programs and newer parts (starting from 1999) of the utilities, this makes
+them
+Copyright (C) 1999-2004 J\*org Schilling.
+Patches to improve general usability would be gladly accepted.
+.SH BUGS
+The user interface really sucks.
+.SH FUTURE IMPROVEMENTS
+These utilities are really quick hacks, which are very useful for debugging
+problems in mkisofs or in an iso9660 filesystem. In the long run, it would
+be nice to have a daemon that would NFS export a iso9660 image.
+.PP
+The isoinfo program is probably the program that is of the most use to
+the general user.
+.SH AVAILABILITY
+These utilities come with the 
+.B cdrtools
+package, and the primary download site
+is https://sourceforge.net/projects/cdrtools/files/ and many other mirror
+sites. Despite the name, the software is not beta.
+
+.SH ENVIRONMENT
+.TP
+.B CDR_DEVICE
+This may either hold a device identifier that is suitable to the open
+call of the SCSI transport library or a label in the file /etc/default/cdrecord.
+.TP
+.B RSH
+If the 
+.B RSH
+environment is present, the remote connection will not be created via
+.BR rcmd (3)
+but by calling the program pointed to by
+.BR RSH .
+Use e.g. 
+.BR RSH= /usr/bin/ssh
+to create a secure shell connection.
+.sp
+Note that this forces the program
+to create a pipe to the 
+.B rsh(1)
+program and disallows the program
+to directly access the network socket to the remote server.
+This makes it impossible to set up performance parameters and slows down
+the connection compared to a 
+.B root
+initiated
+.B rcmd(3)
+connection.
+.TP
+.B RSCSI
+If the 
+.B RSCSI
+environment is present, the remote SCSI server will not be the program
+.B /opt/schily/sbin/rscsi
+but the program pointed to by
+.BR RSCSI .
+Note that the remote SCSI server program name will be ignored if you log in
+using an account that has been created with a remote SCSI server program as
+login shell.
+
+.SH FILES
+.TP
+/etc/default/cdrecord
+Default values can be set for the following options in /etc/default/cdrecord.
+.RS
+.TP
+CDR_DEVICE
+This may either hold a device identifier that is suitable to the open
+call of the SCSI transport library or a label in the file /etc/default/cdrecord 
+that allows to identify a specific drive on the system.
+.TP
+Any other label
+is an identifier for a specific drive on the system.
+Such an identifier may not contain the characters ',', '/', '@' or ':'.
+.sp
+Each line that follows a label contains a TAB separated list of items.
+Currently, four items are recognized: the SCSI ID of the drive, the
+default speed that should be used for this drive, the default FIFO size
+that should be used for this drive and drive specific options. The values for 
+.I speed
+and
+.I fifosize
+may be set to -1 to tell the program to use the global defaults.
+The value for driveropts may be set to "" if no driveropts are used.
+A typical line may look this way:
+.sp
+teac1= 0,5,0	4	8m	""
+.sp
+yamaha= 1,6,0	-1	-1	burnfree
+.sp
+This tells the program
+that a drive named
+.I teac1
+is at scsibus 0, target 5, lun 0 and should be used with speed 4 and
+a FIFO size of 8 MB.
+A second drive may be found at scsibus 1, target 6, lun 0 and uses the
+default speed and the default FIFO size.
+.RE
+.SH SEE ALSO
+.BR mkisofs (8),
+.BR cdrecord (1),
+.BR readcd (1),
+.BR scg (7),
+.BR rcmd (3),
+.BR ssh (1).

@@ -1,0 +1,76 @@
+#ident "@(#)mk-smake.id	1.10 12/12/29 "
+###########################################################################
+# Written 1996 by J. Schilling
+###########################################################################
+#
+# Name of make program (make/gmake/smake)
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+
+_SETENV=	$(_UNIQ)$(SETENV)
+__SETENV=	$(_SETENV:$(_UNIQ)=rules.env)
+___SETENV=	$(__SETENV:$(_UNIQ)none=rules.nul)
+SET_ENV=	$(___SETENV:$(_UNIQ)%=%)
+
+include		$(SRCROOT)/$(RULESDIR)/$(SET_ENV)
+
+MAKEPROG=	$(MAKE_NAME)
+WAIT=			# smake-1.2.1 does not yet wait for parallel targets
+
+SPACE=		$(_UNIQ:$(_UNIQ)%= )
+#NUMBER_SIGN=	NUMBER_SIGN is defined internally by smake
+
+###########################################################################
+#
+# standard (automatic) machine identification
+#
+###########################################################################
+#
+# XP_ARCH = MAKE_ARCH   = uname -p	= mach	  # Processor (sparc/mc68020)
+# XK_ARCH = MAKE_MACH   = uname -m	= arch -k # Kernel (sun3/sun4c/sun4m)
+# XM_ARCH = MAKE_M_ARCH = arch		~ arch -k # Machine (sun3/sun4)
+#
+###########################################################################
+
+XP_ARCH=	$(MAKE_ARCH)
+XK_ARCH=	$(MAKE_MACH)
+XM_ARCH=	$(MAKE_M_ARCH)
+
+P_ARCH=		$(XP_ARCH)
+K_ARCH=		$(XK_ARCH)
+M_ARCH=		$(XM_ARCH)
+
+_P_ARCH=	$(_UNIQ)$(XP_ARCH)
+__P_ARCH=	$(_P_ARCH:$(_UNIQ)=$(MAKE_MACH))
+P_ARCH=		$(__P_ARCH:$(_UNIQ)%=%)
+
+_M_ARCH=	$(_UNIQ)$(MAKE_M_ARCH)
+__M_ARCH=	$(_M_ARCH:$(_UNIQ)=$(MAKE_MACH))
+M_ARCH=		$(__M_ARCH:$(_UNIQ)%=%)
+
+HOSTNAME=	$(MAKE_HOST)
+OSNAME=		$(MAKE_OS)
+OSDEFS=		$(MAKE_OSDEFS)
+OSREL=		$(MAKE_OSREL)
+OSVERSION=	$(MAKE_OSVERSION)
+
+#
+# Disable Simple Suffix Rules
+#
+.SSUFFIX_RULES:
+#
+# Disable Suffix Rules
+#
+.SUFFIXES:

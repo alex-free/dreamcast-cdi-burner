@@ -1,0 +1,59 @@
+#ident @(#)atarist-freemint-gcc.rul	1.4 08/11/14 
+###########################################################################
+# Written 2008 by Y. Doyeux
+###########################################################################
+#
+# Platform dependent MACROS for FreeMiNT on ATARI computers
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+include $(SRCROOT)/$(RULESDIR)/rules.prg
+###########################################################################
+include $(SRCROOT)/$(RULESDIR)/cc-gcc.rul
+
+OSDEFS +=	-DNO_USER_XCVT
+
+KDEFINES=	-DKERNEL -D_KERNEL
+
+#COPTDYN=	-fpic
+COPTDYN=
+
+LIB_PREFIX=	lib
+LIB_SUFFIX=	.a
+#SHL_SUFFIX=	.so.1.0
+SHL_SUFFIX=
+
+LIB_SOCKET=	-lsocket
+LIB_MATH=	-lm
+LIB_KVM=	
+
+_STACKSIZE=	$(_UNIQ)$(STACKSIZE)
+__STACKSIZE=	$(_STACKSIZE:$(_UNIQ)=0x10000)			# Default stack size 64kB
+STACK_SIZE=	$(__STACKSIZE:$(_UNIQ)%=%)
+
+LDLIBS=		$(LIBS) $(LIBX) && stack -S $(STACK_SIZE) $@	# Hack to set stack size
+
+#LDOPTS=		$(LIBS_PATH) $(LDPATH) $(RUNPATH:-R%=-Wl,-R%)
+LDOPTS=		$(LIBS_PATH) $(LDPATH)
+#LDOPTDYN=	-shared -Wl,-soname,$(TARGET)
+#LNDYNLIB=	@$(RM) $(RM_FORCE) $(PTARGET_BASE).so; $(SYMLINK) $(TARGET) $(PTARGET_BASE).so
+LDOPTDYN=
+LNDYNLIB=
+
+#
+# ranlib does not work and is not needed
+#
+#RANLIB=		@echo "	==> RANDOMIZING ARCHIVE \"$@\""; ranlib
+
+LORDER=		echo

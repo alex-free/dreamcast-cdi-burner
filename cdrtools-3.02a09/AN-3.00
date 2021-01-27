@@ -1,0 +1,3654 @@
+All:
+
+-	Better lint make rules
+
+-	Better autoconf rules for ACLs
+
+-	Better support for Linux on IBM-390
+
+-	Better support for Linux on AMD x86-64
+
+-	Better conforming to lint warnings.
+
+-	Now using "makefiles-1.6"
+
+-	Compilation on OS/2 should work again (-Zexe -> -o xxx.$(EXEEXT)
+
+-	The sleeptime to allow reading a GNU mmake related warning was reduced
+	to 2 seconds.
+	I am still waiting for GNU make to fix the bugs I did report in 1999.
+
+-	Support for 'make DESTDIR=xxx install' added
+
+-	Workaround for a Shell Bug on BSDi
+
+-	Install workaround for the fact that BSDI has chown(1) in /usr/sbin/
+
+-	cc-config shell script reworked
+
+-	Better configure tests for procfs include files
+
+-	Configure tests for fchown, chmod, fchmod, lchmod, futimes, lutimes
+
+-	Configure tests for fdopendir
+
+-	Configure tests for broken ext2fs includes files in Linux kernel
+
+-	Better SRCROOT search function in makefiles shell scripts
+
+-	New autoconf tests for broken <linux/ext2_fs.h>, <scsi/scsi.h> & <scsi/sg.h>
+	on various Linux systems
+
+-	astoull*() new in schily.h
+
+-	utypes.h now has MAX_ and MIN_ value definitions for all basic
+	system types.
+
+-	Support added to compile in 64 bit mode on Solaris Sparc.
+	Use: smake CCOM=cc64
+
+-	Support added to compile shared libraries with version
+	numbers for interface levels and make inofficial "interfaces"
+	static
+
+-	Prevent gmake to go into an enless loop on Solaris
+	in case that /usr/ucb/tr is before /usr/bin/tr in PATH
+
+-	Better autoconf error message in case that the expected
+	C-compiler could not be found.
+
+-	Mac OS X now installs files as root:wheel
+
+-	Supply linker mapfiles for all libraries. This allows cdrtools
+	to be compiled using shared libraries only and to properly 
+	hide inofficial interfaces on Solaris (using ls)
+	Note that this feature is not yet available for GNU ld
+
+-	Support for DragonFly BSD added, thanks to joerg@britannica.bec.de
+
+-	Default Cygwin install uid/group adapted to use available ids.
+
+-	New program btcflash added. Thanks to David Huang <khym@azeotrope.org>
+
+-
+	If you like all users to be able to call cdrecord root-less, you need
+	Solaris 10 or newer.
+
+	Edit the file /etc/security/exec_attr and add:
+
+	All:solaris:cmd:::/opt/schily/bin/cdrecord: privs=file_dac_read,sys_devices,proc_lock_memory,proc_priocntl,net_privaddr
+	All:solaris:cmd:::/opt/schily/bin/readcd: privs=file_dac_read,sys_devices,net_privaddr
+	All:solaris:cmd:::/opt/schily/bin/cdda2wav: privs=file_dac_read,sys_devices,proc_priocntl,net_privaddr
+
+	If you like to allow only specific user to use cdrecord,
+	use something like:
+
+	CD RW:solaris:cmd:::/opt/schily/bin/cdrecord: privs=file_dac_read,sys_devices,proc_lock_memory,proc_priocntl,net_privaddr
+
+	instead and make the related users members of the profile "CD RW"
+	by adding a line like:
+
+	joerg::::profiles=CD RW
+
+	into /etc/user_attr
+
+	Note that you either need to call cdrecord via "pfexec cdrecord ....."
+	or by using a profile aware shell (e.g. /usr/bin/pfksh)
+
+-	Better support for BeOS/Zeta in the makefile system
+
+-	Support for armv5teb-linux-cc was added to the makefile system
+
+-	Autoconf script added to 'conf' directory
+
+-	On May 15th 2006, I happily announced new features and the release of 
+	the DVD-code into the OpenSource. After long discussions with various
+	people on OpenSource Licenses and their effects on interproject usage
+	and the effect on the authors themselves, I contacted the authors of
+	included parts in this software suite and got, in most cases their
+	support and grant on selecting the CDDL as the new license. Although
+	this took some time, it was worth reading the different OpenSource
+	licenses completely with some support of people working in that field.
+
+	Now I know why it took Sun so much time to offer OpenSolaris under
+	an OpenSource license...if you take a license change seriously, it is
+	a real hard job.
+
+-	The file "CONTRIBUTING" has been updated.
+
+-	The makefile system has been completely rewritten to be more reusable
+	and to not replicate code.
+
+-	The makefile system now supports to compile under "Services For Unix",
+	now called "Subsystem for UNIX-based Applications (SUA)",
+	a free POSIX add on from Microsoft (identifies as "Interix").
+	Note that you need the latest 'smake' relase smake-1.2a36 or never
+	from ftp://ftp.berlios.de/pub/smake/alpha/
+	Note that there is smake-1.2.1 available on
+	ftp://ftp.berlios.de/pub/smake/
+
+	Currently, cdrecord is not able to send SCSI commands from this
+	environment. I am looking for help from experienced users.
+
+-	The makefile system now supports to compile using the Microsoft
+	C-Compiler "cl". 
+	Note that you need the latest 'smake' relase smake-1.2a36 or never
+	from ftp://ftp.berlios.de/pub/smake/alpha/
+	This compilation currently may only be cone from a "Cygwin" environment
+	using smake with the Environment variables set up in a way that allows
+	"cl" to work (find it's include files and libraries).
+
+	Run "smake CCOM=cl" for this kind of compilation.
+
+	Cdrecord has not yet been verified to compile in this environment.
+
+	Note that I am interested in feedback for these new compile possibilities.
+
+-	New function strlcpy() for better portability.
+
+-	New function strncpy() for better portability.
+
+-	Enhanced Makefile system for better MSVC support
+
+-	Enhanced Makefile system for C++ support
+
+-	Fixed some typos in dirdefs.h
+
+-	New functions getvallargs()/getvargs()/getvfiles()
+	allow to have a vector based interface to the 
+	advanced argument parsing library functions.
+	Currently used by mkisofs.
+
+-	getargs.c is now at up to date again and libschily
+	from cdrtools is 100% complete and may be used
+	as a shared library to be used by e.g. star too.
+
+-	Added a workaround for a core dump problem with 
+	running avoffset.c on FreeBSD/sparc64 (gcc)
+
+-	libschily now includes a fallback fnmatch() for better portability
+	This fnmatch() implementation has been taken from th BSD project.
+
+-	Fixed a bug in getvargs() that caused mkisofs -joliet-long to be
+	declared as illegal option.
+
+-	Several small format enhancements for getargs()
+
+-	getavrgs() is now (like getargs()) able to correctly handle
+	combinations of single char boolean flags
+
+-	include file system completely restructured to avoid future name conflicts.
+	The include files now have completely moved to include/schily/.
+	This also allows to make all include files available in /usr/include/schily/
+	in the future. 
+
+-	fixed a type in include/schily/termios.h thanks to Steven M. Schweda for
+	reporting.
+
+-	All libraries now include support for compiling the code as shared library.
+	The code has been tested on Solaris but should also work in *BSD and Linux.
+
+	In order to compile with shared libraries, either call:
+
+		make LINKMODE=dynamic
+
+	or change the line
+
+		DEFLINKMODE=    static
+
+	to
+		DEFLINKMODE=    dynamic
+
+	for your OS in DEFAULTS/Defaults.<os_name>
+
+	I am interested in feedback for various OS platforms........
+
+-	The order for compiling the libraries has been changed to make the
+	compile process insensitive against old static libraris in the
+	library search path.
+
+-	New Schily autoconf test for gettext() and libintl
+
+-	include/schily/nlsdefs.h now also checks for the existence of HAVE_GETTEXT
+
+-	#undef SIZE_T_MAX in utypes.h for better FreeBSD support
+
+-	make file system restructured: all Schily include files are now located
+	in ..../include/schily/
+
+-	Now using new definitions from Steven M. Schweda in
+	include/schily/xmconfig.h
+	VMS users: in future, you need to specify cc -DUSE_STATIC_CONF
+	in order to get the old static configuration.
+
+-	new file schily/errno.h
+
+-	Fixed some files that did include <avoffset.h> instead of <schily/avoffset.h>
+
+-	Trying to make the floating point printf() support functions work
+	on systems that implement C99 only with no fallback.
+
+	As this change is a result from a report from a person that does not like
+	to cooperate, I was not able to test on the reported AIX-5.x platform.
+	Also note that this change may result in problems on other platforms.
+	Please test and report!
+
+-	The Schily Makefilesystem now includes environment definitions
+	for the Microsoft Studio 8 compiler. If you like to edit these
+	definitions, check the DEFAULTS directory
+
+-	Next step in supporting Microsoft C-compilers: build in environment
+	set up for the MS compilers. To compile with the MS C-Compiler,
+	set up a Cygwin environment and compile a Cygwin 'smake'.
+	Then use this smake to compile with the MS C-compiler by calling:
+
+	smake CCOM=cl
+
+	This defaults to VC7. If you like to use VC6, call:
+
+	smake CCOM=cl VC=6
+
+	Note that smake itself (if compiled with "cl") will not work, as
+	MS does not implement a reliable way to pass a quoted arg vector
+	to a new program.
+
+	Note that cdrtools do not yet completely compile with MSVC. This
+	is mostly caused by missing standard compliance in the MS C-compilers.
+
+-	A small restructuring of the include file structure:
+	new file include/schily/xconfig.h
+	include/schily/xmconfig.h now only contains manual static configuration 
+	for VMS
+
+-	The Makefilesystem now includes links for sparc64 (Fujitsu-Siemens)
+
+-	Schily includefiles are now installed with "make install".
+
+-	Try to avoid a program exception with a call to access(".", E_OK|F_OK)
+	caused by a libc bug from the Microsoft C-compiler "cl".
+
+-	The makefile system now supports the Winsock library
+
+-	Correctly cast all open(name, oflag, 0666) calls to:
+	open(name, oflag, (mode_t)0666) as open is a vararg function.
+
+-	"libvms" new from Steven M. Schweda sms@antinode.org
+
+-	-I. removed from standard c-compiler include path
+
+-	/usr/src/linux/include is no longer included if it contains
+	broken include files.
+
+	Please send a bug report to the Linux Kernel maintainers in case
+	that the makefile system reports broken Linux kernel include files.
+
+-	Support for WIN-NT-5.2 (MS-Windows 2003) added to the makefile system
+
+-	No longer using -ztext linker option for creating shared libs with GCC
+	as GCC does not create 100% correct binaries and this would abort
+	the process of creating a shared library.
+
+-	Better setup for the environment variables that are needed for the
+	Microsoft "cl" compiler.
+
+	NOTE: The current setup is for "english" versions of MS-WIN.
+	You may need to edit the files DEFAULTS/vc6-setup or DEFAULTS/vc7-setup
+	depending on your locale version and the "c"-compiler version you
+	are using.
+
+-	Prevent MSVC ("cl") from creating silly messages
+	like: "... Consider using strerror_s instead."
+
+-	Prevent MSVC ("cl") from complaining about deprecated 
+	option "-ofilename"
+
+-	New autoconf tests for POSIX compliant time functions in libc
+
+-	GCC Warning setup no longer includes -Wtraditional
+
+-	Dynamic libraries are now supported for Mac OS X
+
+-	smake CCOM=xx will now result in writing DEFCCOM=xx into incs/Dcc.<platform>
+	if this is done on the initial make run.
+	conf/cc-config.sh now has one additional parameter
+
+-	Include $(DEFLTSROOT)/$(DEFLTSDIR)/$(VCSETUP) from
+	DEFAULTS/Defaults.cygwin32_nt already to allow the script
+	conf/cc-config.sh to detect that "cl" is working. 
+
+-	DEFAULTS/vc7-setup & DEFAULTS/vc6-setup now set
+	.NOWARN: := to tell smake-1.2a41 or newer not to warn
+	about a nonportable assignment (we do
+	not have a UNIX "make" in Cygwin).
+
+-	smake COPTX=-DNO_LARGEFILES now allows to compile in non-largefile mode
+
+-	New targets "html" and "htmlx" for Manual page makefiles
+	allows to convert man pages using "man2html"
+
+-	New include file schily/wchar.h
+
+-	New include file schily/schilyp.h
+
+-	Typo in schily/param.h fixed
+
+-	schily/jmpdefs.h now includes support for sigsetjmp()
+
+-	configure now checks for ctime cftime ascftime strftime and
+	for libresolv and whether /bin/sh is bash
+
+-	remove libxxx.so link before trying to create it
+
+-	Allow a mixture of static and dynamic libraries to link against
+	a program
+
+-	Now using cdrecord/version.h for the global version number
+
+-	New autoconf test for struct timeval in sys/time.h
+
+-	New autoconf test for struct timezone in sys/time.h
+
+-	Changed include/schily/time.h to depend on the 
+	new autoconf #defines HAVE_STRUCT_TIMEVAL and
+	HAVE_STRUCT_TIMEZONE
+
+-	The Schily makefile system is now also passing OS
+	specific #defines to "configure".
+
+-	New Schily makefile system Target "shell" allows to
+	call "make shell" in order to get a shell with exactly
+	the same environment as the compilers will see from
+	the makefile system. This helps testing.
+
+-	New autoconf test checks whether we need to call
+	"xx.exe" on a platform. This is needed in order to
+	be able to call the Microsoft compiler from the
+	SFU (Services for UNIX) environment.
+
+-	It is now possible to call the Microsoft compiler
+	from SFU. In order to do this, call "smake CCOM=cl"
+
+	If this does not work, you may need to change the
+	file DEFAULTS/vc7-interix-setup
+
+-	Trying to better deal with MS winsock2.h oddities in schily/time.h
+
+-	#undef iswalnum ... in schily//wchar.h before defining non wchar fallbacks.
+
+-	config.guess now knows about i386 Darwin (Mac OS X on Intel)
+
+-	Schily makefilesystem enhanced to check for extended
+	fields in struct utsname as seen e.g. in MS SFU (Interix).
+
+-	New predefined macro OSVERSION in the makefilesystem is needed
+	for SCO OpenServer 6.x support (because this uses a UnixWare
+	kernel
+
+-	Trying to support Compilation on SCO OpenServer 6.x
+
+-	New macro $(CC_OUTPUT_FILTER) allows to filter away the
+	unwanted file name echo from cl.exe.
+
+-	Interix now uses uname -m instead of uname -p for $(OARCH)
+
+-	Makefile support for pentium-4-unixware-cc.rul and
+	pentium-4-unixware-gcc.rul was added.
+
+-	New autoconf test for libiconv
+
+-	The Schily makefilesystem now by default searches in /usr/local/include
+	and /usr/local/lib if on FreeBSD. This is needed in order to find
+	libintl and libiconv.
+
+-	make html and make htmlx now works even on the top level directory
+	and creates html versions of the man pages
+
+-	fixed a typo in the autoconf test for C99 isinf/isnan
+
+-	Support for SunStudio 12 on Linux was added.
+	Call "make CCOM=suncc", but note that you then
+	will not be able to compile Linux specific functions like
+	support for ext2 file flags. This does not work because the
+	related include files are not written in clean C.
+
+	Note that nearly all programs from cdrtools depend on libscg
+	which uses platform specific code for every OS. As the Linux
+	kernel include files are not written in clean C, you cannot
+	compile libscg using Sun Studio. If someone from the Linux kernel
+	team would rewrite the Linux kernel include files to only use clean
+	C based constructs, cdrecord could be compiled with Sun Studio
+	compilers.
+
+-	Added a workaround to config.guess to get correct
+	platform names from "configure" even though suncc 
+	does not #define __ELF__
+
+-	Linux specific autoconf tests are now only executed on Linux
+	based platforms
+
+-	Some make rule definitions for Cygwin restructured to allow
+	compilation with more Cygwin releases. The -D_WIN32_WINNT=
+	definitions are now only in effect if the selected compiler
+	is the Microsoft compiler.
+
+-	New include file schily/ioctl.h
+
+-	Added Support to create Blastwave SVr4 packages.
+	To create a Blastwave package, call:
+
+		.clean
+		smake -f Mcsw
+
+	You need the program "fakeroot" and will find the results
+	in packages/<arch-dir>
+
+	Note that this source tree will allow you to create the package
+	CSWcdrtools but not the packages CSWschilybase and CSWschilyutils
+	on which CSWcdrtools depends.
+
+	WARNING: libsiconv.a and it's character translation tables (located in 
+	/opt/*/lib/siconv) are not part of CSWcdrtools but of CSWschilybase.
+	If you do not update CSWschilybase to include the character translation
+	tables used by libsiconv, mkisofs will not work correctly.
+
+	NOTE: the SVr4 package specific rules are approx. 10 lines of make rules.
+	It should be simple to create rule definitions for other package systems
+	found on platforms other than Solaris. Volunteers who like to help
+	to develop support for other packaging systems are welcome!
+
+-	Added a note to README.compile on how to work around a problem
+	in /usr/include/linux/types.h that prevents to compile cdrtools
+	on Linux using the Sun Studio compiler.
+
+-	A workaround against non autoconf friendly code in Cygwin has been
+	fixed in include/schily/iconv.h (a typo).
+
+-	Compilations with static configuration are now also possible on HP-UX
+
+-	All profiles libraries now have the same name as the non-profiled variants.
+	To create a profiled version of a command, do something like this:
+
+	cd cdrecord
+	smake clean
+	smake COPTX=-xpg LXOPTX=-xpg LINKMODE=profiled
+
+	For GCC use:
+
+	cd cdrecord
+	smake clean
+	smake COPTX=-pg LXOPTX=-pg LINKMODE=profiled
+
+-	More locale related autoconf tests (see mkisofs)
+
+-	Handling non-large file aware systems is now more correct
+
+-	Autoconfiguration documentation changed to make clear that $(LIB_ACL_TEST)
+	is sufficient for "test only" acl applications.
+
+-	New rules ip35-irix-cc.rul/ip35-irix-gcc.rul
+
+-	New rules i586-linux-suncc64.rul x86_64-linux-suncc.rul x86_64-linux-suncc64.rul
+
+-	New autoconf test HAVE_SYS_SIGLIST_DEF checks for sys_siglist[]
+	definition in signal.h Thanks to Tatjana Heuser for reporting
+
+-	Possibly double #defines HAVE_ICONV HAVE_ICONV_OPEN HAVE_ICONV_CLOSE
+	in include/schily/iconv.h fixed. Thanks to Tatjana Heuser for reporting
+
+-	The Schily Makefile system has been enhanced to install
+	the profiled version of the archives in a sub-directory "profiled".
+	This is done via a new macro SUBINSDIR=
+
+-	New autoconf test checks sizeof(time_t)
+
+-	New autoconf test for the existence of stack_t and siginfo_t in signal.h
+
+-	In order to allow better dealing with Solaris linker Mapfiles,
+	a getfp() function (calling abort(3)) is created when it is not
+	possible to implement this function because of compiler constraints.
+
+-	Many other enhancements of the autoconfiguration have been a result
+	of porting the Bourne Shell into the Schily Makefilesystem.
+
+-	added a make rule to automatically create the directory
+	./incs/
+
+-	A CSWscdrtools Blastwave package may be automatically
+	created from this source. Simply call:
+
+		smake -f Mcsw
+
+	and check the directory packages/ for the resulting package.
+
+-	Several fixes for the Blastwave compile (smake -f Mcsw):
+
+	-	CSWcdrtools now depends on CSWpxupgrade, this allows
+		to either use a dummy (source) package for CSWpxupgrade
+		or the binary original package that is under NDA.
+
+	-	smake now compiles without /opt/csw/ string in the binary
+		this makes smake100% relocatable.
+
+	-	The sccs package is now a non-relocatable packet
+		because of /$INS_BASE/ccs/bin/* and because of 
+		$INS_BASE/ccs/lib/locale/
+
+	-	RULES/rules.csw now supports to create non-relocatable
+		packets by adding PKG_RELOC=no to the leaf Makefile
+
+-	Added an autoconf test for SIZEOF_FLOAT & SIZEOF_DOUBLE to allow
+	to compile the Bourne shell in 64 bit mode.
+
+-	several modification have been made to fix warning messages from
+	a "coverity" test run.
+
+-	config.guess now supports the "free" Apple Darwin variants
+
+-	New directory autoconf/ contains the complete Schily autoconf system.
+	It is based on GNU autoconf-2.13, the latest GNU autoconf that worked
+	correctly even on older systems.
+
+-	Sources and makefilesystem restructured to allow all needed files to be
+	retrieved from the SCCS repository and to call "make" later. To achieve
+	this, all symlinks have been removed from the tarball.
+
+-	The Schily Makefile System now includes rules to recreate the file
+	"configure" by calling "autoconf". This is needed in order to allow the 
+	complete source tree to be extracted from the SCCS repository.
+
+-	Added a workaround for a GNU make design bug that causes the rules
+	to create file "foo" to be evaluated _past_ the "include foo"
+	statement in a Makefile has been evaluated. Note that you still need 
+	GNU make 3.81. GNU make 3.80 and before will still fail to compile 
+	cdrtools because of other unfixed GNU make bugs.
+
+	Note that the basic GNU make design bug has been reported to the 
+	GNU make maintainers and accepted as bug by the GNU make maintainers
+	in 1998 already. It is still unfixed in GNU make although smake and
+	SunPro make verify that there is no problem to do it right.
+
+-	New autoconf test AC_CHECK_DLIB() checks for lib members while using
+	specified include files. This is a workaround for the autoconf hostile
+	gettext() and iconv() implementations on Linux.
+
+-	The gettext()/iconv() tests have been rewritten to use AC_CHECK_DLIB()
+
+-	The autoconf test AC_FUNC_VFORK from Paul Eggert was not written in
+	clean C and thus failed on a ANSI-C compiler, assuming that vfork()
+	is not available in the ANSI case.
+
+-	README.compile fixed to refer to READMEs/README.gmake instead of 
+	README.gmake
+
+-	Symlink support in RULES/MKLINKS added for ia64-hp-ux-cc.rul and
+	ia64-hp-ux-gcc.rul, thanks to a hint from Steven M. Schweda
+
+-	DEFAULTS*/Defaults.dragonfly added
+	Thanks to a hint from Thomas Klausner
+
+-	Added a workaround for a Sun make bug
+
+-	Next attempt wo work around the non-autoconf friendly implementation
+	of GNU gettext and GNU libiconv.
+
+-	A new autoconf test allows to check whether the installed system shell
+	(/bin/sh) properly aborts with failed commands in "sh -ce 'cmd'".
+
+	If failed simple commands in "sh -ce 'cmd'" do not abort complex
+	commands, "make" will not stop on errors in the build process. 
+	Note that this is a definite POSIX incompatibility.
+
+	The most well known defective shell with respect to this problem is "bash"
+	but /bin/sh on HP-UX-10.x (a Korn Shell modification) does not work 
+	correctly either. If your system (Linux, HP-HX, ...) suffers from this 
+	problem, I recommend to fetch the Schily Source consolidation from 
+		ftp://ftp.berlios.de/pub/schily/
+	Use a version that has been published past September 1st 2008, compile
+	and install the contained Bourne Shell as "/bin/bosh". Then call 
+	"./.clean" and compile again. The resulting "smake" will then 
+	automatically call "/bin/bosh" instead of "/bin/sh" in order to 
+	execute commands.
+
+-	Several Makefiles have been modified to support not only "make all"
+	but also "make install" without calling "make all" before. This was needed
+	after the change that omits the symlinks from the tar archive.
+	Thanks to a report from Klaus Ditze <kd@heise.de>
+
+-	Extended the file COPYING to mention that the GPL used by the "mkisofs project"
+	requires to publish the full source for all parts of mkisofs in case that you
+	publish mkisofs binaries.
+
+-	Added a new Changelog file for the changes since cdrtools-2.01
+
+-	RUlES/rules.prg no longer includes a line with SHELL=/bin/sh.
+	This is needed to allow to implement a workaround for various bash
+	bugs that affect makefiles in case that /bin/sh is linked to bash.
+
+	If your platform installs bash in /bin/sh (Linux, ....) or in case
+	that your platform offers a broken variant of the Korn Shell in /bin/sh
+	(like HP-UX), fetch the "Schily source consolidation" from 
+	ftp://ftp.berlios.de/pub/schily/, compile everything and install the
+	original Bourne Shell, that comes with this packet, into /bin/bosh.
+	If you then call ./.clean and re-compile everything, you get a "smake"
+	that calls /bin/bosh instead of the broken system shell.
+
+-	Added an autoconf test for POSIX violations found in POSIX.1-2008.
+
+	The official POSIX rule is not to define "new" interfaces that
+	are in conflict with older interfaces of the same name.
+	Our interfaces fexec*() have been defined and published in 1982.
+	The new POSIX interfaces define a different interface and the
+	new POSIX interfaces even use names that are not compatible with
+	POSIX rules. The new POSIX interfaces in question should be called
+	fdexec*() to follow the rules of other similar POSIX functions.
+	Similar problems exist with getline()/fgetline().
+
+	We try to automatically rename our functions in case that the functions
+	could be found in the local libc.
+
+-	Config.sub now supports NetBSD on AMD64
+
+-	The email addresses in many files have been updated.
+
+-	config.sub and config.guess now support ATARI MiNT
+
+-	All needed definition files for ATARI MiNT are now in RULES/*
+
+-	configure now checks whether shmget() works (needed for ATARI MiNT)
+
+-	The GNU linker on Linux now seems to support -R to set the LD_RUN_PATH
+	Added support for -R
+
+-	Added definitions to allow dynamic linking with the Sun Studio compiler 
+	on Linux
+
+-	Added a new #define (NO_ACL) that allowed to disable ACL support via
+	command line when compiling
+
+-	include/schily/libport.h split into include/schily/libport.h and
+	include/schily/hostname.h to allow to avoid to include netdb.h for
+	applications that do not need gethostname() and getdomainname()
+
+-	include/schily/prototype.h now includes the definitions for const...
+
+-	new autoconf test to check whether the Sun Studio compiler needs 
+	-xarch=generic64 or -m64 for 64 bit compilation.
+
+-	Default install user changed from "bin" to "root".
+
+-	The install-sh script now complains if an attept was made to install
+	a program suid or sticky and the install user has no root privileges
+
+-	The makefile system has been modified to allow a separate set-up
+	for the install path of the configuration files to e.g. /etc/
+	via the DEFAULTS variable INS_RBASE
+
+-	New autoconf test to distinguish between the free of charge 
+	"Bundled" cc on HP-UX and the commercial cc. Only the commercial cc 
+	supports ANSI C and the Bundled cc complains when the ANSI Options
+	are used:
+
+	(Bundled) cc: warning 480: The -A option is available only with the C/ANSI C product; ignored.
+	(Bundled) cc: warning 480: The -O option is available only with the C/ANSI C product; ignored.
+
+	These warnings are no longer present.
+
+-	schily/schily.h now auto-includes stdio.h in case that the platform 
+	supports the new POSIX.1-2008 getline()/fgetline() functions that 
+	violate against general POSIX rules and thus overlay our implementation
+	that exists since 1982.
+
+-	schily/stkframe.h now uses Intptr_t for the fr_savp member to make it
+	work correctly on 64bit systems without OS supplied stkframe.h.
+
+-	New autoconf test on whether unistd.h defines extern char ** environ.
+
+-	New file schily/stdio.h to simplify layering.
+
+-	New Make rules for Syllable. Syllable is a fork from AtheOS.
+
+-	New make rules for Haiku
+
+-	New include file schily/sysexits.h is needed for Haiku
+
+-	New autoconf test for sysexits.h
+
+-	Autoconf tests for os2.h and os2me.h moved from cdda2wav to
+	global
+
+-	config.guess and config.sub now have support for Haiku
+
+-	New rule support for linux on "sh3", "sh4" and "sh4a" platforms.
+
+-	autoconf now acts more reliable and more orthogonal with  AC_CHECK_TYPE() vs. 
+	AC_CHECK_SIZEOF() and carefully includes include files separately based on
+	fine grained tests.
+
+-	Changed schily/dirent.h to correctly set up NAME_MAX on ATARI MiNT
+
+-	Changed schily/maxpath.h to correctly set up NAME_MAX on ATARI MiNT
+
+-	Add -D_GNU_SOURCE to the standard include flags for Linux in order
+	to unhide needed extensions.
+
+-	Trying to add support for compilation on WIN64 using cl and gcc
+
+-	Adding support for NT-6.0 (Win Vista) and NT-6.1 (Win 7)
+
+-	Several typo corrections
+
+-	New include file include/schily/wctype.h
+
+-	New autoconf test that checks for the differences between the original
+	iconv() implementation from Sun and the deviating POSIX standard.
+	This allows to avoid compiler warning messages for mkisofs.
+
+-	Trying to work around nasty Linux distributions that try to fool autoconf
+	function tests and thus may result in incorrect results for the functions
+	fexecl fexecle fexecv fexecve fspawnv fspawnl fspawnv_nowait getline fgetline
+
+-	New include files include/schily/dlfcn.h and include/schily/shcall.h
+
+-	New autoconf tests for dlopen() and similar functions
+
+-	Fixed a typo in include/schily/fnmatch.h that prevented compilation on BeOS
+
+-	Fixed a typo in include/schily/libport.h that prevented compilation on BeOS
+
+-	New makefile "Mocsw" allows to create packages for "opencsw"
+
+-	RULES/rules.csw enhanced to allow to overwrite EMAIL= and HOTLINE= from
+	the make command line.
+
+-	New autoconf test for getprogname()/setprogname()
+
+-	Support for using Microsoft "cl" to compile 64 bit binaries from Cygwin now
+	has been finished
+
+-	Support for 64 bit compilation on mac OS X was added.
+	Call make CCOM=cc64 as on other platforms.
+
+-	$OLIBSDIR is no longer in the RUNPATH
+
+-	New include file include/schily/limits.h
+
+-	Make sure that all include files in include/schily/ include
+	include/schily/mconfig.h
+
+-	wide character support new
+
+-	New makefile "Mocsw" sets defaults for "opencsw" instead of Blastwave.
+	Mcsw for Blastwave of course continues to exist
+
+-	New defaults directory DEFAULTS_CSW includes special defaults that
+	compile e.g. for Sparc-V8 in order to get working binaries for older 
+	Sparc non 64 Bit hardware.
+
+-	New autoconf test HAVE_SETBUF and HAVE_SETVBUF
+
+-	Several modification in hope to better support MINGW
+
+-	New include files include/schily/ctype.h, include/schily/pwd.h
+	and include/schily/grp.h 
+
+-	All programs are now using schily/stdio.h 
+	for orthogonality.
+
+-	Haiku default install dir is now /boot/opt/schily
+
+-	New rules RULES/os-cygwin_nt-6.0-wow64.id and 
+	RULES/os-cygwin_nt-6.1-wow64.id support Cygwin on 64bit
+	installations of Win Vista and "Win 7".
+
+-	New rules for compiling 64 Bit binaries on cygwin_nt-wow64
+	NOTE: You need to have a 64 bit aware gcc on Cygwin to use this!
+
+-	TEMPLATES/temp-gcc.rul and TEMPLATES/temp-xcc.rul
+	now correctly include cc-gcc.rul and cc-dumb.rul and thus
+	make the automake feature working again for completely
+	unknown platforms.
+
+-	Fixed RULES/rules.inc to make sure we install xx.h instead of
+	xx.h.exe
+
+-	Workaround an infinite hang in an autoconf test on 64 Bit Vista
+	with Cygwin
+
+-	Include limits.h in schily/hostname.h for Linux
+
+-	Several "%s" formats have been introduced in order to make gcc-4
+	happy even though the original strings have been pointer to constant
+	and well known strings
+
+-	Change the option order in the autoconf test for calling the linker
+	in order to avoid problems with the microsoft linker.
+
+-	include/schily/wait.h now includes process.h on DOS systems
+
+-	include/schily/resource.h new include file
+
+-	include/schily/select.h new include file
+
+-	Now all sources use schily/systeminfo.h instead of sys/systeminfo.h
+
+-	Now all sources use schily/assert.h instead of assert.h
+
+-	Now all sources use schily/priv.h instead of priv.h
+
+-	Now all sources use schily/procfs.h instead of profcs.h
+
+-	Now all sources use schily/syslog.h instead of syslog.h
+
+-	Now all sources use schily/float.h instead of float.h
+
+-	Now all sources use schily/ipc.h instead of sys/ipc.h
+
+-	Now all sources use schily/sem.h instead of sys/sem.h
+
+-	Now all sources use schily/shm.h instead of sys/shm.h
+
+-	New autoconf test for "#pragma weak"
+
+-	The schily makefilesystem now by default sets all locale related environment
+	variables to "C" in order to avoid problems.
+
+-	Make the makefile emulation mode for "non-automake aware" make programs
+	like SunPro Make and GNU make more immune against oddities in the tr(1)
+	program that are seen with a locale that differs from LC_ALL=C
+	Another step to prevent some tr(1) oddities was to replace the call to
+	tr(1) by a call to sed(1).
+
+-	Added GMAKE_NOWARN=true to allow to disable the gmake warning with nested
+	make files
+
+-	Enhanced include/schily/priv.h to distinct Solaris and AIX process privileges
+
+-	New include file include/schily/math.h
+
+-	Try to workaround a problem with GCC on newer AIX versions. It seems that
+	e.g. gcc on AIX is not C99 compliant and does not support isnan().
+
+	Note that the current solution may compile and run on newer AIX versions
+	but does not seem to be the optimal solution as it cannot check whether
+	a float is a number or not.
+
+-	*BSD comes with a broken sed(1), so we need to go back to tr(1) based
+	code for GNU make in the Schily Makefilesystem.
+
+-	Added support for amd64-netbsd-cc.rul to the Schily Makefilesystem
+
+-	Added support for DragonFly BSD to config.guess and config.sub
+
+-	Added support for 64 bit compilation on HP-HX using "cc".
+	Use make CCOM=cc64 as usual to switch to 64 bit compilation.
+
+-	Prevent a compiler warning when compiling 64 bit binaries on HP-UX
+	using make CCOM=cc64
+
+-	Some files in include/schily/*.h have been enhanced to better support VMS
+
+-	config.guess now knows about OpenVMS
+
+-	Changed bash test to use --version instead of -version as bash on OpenVMS
+	is bash-1.x
+
+-	include/schily/xmconfig.h (containing a "static" configuration for VMS
+	because "configure" does not work on VMS) was enhanced.
+
+-	Trying to add support for OpenVMS to RULES/*
+
+-	New autoconf tests for the type "long double" and a new "max size" type.
+
+-	VMS rules for libraries not create an archive XXX.olb instead of libXXX.a
+
+-	schily/utypes.h enhanced to allow to define maxint_t which is 
+	missing on VMS
+
+-	Better autoconf test for union wait vs. int for platforms that
+	define union wait but use int as wait() parameter.
+
+-	schily/vfork.h now includes unistd.h as the related definitions 
+	are there on Solaris
+
+-	Fixed a configure bug with opendir() inherited from GNU autoconf
+
+-	Enhanced the vfork() autoconf test to avoid a hang on VMS
+
+-	Support for 64 Bit compilation was added for IRIX.
+	Call smake CCOM=cc64 or smake CCOM=gcc64 as usual.
+
+-	C++ compilation support fior IRIX was added to the makefile system
+
+-	Schily Makefile rules no longer contain Simple Suffix Rules.
+	All default rules are now based on Pattern Matching Rules.
+	This speeds up smake.
+
+-	Added autoconf test to distinct Linux ACLs from IRIX ACLs
+
+-	Added support for Hurd on i686 to the Schily Makefilesystem.
+
+-	Modified conf/mkdir.sh to work around a deviation found in 
+	/usr/xpg4/bin/sed on Solaris 
+
+-	Modified conf/src-get to include conf/src-get in PATH to make
+	recursive calls to src-get work.
+
+-	include/schily/stat.h now supports nanosecond timestamps in struct stat on AIX.
+
+-	New autoconf test for nanosecond time stamps on AIX.
+
+-	conf/mkdir.sh
+
+-	conf/mkdep-aix.sh was changed to avoid warnings for #pragma weak a = b
+	as the IBM C-compiler calls a non "#pragma weak" cpp when called with -E
+
+-	Added support for DragonFly/x86_64
+
+-	Support for "pcc" on Solaris x86 was added as a first step.
+	The C-Compiler "pcc" http://pcc.ludd.ltu.se/ is based on the
+	Portable C-Compiler from AT&T from the late 1970s. It is
+	under BSDl and thus offers compilation with a really free
+	build environment.
+
+	Note that due to a pcc bug, the autoconf results for
+	Large File support are incorrect. Unless you edit the file
+	incs/i386-sunos5-pcc/xconfig.h and manually correct the
+	file to contain this:
+
+#define _FILE_OFFSET_BITS 64    /* # of bits in off_t if settable          */ 
+
+	You will not get working large file support.
+
+	Support for more Operating system will follow after the issues
+	in the compiler have been resolved.
+
+-	New autoconf test checks whether fnmatch() has a working FNM_IGNORECASE
+
+-	New autoconf test for strlcat() wcslcat()  strnlen() wcsnlen()
+
+-	Trying to add support for 32 bit compilation on newer Mac OS X
+	version via smake CCOM=cc32
+	This only works if 32 Bit development support is installed on Mac OS X.
+
+-	Trying to add support for 32 bit compilation on newer Linux
+	version via smake CCOM=cc32
+	This only works if 32 Bit development support is installed on Linux.
+
+-	include/schily/wchar.h now includes support for the mbr*() multi-byte
+	character handling routines.
+
+-	include/schily/regex.h added
+
+-	include/schily/libgen.h added
+
+-	New autoconf tests for basename() dirname() strndup() wcsndup()
+	mbsinit() mbrtowc() wcrtomb()
+
+-	New autoconf tests for wctype_t mbstate_t
+
+-	A new make macro STRIPFLAGS allows to install stripped binaries by calling
+	smake STRIPFLAGS=-s install
+
+-	Conf-files in /etc/default are now installed 0644 by default
+
+-	Man pages are now by default installed in $(INS_BASE)/share/man
+	The base directory "share" may be changed by calling 
+
+		smake DEFMANBASE=something
+
+-	README.compile now mentions:
+
+	INS_RBASE=		Set different "root" install path
+	DEFMANBASE=		Set different man base directory
+	STRIPFLAGS=-s		Strip all binaries with "make install"
+	RUNPATH=		Overwrite ELF RUNPATH
+	DEFUMASK=		Set different default permissions for
+				creating directories
+	DEFINSUMASK=		Set different default permissions for
+				creating directories in the install path
+
+Libschily:
+
+-	Fixed a typo in fconv.c that caused problems on IBM AIX5.
+
+-	mem.c moved from libfind/ to libschily/
+
+-	getnum()/getllnum() & gettnum()/getlltnum() have been moved to libschily
+
+-	printf()/fprintf()/sprintf()/snprintf() have been removed from libschily
+	we now use js_*printf() instead via -DSCHILY_PRINT
+
+-	Workaround for a Mac OS X linker bug
+
+-	New set of functions: __jmalloc()/__jrealloc()/__jsavestr()
+
+-	New set of functions: __fjmalloc()/__fjrealloc()/__fjsavestr()
+
+-	New set of functions: fcomerr()/fcomerrno()/ferrmsg()/ferrmsgno()
+
+-	getargs() now allows '+' to appear in strings like "longopt="
+
+-	__fjmalloc()/__jmalloc() now allow to specify JM_EXIT to exit() instead
+	of calling siglongjmp()
+
+-	New function file_getraise() to get the current file "raise value".
+
+-	getargs() enhanced to fully support POSIX Command line rules
+
+-	snprintf() is again compiled into libschily in case that the function
+	is missing on the current platform.
+
+-	Fixed a bug in checkerr.c that was caused by the fact that errflags() 
+	did try to modify it's string argument.
+
+-	The schily *printf routines now correctly support the %j format (intmax_t)
+
+-	getargs now first checks whether an argument can be a combination of
+	several single char flags before starting to set values.
+
+-	changed __malloc() -> ___malloc() for the ongoing ATARI Port
+-	changed __realloc() -> ___realloc() for the ongoing ATARI Port
+-	changed __savestr() -> ___savestr() for the ongoing ATARI Port
+
+-	Added sleep.c and gettimeofday.c that emulate sleep() and gettimeofday()
+	when using MSVC
+
+-	Try to rename ecvt()/fcgt()/gcvt() in case that one of these functions
+	does not work and the libc implementation does not allow to overwrite the
+	function.
+
+-	New functions eaccess() and findinpath()
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	format() now supports %z for size_t and %t for ptrdiff_t
+
+-	fexec now correctly works on Haiku and BeOS
+
+-	Code in libschily/fexec.c cleaned up for better readability
+
+-	libschily/checkerr.c now correctly handles the "WARN" directive.
+
+-	wide character support new
+
+-	several str*.c functions new for orthogonality with the new wcs* code.
+
+-	Added a wide character patern matcher with: patwcompile(), patwmatch(), patwlmatch()
+	See files:
+
+	libschily/matchw.c and libschily/matchwl.c
+
+-	libschily/stdio/*.c fixed to use size_t as length parameter for
+	read*()/write*() operations.
+
+-	libschily now is thread aware and uses the thread specific errno
+	value on Solaris, Linux and FreeBSD.
+
+-	libschily/fconv.c reworked to deal with non-C99 compliant systems and to deal
+	with the constraints found in HP-UX-11.11.
+
+-	libschily/*bytes.c now support 64 bit compilation and use a "ssize_t"
+	typed count parameter instead of "int".
+
+-	libschily/spawn.c now uses vfork()
+
+-	libschily/fexec.c now supports IO redirection on VMS
+
+-	Removed some GCC warnings from libschily/getargs.c
+
+-	Schily fnmatch() now supports FNM_IGNORECASE
+
+-	New files strlcat.c wcslcat.c  strnlen.c wcsnlen.c
+
+-	fnmatch.c now supports multi byte characters.
+
+-	New files basename.c and dirname.c
+
+-	New files strndup.c and wcsndup.c
+
+-	A new algorithm in 
+	strncat.c strncmp.c strncpy.c strnlen.c wcsncat.c wcsncmp.c wcsncpy.c wcsnlen.c
+	makes the code faster and smaller.
+
+Libparanoia (Ported/enhanced by Jörg Schilling, originated by Monty xiphmont@mit.edu):
+
+-	Changed from GPL to LGPL with permission from Monty.
+
+-	paranoia_init() interface change to work around a deficit
+	in the Mac OS X linker.
+
+-	"make install" now also installs the READMEs and other documentation to
+	..../share/doc/libparanoia/
+
+-	Fixed some minor problems with K&R compilers
+
+-	Set a useful default for the dynamic sector overlap start sector
+	in case that the dynamic sector overlap limits are manually changed
+
+-	Plenty of new comments taken from cdparanoia-III-10.2
+	This doubles the size of the code!
+	Thanks to Monty (xiphmont@mit.edu)
+
+-	i_paranoia_overlap_r() does not longer increment beginA/beginB after the 
+	match was found searching backwards. Taken from cdparanoia-III-10.2
+
+-	paranoia_free() now also frees p->cache and p->fragments taken from 
+	cdparanoia-III-10.2
+
+-	Some numerical values used in paranoia.c have been replaced by
+	FLAG_* definitions.
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Some #define inline definitions removed as "inline" is already
+	handled by schily/mconfig.h
+
+Libedc (Optimized by Jörg Schilling, originated by Heiko Eißfeldt heiko@hexco.de):
+
+-	Changed from GPL to CDDL with permission from Heiko
+
+-	New Reed Solomon decoder from Heiko allows to repair defective
+	CD-ROM sectors. Note that this code is from ~ Y2000 and note that
+	I did discuss OpenSource activities for the Reed Solomon Decoder
+	and the Cdrecord DVD support code with Heiko at that time.
+	We did agree in 2000 to make both OpenSource at the same time.
+
+-	#define memmove() to movebytes for libedc_dec if memmove is missing.
+
+-	Fixed array index overrun in L1 coder. Thanks to Heiko Eißfeldt.
+	The problem was reported by the coverity test. Note that the L1 coder
+	is not used by cdrtools.
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Avoid some GCC warnings
+
+Libcdrdeflt:
+
+-	This is a new library that has been introduced as many programs like
+	to parse the content of /etc/default/cdrecord
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+Libdeflt:
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	lbdeflt needs to be compiled before libcdrdeflt when creating
+	dynamic libs
+
+Libfind:
+
+-	The libfind code (developed as part of the sfind(1) command) has been added
+	in order to support "mkisofs -find ..."
+
+-	libfind no longer uses static global data. This version of libfind
+	is the first real library version that even allows to implement
+	the find(1) program in less than 200 lines of code.
+
+-	-perm now correctly recognises argument parsing errors by 
+	dealing with the fact that mode_t is unsigned.
+
+-	Is now quiet on NFSv4 ACLs (ZFS) although it still does not support them.
+
+-	getnum()/getllnum() & gettnum()/getlltnum() have been moved to libschily
+
+-	Using js_*printf() instead of *printf() via -DSCHILY_PRINT
+
+-	Avoid a core dump caused by probably uninitialized data
+	when using -exec ... {} +
+
+-	Workaround for a Mac OS X linker bug
+
+-	find_parser() now does no longer call exit() on errors.
+
+-	New funtion b_find(int argc, char ** argv, vound * dummy)
+	implements the ksh93 builtin function interface
+
+-	b_find() sets the flag WALK_NOEXIT for treewalk to make sure that
+	the complete find implementation does not call exit() anymore.
+
+-	new function walkinitstate()
+
+-	Libfind is now close from the final state
+
+-	Added README file to the directory libfind/ that help to learn how
+	to create a complete find(1) command, a "bsh" find builtin and a 
+	ksh93 find builtin using libfind.
+
+-	libfind has been restructured to allow it to be used as builtin function
+	inside shells like e.g. "bsh" and "ksh93".
+
+-	libfind now allows I/O redirection (needed for shell builtins).
+
+-	libfind now may be told to check for abort situations (needed for
+	shell builtins in order to check for abort on ^C).
+
+-	New function find_free()
+
+-	Libfind no longer leaks memory if called with a commandline with
+	syntax errors.
+
+-	find_list.c now #ifdefs names like S_IFLNK
+
+-	-size now understands things like -size +10m
+
+-	the function getperm() has been moved to libschily
+
+-	find_main() now supports to propagate a different environment
+	(e.g. with a different PATH) to fexec())
+
+- 	libfind (used by sfind, bsh, star, mkisofs) fixed the -exec {} +
+	implementation. Before the fix, it could core dump if the built-in
+	xargs(1) would exactly fill up args to the size of ARG_MAX.
+
+-	This is the final step to make libfind a "real" library
+
+-	find.h walk.h fetchdir.h idcache.h moved to include/schily/
+
+-	A bug in libfind was fixed that causes
+
+	find . -size -20k -ls
+
+	to check for files smaller than 20480 Blocks instead of
+	looking for files smaller than 2084 characters.
+
+-	& before some functions removed
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	libfind now correctly deals with ARG_MAX in case that
+	the bitness of the libfind executable differs from the bitness
+	of the executable called by -exec name {} +
+
+-	Fixed a typo in idcache.c
+
+-	let libfind deal with the differences between Linux ACLs and IRIX ACLs
+
+-	Added $(LIB_ACL_TEST) to the libs for libfind to allow a shared libfind
+	with ACL support on Linux.
+
+-	Fixed a bug in libfind/walk.c (calling strcatl() with last parameter 0 
+	instead of (char *)0)
+
+-	New file libfind/find_tok.h to separate the token names from the rest of the implementation.
+
+-	Moved token definitions from find.c to find_tok.h
+
+-	The primary -perm now implements a new feature:
+
+	-perm +mode will evaluate as true if any of the bits set in mode are set in the
+	permission bits fro a file.
+
+-	New primary operators:
+		-amin			deprecated - only for GNU find compatibility
+		-cmin			deprecated - only for GNU find compatibility
+		-mmin			deprecated - only for GNU find compatibility
+		-empty			TRUE zero sized plain file or empty directory
+		-execdir program [argument ...] \\;
+		-fls file     		list files similar to 'ls -ilds' into 'file' (always TRUE)
+		-fprint file		print file names line separated into 'file' (always TRUE)
+		-fprint0 file		print file names nul separated into 'file' (always TRUE)
+		-fprintnnl file		print file names space separated into 'file' (always TRUE)
+		-ilname glob		TRUE if symlink name matches shell glob
+		-ilpat pattern		TRUE if symlink name matches pattern
+		-iname glob		TRUE if path component matches shell glob
+		-ipat pattern		TRUE if path component matches pattern
+		-ipath glob		TRUE if full path matches shell glob
+		-ippat pattern		TRUE if full path matches pattern
+		-okdir program [argument ...] \\;
+		-print0			print file names nul separated to stdout (always TRUE)
+		-executable		TRUE if file is executable by real user id of process
+		-readable		TRUE if file is readable by real user id of process
+		-writable		TRUE if file is writable by real user id of process
+
+-	Libfind Version is now 1.5
+
+Libfile:
+
+-	Workaround for a Mac OS X linker bug
+
+-	Using js_*printf() instead of *printf() via -DSCHILY_PRINT
+
+-	Better portability for strerror() in file.h
+
+-	The license has been changed from a license (similar to a BSDl 4 clause)
+	to a new BSDL 2 clause license with permission from all involved authors.
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Some changes for better VMS support
+
+Libhfs_iso:
+
+-	Workaround for a Mac OS X linker bug
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Removed a warning from the HP-UX C-compiler about a possible endless loop 
+
+Libsiconv:
+
+-	New library libsiconv replaces libunls.
+
+	The new concept for libsiconv saves ~ 130 kB of executable space in 
+	mkisofs and allows to use iconv() if it is present on the current
+	platform.
+
+-	sic_open() now allows to be called with a NULL pointer argument
+
+-	sic_list() now returns the number of listed translations
+
+-	Deactivate TAB_SIZE check for K&R compilers. They cannot
+	do complex math in cpp.
+
+-	Changed sic_nls.c to allow compilation on SCO OpenServer-5.x and
+	other compilers that set __STDC__ to 0 and are not at least
+	fully C89 compliant.
+
+-	libsiconv/sic_nls.c modified to allow compilation with older GCC
+	versions.
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Fixed a copy/paste error from libsiconv. Libsiconv now correctly
+	initializes duplicated data structures to prevent core dumps.
+	Thanks to Jörg Sonnenberger for reporting.
+
+-	Fixed a problem in libsiconv in case that the the locale is specified as
+	"iconv:name".
+
+-	Add the VMS C-compiler to the list of exceptions for not fully C99 compliant
+	compilers to allow compilation. 
+
+-	libsiconv now supports sic_close()
+
+Libscg:
+
+-	Modified the remote SCSI library stuff that has been changed due
+	to a security problem on order to make it compile again on HP-UX.
+
+-	Trying to introduce a workaround for broken <scsi/scsi.h> & <scsi/sg.h>
+	on various Linux systems.
+
+-	Trying to introduce a workaround for the changed SCSI generic Linux
+	Kernel interface from Linux-2.6.8.1 and newer.
+
+	Be very careful with testing. The Linux adaption layer for libscg
+	is already full of workarounds for bugs, unstable interfaces and
+	unwillingness of the Linux Kernel maintainers to give access to the
+	needed information for libscg. I am not sure whether this workaround
+	will not have problems. It has been tested on a Pegasus PPC running
+	Linux-2.6.8.1
+
+-	Autoconf test for broken Linux sg.h headers added
+
+-	if libscg is compiles on newer Solaris systems, the warning:
+
+	"Warning: Volume management is running, medialess managed drives are invisible.\n"
+
+	is no longer printed.
+
+	Since Solaris 11 Build 21, vold no longer hides empty drives 
+	that are under volume management. This now allows cdrecord to be even 
+	used to close the tray while vold is running.
+
+	The criteria used to decide whether Solaris is "recent enough" is 
+	#ifndef SEEK_HOLE
+	The definition SEEK_HOLE has been added with Solaris 11 Build 14
+	while the fixed vold appears in Solaris 11 Build 21.
+
+-	Support for root-less cdrecord using fine-grained privileges.
+	Remote SCSI not tests for PRIV_NET_PRIVADDR instead of (geteuid() == 0)
+
+	If you like all users to be able to call cdrecord root-less, you need
+	Solaris 10 or newer.
+
+	Edit the file /etc/security/exec_attr and add:
+
+	All:solaris:cmd:::/opt/schily/bin/cdrecord: privs=file_dac_read,sys_devices,proc_lock_memory,proc_priocntl,net_privaddr
+	All:solaris:cmd:::/opt/schily/bin/readcd: privs=file_dac_read,sys_devices,net_privaddr
+	All:solaris:cmd:::/opt/schily/bin/cdda2wav: privs=file_dac_read,sys_devices,net_privaddr
+
+	If you like to allow only specific user to use cdrecord,
+	use something like:
+
+	CD RW:solaris:cmd:::/opt/schily/bin/cdrecord: privs=file_dac_read,sys_devices,proc_lock_memory,proc_priocntl,net_privaddr
+
+	instead and make the users members of the profile "CD RW"
+	by adding a line like:
+
+	joerg::::profiles=CD RW
+
+	into /etc/user_attr
+
+	Note that you either need to call cdrecord via "pfexec cdrecord ....."
+	or by using a profile aware shell (e.g. /usr/bin/pfksh)
+
+-	Support for root-less cdrecord using fine-grained privileges.
+	Remote SCSI not tests for PRIV_NET_PRIVADDR instead of (geteuid() == 0)
+	This is now active since the needed autoconf code is out.
+
+-	BeOS/Zeta libscg low level adoption code fixed.
+	The code now is passing a "scgcheck" test.
+
+-	Changed from GPL to CDDL
+	NOTE: The libscg code may only be used together with other
+	code that is under an approved OpenSource license,
+	see http://www.opensource.org/.
+
+-	scsi-apollo.c & scsi-hpux.c indented properly to follow Cstyle
+
+-	scsi-linux-ata.c cast added to avoid strange warning from GCC
+	caused by bad coding style in the Linux kernel.
+
+-	scsi-linux-ata.c trying again to add workarounds for new Linux
+	Kernel self-incompatibilities: Adding the same uid workaround
+	as for scsi-linux-sg.c. Note that I am not sure if this is the
+	only incompatibility that has been added with Linux-2.6.16, it may
+	be that they did also break the behavior of seteuid().
+	Please help me with further testing and debugging.
+
+-	Warn Linux users to prefer dev=ATA: over dev=ATAPI:
+
+-	Print correct error message (using the right errno) in case that
+	libscg tries to open more than one file on Solaris.
+
+-	Bumped libscg version to 0.9
+
+-	Trying to support FreeBSD Kernel under non-FreeBSD (GNU) userland
+
+-	New interface function scg_numbus() returns the number of SCSI busses.
+
+-	Trying to work around a Linux design problem that has been introduced
+	about 3 years ago when Linux stopped to support an orthogonal SCSI
+	Kernel transport for all SCSI devices. Since then, ATAPI drives are
+	handled different from other SCSI devices. The problem is that
+	the linux maintainers intentionally reduce the information that
+	is available in the kernel and this way prevent to allow libscg to
+	only show only unique drives.
+
+	libscg now tries to map ATAPI drives to SCSI bus numbers >= 1000.
+	cdrecord -scanbus should now show even ATAPI drives. This allows
+	cdrecord/readcd/cdda2wav to implement the auto-target feature even
+	on Linux.
+
+-	Try to deal with broken Linux distributions that do not provide a "HZ" macro
+	in /usr/include/sys/param.h
+
+-	Use USER_HZ in favor of HZ (if available) for computing SCSI timeout values.
+
+-	Disable automatic ATA (dev(hd*) integration and scan on pre-Linux-2.6 systems.
+
+-	Try to skip non-POSIX compliant EROFS error codes when opening /dev/hd*
+
+-	Trying to implement a workaround for a Linux USB DMA size problem by implementing
+	support for a new ioctl proposal from Alan Stern <stern@rowland.harvard.edu>
+
+	UPDATE: It seems that the final fix in the Linux kernel will take some time
+	and will be incompatible to the current patch. For this reason, I decided to 
+	make the intermediate patch available at:
+	ftp://ftp.berlios.de/pub/cdrecord/alpha/Linux-USB-DMA-Size.patch
+
+-	Using js_*printf() instead of *printf() via -DSCHILY_PRINT
+
+-	add the new scg_numbus() to the Solaris linker map file
+	to allow again dynamic linking
+
+-	scg_numbus() function for FreeBSD corrected to make cdrtools work again.
+	Thanks to a hint from Joseph Terner <jtsn@jtsn.de>
+
+-	Better help message for Mac OS X with dev=help
+
+-	Detect & correctly handle SCSI send permission problems with USCSI and Solaris
+
+-	scg/scgcmd.h upgraded to be sharable with the "scg" Solaris kernel driver
+
+-	scg/scgio.h upgraded to be sharable with the "scg" Solaris kernel driver
+
+-	Allow libscg to correctly compile in 64 bit mode on amd64 Solaris
+	platforms
+
+-	"make install" now installs the libscg include files into $(INS_BASE)/include/scg/
+
+-	aspi-win32.h and spti-wnt.h now in SCCS
+
+-	Included a patch for the CAM interface from the FreeBSD people.
+	The patch sets up the CAM data structures in a way that allows
+	SCSI bus and target scanning.
+
+-	Unneeded code from libscg/scsierrs.c removed
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Avoid some GCC warnings
+
+-	New SCSI low level transport for ATARI FreeMiNT has been added.
+	Thanks to Yvan Doyeux
+
+-	A first version of the SCSI adaptation layer for Syllable has been added.
+	Thanks to Kristian Van Der Vliet <vanders@liqwyd.com> for the first 
+	implementation.
+
+-	Haiku is a BeOS clone and thus uses scsi-beos.c as SCSI adaptation layer.
+
+	IMPORTANT NOTICE: if you like to compile libscg with some Haiku releases
+	you may first need to copy a file:
+
+	cd /boot/develop/headers/os
+	cp device/CAM.h drivers/CAM.h
+
+	CAM.h was at /boot/develop/headers/os/drivers/CAM.h in BeOS and as CAM
+	has no own hardware, it seems to belong into /boot/develop/headers/os/drivers/
+
+-	Added a workaround for the type disaster in the Appls IOKit include files
+	in order to support 64 bit binaries
+
+-	Raised the SCSI Bus-number limit from 256 to 500 for Linux as a workaround
+	for a resource leak bug in the linux kernel. The workaround lets the problem
+	happen much later but cannot completely avoid it. If you are hit by the Linux
+	kernel resource leak bug, you need to reboot.
+
+-	The low level SCSI transport code for Mac OS X has been reworked.
+
+	The code now supports cdrecord -scanbus
+
+	The code now supports cdrecord's autotarget mode
+
+	The code now supports to communicate with BluRay drives
+
+	The code now prints a longer help text that instructs what to do in order
+	to work against the "diskarbitrationd" program on Mac OS that tries to 
+	steal us our hardware. 
+
+	If someone is able and willing to help, please send mail!
+
+	I like to be able to tell "diskarbitrationd" to give up specific drives
+	and to set up shared access.
+
+-	Added a hack to liscg to allow cdrecord -scanbus to work on NetBSD
+
+-	Added a hack to liscg to allow cdrecord -scanbus to work on OpenBSD
+
+	libscg now supports -scanbus and cdrecord's autotarget feature on the
+	following platforms:
+
+	SunOS	(SunOS-3.x & SunOS-4.x)
+	Solaris (SunOS-5.x)
+	AmigaOS
+	ATARI MiNT
+	BeOS
+	FreeBSD
+	NetBSD
+	OpenBSD
+	DragonFlyBSD
+	Cygwin on win32
+	Cygwin on win64
+	Max OS X
+	Haiku
+	HP-UX
+	IRIX
+	Linux
+	NextSTep
+	OSF-1 (Digital UNIX)
+	OS/2
+	SCO OpenServer
+	SCO UnixWare
+	VMS
+	Zeta
+
+-	Make libscg deal with the new error code from HP-UX that
+	is returned for a non-existing ATAPI slave.
+
+-	Some minor changes in libscg to make scgcheck report less problems
+	with HP-UX
+
+-	changed a include path in libscg/scsi-mac-iokit.c to allow
+	compilation on "Snow Leopard"
+
+-	Removed some GCC warnings from libscg/scsi-sgi.c
+
+-	Retry to send SCSI commands for the FreeBSD CAM subsystem in case that
+	(ccb->ccb_h.status & CAM_STATUS_MASK) == CAM_REQUEUE_REQ)
+
+Libscgcmd:
+
+-	This is a new SCSI command library 
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+Libmdigest:
+
+-	New library
+
+Rscsi:
+
+-	Changed from GPL to CDDL
+
+-	New interface function scg_numbus() returns the number of SCSI busses.
+	This is implemented via the new emote function "N".
+
+-	"make install" now also installs the READMEs and other documentation to
+	..../share/doc/rscsi/
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Raise the SCSI bus nubmer limit to 1024 to allow the new Linux ATA mapping.
+
+-	the configuration file "rscsi" is now by default installed into
+	/etc/default/rscsi
+
+-	First complete version of a man page for rscsi.
+
+-	Makefile.dfl now detects whether /etc/default/rscsi already exists
+
+Cdrecord:
+
+-	Support for the Plextor GigaRec feature.
+	Use driveropts=gigarec=1.2 to increase CD capacity by 20%.
+
+-	Allow the -shorttrack option for RAW mode, thanks to a report
+	from Sebastian Trueg
+
+-	Enhance the minimal grace time from 2 to 3 seconds to make sure
+	that cdrecord will not get out of sync with locks from the 
+	Volume management system.
+
+-	Better checks and better error messages for /etc/default/cdrecord
+
+-	Correct verbose print mode for old pre-MMC TEAC drives.
+
+-	Added support for Ultra speed+ CD-RW media recognition and a check
+	whether the drive supports Ultra speed+ CD-RW media.
+	(Thanks to Alexander Noé).
+
+-	Correctly evaluate the write speeds for Ultra speed+ CD-RW media.
+	This prevents wrong warnings that the "drive does not support Ultra speed+"
+
+-	Fixed a typo in the driveropts=help messages
+
+-	Trying to work around a noncompliance (modified interface) present on newer
+	Linux kernels that causes cdrecord to be unable to allocate a SCSI transfer
+	buffer.
+
+	Newer Linux kernels do not honor a contract from mlockall(MCL_FUTURE)
+	after cdrecord turned off euid == 0 from a suid root installation.
+	Instead of honoring mlockall(MCL_FUTURE), Linux checks each mmap()
+	and compares against getrlimit(RLIMIT_MEMLOCK
+
+-	Explicit fine grained privileges support for Solaris.
+	Cdrecord now switches off all privs that are no longer needed.
+
+-	Adjust some timeouts to prevent that the drive buffer of
+	newer Pioneer DVD writers empties when writing high speed DVD
+	media.
+
+-	Support for BeOS/Zeta shared memory was added
+
+-	New tag CDR_MAXFIFOSIZE= in /etc/default/cdrecord allows to
+	limit the size of the FIFO cdrecord is using. This helps the 
+	sysadmin to prevent other people from locking up the system.
+
+-	Fixed a bug caused by an uninitalized variable when handling
+	CDR_MAXFIFOSIZE= and no file /etc/default/cdrecord exists
+
+-	Changed from GPL to CDDL
+
+-	Moved the DVD support code to the OpenSource part.
+
+	Note that this has been planned in 1998 already. The plan
+	was to make the DVD support code OpenSource at the time when
+	the successor of the DVD becomes ready.
+
+	In case you do not know the reason why the DVD support
+	code has not been OpenSourced before....Cdrecord is the 3rd
+	program that did start supporting DVD-R. This was in February 1998.
+	A company from the MS-WIN area did steal my libscg code
+	in a way that made it hard if not impossible to sue them.
+	This company did implement DVD support very late (not much
+	more than a year ago) and I did not like to "help" them again. 
+
+-	Fixed a typo in defaults.c & scsimmc.h
+
+-	Introduced a better DMA speed test that now hopefully notices
+	all cases when the SCSI read buffer command does not work.
+
+-	Print the physical drive buffer size in addition to the logical 
+	drive buffer size when both differ.
+
+-	Added a workaround for a NEC DVD firmwarebug that caused cdrecord
+	to use the CD write speed instead of the DVD write speed.
+
+-	Added a workaround for the fact that some NEC writers return a too
+	small size for half written DVD+RW (use end_lba from GET PERFORMANCE
+	in this case).
+
+-	Better error messages in case of no track options that are called
+	together with file type arguments.
+
+-	Added new Mt.Fuji6 profile texts for HD-DVD and Blu ray writers.
+
+-	Avoid a GCC warning in the code that works around a Linux DMA residual bug.
+
+-	Replace nice(-20) by nice(-NZERO)
+
+-	cdrecord now supports to set the layer break for DVD+R/DL.
+	This reduces the write time but as there is currently no way
+	to specify the layer break by hand, dual layer DVD-Video does
+	not yet work.
+
+-	cdrecord -atip now also prints the rzone info for DVD+ media
+
+-	cdrecord -atip now prints more information for DVD-R/DL media
+
+-	cdrecord now also supports to write to DVD-RAM
+
+-	New test for DVD-R/DL layer jump write capability
+
+-	Starting to implement a new default write mode that is not always TAO
+	but fits best to the current writer and medium.
+
+-	New option driveropts=layerbreak switches DVD-R/DL into layer jump mode
+
+-	New option driveropts=layerbreak=value sets manual layer break
+
+-	cdrecord -prcap now also prints the MMC4 profile list and the feature list
+
+-	SCSI MMC4 print feature codes enhanced
+
+-	SCSI MMC4 print feature now knows more recent feature numbers
+
+-	"gconf" debug code removed - no longer needed
+
+-	print formated capacity values with cdrecord -atip
+
+-	Renamed getdelim() to getworddelim() to avoid a name clash in Cygwin.
+
+	Note that there is still a name clash on Cygwin with getline(). As this
+	is a hard POSIX violation caused by Cygwin, you need to edit Cygwin's
+	/usr/include/stdio.h and remove the non-conforming Cygwin getline()
+	if you like to compile cdrtools. Please also make a bug report against 
+	Cygwin. Tell the Cygwin people that libschily's getline() is compliant
+	to a commercial interface published since 1982. Cygwin needs to use a 
+	different name if they don't like to follow the official getline()
+	prototype.
+
+-	Cdrecod now default to the write mode "-sao" in case that no write mode
+	has been specified. Cdrecord -multi continues to default to -tao.
+	If your drive does not support -sao, or if cdrecord does not support -sao
+	for your drive, you should now call cdrecord -tao.#
+
+-	If no dev= option has been specified or of dev= only contains a SCSI transport
+	specifyer but no address, cdrecord now searches the SCSI address space and
+	if exactly one CD-ROM drive is found, this drive is used.
+
+	Note that this will not work on user unfriendly platforms that do not allow
+	SCSI address scanning or that do not allow to scan for SCSI drives in a single
+	address space (like Linux) this new feature does not work.
+
+The two modifications from above now allow dummies to call "cdrecord iso-image"
+in case they are on a user-friendly OS that allows "cdrecord -scanbus" without 
+any further parameters to find all CD-ROM drives.
+
+-	Calling "cdrecord file file" now works.
+
+-	The atip information now includes enhanced rzone information
+	with dual layer values.
+
+-	struct rzone_info now includes the DVD/DL enhancements from MMC
+
+-	print_diskinfo() enhanced for DVD support
+
+-	New option -minfo/-media-info to print Media information/status
+
+-	prdiskstatus() which is supporting cdrecord -minfo is now a globally implemented
+	function.
+
+-	cdrecord -minfo extended to print TOC related media info.
+	The new option -minfo is now almost complete.
+
+-	cdrecord -scanbus now defaults to scan 1024 SCSI busses in case that the "numbus"
+	function is not yet available on a remote RSCSI server.
+
+-	Make cdrecord -msinfo print the right values for "multi-session" (multi-border)
+	DVD-R and DVD+R.
+
+-	cdrecord -atip output for DVD media enhanced and updated for DVD+R/DL & HD-DVD
+
+-	Enhanced CUE sheet parser to allow writing the new Zeta CD from
+	http://www.zeta-os.com/cms/custom/lcd/indexe.php
+
+-	Supporting -raw/-raw16/-raw96r in CUE sheet mode (with cuefile=).
+	Please test and report as I am not able to test all possible cases.
+
+	As it seems that this new mode works now properly, it it possible 
+	to write SVCDs on Pioneer writers that refuse to write SVCDs in -sao mode
+	because Pioneer implements a silly internal memory management that
+	reserves memory for 99 tracks with not more than 2 indices each.
+ 
+	In RAW mode, cdrecord takes care of subchannel data and is able to work
+	around this deficit in Pioneer drives.
+
+-	Correctly reset CDRWIN CUE sheet state at the beginning of a new track
+
+-	Added some small changes to help compiling on VMS
+
+-	getnum -> libschily
+
+-	Using js_*printf() instead of *printf() via -DSCHILY_PRINT
+
+-	Some %d -> %u changes in printf() formats.
+
+-	Fixed MMC-4 Profile 0x14 name to "DVD-RW sequential recording"
+
+-	A typo in the man page has been fixed (mkisofs does not have a -q but
+	a -quiet option).
+
+-	A debug message in the DVD+ driver hav been updated to make cdrecord
+	again compile in -DDEBUG mode.
+
+-	Trying to work around a Pioneer firmware bug that causes cdrecord to write
+	DVDs at lowest speed.
+
+-	Reset SCSI silent mode after cdrecord did use the auto-mode (no dev= parameter)
+	to find the drive. This again gives visible error messages.
+
+-	Let cdrecord check the available transfer size for more SCSI
+	commands.
+
+-	"make install" now also installs the READMEs and other documentation to
+	..../share/doc/cdrecord/
+
+-	New function verify() in high level code.
+
+-	Some small typo fixes in the man page
+
+-	Speed values are now also displayed as multiple of Blu Ray 1x
+
+-	First support for Blu Ray media.
+
+-	The read disk structure command has been enhanced to support the 
+	media type field for Blu ray.
+
+-	Speed values are now also displayed as multiple of Blu Ray 1x
+
+-	Cdrecord now aborts with DVD+R if -dummy has been specified as there is
+	no -dummy mode for DVD+R. This has been forgotten for years....
+
+-	cdrecord -pad cue=file now works as people expect.
+	Thanks to to Bernd Eggink for reporting
+
+-	Workaround for new Solaris behavior for Console users if hald
+	is active. Give error message and abort instead of useless messages.
+
+-	Print Linux 2.6.8 warnings only if there really was a problem.
+
+-	Blu Ray driver now supports "cdrecord -atip" to read manufacturer IDs.
+
+-	Several MMC-3+ Text strings for profiles and media codes have been added.
+
+-	New code to better print speed performance values
+	with cdrecord -prcap
+	Note: The 'MATSHITA' 'BD-MLT SW-5582  ' seems for unknown
+	reason not to support to retrieve the current read/write speed
+	values via get_performance.
+
+-	cdrecord -minfo now prints "Mounted media class" and 
+	"Mounted media type" name.
+
+-	Added support to unlock the free firmware for the Plextor 755 and 760
+	drives. Thanks to a hint from Alexander Noé.
+	This makes the following features available again:
+
+		GIGAREC SINGLESESSION HIDECDR
+
+	Note: You need to install free firmware in the drive first to make this
+	work.
+
+	If you like, you may turn the feature off using "driveropts=plexdisable"
+
+-	Added support for enhanced gigarec found in newer Plextor drives.
+	The gigarec values 0.9 anf 1.1 are now supported. Cdrecord now supports:
+
+	0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4
+
+	Note that not all values are supported by all drives.
+
+-	Added support for Yamaha AudioMaster in the Plextor Premium 2.
+	Thanks to a hint from Paolo Saggese. Original Yamaha audiomaster
+	is like gigarec 0.85, Plextor implemented 0.8666 which still looks
+	like a useful additional intermediate value.
+
+-	Make the man page more obvious that gigarec with values < 1.0 is _very_
+	similar to audiomaster except for pit sizes.
+
+-	Code restructured from a CD/DVD only program to a program that
+	writes multiple different similar media.
+
+-	New simulation driver "bd_simul"
+
+-	Trying to make the text in cdrecord.c that forbids incompatible changes
+	to be published under the name "cdrecord" more user friendly.
+
+-	Better code structure for dvd/bd driver recognition.
+
+-	Allow to disable all speed limitations by setting the environment variable
+	CDR_FORCESPEED to "any". This is needed to allow full write speed on drives
+	with defective firmware (like e.g. the Plextor PXW-716) that do not enable
+	DMA with the "read buffer" command.
+
+-	Changed the drive buffer size recognition so that cdrecord now shows
+	correct size values even for the LG GSA-H55N
+
+-	Take more care with calling SCSI read buffer while trying to find the
+	DMA speed of the drive
+
+-	Allow to blank DVD-RW/DL. There are no known drives yet, but it seems that
+	the media is already sold.
+
+-	Add a format-type value column to the formatted capacity table to allow
+	for better identification of the various entries.
+
+-	New wording for some comment to make clear that the name "cdrecord" cannot be 
+	used after specific parts of the code have been changed.
+
+-	Cdrecord now correctly recognizes unformatted BD-RE media.
+
+-	cdrecord man page now mentions the "lofi" driver for Solaris
+
+-	Cdrecord now re-checks the media after a "blank" or "format"
+	operation has been issued. This prevents problems with incorrect
+	media size assumptions.
+
+-	cdrecord now implements a simulated "blank" feature for media that
+	itself does not support blanking: currently DVD-RAM + DVD+RW
+
+-	cdrecord/readcd/cdda2wav now support an enhanced /etc/default/cdrecord file
+	with an additional parameter to specify the max. transfer size for a device.
+
+-	CDR_FORCESPEED=any now works for cdrecord to switch off DMA speed test results
+
+-	Make cdrecord compile again with a K&R compiler 
+
+-	Add a "blank emulation" layer to the BluRay driver too.
+
+-	Reduced the minimal write speed of a ultraspeed CD-RW capable drive
+	from 16x to 10x.
+
+-	cdrecord now correctly writes DVD+R/DL media with all drives.
+	Before, there have been problems at the layer break with some
+	drives.
+
+-	The cdrecord DVD multi-border code from May 2007 has been made OpenSource.
+	Multi-Border is the DVD multi-session equivalent. It allows to write
+	up to 1024 sessions on a single DVD.
+
+	The code currently covers the most important case of writing to DVD-R/DVD-RW
+	media.
+
+	You need to specify -multi for every session.
+
+-	The cdrecord man page now mentions -multi with respect to DVD multi-border.
+
+-	Make sure that the DVD and BluRay drivers do not lower the default timeout.
+	cdrecord timeout=# now always allows to raise the default timeout to a larger
+	value.
+
+-	Added a workaround to prevent the Lite-ON BD B LH-2B1S/AL09
+	from hanging up when trying to write a BluRay Medium.
+
+-	Cdrecord now by default tries to set up a DMA Size of 126 kB.
+	If non-MMC drives are found, we fall back to the old value of 63 kB
+
+-	Converted to use libcdrdeflt
+
+-	Converted to use libscgcmd
+
+-	Man page now includes many small modifications that mention BluRay media.
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	New driver "mmc_bdrom" is used for profile 0x40 and allows to
+	retrieve the ADIP data for BD-R media that is reported as BD-ROM
+	by some drives.
+
+-	Added a workaround for a firmware bug in the drive
+	'HL-DT-ST' 'DVD-RAM GH22NP20'
+	that reports DVD-R media as media with zero size.
+
+-	Added a workaround for a firmware bug in many 'HL-DT-ST' drives
+	(e.g. 'HL-DT-ST' 'DVD-RAM GSA-H55N') that return unreliable data
+	with READ BUFFER and makes it impossible to get the drive DMA
+	transfer speed.
+
+-	Added a workaround for frequent kernel/driver bugs in FreeBSD and Solaris
+	that prevent the DMA residual count to work.
+
+-	Try to call scg_close() before exiting cdrecord.
+
+-	Default Transfer Size reverted from 126 kB to 63 kB.
+	Sorry FreeBSD guys - it seems that FreeBSD is the only OS that
+	correctly deals with larger DMA sizes.
+
+	FreeBSD people may add a line with CDR_TRANSFERSIZE=126k
+	in /etc/default/cdrecord to raise the default.
+
+	The current problems are:
+
+	-	On Solaris 10 Sparc fs=126k causes a kernel panic
+
+	-	On Solaris 11 the drivers partially return incorrect
+		max DMA sizes that may cause cdrecord to fail.
+
+	-	On Linux with USB fs=126k may not work at all
+
+	-	On Linux with other interfaces, fs=126k may reduce
+		the DMA speed to a value that always causes buffer
+		underruns.
+
+	I hope to find a better solution in the next development cycle
+	after the current code has been release as stable version.
+	Expect the next stable release to appear very soon.
+
+-	Cdrecord is now by default installed suid root in case that the caller
+	of make install has root privileges
+
+-	the configuration file "cdrecord" is now by default installed into
+	/etc/default/cdrecord
+
+-	Some unused variables and functions have been commented out
+
+-	Avoid some GCC warnings
+
+-	Some small typos in error messages have been fixed.
+
+-	Workaround for 'TSSTcorp' 'CDDVDW SE-S224Q ' 'TS01' firmware bug.
+	The drives does not return SES_UNDEF for unformatted DVD+RW media.
+
+-	Do not install by overwriting /etc/default/cdrecord in case an earlier file
+	exists.
+
+	Please give feedback on what you like to see in future.
+
+	Do you like to see a sample file installed?
+
+-	README.cdplus has been renewed 
+
+-	Fixed a minor typo in cdrecord
+
+-	Some better warnings with cdrecord in case that the environment variables
+	'CDR_FORCERAWSPEED=' or 'CDR_FORCSPEED=' have been specified.
+
+-	Better error messages when the media size is unknown
+
+-	Try to work around a firmware bug in the drive:
+	'HL-DT-ST' 'DVD-RAM GH22NP20' '1.02'
+	that is in effect with DVD+R media.
+
+	***** ATTENTION *****
+
+	The algorithm to fetch the size information from a DVD+R/RW medium was changed with this
+	release. Please check for and report problems.
+
+-	cdtext.c now checks for empty CD-Text files to prevent a later endless loop in cdrecord
+	while writing the TOC. Thanks to Sebastian Trüg <trueg@k3b.org> for reporting.
+
+-	Man page corrected some problems from hyphen -> minus 
+
+-	Cdrecord now calls read_format_capacities() in silent mode in order to
+	check whether the current drive supports this SCSI command.
+
+-	Correctly abort the FIFO in cdrecord on BeOS and Haiku
+	in case that the clone ara cannot be made shared.
+
+-	Correctly abort the FIFO in cdrecord on BeOS and Haiku
+	in case that the clone ara cannot be made shared.
+
+-	The cdrecord man page now mentions that the -clone mode is a bad idea to copy
+	audio CDs.
+
+-	Better man page with repect to dev=
+
+-	The cdrecord man page has been restructured.
+
+-	Fixed a bug in the workaround code for a firmware bug for DVD+R
+	media in HL-DT-ST drives.
+
+-	Added a workaround for a firmware oddity with DVD+RW on
+	'_NEC    ' 'DVD_RW ND-3500AG' with media written from other drives.
+
+-	Work around a bug in the firmware from drives
+	developed by PIONEER in November 2009. This affects
+	drives labelled "Pioneer", "Plextor" and "TEAC".
+	Do no longer call cdr_buffer_cap() before the drive
+	buffer was not at least filled once to avoid that
+	the the drive throughs away all data.
+
+-	Man page reworked
+
+-	Cdrecord now defaults to -sao in case that cuefile=something was specified
+
+-	man page restructured
+
+-	Cdrecord now is able to use -isosize even in case that the image data
+	is read from stdin. This makes it easier to use "mkisofs | cdrecord".
+
+-	The CDRWIN cue sheet parser has been enhanced to give better error messages:
+
+	-	There are now hints on what is missing in the CUE file
+
+	-	The error message now also contains the column where the problem was detected
+
+-	Allow cdrecord to compile again on a pre-C99 compiler (there was a variable declaration
+	past a statement in a function.
+
+-	A description for the *.inf file fomat was added to the cdrecord man page
+
+-	New (previously missing) CD-Text tags have been added to auinfo.c (*.inf file parser):
+
+	Albumsongwriter=
+	Albumcomposer=
+	Albumarranger=
+	Albummessage=
+	Albumclosed_info=
+
+	Note that these tags do not appear in the CDDB database.
+
+-	The *.inf file parser now supports a new tag "Track=" that
+	is intended to carry the absolute track number from the original disk.
+
+-	Cdrecord now supports to copy CDs with hidden track if there are *.inf files
+	created by cdda2wav. In order to copy a CD with hidden Track with optimal
+	quality, call:
+
+	cdda2wav -vall -B -paranoia paraports=proof cddb=0
+	cdrecord -v -sao -useinfo -text *.wav
+
+-	cdwrite@lists.debian.org removed from man page
+	please use the official mailing lists for cdrecord that exist since 10 years:
+	http://developer.berlios.de/mail/?group_id=5
+
+-	Hidden Track support is now complete:
+
+-	Added support for writing Hidden Audio Tracks before Track #1
+	in the Mtsushita CW-7501 device driver.
+
+-	Added support for writing Hidden Audio Tracks before Track #1
+	in the Sony CDU-924 / CDU-948 device driver.
+
+-	Added support for writing Hidden Audio Tracks in RAW mode.
+
+-	Added support for Track #1 having a different number than 1 into
+	the CUE file parser.
+
+-	The CUE file parser now prints much better error messages in case that
+	a keyword is seen out of the permitted order.
+
+-	The CUE file parser now supports hidden tracks.
+
+-	Fixed a bug in the CUE file parser that caused "pregap size 0" (missing
+	INDEX 00) to be replaced by the default pregap size of 150 sectors.
+
+-	Added a workaround for a firmware bug in the drive:
+	'HL-DT-ST' 'BD-RE  BH10LS30 ' '1.00'
+	That causes the drive to return zero media size for BluRay media.
+
+-	cdrecord now aborts if the cuefile= option was specified with a non-CD
+	media in the drive.
+
+-	CDRWIN CUE files now may refer to several data files where each data file
+	contains less than the whole disk but more than a single track.
+
+-	The CUE parser now correctly sets the sector size information for the
+	lead-in area.
+
+-	The CUE parser now by default only accepts CDRWIN CUE compliant files
+	but may be switched into an enhanced mode by introducing a special comment
+	"REM CDRTOOLS"
+
+-	The CUE parser now supports a FILE command between INDEX 00 and INDEX 01.
+	This is needed in order to write CUE sheets from Exact Audio Copy.
+	Note that cdrecord needs to be switched into the enhanced CUE parser mode
+	by either specifying "REM CDRTOOLS" or by specifying:
+	REM COMMENT "ExactAudioCopy v0.99pb5"
+
+	Also note that cdrecord currently does not support more than one FILE
+	command per TRACK. For this reason, hidden audio tracks only work if
+	the hidden audio data is in the same file that also contains data for
+	track 1.
+
+-	New commands "ARRANGER", "COMPOSER" and "MESSAGE" for adding CD-Text information
+	in CUE files. Note that these commands are cdrecord specific extensions that
+	re unknown by CDRWIN and thus need "REM CDRTOOLS" to be enabled.
+
+-	The CUE file format is now documented in the cdrecord man page.
+
+-	Fixed a bug with INDEX 00 support for CUE files from
+	ExactAudioCopy
+
+-	Cdrecord no longer tries to close a session on a BD-RE media.
+	This is not supported in the recent MMC Standard and most drives
+	return a SCSI error when attempting to close such a session.
+
+-	Cdrecord now auto-formats unformatted (maiden) BD-RE media.
+	Unformatted BD-RE media is rare but it exists. This function
+	completes the BluRay support in cdrecord.
+
+-	Cdrecord now prints progress messages when formatting DVD+RW media
+	and called with -v.
+
+-	Many small typo changes in the cdrecord man page
+
+-	The EXAMPLES section in the cdrecord man page has been improved by reordering
+	abd by creating sub-headlines. Thanks to Lucas Levrel.
+
+
+Cdda2wav (Maintained/enhanced by Jörg Schilling, originated by Heiko Eißfeldt heiko@hexco.de):
+
+-	Added a workaround for the _POSIX_PRIORITY_SCHEDULING behavior
+	on MacosX: defined but not supported
+	Thanks to: Emanuele Giaquinta <e.giaquinta@glauco.it>
+
+-	Bugfix: cdda2wav did previously chose to ignore the result of realloc(3)
+	This prevents core-dumps.
+
+-	Explicit fine grained privileges support for Solaris.
+	Cdda2wav now switches off all privs that are no longer needed.
+
+-	Write correct error info in case that BeOS/Zeta *_area() calls
+	fail.
+
+-	As Heiko did not work on cdda2wav since September 2004,
+	Heiko did hand over the SCCS history for cdda2wav in February 2006
+
+-	Autoconf test for <sys/cdio.h> added (FreeBSD)
+
+-	Added some missing FreeBSD related changes from Heiko done in 2004
+
+	IMPORTANT:	I need testers for FreeBSD and DragonFly BSD as
+			a result of the merge with the complex changes
+			from Heiko.
+
+-	Started to make cdda2wav Cstyle compliant.
+
+-	Avoid to shutdown the whole system when kill(getppid(), SKGINT)
+	would result in kill -INT 1 because the parent cdda2wav is
+	dead and the child is orphaned and cdda2wav has been called by root.
+
+-	__FreeBSD_version >= 600021 have devmajor == 0 for all devices.
+	Thanks to Marius Strobl <marius@alchemy.franken.de> for reporting.
+
+-	General #ifdef structure related to FreeBSD in mycdrom.h now
+	corrected, thanks to Marius Strobl.
+
+-	Try to fix some FreeBSD/DragonFly related problems that have been
+	introduced with a06 when Heiko's changes from 2004 have been integrated
+
+	IMPORTANT:	I need testers for FreeBSD and DragonFly BSD as
+			a result of the merge with the complex changes
+			from Heiko.
+
+-	Changed from GPL to CDDL with permission from Heiko
+
+-	Code now has been completely reindented to follow the "Cstyle"
+	rules. As this did result in touching more than 50% of the
+	code, and as some of the code is platform specific I cannot grant
+	that I did not introduce bugs. Please test, in special on
+	platforms other than Solaris.
+
+-	Some modifications needed because of the restructured makefiles.
+
+-	Replace nice(-20) by nice(-NZERO)
+
+-	Renamed Inquiry() by ScsiInquiry() for better VMS support
+
+-	Fixed an unsigned comparison with zero in resample.c
+
+-	Fixed a printf format string with short argument.
+
+-	Fixed a typo in scsi_cmds.c thanks to Steven M. Schweda for reporting.
+
+-	New Option ts= # similar to cdrecord's and readcd's options.
+	This allows to work around a Linux kernel bug that prevents
+	cdda2wav to be usable with USB drives. To work around this
+	Linux bug try cdda2wav ts=128k or less.
+
+-	If no dev= option has been specified or of dev= only contains a SCSI transport
+	specifyer but no address, cdda2wav now searches the SCSI address space and
+	if exactly one CD-ROM drive is found, this drive is used.
+
+	Note that this will not work on user unfriendly platforms that do not allow
+	SCSI address scanning or that do not allow to scan for SCSI drives in a single
+	address space (like Linux) this new feature does not work.
+
+-	Trying to support FreeBSD Kernel under non-FreeBSD (GNU) userland
+
+-	The messages for the auto-target function are now printed on stderr
+	to avoid problems with merged output from stdout.
+
+-	cdda2wav -scanbus now defaults to scan 1024 SCSI busses in case that the "numbus"
+	function is not yet available on a remote RSCSI server.
+
+-	Added some small changes to help compiling on VMS
+
+-	getnum -> libschily
+
+-	Using js_*printf() instead of *printf() via -DSCHILY_PRINT
+
+-	Use the new paranoia_init() interface
+
+-	Let cdda2wav print the -version output to stdout and in a similar form
+	as other cdrtools programs do.
+
+-	"make install" now also installs the READMEs and other documentation to
+	..../share/doc/cdda2wav/
+
+-	Added some casts to interface.c and ioctl.c in order to prevent warnings
+	from the Sun Studio 12 compiler.
+
+-	The man page has been restructured to correctly use bold and italic
+	with option descriptions.
+
+-	Workaround for new Solaris behavior for Console users if hald
+	is active. Give error message and abort instead of useless messages.
+
+-	cdda2wav now includes a copyright message and a year number 
+	with the -version output.
+
+-	Add a workaround for a definition in <sundev/srreg.h> on SunOS-4.x
+
+-	Fixed some minor problems with K&R compilers
+
+-	Fixed a +- 1 problem in realloc() for TOC handling.
+	Thanks to a report from Joshua Reuben Roys
+
+-	New option start-sector=sector allows to set an absolute sector number 
+	where to start audio extraction.
+
+	This option has been added as a first step to allow to write a
+	wrapper for cdda2wav to create a "GStreamer plugin". This helps
+	to:
+
+	-	avoid license problems in libcdio
+
+	-	allows to call a privileged programs like cdda2wav from a GUI
+		to grant full audio extraction quality that needs generic SCSI
+		commands.
+
+-	Cstyle indentation changes
+
+-	Man page now includes some forgotten options
+
+-	Man page now describes the paraopts= sub option list
+
+-	Man page now describes the statistic output from the paranoia code
+
+-	New option out-fd=descriptor allows to set redirect informational output
+	to a different file descriptor than stderr.
+
+-	New option audio-fd=descriptor allows to set redirect audio ("-") output
+	to a different file descriptor than stdout.
+
+	This option has been added as a further step to allow to write a
+	wrapper for cdda2wav to create a "GStreamer plugin". This helps
+	to:
+
+	-	avoid license problems in libcdio
+
+	-	allows to call a privileged programs like cdda2wav from a GUI
+		to grant full audio extraction quality that needs generic SCSI
+		commands.
+
+-	Explain that libparanoia is not a different Media access method but a filter
+	between the lower and the upper layers of cdda2wav.
+
+-	Fixed a typo in the man page according to OpenSolaris bug ID 6489402
+
+-	cdrecord/readcd/cdda2wav now support an enhanced /etc/default/cdrecord file
+	with an additional parameter to specify the max. transfer size for a device.
+
+-	New option -no-fork tells cdda2wav to run in unbuffered mode.
+
+-	New option -interactive 
+
+	The first test implementation supports the following interactive commands:
+
+	stop	stop reading
+
+		If you like to empty the internal buffers,
+		send "stop" read everything you get from the output pipe
+		repeat this until no further data is available.
+
+	cont	continue reading
+
+	read trasks <trackno>	Start reading from new trackno
+
+	read sectors <secno>	Start reading from new sector number
+
+	exit
+	quit	exit cdda2wav
+
+	This new option is a result from a collaboration with the GNOME
+	developers to make "sound-juicer" legal. Sound-juicer suffers from
+	license problems from libcdio which is usually loaded as a 
+	"gstreamer" plugin.
+
+	The option -interactive together with the related new libgstcdda2wavsrc
+	gives better quality of the extracted audio-data and does not cause license
+	violations.
+
+-	Interactive mode for corrected to allow new tests 
+	for replacing libcdio in GStreamer.
+
+-	child_pid variable moved into global var structure.
+
+-	The new -interactive option has now been stabilized for a first integration that
+	allows to replace libcdio for sound-juicer to come to an implementation without
+	license violations.
+
+-	The MD5 implementation (although currently unused) has been
+	changed from the RSA variant (that requires advertizing for RSA)
+	to a "public domain" implementation from Colin Plumb used
+	in OpenBSD.
+
+-	The new MD5 implementation has been made portable.
+
+-	Converted to use libcdrdeflt
+
+-	Converted to use libscgcmd
+
+-	The -M/-md5 option now finally works.
+	Cdda2wav now computes MD5-sums for the audio data and writes the result
+	into the *.inf files.
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Suppress some incorrect warnings from GCC by doing a double cast.
+
+-	Allow longer path names for *.inf files.
+
+-	SCSI *scgp is now a clean parameter to all SCSI transport functions.
+
+-	toc.c changed to support the new schily/hostname.h
+
+-	Cdda2wav is now by default installed suid root in case that the caller
+	of make install has root privileges
+
+-	Some unused variables and functions have been commented out
+
+-	struct tocdesc has been restructured to prevent struct tail padding on MC-680x0 systems.
+	Thanks to Yvan Doyeux for reporting this for the ATARI port.
+
+-	The drive 'HP ' 'CD-Writer+ 9600 ' '1.0a' does not like to read SCSI FULL TOC
+	with a too long transfer lenght. First retrieve the available data count.
+
+-	New options -debug -debug-scsi -kdebug -kdebug-scsi -kd to set SCSI low level
+	debugging in libscg
+
+-	The option -v not also supports "!" and "not" to invert the list
+	of "verbose" options (e.g. -v!indices for everything but indices).
+
+-	Avoid some GCC warnings specific to HP-UX
+
+-	Added a workaround for gmake < version 3.81.
+	Older gmake versions evaluate dependencies in the wrong order.
+
+-	Prevent a core dump from hitting ^C while cdda2wav tries to call
+	scg_open() to open the SCSI devices.
+
+-	A buggy address computation that caused problems with 64 bit binaries
+	has been fixed.
+
+-	Cdda2wav now correctly deals with longer CD-Text information.
+	Thanks to Yvan Doyeux for creating a related test CD...
+
+-	Cdda2wav now uses an autoconf test to decide whether BEOS clone areas 
+	can be used. This gives Haiku compatibility.
+
+-	Fixed a bug introduced with introducing support for MD5 Sums.
+	Cdda2wav now disables the MD5 sum output in case -no-infofile has been specified
+
+-	Autoconf tests for os2.h and os2me.h moved from cdda2wav to
+	global
+
+-	cdda2wav now supports new parameters for the -output-endianess option.
+	"host" or "machine" represent the actual byte order of the host CPU in the current OS.
+
+-	Fixed a man page bug that did hide some text from the visible result. Thanks
+	to Michael Prokop
+
+-	Man page corrected some problems from hyphen -> minus 
+
+-	Removed some Copyright hints to people who did never really enter code into mkisofs
+
+-	Removed a Copyright hint for RSA that is no longer valid.
+
+-	cdda2wav now gives better readable text with cdda2wav -help
+
+-	BeOS has a /boot/develop/headers/be/support/ByteOrder.h that also defines
+	_BYTEORDER_H and thus interferes with our cdda2wav/byteorder.h
+
+-	The -interactive option is now mentioned in the -help output and the man page.
+
+-	Call unit_ready() before retrieving the TOC data in order to work around a Solaris 
+	scsa2usb (SCSA to USB Driver) bug.
+
+-	Cdda2wav is now using the sha1 implementation from libmdigest
+
+-	Try to avoid an endless loop while parsing ISO-9660 directories
+	from rotten CD+ sessions.
+
+-	Better man page with repect to dev=
+
+-	The cdda2wav man page has been restructured.
+
+-	cdda2wav now correctly deals with the case when no sound device
+	was specified. Thanks to Robert Grimm <rob@news.robgri.de>
+	for reporting.
+
+-	Man page reworked
+
+-	Removed some (int) casts before the SNDCTL_DSP_* ioctl()s
+
+-	The default outout format is now .wav for all platforms.
+	Before, the default for Solaris was .au.
+
+-	man page restructured
+
+-	New arg "all" to -t option.
+
+	cdda2wav -B	extracts all audio tacks into separate files
+	cdda2wav -tall	extracts all audio tacks into a single files
+
+-	cdda2wav now by default writes a file "xxx.cdtext" with raw binary
+	CD-Text data in case cdda2wav was told to retrieve CD-Text.
+
+-	A new option -no-textfile allows to disable the creation of the file "audio.cdtext"
+	This version of cdda2wav creates a file "audio.cdtext" or similar (depending on
+	the set up file name base) in case that there is CD-Text on the medium and that
+	the drives supports to read the CD-Text data with MMC SCSI commands.
+
+-	Fixed a bug in cdda2wav that caused cdda2wav to set up the file name base too late.
+	This results in the files "audio.cdindex" and "audio.cddb" always to have this name
+	while the *.inf files use the name base from the cdda2wav arguments. Now all
+	files created by cdda2wav honor the file name base.
+
+-	Cdda2wav by default fills empty track specific CD-Text data with the Disk global
+	value (if present). A new option -no-textdefaults allows to disable this fallback
+	and leaves the related fields empty if they are empty on the master CD.
+
+-	Fixed a problem with cdda2wav -interactive (used by GNOME GSTREAMER CD-DAE plugin)
+	that could cause cdda2wav to dump core in case that there is a data
+	session past the last audio track.
+
+-	New (previously missing) CD-Text tags have been added to the *.inf files:
+
+	Albumsongwriter=
+	Songwriter=
+	Albumcomposer=
+	Composer=
+	Albumarranger=
+	Arranger=
+	Albummessage=
+	Message=
+	Albumclosed_info=
+	Closed_info=
+
+	Note that these tags do not appear in the CDDB database.
+
+-	Cdda2wav now permits to use "max" for the endtrack number. This
+	allows to specify e.g. -t2+max for a list of tracks from track #2
+	to the last audio track on the disk.
+
+-	New option -cuefile allows to tell cdda2wav to create a CDRWIN CUE
+	file. This currently only works together with wither -tall, or with
+	-t0+max or -t1+max.
+
+	Note that due to a misconception in the CDRWIN CUE file definition,
+	it is impossible to create 100% correct CD-audio copy by 100%
+	following the CDRWIN CUE file definition and having separate audio
+	files for each track at the same time. For this reason, it is currently
+	impossible to create CDRWIN CUE files while using cdda2wav -B.
+
+-	Cdda2wav now only writes a binary *.cdtext file in case that this
+	file would contain more data than a header that tells that there
+	is no further content.
+
+-	Cdda2wav no longer removes the Index0 entry from a longer Index list
+	if Index0 is -1.
+
+-	Cdda2wav now automatically scans for hidden audio tracks. This is a
+	complex task as there are drives that do not allow to read the
+	hidden data before track 1.
+
+-	New option -no-hidden-track allows to prevent cdda2wav from scanning
+	for a hidden audio track.
+
+-	Cdda2wav now writes the new tag "Track=" into the *.inf files that
+	is intended to carry the absolute track number from the original disk.
+
+-	A shortcut for paraopts=sectors-per-track-1,retries=200 was introduced.
+	The name of the shortcut is "proof", so just use "paraopts=proof" for
+	selecting the most stringent paranoia mode.
+
+-	Cdda2wav now automatically selects paranoia mode in case that the
+	paraopts= option was used.
+
+-	Cdda2wav now again works in suid root mode on Solaris 11. It seems that
+	the development versions from Solaris 11 did change the behavior with
+	fine grained privileges in a way that was incompatible with the way
+	cdda2wav did try to handle both suid root and fine grained privileges.
+
+-	Fixed a small bug that made cdda2wav with hidden track support not fully
+	compatible to earlier versions. In case that only one track is to be extracted,
+	this is again always track #1 regardless whether the CD has a hidden track.
+
+-	Fixed a bug with CDRWIN CUE file support. Cdda2wav used the tag "WAV" instead
+	of "WAVE" for the data type specifier in the FILE tag.
+
+-	cdwrite@lists.debian.org removed from man page
+	please use the official mailing lists for cdrecord that exist since 10 years:
+	http://developer.berlios.de/mail/?group_id=5
+
+-	Hidden Track support is now complete:
+
+-	Fixed a bug in the cdda2wav track loop control that caused cdda2wav
+	not to write the *.inf file for the last track in case of an audio CD
+	with a hidden track.
+
+-	Introduced an alias "isrc" and "ISRC" for -vtrackid
+
+-	Introduced an alias "mcn" and "MCN" for -vcatalog
+
+-	cdda2wav now emits a "PREGAP" keyword in the CUE file for a CD without
+	hidden track if it starts with a sector number > 0.
+
+-	New cdda2wav option -vaudio-tracks
+
+-	Make cdda2wav -q silent again (even with CDs with hidden track) to
+	make it compatible again with scripts.
+
+-	cdda2ogg and cdda2ogg.1 added to standard install
+	The script cdda2ogg was enhanced to work seamlessly.
+
+-	cdda2mp3 and cdda2mp3.1 added to standard install
+	The script cdda2mp3 was enhanced to work seamlessly.
+
+-	the scripts cdda2ogg and cdda2mp3 now allow to forward options to
+	cdda2wav.
+
+	In order to enable "paranoia mode", call:
+
+	cdda2ogg -paranoia
+
+	In order to enable the most proof "paranoia mode", call:
+
+	cdda2ogg -paraopts=proof
+
+-	The cdda2ogg man page was completely reworked
+
+-	The SYSvr4 pkg definition now includes cdda2ogg and cdda2mp3
+
+-	Added a workaround for a broken ASPI that hangs with
+	odd transfer counts.
+
+-	Makefile.dfl now detects whether /etc/default/cdrecord already exists
+
+Readcd:
+
+-	Allow readcd to work correctly in -scanbus mode
+	Thanks to Fabian Keil <fk@fabiankeil.de> for reporting.
+
+-	Explicit fine grained privileges support for Solaris.
+	readcd now switches off all privs that are no longer needed.
+
+-	Support for BeOS/Zeta shared memory was added
+
+-	-scanbus behavior corrected
+
+-	Changed from GPL to CDDL
+
+-	New experimental option -edc-corr.
+
+-	readcd meshpoints=# -factor now prints correct CD speed factors
+	as it now correctly computes sector size.
+
+-	If no dev= option has been specified or of dev= only contains a SCSI transport
+	specifyer but no address, readcd now searches the SCSI address space and
+	if exactly one CD-ROM drive is found, this drive is used.
+
+	Note that this will not work on user unfriendly platforms that do not allow
+	SCSI address scanning or that do not allow to scan for SCSI drives in a single
+	address space (like Linux) this new feature does not work.
+
+-	The messages for the auto-target function are now printed on stderr
+	to avoid problems with merged output from stdout.
+
+-	readcd -scanbus now defaults to scan 1024 SCSI busses in case that the "numbus"
+	function is not yet available on a remote RSCSI server.
+
+-	Using js_*printf() instead of *printf() via -DSCHILY_PRINT
+
+-	Speed values are now also displayed as multiple of Blu Ray 1x
+
+-	readcd -factor meshpoints=100 now also displays the speed as multiple 
+	of Blu Ray speed if the medium is a BD
+
+-	Added support to read C1/C2/CU errors from Plextor and NEC/Optiarc drives.
+	Thanks to Alexander Noé for the code.
+
+	If you run the test with:
+
+	readcd -cxscan
+
+	you will only see summary output. If you add one -v, you see the error
+	information for every second that does include errors. If you add -vv,
+	you see information for every second in the data range.
+
+	Note that the output format will change in future to support GNU plot.
+	I am looking for suggestions for a useful output format.
+
+-	Added support for pisum8 tests for DVDs on drives made by Plextor
+
+	If you run the test with:
+
+	readcd -pi8scan
+
+-	Added support for pif tests for DVDs on drives made by Plextor
+
+	If you run the test with:
+
+	readcd -pifscan
+
+	Fall all three new options, you will only see summary output. If you 
+	add one -v, you see the error information for every second (CD)
+	8 * 32 KB (pisum8) or 32 KB (pif) that does include errors. If you add
+	-vv, you see information for every interval in the data range.
+
+	Note that the output format may change in future,
+	I am looking for suggestions for a useful output format.
+
+-	New option -plot allows to modify the outputformat for the options
+	-cxscan, -pi8scan, -pifscan
+
+	To plot a list of pisum8 and pif errors, call:
+
+	readcd -pi8scan -plot > pisum8
+	readcd -pifscan -plot > pif
+	gnuplot
+	gnuplot> plot "pisum8" w l
+	gnuplot> replot "pif" w l
+
+	To plot a list of C1/C2/CU errors call:
+
+	readcd -cxscan > cx
+	awk '{ print $1 " " $2 }' < cx > c1errs
+	awk '{ print $1 " " $3 }' < cx > c2errs
+	awk '{ print $1 " " $4 }' < cx > cuerrs
+	gnuplot
+	gnuplot> plot "c1errs" w l
+	gnuplot> replot "c2errs" w l
+	gnuplot> replot "cuerrs" w l
+
+-	Man page now mentions -edc-corr
+
+-	cdrecord/readcd/cdda2wav now support an enhanced /etc/default/cdrecord file
+	with an additional parameter to specify the max. transfer size for a device.
+
+-	Converted to use libcdrdeflt
+
+-	Converted to use libscgcmd
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Readcd is now by default installed suid root in case that the caller
+	of make install has root privileges
+
+-	Try to exit(excode) instead of exit(0)  in case that siginificant
+	problems occurred.
+
+-	Prevent readcd from dumping core via raisecond("file_write_err")->abort()
+	in case that the target filesystem fills up.
+
+-	Added a workaround for gmake < version 3.81.
+	Older gmake versions evaluate dependencies in the wrong order.
+
+-	Man page corrected some problems from hyphen -> minus 
+
+-	"readcd" no longer dumps core if the C2Scan function is selected from the
+	interactive interface.
+
+-	Fixed a problem in the man page. Some nroff versions abort under
+	some conditions if "Heiko Eißfeldt" is correctly written with "ß".
+
+-	The readcd man page now mentions that the -clone mode is a bad idea to copy
+	audio CDs.
+
+-	readcd now only send the Plextor specific SCSI commands for the -cxscan
+	option in case that the drive identifies as Plextor.
+
+-	Better man page with repect to dev=
+
+-	Man page reworked
+
+-	man page restructured
+
+-	cdwrite@lists.debian.org removed from man page
+	please use the official mailing lists for cdrecord that exist since 10 years:
+	http://developer.berlios.de/mail/?group_id=5
+
+-	Added a workaround for a broken ASPI that hangs with
+	odd transfer counts.
+
+Scgcheck:
+
+-	Fixed DMA overrun test. BeOS/Zeta did pass the test but
+	scgcheck did complain before.
+
+-	Changed from GPL to CDDL
+
+-	Using js_*printf() instead of *printf() via -DSCHILY_PRINT
+
+-	Fixed a typo in the -version output
+
+-	Make clear that "scgcheck" has been written to verify the interface
+	for libscg. The name "scgcheck" cannot be used if the code has been
+	changed.
+
+-	New option -auto for fully automated tests
+
+-	Restructured for better results
+
+-	Converted to use libcdrdeflt
+
+-	Converted to use libscgcmd
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Avoid some GCC warnings
+
+-	Added a workaround for gmake < version 3.81.
+	Older gmake versions evaluate dependencies in the wrong order.
+
+-	Man page corrected some problems from hyphen -> minus 
+
+-	Better man page with repect to dev=
+
+-	Man page reworked
+
+-	cdwrite@lists.debian.org removed from man page
+	please use the official mailing lists for cdrecord that exist since 10 years:
+	http://developer.berlios.de/mail/?group_id=5
+
+Scgskeleton:
+
+-	Allow readcd to work correctly in -scanbus mode
+	Thanks to Fabian Keil <fk@fabiankeil.de> for reporting.
+
+-	Explicit fine grained privileges support for Solaris.
+	Scgskeleton now switches off all privs that are no longer needed.
+
+-	-scanbus behavior corrected
+
+-	Changed from GPL to CDDL
+
+-	Using js_*printf() instead of *printf() via -DSCHILY_PRINT
+
+-	New merged code from the "sformat" and "cdrecord" consolidation.
+
+-	Bumped to version 1.2
+
+-	Converted to use libcdrdeflt
+
+-	Converted to use libscgcmd
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Added a workaround for gmake < version 3.81.
+	Older gmake versions evaluate dependencies in the wrong order.
+
+-	Better support for large files (using ftello()/fseeko())
+
+-	A man page was created for scgskeleton.
+
+Btcflash:
+
+-	-scanbus behavior corrected
+
+-	man page added
+
+-	Changed from GPL to CDDL
+
+-	Using js_*printf() instead of *printf() via -DSCHILY_PRINT
+
+-	Make btcflash compile on K&R compilers (like on HP-UX)
+
+-	Workaround for new Solaris behavior for Console users if hald
+	is active. Give error message and abort instead of useless messages.
+
+-	Converted to use libcdrdeflt
+
+-	Converted to use libscgcmd
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Added a workaround for gmake < version 3.81.
+	Older gmake versions evaluate dependencies in the wrong order.
+
+-	Better support for large files (using ftello()/fseeko())
+
+-	Better man page with repect to dev=
+
+-	Man page reworked
+
+-	cdwrite@lists.debian.org removed from man page
+	please use the official mailing lists for cdrecord that exist since 10 years:
+	http://developer.berlios.de/mail/?group_id=5
+
+Mkisofs (Maintained/enhanced by Jörg Schilling since 1997, originated by Eric Youngdale):
+
+-	Better error messages with wrong Eltorito boot options
+
+-	Man page is now more explicit about requirements for DVD-video
+	directory trees.
+
+-	Better warning text for missing Rock Ridge in multi.c
+
+-	Bugs in README.sunx86boot corrected
+
+-	Multi Volume code for reading old image now gives different
+	error messages on read errors and short reads.
+
+-	Diagnostic programs isodump, isoinfo, ... no longer dump core 
+	when called with dev=<SCSI addr> parameters.
+
+-	mkisofs now detects if a file grows or shrinks while being
+	read by mkisofs.
+
+-	try to work around a GCC trigraph problem
+
+-	man pages for diag commands added
+
+-	Replaced GNU getopt_long() by getargs(). This has been done for 
+	several reasons:
+
+	-	Get rid of the annoying oddities/bugs of GNU getopt_long()
+
+	-	Use a unique option parser for all programs from cdrtools.
+
+	-	Find a way to better deal with historic badly planned
+		options. These problems are caused by the fact that
+		several options that take arguments start the same way.
+		With GNU getopt_long, there is no clean way to deal with
+		the resulting problems. getargs() allows to specify 
+		whether an option needs to have a space between the option
+		name and the argument or not.
+
+	-	Make the code easier to understand and to maintain.
+
+	-	Segregation of option parsing and option conflict checking.
+
+	-	Code size reduction.
+
+	Note that the intention is that all options still behave as documented
+	in the man page. If you have problems with scripts, first check whether
+	your usage is aligned with the the documentation or whether you did 
+	depend from a side effect from GNU getopt_long before sending a bug
+	report.
+
+-	Fixed an Eltorito Boot bug that happens together with
+	ISO-9660:1999
+
+-	Added some patches for better VMS portability from Steven M. Schweda
+	sms@antinode.org
+
+-	mkisofs now includes libfind and allows to use the find(1) command line
+	syntax to be used.
+
+	The new -find option acts as a option separator. To the right of the
+	-find option, find(1) syntax is used. No other mkisofs option may 
+	appear anymore.
+
+	Files are considered to be taken into the .ISO image in case that the
+	find(1) expression used on the command line yields TRUE.
+
+	In addition to the find(1) utility, libfind allows to modify the stat(2)
+	data for each file before it is included in the .ISO. The following
+	find(1) primaries are implemented for this feature:
+
+	-chmod	mode/onum	Modify the permissions for a file using the
+				chmod(1) syntax.
+				This primary always yields TRUE
+
+	-chown	uname/uid	Modify the owner for a file.
+				This primary always yields TRUE
+
+	-chgrp	gname/gid	Modify the group for a file.
+				This primary always yields TRUE
+
+	The command line: "mkisofs -o image.iso -R -J somedir"
+	may be written as: "mkisofs -o image.iso -R -J -find somedir"
+	to give the same results as before.
+
+	The command line:
+
+		mkisofs -o image.iso -R -J -find somedir -chmod a+r -chown root -chgrp 0
+
+	will ensure that all files will have at least read permission for all users
+	and set the user/group to 0.
+
+	The command line:
+
+		mkisofs -o image.iso -R -J -find somedir ( -type d -chown root ) -o -true
+
+	will change the owner of all directories to root, leaving other file
+	types untouched.
+
+-	removed fnmatch.c
+	mkisofs now uses the fnmatch() implementation from the OS if present
+	and the fallback version from libschily if fnmatch() is missing in the OS.
+
+-	man page extended to include a description for the -find
+	option.
+
+-	Added $(LIB_ACL) tp the mkisofs Makefile to allow the code from
+	libfind to link properly on all OS.
+
+-	Fixed several small problems with option parsing caused by the
+	change from GNU getopt_long to getvargs()
+	Thanks to Ä°smail DÃ¶nmez & scdbackup@gmx.net & Sebastian Trüg
+
+-	Changed '%' option format specifier to '%0' to reflect a small
+	enhancement in libschily.
+
+-	Better checks and better error messages for mkisofs -dvd-video
+	Mkisofs now correctly checks for the existence of a directory
+	"VIDEO_TS" in the root directory of the media.
+
+-	mkisofs -find now allows to use -graft-points
+
+-	mkisofs -find now allows to use -path-list
+
+-	Fixed a buggy error message (a result from the option parser
+	rewrite, thanks to Steven M. Schweda for reporting.
+
+-	Makefile now uses $(LIB_INTL) because of gettext() in libfind
+
+-	Fixed some typos, thanks to Vitezslav Samel <samel@mail.cz>
+
+-	Cstyle fixes
+
+-	Abort writing in case the function xfwrite() gets called with size 0.
+
+-	isodebug now finds debug descriptor even when the medium includes a
+	UDF Filesystem.
+
+-	Fixed a bug that could cause mkisofs to core-dump in multi session
+	mode. Thanks to Fukuhara Kazuhiko <00kazuhiko@bb.excite.co.jp>
+	for reporting the bug.
+
+-	Implement a new "correct inode number" algorithm for zero length files.
+
+-	Implement a fingerprint that allows to check whether a ISO-9660 file 
+	system image has been created by a new mkisofs and implements the
+	new "correct inode number" algorithm.
+
+-	Implementing the new Rock Ridge (rrip) protocol version 1.12 from 1994.
+	Mkisofs before implemented the old rrip version 1.10 from 1993.
+
+-	New option -rrip110 to disable the "new" 1994 Rock Ridge version.
+
+	This option may be needed if you know of a system that does not deal with
+	RRip V-1.12. Currently no such system is known.
+
+-	Using better (more portable) values for some special "inode" numbers.
+
+-	Implement correct hard link counts for directories and files with Rock Ridge
+
+-	Mkisofs cannot live without libschily anymore. For this reason, the
+	#ifdef USE_LIBSCHILY code has been removed.
+
+-	Better & faster hashing:
+
+	-	Better hash function in hash.c for more balanced hash tree
+
+	-	Number of hash root entries enhanced from 1024 to 16*1024
+
+	-	Avoid string compare in find_file_hash()
+
+-	Corrected check algorithm, for non-zero-length files that are assigned
+	to a zero extent
+
+-	Avoid uncached entries to clash with real inode numbers.
+
+-	Print correct number of written extents in multi session mode.
+
+-	All ISO-9660 numbers now correctly use the type UInt32_t 
+
+-	Convert type of all extent number related variables to UInt32_t
+
+-	Use inode caching by default on newer Cygwin releases that use
+	64 bit inode numbers.
+
+-	Deep directory abortion now happens from the right place, so
+	mkisofs will allow files but no sub-dirs inside the last
+	permitted directory nesting level.
+
+-	Mkisofs will now correctly ignore deep directory nesting
+	in no Rock Ridge mode with mkisofs -find
+
+-	mkisofs -find dir will now correctly deal with Rock Ridge deep
+	directory relocation.
+
+-	Some small compile problems on Cygwin (caused by a unsigned int
+	vs. UInt32_t clash) have been fixed. Thanks to Uwe Büdel for reporting.
+
+-	Symlinks now work in mkisofs -find mode too.
+
+-	".." directory in rr_moved now gets the correct mode
+
+-	graft dirs now work even if they cause Rock Ridge deep
+	directory relocation.
+
+-	Print "correct inode" info on stderr in order to avoid problems
+	from mkisofs | cdrecord in multi session mode. Thanks to a report
+	from Oliver Valencia.
+
+-	Hide /rr_moved by default.
+
+-	Do not count /rr_moved for the link count of /
+
+-	Trying to support FreeBSD Kernel under non-FreeBSD (GNU) userland
+
+-	Now correctly default to "mac-roman" coding with Apple HFS.
+
+-	Trying to better handle overlapping directory names.
+	Thanks to a hint from Thomas Flock
+
+-	New options -posix-H/-posix-L/-posix-P implement the -H/-L/-P options
+	defined by POSIX.1-2001 for descending commands like ls/chmod/chown/find/pax/...
+
+	Future versions of mkisofs will implement these options under their original
+	names -H/-L/-P. The current version of mkisofs cannot implement them as
+	previous versions did implement different functionality with -H and -P.
+
+-	mkisofs called without any parameters or called with an illegal option
+	now prints a short overview of the most important options in 80x24 chars.
+
+-	The option -stream-file-name has been implemented to allow
+	setting a user defined file name with -stream-media-size
+	When using -stream-file-name, mkisofs always uses "-iso-level 4"
+
+-	A bug has been fixed, that caused mkisofs to archive a wrong
+	time zone offset in case that it was used on a timezone east
+	to GMT and the local time was already in e.g. Y-2007 while
+	GMT was still at Y-2006.
+
+-	Several printf format changes from %d -> %u to reflect the changes
+	that recently made the blocknumber related variables unsigned.
+
+-	Some small typo corrections in the man page
+
+-	getnum()/getllnum() & gettnum()/getlltnum() have been moved to libschily
+
+-	Using js_*printf() instead of *printf() via -DSCHILY_PRINT
+
+-	added a better error message from Helios in volume.c
+
+-	mkisofs -J no longer implies -l as done incorrectly after
+	converting from GNU getopt_long() to getargs()
+
+-	"make install" now also installs the READMEs and other documentation to
+	..../share/doc/mkisofs/
+
+-	The change from libunls to libsiconv fixes a lot of bugs in the
+	character translation tables. libsiconv now uses the official tables
+	from Unicode.org. Any other "single char" -> UNICODE table from
+	Unicode.org may be taken unmodified and copied to /opt/schily/lib/libsiconv
+	to become usable by libsiconv.
+
+	If you use the same character set names as with old mkisofs, you get
+	the character translations from the tables in /opt/schily/lib/libsiconv,
+	if you use ICONV based locale names and iconv() is available on your
+	platform, then mkisofs used iconv() to translate the character encodings.
+
+	If you like to force to use the iconv() code, use something like:
+
+	mkisofs -input-charset iconv:8859-1
+
+	****** IMPORTANT ********
+
+	You need to install the table files from libsiconv to make mkisofs 
+	behave correctly.
+
+-	Thanks to the new libsiconv, mkisofs now supports to run in a UTF-8 locale.
+	As long as no automatic locale support is present, call
+
+	mkisofs -input-charset UTF-8
+
+-	Completed the Symlink implementation for UDF. The code was 20% ready
+	from Helios.de from the includes from the Helios variant of mkisofs.
+
+-	New option -no-udfsymlinks to turn off support for UDF symlinks.
+	The UDF standards requires any OS to implement symlink support, but
+	you never know...
+
+-	New option -UDF implements non-anonymous UDF support.
+	The relation between -UDF vs. -udf is the same as with -R vs. -r
+
+-	Integrated a larger code drop from Helios.de, thanks to Helmut Tschemernjak
+	from helios.de. We did integrate the following new features from Helios.de:
+
+	-	Support for UID/GID in the UDF file meta data
+
+	-	Support for permissions in the UDF file meta data
+
+	-	Support for Mac OS X "/..namedfork/rsrc"
+
+	-	Avoid Mac OS X syslog entries when "/rsrc" is used.
+
+	-	Support for UDF based Mac OS extensions (type/creator and 
+		resource forks).
+
+	-	New option -no-hfs allows to turn off creating a ISO9660/HFS hybrid
+		when UDF based Mac OS extensions are used.
+
+	-	Do not cache resorce fork files in the inode cache anymore.
+
+	We did not include the following code from the Helios.de code drop:
+
+	-	Helios UNICODE unification (always tries to create "complete"
+		characters if e.g. a 'ö' is written as 'o'+'"', this is translated
+		into a 'ö'.
+
+		The reason for not integrating this code is that it did violate
+		constraints from mkisofs. The translation was done based on UTF-8
+		regardless of the current locale of the user. It could only work
+		in a UTF-8 based locale but mkisofs did not yet support UTF-8 an
+		based locale. The correct implementation would be in most cases
+		based on UCS-2 characters as used by Joliet and UDF.
+
+	-	Helios code that did prevent mkisofs to abort on certain kind of 
+		read errors.
+
+		The reason for not integrating this code is that it did not work
+		as expected for all possible cases and that such code should use
+		a similar mechanism as "star"s error control feature.
+
+	-	The Helios option -nolimit-pathtables has not been included as the
+		implementation did cause the PATH table to contain random data in 
+		case that a PATH table overflow was allowed.
+
+	-	The Helios code drop did modify the libfind callback function to
+		implement Mac OS extensions. This is not correct as all the Mac OS
+		related stuff should already in the functions that are called
+		by the unmodified libfind callback.
+
+		Another problem with this code is that it would introduce an 
+		otherwise non-existent path length limitation with "mkisofs -find "
+
+	-	Helios did remove the artificial limit for UDF files > 2 GB.
+		This is currently not done for consistency between ISO-9660 and
+		UDF. Mkisofs will implement multi-extent files soon and then
+		the UDF file size limitation will be removed.
+
+-	Avoid a core dump with mkisofs -new-dir-mode XXXX caused by a bad
+	getargs() option format string. Thanks to Thomas Flock <tf-mkisofs-200611@online.de>
+	for reporting.
+
+-	Some small typo fixes in the man page
+
+-	Fix mkisofs to no longer dump core in case that a non-existing locale
+	is used. Thanks to Dirk Paehl for reporting.
+
+-	mkisofs now warns in case that /opt/schily/libsiconv/ is missing
+	or not populated.
+
+-	mkisofs no longer requires the Mac OS extension related locale
+	translations to be present in case that no Mac extensions are requested.
+
+-	diag/isoinfo also has been fixed to correctly use iconv.
+	Thanks to Kai Raphahn <kai.raphahn@laburec.de> for reporting.
+
+-	mkisofs now sets up -input-charset to the locale read from the
+	environment in case that no -input-charset has been specified.
+	To disable this automatic set up, use -input-charset "".
+
+-	more than 65535 parent directories. Note that this makes the filesystem
+	violating ISO9660 and the filesystem will not be usable on DOS.
+
+-	New option errctl=name or errctl=control-spec similar as in star.
+
+	This option allows e.g. to tell mkisofs not to abort if a file
+	did grow or shrink while mkisofs was reading it.
+
+	Currently only OPEN, READ, GROW, SHRINK are implemented more to come
+	later...
+
+-	mkisofs now includes a copyright message and a year number 
+	with the -version output.
+
+-	New option -no-limit-pathtables allows to create filesystems with
+	more than 65535 parent directories. Note that this makes the filesystem
+	violating ISO9660 and the filesystem will not be usable on DOS.
+
+-	Support for ISO-9660 multi extent files added, thanks to
+	Frederick Bruckman for sending some experimental sample code
+	that helped to find the right ideas for a final implementation.
+
+	This allows mkisofs to support files > 4 GB.
+
+	-	If you only use ISO-9660 (that may include Rock Ridge) or Joliet,
+		mkisofs is able to support single files up to a size of 8 TB.
+
+	-	If UDF is included, files > 190 GB will not appear in the UDF
+		file tree.
+
+	IMPORTANT: You need to specify mkisofs -iso-level 3 or
+			mkisofs -iso-level 4 to allow mkisofs to archive
+			files > 4 GB. Also note that if you specify -hfs,
+			mkisofs will not archive fiiles larger than 2 GB.
+
+	NOTE: 
+
+	Linux	currently does not allow to read the complete content of
+		multi-extent files and will return EIO at some offset.
+
+	Solaris	currently does not allow you to read multi-extent files at all.
+		It will return EINVAL and print a kernel message
+
+-	New options -hide-udf and -hide-udf-list allow to selectively exclude
+	files from the UDF tree. Note that mkisofs currently still binds the
+	UDF tree to the Joliet tree. All files that have been excluded from
+	the Joliet tree currently are also excluded from the UDF tree.
+
+-	Always hide the Trans table (from mkisofs -T) files from the UDF tree.
+
+-	Avoid warnings when compiling tree.c with some compilers.
+
+-	Do no longer warn about violating ISO-9660 if -iso-level 4 has been specified.
+
+-	Fixed a double free problem caused by multi-extent files
+
+-	New function e_strdup() checks return code from strdup() for all calls.
+
+-	Makefile changes from $(LIB_ACL) to $(LIB_ACL_TEST) as mkisofs only tests
+	for ACLs on files.
+
+-	Make apple_driver.c compile again. Thanks to a hint from Dieter Jurzitza.
+
+-	Avoid a core dump in the joliet code caused by the new Apple UDF extensions.
+
+-	Avoid a core dump in the Apple code caused by the new Apple UDF extensions.
+
+-	Write the warning:
+
+	Warning: cannot support large files with -hfs
+
+	only if -iso-level 3 or higher has been selected.
+
+-	isoinfo now allows to check the contents of the Joliet Volume descriptor
+	by calling:
+		isoinfo -dJ
+
+-	mkisofs bug fix for multi extent files, make UDF part from multi extent
+	files working again. Thanks to a hint from
+	Pav Lucistnik <pav@oook.cz> <pav@FreeBSD.org>
+
+-	Fixed a typo "unides" -> "inodes"
+
+-	Mkisofs now gives better warning for files > 4 GB in hope it
+	will no direct people to read the documentation.
+
+-	superfluous definition for memmove() on memmove()-less platforms removed
+
+-	Some code in main() has been reordered to allow mkisofs to recognize that
+	the installation at /opt/schily/lib/siconv is missing even if the --ethershare
+	option has ben used. Before, mkisofs did dump core in this case, now it
+	mentions to install libsiconv.
+
+-	mkisofs now prints more explicit error messages if the strings (like
+	e.g. the volume name) inside the PVD do not fit. This should help
+	people that 	use e.g. UTF-8 based locales and don't understand
+	that the strings may use up more octett space than the number of
+	characters in the string.
+
+-	mkisofs now supports to import multi-extent files (> 4 GB) from old
+	sessions.
+
+-	Fixed a bug in the graft -root code from Patrik Ohly thanks to
+	Ben Korvemaker <neb@drycold.ca> FreeBSD for reporting.
+
+-	Added a workaround for some Linux filesystems that do not deliver "." and ".." 
+	first with readdir()
+
+-	Fixed -x pattern not to exclude "." and ".." also
+
+-	Always "." and ".." first to the dir content.
+
+NOTE that all these problems have not been present  with "mkisofs .. -find <path-list>"
+
+-	Try to avoid inconsistencies with USE_ARGEFILES with multi-extent files
+
+-	Corrected the iso directory record size computation in stream-file mode
+
+-	Mkisofs no longer tries to write 8 TB of data in case that -stream-media-size
+	was too small.
+
+-	Mkisofs now correctly limits filenames with non-ISO-8859-1 characters
+	to 127 chars max.
+
+-	Mkisofs now correctly sets the permissions for "invented" unreal
+	directories in UDF instead of using mode 000.
+
+-	Mkisofs now correctly mixes multi-extent-File directory entries from
+	old sessions made by mkisofs. This is only related to multi-session
+	with files >= 4 GB.
+
+-	isoinfo now extracts files using 10 sectors at a time to speed up 
+	operation
+
+-	First step of changes intended to allow to remove Mac OS 9 "hfs" support
+	from mkisofs. Mac OS X supports UDF extensions and "hfs" does not support
+	large files. For this reason, "hfs" support is an anachronism.
+
+-	mkisofs -UDF now does not longer replace controlchars in case that -J has not
+	been specified at the same time. This is a workaround for the fact that
+	mkisofs still shares the file name management code between UDF and Joliet.
+
+-	Converted to use libcdrdeflt
+
+-	Converted to use libscgcmd
+
+-	Workaround for a GCC warning with make DEFAULTSDIR=DEFAULTS_ENG
+	warning: 'sccsid' defined but not used added
+
+-	Raising PATH_MAX to be at least 1024 for all platforms as Cygwin 
+	defines PATH_MAX to 260	which is too small for Cygwin.
+
+-	Implemented a better error message in case that the boot image
+	could not be found inside the target tree.
+
+-	A description for the -s/-sector option was added to the man page.
+	This option is used to allow to create conforming multi-session
+	images for e.g. the Kodak Photo CD or the Kodak Picture CD.
+
+-	A description forr the -XA and -xa option was added to the man page.
+
+-	Mkisofs now writes a better error message in case that it cannot
+	sort a directory because more than on directory content was merged
+	into the ISO image.
+
+-	isoinfo -d now prints the checksum for the Eltorito validation header
+
+-	Some casts have been added to increase the 64 bit compilation support
+
+-	mkisofs and the tools isodump, isovfy and isoinfo now completely
+	support the SUSP termination signature "ST".
+
+-	Do no longer flag the absence of a "RR" signature as an error in
+	isodump, isovfy and isoinfo as newer Rock Ridge standard versions removed RR.
+
+-	Fixed a minor problem with a debug print output and 64 bit compile mode.
+
+-	Avoid some GCC warnings
+
+-	Minor typo fix in the mkisofs man page
+
+-	Mkisofs now reports "Haiku" for the OS platform if on Haiku.
+
+-	The isoinfo man page now includes the -debug option
+
+-	Automated support for System ID
+
+	Haiku, Syllable, AMIGA-OS, ATARI-MiNT
+
+-	Fixed some Rock Ridge bugs that have been identified when investigating
+	in the OpenSolaris bug 6807009
+	http://defect.opensolaris.org/bz/show_bug.cgi?id=5385
+
+-	Man page description for -abstract -biblio -copyright is now better
+	to understand
+
+-	Better error messages in case that a specific charset translation is not
+	available.
+
+-	Now using HAVE_ICONV_CONST to avoid iconv() related compiler warnings
+
+-	libschily/checkerr.c (used by mkisofs) now correctly handles the "WARN" directive.
+
+-	Fixed a typo bug in the mkisofs man page that caused the two synopsis lines
+	to appear as one line when using GNU troff.
+
+-	isoinfo now prints "???" in case that an illegal month is in a ISO-9660
+	filesystem.
+
+-	Fixed a potential malloc problem in mkisofs
+
+-	Avoid signed chars ad parameter to toupper
+
+-	mkisofs man page reworked
+
+-	isoinfo man page reworked
+
+-	New file mkisofs/rock.h 
+
+-	isodump now prints more information about Rock Ridge attributes to
+	help debugging non-compliant Rock Ridge ISO images.
+
+-	isoinfo now correctly identifies ISO images made with the Mac OS X
+	program "hdiutil" by e.g. calling:
+
+	hdiutil makehybrid -iso -hfs -verbose -o xxx.iso some_dir
+
+	As filesystems that violate the Rock Ridge standard.
+
+	Check e.g. by "isoinfo -i xxx.iso -d"
+
+	Interpreting Rock Ridge on such images can be enforced by calling:
+
+	"isoinfo -i xxx.iso -lR -debug" 
+
+-	mkisofs now ignores the broken Rock Ridge attributes that have been
+	created by the Mac OS X program "hdiutil".
+
+-	Make "isovfy" CD-ROM-XA aware
+
+-	Make "isodump" CD-ROM-XA aware
+
+-	"isoinfo" now supports iconv() based locales for Joliet.
+
+-	Various Cstyle changes
+
+-	Fixed a bug with file descriptor handling in mkisofs/apple.c
+
+-	The man page for mkisofs was enhanced in order to better mention
+	that mkisofs always writes ISO-9660 and that other file systems are
+	thus always added as a hybrid file system.
+
+-	cdwrite@lists.debian.org removed from man page
+	please use the official mailing lists for cdrecord that exist since 10 years:
+	http://developer.berlios.de/mail/?group_id=5
+
+-	Do no longer archive the output file if it is part of the archives directory
+	tree.
+
+-	New option -data-change-warn allows to prevent mkisofs from aborting when
+	a file changes size.
+
+	-data-change-warn is implemented via errctl="WARN|GROW|SHRINK *"
+
+-	Print a hint to the option -data-change-warn if a shrunk/grown file is detected.
+
+-	Print a hint to the option -no-limit-pathtables in case that there are more
+	than 65535 parent directories in the target filesystem.
+
+-	Print hints on using -joliet-long or on avoiding -J in case that there are
+	file names that do not fit into 64 chars.
+
+-	Prevent mkisofs from aborting with "... -hide large-file". Thanks for
+	the bug report from Udo Büdel.
+
+
+	HELIOS TODO:
+
+	-	Add the HELIOS UNICODE mapping code. This needs to be done 
+		at UCS-2 level for Joliet and UDF (instead of UTF-8) and only
+		for Rock Ridge (in case of a UTF-8 based target locale) using
+		UTF-8 based translations.
+
+	-	Make the Apple extensions work again with "mkisofs -find"
+
+
+TODO:
+	-	Support correct inode numbers for UDF hardlinks
+
+	-	Support sockets, pipes, char/blk-dev specials with UDF
+
+	-	read Joliet filenames with multi-session if no TRANS.TBL
+		or RR is present. I am looking for a volunteer for this task!
+
+		Note that this can never be 100% correct as there is no relation
+		between the names on the master (UNIX) filesystem, the ISO-9660
+		names and the Joliet names. Only the Rock Ridge names are
+		untranslated with respect to the original files on the
+		master (UNIX) filesystem.
+
+	-	add libecc/edc for CDI and similar.
+
+
+CYGWIN NT-4.0 NOTES:
+
+To compile on Cygwin32, get Cygwin and install it.
+For more information read README.win32
+
+The files are located on:
+
+ftp://ftp.berlios.de/pub/cdrecord/ ...
+
+NOTE:	These tar archives are 100% POSIX compatible. GNU tar may get some
+	minor trouble. If you like a 100% POSIX compliant tar, get star from
+	ftp://ftp.berlios.de/pub/star/
+
+WARNING: Do not use 'winzip' to extract the tar file!
+	Winzip cannot extract symbolic links correctly.
+
+Joerg

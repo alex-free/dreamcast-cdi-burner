@@ -1,0 +1,139 @@
+		I M P O R T A N T
+
+On HP-UX-11.x the maximal data size (allocated data) of a 32 bit program is
+64 MB.
+
+One solution is to build a 64 bit binary, for those the default process memory
+limit is 1 GB.
+
+64bit binaries can be created with
+
+	cc +DA2.0w
+	cc +DD64
+
+if you have the HP C-ANSI-C compiler.
+
+To compile in 64 bit mode, first call ./.clean then call
+
+	make COPTX=+DD64 LDOPTX=+DD64 
+	make COPTX=+DD64 LDOPTX=+DD64  install
+
+
+If you have an older GNU gcc, you need a 64bit compiled gcc. Older GNU gcc versions
+are not capable of switching, so you need a separate compiler installation for either:
+
+l1:/u/usr/merijn 102 > file /usr/local/pa*/bin/gcc
+/usr/local/pa20_32/bin/gcc:     PA-RISC2.0 shared executable dynamically linked -not stripped
+/usr/local/pa20_64/bin/gcc:     ELF-64 executable object file - PA-RISC 2.0 (LP64)
+l1:/u/usr/merijn 103 >
+
+With a newer GCC, you may call ./.clean then call:
+
+	make COPTX=-mlp64 LDOPTX=-mlp64
+	make COPTX=-mlp64 LDOPTX=-mlp64  install
+
+
+The other way is to alter some kernel parameters which require a reboot.
+The default kernel parameter seem to look like:
+
+Kernel param.               Value
+maxdsiz                  67108864
+maxdsiz_64bit          1073741824
+maxfiles                      200
+maxfiles_lim                 2048
+maxssiz                   8388608
+maxssiz_64bit             8388608
+maxswapchunks                3250
+maxtsiz                  67108864
+maxtsiz_64bit          1073741824
+
+The important one is maxdsiz, 64 MB is the default and it is rather low.
+There is some information page at http://www.uwsg.iu.edu/hp/hpux-tune.html#maxdsiz 
+and they recommend to increase it to 1.9 GB. Sounds extreme.
+
+At http://forums.itrc.hp.com/cm/QuestionAnswer/1,,0x08afe7613948d5118fef0090279cd0f9,00.html 
+they recommend 500 MB.
+
+maxssiz shouldn't be a problem either since it has to do with swap and such as 
+storing arrays and recursion etc.
+
+If you like to know how to create 64 bit binaries on Solaris, please
+read README.compile. I hope this helps. If you found the right way for HP-UX,
+please send me a mail.
+
+
+
+The Schily makefile system usually should be able to find the best C-compiler
+on HP-UX automatically. If it does not work, here is a way force to use a different
+compiler.
+
+
+You may compile with the HP ANSI C-Compiler using:
+
+	make CCOM=cc
+
+To compile with the free K&R C-compiler call:
+
+	gmake CCOM=cc 'COPTS= ' 
+or
+	smake CCOM=cc 'COPTS= ' 
+/*--------------------------------------------------------------------------*/
+
+HP-UX SCSI hints:
+
+Note that there are no device nodes for userland SCSI on HP-UX,
+you have to call the included shell script MKNOD.hpux first.
+
+If you own a HP-9000-800 series machine, you need to install
+the file MKNOD.hpux-800 in the /etc init shell script directory 
+in order to call it after each boot.
+
+This script will create the files in /dev/scsi/... and /dev/rscsi/...
+The permissions will be set to read/write for root only.
+
+
+HP does not handle CD-ROMs as well as it should. On the HP have a look at
+the man pages for
+    pfs
+    pfsd
+    pfs_mount
+and anymore that they refer too.
+
+/*--------------------------------------------------------------------------*/
+
+From:
+H.Merijn Brand        Amsterdam Perl Mongers (http://amsterdam.pm.org/)
+
+As of Jun 2002, there are some patches available to HP-UX 11.00 and 11i that
+prevent the need for pfs, and these are highly recommended, since Rock-Ridge
+extensions are now supported from the kernel level.
+
+For 11.00:
+
+a5:/ 103 # swlist | grep -i rock
+  PHCO_26449   1.0  Add Rock Ridge extension to mount_cdfs(1M)
+  PHKL_26448   1.0  Y2k; Rock Ridge extension for ISO-9660
+  PHKL_26450   1.0  Rock Ridge extension for ISO-9660
+a5:/ 104 #
+
+PHKL_26448 is not recommended, but I never had any trouble with it. I still
+have to install PHKL_28060 over PHKL_26448
+
+  PHKL_28060   1.0  Y2k; Rock Ridge extension for ISO-9660
+
+For 11i:
+
+  PHKL_28025   1.0  Rock Ridge extension for ISO-9660 
+  PHKL_26269   1.0  Rock Ridge extension for ISO-9660 
+  PHCO_25841   1.0  Add Rock Ridge extension to mount_cdfs(1M) 
+
+I don't have 11i (yet), so I got this from HP-UX' patch database.
+
+The problem is that they did /not/ enable RR by default, but made it a mount
+option. D'uh! But you can add it in /etc/fstab, and never worry again :)
+
+a5:/ 104 # grep cd /etc/fstab
+/dev/cd0        /cdrom          cdfs    ro,rr,noauto    0 0
+a5:/ 105 #
+
+

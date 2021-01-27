@@ -1,0 +1,13 @@
+
+How to compile:
+
+-	Download (http://www.mingw.org) and install the following Mingw32 packages:
+
+		MinGW-3.1.0-1.exe
+		MSYS-1.0.10.exe
+
+-	Set PATH environment variable using command:
+
+		set path=c:\msys\1.0\bin;c:\mingw\bin;%path%
+
+-	enter 'make' command in top level directory of the unpacked project

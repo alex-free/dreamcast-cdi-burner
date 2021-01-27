@@ -1,0 +1,98 @@
+February 25, 2002
+
+MacOS 10.1 driver now in the tree in libscg/scsi-mac-iokit.c.
+
+It supports:
+	* Firewire, USB, and ATAPI MMC-3 compliant burners
+	* SCSI parallel bus attached burners (requires MacOS X.1.3)
+
+It does not support:
+	* Older non MMC-3 burners
+	* CD-ROM drives/DVD-ROM drives (i.e. non-burners)
+
+Note that this is a limitation of MacOS X and not of the driver.
+See the end of the document if you're curious why.
+
+If you just want to burn ISO images, you may want to consider using Apple's
+hdiutil program, but it is not clear how standard compliant this method is.
+
+Building
+--------
+
+Note if you installed MacOS X on a HFS+ volume, make install will fail if
+there is a file called INSTALL in the directory tree because this Filesystem
+is not POSIX compliant. POSIX requires to honor character case but HFS+
+ignores the character case. If you like to use "make install" rename 
+INSTALL to something else. (e.g. INSTALL.txt)
+
+
+Device Naming
+-------------
+
+You need to pass a device name on the command line to the cdrecord utility
+
+CD burners: (probably) IOCompactDiscServices
+DVD burners: (probably) IODVDServices
+
+# ./cdrecord dev=IOCompactDiscServices -toc
+
+or if you have multiple drives, you can append a number to differentiate
+
+# ./cdrecord dev=IOCompactDiscServices/2 -toc
+
+That should talk to the second CD-R on the system (NOT TESTED).
+
+Sharing nicely with the Finder
+------------------------------
+
+The MacOS 10.1 Finder will offer to burn any blank media you put into
+the burner.  However, you don't want to use the Finder, you want to
+use cdrecord! So, how do you get around this problem?
+
+When you insert the media, the Finder asks "Do you want to prepare this
+disc?". Click on the "Ignore" button.
+
+The Finder will then say "No volumes found. Click Continue to continue
+without ejecting".  Click on the "Continue" button.
+
+
+Common Errors
+-------------
+
+No matching device ... found:
+Make sure you typed the device names correctly. See above. Use ioreg
+-l to find if there is an IOCompactDiscServices or IODVDServices in
+the device tree.
+
+Unable to get exclusive access: 
+Another programs (usually the Finder) has exclusive access to the drive.
+See "Sharing Nicely with the Finder"
+
+Unable to get plugin interface: 
+The SCSI Architecture Family of drivers (supports Firewire, ATAPI, and
+USB) has a special module that allows user code like libscg to send
+SCSI commands to a device. This module is only attached, though, if
+the kernel device driver thinks the device is sufficiently interesting
+(e.g. the kernel thinks it's a burner).
+
+You can see if the module is loaded by looking for
+SCSITaskUserClientIniter in the output of ioreg -l.
+
+Why doesn't it support my SCSI device?
+--------------------------------------
+
+Apple's kernel drivers enforces the rule that application cannot send
+SCSI commands to devices for which they feel they have enough kernel
+support. This includes hard disks and CD/DVD ROMs. They make an exception
+for burners, though.
+
+There are two possible work-arounds, neither of which has been
+implemented.  One is to write a kernel driver that wraps the Apple
+kernel drivers and exposes a raw SCSI interface, overriding the Apple
+kernel drivers. The other is to write a SCSI device emulator at user
+mode that translates SCSI commands into the appropriate interface
+calls to IOKit.
+
+Bugs
+----
+Send bugs to: csapuntz@stanford.edu

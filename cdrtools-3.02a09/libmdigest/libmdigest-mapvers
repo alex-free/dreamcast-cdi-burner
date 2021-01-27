@@ -1,0 +1,66 @@
+# /* %Z%%M%        %I% %E% Copyright 2009-2010 J. Schilling */
+
+SCHILY_1.1 {
+global:
+	SHA3_224_Init;
+	SHA3_256_Init;
+	SHA3_384_Init;
+	SHA3_512_Init;
+	SHA3_Update;
+	SHA3_Final;
+} SCHILY_1.0;
+
+SCHILY_1.0 {
+global:
+	MD4Final;
+	MD4Init;
+	MD4Pad;
+	MD4Transform;
+	MD4Update;
+
+	MD5Final;
+	MD5Init;
+	MD5Pad;
+	MD5Transform;
+	MD5Update;
+
+#ifdef	__never__
+	MD5End;
+	MD5File;
+	MD5FileChunk;
+	MD5Data;
+#endif
+
+	RMD160Final;
+	RMD160Init;
+	RMD160Pad;
+	RMD160Transform;
+	RMD160Update;
+
+	SHA1Final;
+	SHA1Init;
+	SHA1Pad;
+	SHA1Transform;
+	SHA1Update;
+
+	SHA256Final;
+	SHA256Init;
+	SHA256Pad;
+	SHA256Transform;
+	SHA256Update;
+
+	SHA384Final;
+	SHA384Init;
+	SHA384Pad;
+	SHA384Transform;
+	SHA384Update;
+
+	SHA512Final;
+	SHA512Init;
+	SHA512Pad;
+	SHA512Transform;
+	SHA512Update;
+
+local:
+	*;
+};

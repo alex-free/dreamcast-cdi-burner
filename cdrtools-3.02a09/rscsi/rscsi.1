@@ -1,0 +1,692 @@
+. \" @(#)rscsi.1	1.5 09/11/15 Copyr 2000-2008 J. Schilling
+. \"  Manual Seite fuer rscsi
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.75n'U
+.if t .ds s \\(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH RSCSI 1 "Release 3.0" "J\*org Schilling" "Schily\'s USER COMMANDS"
+.SH NAME
+rscsi \- remote generic SCSI transport protocol server
+.SH SYNOPSIS
+.B /opt/schily/sbin/rscsi
+
+.SH DESCRIPTION
+.IX  "rscsi command"  ""  "\fLrscsi\fP \(em remote generic SCSI transport protocol server"
+.IX  "remote generic SCSI transport protocol server"  ""  "remote generic SCSI transport protocol server \(em \fLrscsi\fP"
+The
+.B rscsi
+command is a
+remote generic SCSI transport server program.
+.B rscsi
+is a program that is run locally on the machine with SCSI devices,
+it is used by remote programs like
+.BR cdrecord (1),
+.BR cdda2wav (1),
+.BR readcd (1),
+and
+.BR sformat (1)
+that like to access SCSI devices
+through an interprocess communication connection
+via
+.BR libscg .
+.B rscsi
+is normally started up with an
+.BR rexec (3)
+or
+.BR rcmd (3)
+call but it may also be connected via an internal pipe to an
+.BR ssh (1)
+session that was set up by the remote user.
+.LP
+The
+.B rscsi
+program accepts 
+.BR scg_open ,
+.BR scg_close ,
+.B scg_cmd
+and
+similar requests that are all related to the interface of 
+.BR libscg .
+.B rscsi
+performs the commands and then responds with a status indication.
+.LP
+The 
+.B rscsi 
+program is prepared to be installed as a 
+.B user shell
+in the passwd
+file to create remote SCSI specific logins and security checking.
+.LP
+All requests are send to the
+.B rscsi
+program in 
+.SM ASCII
+and thus are byte order and machine independent.
+.LP
+All responses are send back in
+.SM ASCII
+and in one of the following two forms.
+.LP
+All successful commands (except for the "S" command that sends SCSI commands) have responses of
+.IP
+.BI A number\en
+.LP
+where
+.I number
+is the
+.SM ASCII
+representation of a decimal number that usually is the return
+code of the corresponding system call or function.
+.sp
+All unsuccessful commands are responded to with
+.IP
+.BI E error-number \en error-message \en xerror-len\fB\en\fIxerror-txt
+.LP
+where
+.I error-number
+is one of the possible error
+numbers described in
+.BR intro (2),
+and
+.I error-message
+is the corresponding error string as retrieved by
+.BR strerror (3),
+.I xerror-len
+is the length of the additional error text 
+.I xerror-txt
+and may be 0. In case
+.I xerror-len
+is 0, no
+.I xerror-txt
+is send.
+Note that a failed SCSI command that returned SCSI sense data counts as
+a successful command and does not use the default error format.
+.LP
+.ne 15
+The 
+.B rscsi 
+protocol implements the
+following commands:
+.RS
+.br
+.ne 7
+.TP 12
+.BI V what \en
+Return the 
+.B version 
+for several instances of the software in the
+.B rscsi
+server.
+The parameter
+.B what
+may have the following values:
+.RS
+.TP
+.B 0
+Return
+.B SCG_VERSION
+from
+.B libscg
+on the
+.B rscsi
+server.
+This returns the version string for the low level SCSI transport adaptation layer.
+.TP
+.B 1
+Return
+.B SCG_AUTHOR
+from
+.B libscg
+on the
+.B rscsi
+server.
+This returns the author name for the low level SCSI transport adaptation layer.
+.TP
+.B 2
+Return
+.B SCG_SCCS_ID
+from
+.B libscg
+on the
+.B rscsi
+server.
+This returns the SCCS version string for the low level SCSI transport adaptation layer.
+.TP
+.B 20
+Return
+.B SCG_KVERSION
+from
+.B libscg
+on the
+.B rscsi
+server.
+This returns the version of kernel instance of the driver that is underneath the
+low level SCSI transport adaptation layer.
+.sp
+This call may not be supported for all operating systems.
+.PP
+.sp
+This command corresponds to the
+.BR scg_version (3)
+function from
+.BR libscg .
+.RE
+.br
+.ne 7
+.TP
+.BI O device \en
+Open the specified SCSI
+.IR device .
+.sp
+See the description of the
+.B dev=
+option in
+.BR cdrecord (1)
+for more information on possible values of the 
+.I device
+parameter.
+.sp
+If a device is already open, it is
+closed before a new open is performed.
+.sp
+This command corresponds to the
+.BR scg_open (3)
+function from
+.BR libscg .
+.sp
+The return value in case of success is 0.
+.br
+.ne 7
+.TP
+.BI C device \en
+Close the currently open device or file.  The argument
+.I device
+is ignored.
+.sp
+This command corresponds to the
+.BR scg_close (3)
+function from
+.BR libscg .
+.sp
+The return value is the return value from the
+.BR scg_close (3)
+function.
+.br
+.ne 7
+.TP
+.BI D size \en
+Set up the maximum DMA size for the currently open SCSI device.
+The
+.I size
+parameter is the desired DMA size in bytes.
+.sp
+This command corresponds to the
+.BR scg_bufsize (3)
+function from
+.BR libscg .
+.sp
+The returned value is the actual DMA size that could be set up.
+This value may be lower than the 
+.I size
+parameter.
+.br
+.ne 7
+.TP
+.BI M size \en
+Allocate a buffer suitable for SCSI DMA transfers.
+.sp
+This command corresponds to the
+.BR scg_getbuf (3)
+function from
+.BR libscg .
+.sp
+The returned value is the actual DMA size that could be set up.
+This value may be lower than the 
+.I size
+parameter.
+.br
+.ne 7
+.TP
+.B F\en
+Free a previously allocated buffer.
+.sp
+This command corresponds to the
+.BR scg_freebuf (3)
+function from
+.BR libscg .
+.sp
+The return value in case of success is 0.
+.br
+.ne 7
+.TP
+.B N\en
+Retrieve the maximum permitted value for the SCSI bus number.
+.sp
+This command corresponds to the
+.BR scg_numbus (3)
+function from
+.BR libscg .
+.sp
+The return value is the return value from the
+.BR scg_numbus (3)
+function.
+.br
+.ne 7
+.TP
+.BI B busno \en chan \en
+Checks whether there is a SCSI bus with a busnumber that is equal to
+.IR busno .
+The 
+.I chan
+parameter is currently ignored.
+.sp
+This command corresponds to the
+.BR scg_havebus (3)
+function from
+.BR libscg .
+.sp
+The return value is the return value from the
+.BR scg_havebus (3)
+function.
+.br
+.ne 7
+.TP
+.BI T busno \en chan \en target\fB\en\fIlun\fB\en
+Set the SCSI target address to
+.IR busno ", " target ", " lun .
+The parameter
+.I chan
+is currently ignored.
+.sp
+This command corresponds to the
+.BR scg_settarget (3)
+function from
+.BR libscg .
+.sp
+The return value is the return value from the
+.BR scg_havebus (3)
+function.
+.br
+.ne 7
+.TP
+.B I\en
+Retrieve the SCSI initiator ID for the current SCSI bus.
+.sp
+This command corresponds to the
+.BR scg_initiator_id (3)
+function from
+.BR libscg .
+.sp
+The return value is the return value from the
+.BR scg_initiator_id (3)
+function.
+.br
+.ne 7
+.TP
+.B A\en
+Check whether the current target is or may be an ATAPI device.
+.sp
+This command corresponds to the
+.BR scg_isatapi (3)
+function from
+.BR libscg .
+.sp
+The return value is the return value from the
+.BR scg_isatapi (3)
+function.
+.br
+.ne 7
+.TP
+.BI R what \en
+Perform a SCSI reset. The parameter
+.I what
+may have the following values:
+.RS
+.TP
+0
+Test whether a SCSI reset is supported as with the
+.B SCG_RESET_NOP
+parameter.
+.TP
+1
+Perform a SCSI target reset as with the
+.B SCG_RESET_TGT
+parameter.
+.TP
+2
+Perform a SCSI bus reset as with the
+.B SCG_RESET_BUS
+parameter.
+.PP
+.sp
+This command corresponds to the
+.BR scg_reset (3)
+function from
+.BR libscg .
+.sp
+The return value is the return value from the
+.BR scg_reset (3)
+function.
+.RE
+.br
+.ne 7
+.TP
+.BI S count \en flags \en\fIcdb_len\fB\en\fIsense_len\fB\en\fItimeout\fB\en
+Send a SCSI command to the currently selected target.
+This command takes the following parameters:
+.RS
+.TP
+.B count
+The DMA count for this command. If the command is a command that transfers
+data to the target, the related data is send directly after the SCSI command descriptor block.
+that is described above.
+.TP
+.B flags
+The flags that apply to this SCSI command:
+.RS
+.TP
+.B 1
+Tell the kernel that the SCSI command will transfer data from the target to the host.
+This corresponds to the flag value
+.BR SCG_RECV_DATA .
+.TP
+.B 2
+Tell the kernel to send the SCSI command with disconnect/reconnect enabled.
+This corresponds to the flag value
+.BR SCG_DISRE_ENA .
+This flag is not supported on all platforms.
+.TP
+.B 4
+Make the kernel silent on SCSI errors.
+This corresponds to the flag value
+.BR SCG_SILENT .
+This flag is not supported on all platforms.
+.TP
+.B 8
+Tell the kernel to retry the SCSI command in case of a retryable SCSI transport error.
+This corresponds to the flag value
+.BR SCG_CMD_RETRY .
+This flag is not supported on all platforms.
+.TP
+.B 16
+Tell the kernel to send the SCSI command with parity disabled.
+This corresponds to the flag value
+.BR SCG_NOPARITY .
+This flag is not supported on all platforms.
+.RE
+.TP
+.B cdb_len
+The SCSI command descriptor length for this command.
+The SCSI command descriptor has to be send with the correct length directly after the new line past the 
+.B timeout
+value. 
+.TP
+.B sense_len
+The amount of sense data that is expected in return of a failed SCSI command that
+produces SCSI sense data.
+.TP
+.B timeout
+The timeout for the SCSI command in seconds.
+Fractions of a second may be specified by sending a floating point number.
+.PP
+The reply for a SCSI command that could be send to the target is:
+.sp
+.BI A count \en error \en\fIerrno\fB\en\fIscb\fB\en\fIsense_count\fB\en
+.TP
+.B count
+The DMA count of any data returned from the target.
+If this count is nonzero, the data is send back directly after the reply block mentioned above.
+.TP
+.B error
+A SCSI error classification from one of the following values:
+.RS
+.sp
+.ne 3
+.TP
+.B 0
+No error occurred.
+This value corresponds to the value
+.B SCG_NO_ERROR .
+.sp
+.ne 3
+.TP
+.B 1
+A retryable error occurred while trying to transport the SCSI command to the target.
+This value corresponds to the value
+.B SCG_RETRYABLE .
+.sp
+.ne 3
+.TP
+.B 2
+A fatal error occurred while trying to transport the SCSI command to the target.
+This value corresponds to the value
+.B SCG_FATAL .
+.sp
+.ne 3
+.TP
+.B 3
+A SCSI timeout occurred.
+This value corresponds to the value
+.B SCG_TIMEOUT .
+.RE
+.sp
+.ne 3
+.TP
+.B errno
+Any possible 
+.B "UNIX errno
+value for the SCSI command.
+.sp
+.ne 3
+.TP
+.B scb
+The SCSI status byte
+.sp
+.ne 3
+.TP
+.B sense_count
+The sense count returned for the SCSI command.
+The SCSI sense data is send back directly after any possible
+SCSI DMA data received from the target.
+.sp
+This command corresponds to the
+.BR scg_cmd (3)
+function from
+.BR libscg .
+.sp
+The return value is the return value from the
+.BR scg_cmd (3)
+function.
+.RE
+.RE
+.LP
+Any other command causes
+.B rscsi
+to exit.
+.SH FILES
+.TP
+/etc/default/rscsi
+Default values can be set for the following options in /etc/default/rscsi.
+For example:
+.sp
+.BR DEBUG= /tmp/rscsi.debug
+.br
+.BR USER= rscsi
+.br
+.BR ACCESS= "rscsi	myhost.mydomain.org	1	-1	3	0"
+.sp
+All keywords must be on the beginning of a line.
+.RS
+.TP
+.B DEBUG
+If you like to get debug information, set this to a file name where 
+.B rscsi
+should put debug information.
+.TP
+.B USER
+The name of a user (local to the RSCSI server) that may use
+the services of the
+.B rscsi
+server.
+More than one
+.BI USER= name
+line is possible.
+A line
+.BR USER= *
+grants access to all users.
+.TP
+.B ACCESS
+This keyword is followed by six parameters separated by a TAB.
+The
+.B name 
+of a user (local to the RSCSI server host) that may use
+the services of the
+.B rscsi
+server followed by the 
+.B "name of a host
+from where operation is granted 
+followed by a 
+.B "SCSI device
+specification that is made of
+.B bus-number
+.BR channel " (ignored for now)
+.B target-id
+and
+.B lun
+that specify a SCSI device that may be accessed if this 
+.B ACCESS
+line matches.
+If one or more entries of the
+.B bus-number
+.B channel
+.B target-id
+.B lun
+specification is set to -1, this matches any possible value
+for the related part of the SCSI device specification.
+More than one
+.BI ACCESS= "name host SCSI-device"
+line is possible.
+.sp
+If standard input of 
+.B rscsi
+is not a socket from a remote host, 
+.B rscsi
+will compare the 
+.B "host entry 
+from 
+.B /etc/default/rscsi
+with the following strings:
+.RS
+.TP 10
+.B PIPE
+If 
+.B stdin
+is a 
+.SM UNIX 
+pipe.
+.sp
+If you like to allow remote connections that use the
+.B ssh
+protocol, you need to use the word
+.B PIPE
+instead of the real hostname in the matching
+.B ACCESS=
+line.
+.TP
+.B ILLEGAL_SOCKET
+If 
+.B getpeername()
+does not work for
+.BR stdin .
+.TP
+.B NOT_IP
+If 
+.B getpeername()
+works for
+.B stdin
+but is not connected to an internet socket.
+.RE
+.RE
+.SH "SEE ALSO"
+.BR cdrecord (1),
+.BR cdda2wav (1),
+.BR readcd (1),
+.BR sformat (1),
+.BR ssh (1),
+.BR intro (2),
+.BR open (2),
+.BR close (2),
+.BR read (2),
+.BR write (2),
+.BR ioctl (2),
+.BR getpeername(3)
+.BR rcmd (3),
+.BR rexec (3),
+.BR strerror (3)
+
+.SH DIAGNOSTICS
+All responses are send to the network connection.
+They use the form described above.
+.SH NOTES
+.LP
+The possibility to create a debug file by calling
+.BI rscsi " file
+has been disabled for security reasons.
+If you like to debug
+.B rscsi
+edit
+.B /etc/default/rscsi
+and insert a 
+.B DEBUG
+entry.
+.SH BUGS
+.LP
+None known.
+.SH HISTORY
+.LP
+The 
+.B rscsi
+command has been developed by J\*org Schilling in June 2000. 
+
+.SH AUTHOR
+.nf
+J\*org Schilling
+Seestr. 110
+D-13353 Berlin
+Germany
+.fi
+.PP
+Mail bugs and suggestions to:
+.PP
+.B
+joerg.schilling@fokus.fraunhofer.de
+or
+.B
+js@cs.tu-berlin.de
+or
+.B
+joerg@schily.isdn.cs.tu-berlin.de
+.br
+.ne 7
+.SH "INTERFACE STABILITY
+The interfaces provided by 
+.B rscsi
+are designed for long term stability.
+As
+.B rscsi
+depends on interfaces provided by the underlying operating system,
+the stability of the interfaces offered by
+.B rscsi
+depends on the interface stability of the OS interfaces. 
+Modified interfaces in the OS may enforce modified interfaces
+in 
+.BR rscsi .

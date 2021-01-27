@@ -1,0 +1,75 @@
+. \"  @(#)patmatch.3	1.2 00/11/12 Copyright 1985,1995 J. Schilling
+. \"  Manual Seite fuer patmatch
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.75n'U
+.if t .ds s \\(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH PATMATCH 3 "12. Nov 2000" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+patmatch() \- checks string for matches
+.SH SYNOPSIS
+.nf
+.B
+char *patmatch(pattern, aux, string, soff, slen, alt, state)
+.B	char *pattern;
+.B	int *aux;
+.B	char *string;
+.B	int soff;
+.B	int slen;
+.B	int alt;
+.B	int state[];
+.fi
+.SH DESCRIPTION
+.B patmatch()
+uses the pattern matching information
+.IR pattern
+and in addition
+.IR aux " and " alt
+(previously set up by a call to
+.BR patcompile (3))
+to check string for a match. The length of the string is
+.I slen
+and the starting index used for matching is
+.IR soff .
+The string can also be terminated by a null byte.
+.PP
+The
+.I state
+array is set up and used internally by
+.B patmatch
+and should have at least
+.BI "strlen(" pattern ") + 1"
+elements.
+.SH RETURNS
+Returns a NULL pointer if the
+.I string
+starting at the specified offset did not match the
+.IR pattern .
+.PP
+Any non-NULL return is a pointer to the first character of
+.I string
+after the part that matches.
+.SH "SEE ALSO
+.BR patcompile (3)
+for information on
+.I aux
+and
+.IR alt .
+.PP
+And
+.BR match (1)
+for a description ot the regular expressions.
+.SH NOTES
+The pattern matching functions are based on ones presented by
+Martin Richards in "A Compact Function for Regular Expression
+Pattern Matching", Software-Practice and Experience vol 9,
+527-534 (1979).

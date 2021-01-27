@@ -1,0 +1,114 @@
+. \" Manual Seite fuer resolvepath
+. \" @(#)resolvepath.3	1.1 15/04/27 Copyright 2015 J. Schilling
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH RESOLVEPATH 3 "%e%" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+resolvepath(), resolvenpath(), resolvefpath() \- resolve all symbolic links of a path name
+.SH SYNOPSIS
+.nf
+#include <schily/schily.h>
+.sp
+.B int
+.B resolvepath(path, buf, bufsiz)
+.B "        const char    *path;
+.B "              char    *buf;
+.B "              size_t  bufsiz;
+.sp
+.B int
+.B resolvenpath(path, buf, bufsiz)
+.B "        const char    *path;
+.B "              char    *buf;
+.B "              size_t  bufsiz;
+.sp
+.B int
+.B resolvefpath(path, buf, bufsiz, flags)
+.B "        const char    *path;
+.B "              char    *buf;
+.B "              size_t  bufsiz;
+.B "              int     flags;
+.fi
+.SH DESCRIPTION
+.LP
+.BR resolvepath ()
+takes a relative path name and resolves all smbolic links in the path name.
+The result is a path name that is free of symbolic links.
+.I path
+is relative path name that is used as the input.
+.I buf
+is the buffer used for the result of the conversion.
+.I bufsiz
+is the size of the result buffer.
+.LP
+All ``.'' components are eliminated and every non-leading
+``..'' component is eliminated together with its preceding
+directory component. If leading ``..'' components reach to
+the root directory, they are replaced by ``/''.
+.LP
+.BR resolvenpath ()
+behaves like
+.BR resolvepath ()
+exept that the file does not need to exist.
+.LP
+.BR resolvefpath ()
+takes an additional
+.I flags
+parameter from the set of flags from the following set:
+.TP 20
+.B RSPF_EXIST
+All path components must exist.
+.TP
+.B RSPF_NOFOLLOW_LAST
+Don't follow symbolic links in the last path component.
+
+.SH RETURN VALUE
+.LP
+Upon successful completion,
+.BR resolvepath (),
+.BR resolvenpath ()
+and
+.BR resolvefpath ()
+return the number of bytes placed in the buffer
+Otherwise, -1 is returned and errno is set to indicate the error.
+In case of an error, the contents of result buffer is left
+in an intermediate state.
+.SH ERRORS
+.LP
+.TP 10
+.B ERANGE
+The path does not fit into the suplied buffer.
+.TP
+.B EFAULT
+A null pointer was suplied as pathname.
+.TP
+.B EINVAL
+An empty relative path was supplied.
+.TP
+other
+Any other value that may be a result of an underlying filesystem
+operation.
+.SH USAGE
+Applications should not assume that the returned contents of
+the buffer are null-terminated. This is because the function
+.BR resolvepath (3)
+may be the Solaris version of the rogram is compiled on Solaris.
+.SH EXAMPLES
+.LP
+.SH "SEE ALSO"
+.LP
+.BR resolvepath (3),
+.BR resolvenpath (3),
+.BR resolvefpath (3)
+.SH NOTES
+none

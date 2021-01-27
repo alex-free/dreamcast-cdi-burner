@@ -1,0 +1,30 @@
+CSWcdrtools: bad-rpath-entry $ORIGIN/../lib opt/csw/bin/cdda2wav
+CSWcdrtools: bad-rpath-entry $ORIGIN/../lib opt/csw/bin/cdrecord
+CSWcdrtools: bad-rpath-entry $ORIGIN/../lib opt/csw/bin/devdump
+CSWcdrtools: bad-rpath-entry $ORIGIN/../lib opt/csw/bin/isodebug
+CSWcdrtools: bad-rpath-entry $ORIGIN/../lib opt/csw/bin/isodump
+CSWcdrtools: bad-rpath-entry $ORIGIN/../lib opt/csw/bin/isoinfo
+CSWcdrtools: bad-rpath-entry $ORIGIN/../lib opt/csw/bin/isovfy
+CSWcdrtools: bad-rpath-entry $ORIGIN/../lib opt/csw/bin/mkisofs
+CSWcdrtools: bad-rpath-entry $ORIGIN/../lib opt/csw/bin/readcd
+CSWcdrtools: bad-rpath-entry $ORIGIN/../lib opt/csw/bin/scgcheck
+CSWcdrtools: bad-rpath-entry $ORIGIN/../lib opt/csw/bin/scgskeleton
+CSWcdrtools: bad-rpath-entry $ORIGIN/../lib opt/csw/sbin/rscsi
+CSWcdrtools: disallowed-path opt/csw/bin
+CSWcdrtools: disallowed-path opt/csw/sbin
+CSWcdrtools: disallowed-path opt/csw/share
+CSWcdrtools: disallowed-path opt/csw/share/doc
+CSWcdrtools: disallowed-path opt/csw/share/man
+CSWcdrtools: file-with-bad-content /export/home reloc/share/doc/cdrecord/README.rscsi
+CSWcdrtools: file-with-bad-content /export/home reloc/share/doc/rscsi/default-rscsi.sample
+CSWcdrtools: file-with-bad-content /usr/local reloc/share/doc/cdda2wav/README
+CSWcdrtools: file-with-bad-content /usr/local reloc/share/man/man1/readcd.1
+CSWcdrtools: pkginfo-opencsw-repository-missing
+CSWcdrtools: pkgmap-question-mark-perms-in-opt-csw /opt/csw/bin
+CSWcdrtools: pkgmap-question-mark-perms-in-opt-csw /opt/csw/sbin
+CSWcdrtools: pkgmap-question-mark-perms-in-opt-csw /opt/csw/share
+CSWcdrtools: pkgmap-question-mark-perms-in-opt-csw /opt/csw/share/doc
+CSWcdrtools: pkgmap-question-mark-perms-in-opt-csw /opt/csw/share/man
+CSWcdrtools: pkgmap-question-mark-perms-in-opt-csw /opt/csw/share/man/man1
+CSWcdrtools: pkgmap-question-mark-perms-in-opt-csw /opt/csw/share/man/man4
+CSWcdrtools: pkgmap-question-mark-perms-in-opt-csw /opt/csw/share/man/man8

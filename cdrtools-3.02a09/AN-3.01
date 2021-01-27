@@ -1,0 +1,2173 @@
+***************** Important news ****************************
+
+For the 'Slottable Source Plugin Module' SSPM Features read README.SSPM
+
+***************** Please Test *********************************
+
+NEW features of cdrtools-3.01:
+
+This is the first localization step for cdrtools. All programs now (hopefully)
+call gettext() for all strings that need localization.
+
+-	The next step will include dgettext() calls for the libraries.
+
+-	The following step will include the extracted strings
+
+-	The last step will include German translations and install support
+	for the resulting binary message object files.
+
+----------> Please test and report compilation problems! <---------
+
+***** NOTE: As mentioned since 2004, frontends to cdrtools should *****
+*****		call all programs from cdrtools in the "C" locale *****
+*****		by e.g. calling: LC_ALL=C cdrecord ....		  *****
+*****		unless these frontends support localized strings  *****
+*****		used by the cdrtools with NLS support.		  *****
+
+This version compiles on Win-DOS using the Microsoft compiler cl.exe but
+warning: due to missing POSIX compliance with basic features (e.g. stat()
+does not return inode numbers), there are many problems with the resulting
+code and thus it is recommended to better use a POSIX layer on top of 
+WIN-DOS.
+
+		*** WARNING        ***
+		*** Need new smake ***
+
+	*** Due to the fact that schily-2014-04-03 introduced to use new macro
+	*** expansions and a related bug fix in smake, you need a new smake
+	*** to compile this source. To ensure this, get a recent "schily"
+	*** tarball from http://sourceforge.net/projects/schilytools/files/
+	*** and call:
+
+	cd ./psmake
+	./MAKE-all
+	cd ..
+	psmake/smake
+	psmake/smake install
+
+	The new smake version mentioned above is smake-1.2.4.
+	Note that smake-1.2.5 exists and is preferrable.
+
+	Now you have a new smake that is able to compile this source.
+
+	Note that the major makefile restructuring introduced in
+	schily-2014-04-03 is now more than one month ago and thus seems
+	to work without problems.
+
+	WARNING: the new version of the isoinfo program makes use of the 
+		*at() series of functions that have been introduced by Sun
+		in August 2001 and added to POSIX.1-2008. For older platforms,
+		libschily now includes emulations for these functions but
+		these emulations have not yet been tested thoroughly.
+		Please report problems!
+
+
+All:
+
+-	The macros XARCH_GEN & XARCH_OPT are now in RULES/cc-sunpro*.rul
+
+-	The include file include/schily/ccomdefs.h now allows to disable
+	the printf() format checks for GCC with -DNO_PRINTFLIKE
+	This is needed in order to allow star to compile in the Solaris ON
+	consolidation as GCC id too dumb for the printf() extensions.
+
+-	All include files (even those created by autoconf) are now protected
+	against multiple inclusion.
+
+-	New autoconf test for pathconf() and fpathconf()
+
+-	New autoconf test for /dev/stdin, /dev/stdout, /dev/stderr,
+	/dev/fd/0, /dev/fd/1, /dev/fd2
+
+-	New autoconf tests for: qecvt() qfcvt() qgcvt()
+	_ldecvt() _ldfcvt() _ldgcvt() _ldecvt_r() _ldfcvt_r() _ldgcvt_r()
+	qeconvert() qfconvert() qgconvert()
+	needed for long double support.
+
+-	New autoconf test for _qecvt() _qfcvt() _qgcvt()
+	and _qecvt_r() _qfcvt_r() _qgcvt_r() on AIX
+
+-	All linker map files have been modified to allow platform
+	dependent #ifdef's
+
+-	include/schily/wchar.h now includes a workaround for platforms
+	that do not have wcwidth().
+
+-	Make NLS the default (i.e. gettext() is called in case that schily/nlsdefs.h
+	was included)
+
+-	include/schily/nlsdefs.h now includes macros _(s) and __(s) to support
+	gettext() and xgettext(1)
+
+-	The makefile system now by default disables smake Simple Suffix Rules
+	and the POSIX Suffix Rules in order to speed up inference rule search.
+
+-	A new rule RULES/profiled.lnk allows to call:
+
+	smake COPTX=-pg LDOPTX=-pg LINKMODE=profiled
+
+	to create binaries that use gprof.
+
+-	The Makefile System is now able to switch gmake-3.82 into a more POSIX 
+	compliant mode to tell the shell to report problems back to gmake.
+
+-	New autoconf tests on whether printf supoorts %lld and %jd
+
+-	Fixed the vc9-setup files to make VC9 work.
+
+-	Newer Cygwin "tail" versions do no longer support UNIX syntax.
+	change tail +2 to tail -n +2 in RULES/cc-mcs.rul to allow to use
+	the Microsoft compiler again
+
+-	A new environment variable MKLINKS_COPY allows to tell all
+	MKLINKS scripts to generate file copies rather than symlinks.
+	Call:
+		MKLINKS_COPY=true
+		export MKLINKS_COPY
+	to enable this feature
+
+-	Run an additional test -h command in MKLINKS to verify whether mingw
+	supports symlinks
+
+-	MKLINKS now creates copies instead of symlinks when we use MSC
+	as MSC does not support to read symlink files
+
+-	Fixed a typo in include/schily/libport.h (group functions have been
+	defined to return struct passwd* instead of struct group*
+
+-	Fixed wrong bracketing for C++ in include/schily/stdlib.h
+
+-	Fixed wrong bracketing for C++ in include/schily/utypes.h
+
+-	Added a workaround for MSC to include/schily/utypes.h
+	MSC believes that a 32 bit int and a 32 bit long are incompatible
+	and cannot even be casted, so we need to make uint32_t a n unsigned long
+
+-	Let include/schily/archdefs.h define the standard processor #defines
+	when compiling with MSC.
+
+-	New include file include/schily/windows.h works around the oddities
+	from the MSC include file windows.h
+
+-	include/schily/stdio.h now defines popen()/pclose() to _popen()/_pclose()
+	if on WIN-DOS
+
+-	include/schily/limits.h now defines PIPE_BUF
+
+-	include/schily/utsname.h now defines struct utsname for our MSC uname()
+	emulation.
+
+-	The setup for the PATHs needed by Visual Studio 9 has been
+	corrected.
+
+-	autoconf has been modified to avoid optimizing away code that 
+	is intended for testing. This help to work against a problem
+	with detecting mbrtowc() on MinGW
+
+-	autoconf now tests for mbtowc() and wctomb()
+
+-	RULES/i*86-mingw32_nt-gcc.rul now link against -lmingw32 instead
+	of -lmgw32.
+
+-	include/schily/stat.h now defines S_IREAD/S_IWRITE/S_IEXEC
+	These macros are available on typical UNIX systems but not
+	on Android. The definition comes from UNIX V7 and is not in
+	POSIX. Needed by SCCS and the Bourne Shell
+
+-	include/schily/wait.h now defines WIFCONTINUED() if needed
+
+-	include/schily/wchar.h now defines mbtowc() to mbrtowc() if
+	needed (e.g. on Android)
+
+-	include/schily/ccomdefs.h now correctly knows about the GCC
+	release that introduced __attribute__ (used).
+
+-	Android is not POSIX (by not defining various functions as functions 
+	in libc as required by POSIX) because it tries to define many 
+	functions that are part of the standard as inline macros in
+	include files only. This breaks autoconf, so we needed to rewrite
+	some tests (e.g for getpagesize, tcgetpgrp, tcsetpgrp)
+
+-	The Schily autoconf system has been enhanced to support cross
+	compilation. Schily autoconf is based on GNU autoconf and
+	GNU autoconf does not support cross compilation because it needs
+	to run scripts on the target system for some of the tests.
+
+	The "configure" script that is delivered with the Schily makefile
+	system runs 718 tests and 68 of them need to be run on the target
+	system.
+
+	The Schily autoconf system now supports a method to run these 68
+	tests natively on a target system. You either need a machine with
+	remote login features or you need an emulator with a method to
+	copy files into the emulated system and to run binaries on the
+	emulated system as e.g. the Android emulator.
+
+	We currently deliver three scripts for "remote" execution of
+	programs on the target system:
+
+	runrmt_ssh		runs the commands remove via ssh
+	runrmt_rsh		runs the commands remove via rsh
+	runrmt_android		runs the commands remove via the debug bridge
+
+	If you need to remotely run programs on a system that is not
+	supported by one of there three scripts, you need to modify one
+	of them to match your needs.
+
+	To enable Cross Compilation use the following environment variables:
+
+	CONFIG_RMTCALL=		Set up to point to a script that does
+				the remote execution, e.g.:
+
+				CONFIG_RMTCALL=`pwd`/conf/runrmt_ssh
+
+	CONFIG_RMTHOST=		Set up to point to your remote host, e.g.:
+
+				CONFIG_RMTHOST=hostname 
+				or
+				CONFIG_RMTHOST=user@hostname
+
+				use a dummy if you like to use something
+				like to the Android emulator.
+
+	CONFIG_RMTDEBUG=	Set to something non-null in order to 
+				let the remote execution script mark
+				remote commands. This will result in
+				configure messages like:
+
+				checking bits in minor device number... REMOTE 8
+
+	Note that smake includes automake features that automatically
+	retrieve system ID information. For this reason, you need to overwrite 
+	related macros from the command line if you like to do a
+	cross compilation.
+
+	Related make macros:
+
+	K_ARCH=			# (sun4v) Kernel ARCH filled from uname -m / arch -k
+	M_ARCH=			# (sun4)  Machine filled from arch
+	P_ARCH=			# (sparc) CPU ARCH filled from uname -p / mach
+	OSNAME=			# sunos, linux, ....
+	OSREL=			# 5.11
+	OSVERSION=		# snv_130
+	CCOM=			# generic compiler name (e.g. "gcc")
+	CC_COM=			# compiler to call (name + basic args)
+
+	ARCH=			overwrites M_ARCH and P_ARCH
+
+	It is usually sufficient to set ARCH and OSNAME.
+
+	In order to use a cross compiler environment instead of a native compiler,
+	set the make macro CC_COM to something different than "cc".
+
+	If you are on Linux and like to compile for Android, do the following:
+
+	1) 	set up CC acording to the instructions from the cross compiler
+		tool chain
+
+	2)	set environment variables CONFIG_RMTCALL / CONFIG_RMTHOST, e.g.:
+		setenv CONFIG_RMTCALL `pwd`/conf/runrmt_android
+		setenv CONFIG_RMTHOST NONE
+
+	3)	call smake:
+
+		smake ARCH=armv5 OSNAME=linux CCOM=gcc "CC_COM=$CC"
+	
+
+-	Several programs no longer test for HAVE_DEV_* but for HAVE__DEV_*
+	as we did switch from hand written tests for /dev/tty, /dev/null 
+	and similar to  AC_CHECK_FILES(/dev/tty /dev/null /dev/zero)
+
+-	The Makefile system now links dynamic libraries on Mac OS X against
+	libgcc_s.1 instead of libgcc.
+
+
+-	The file COPYING has been reworded to be more obvious with
+	explaining work limits.
+
+-	A workaround for a bug in llvm-gcc-4.2 has been introduced in
+	inc/avoffset.c. The llvm-gcc-4.2 bug caused an endless loop at an
+	unexpected place.
+
+-	New target "htmlxn" to only rebuild html versions of man pages
+	only in case there was a change
+
+-	The CSW packaging definitions in the schily makefilesystem was 
+	enhanced to permit referencing files in the package definition directory
+
+-	include/schily/sigset.h added new macros: blocked_sigs(),
+	block_sigs()
+
+-	include/schily/fcntl.h now includes O_SEARCH for POSIX.1-2008 compliance.
+
+-	Schily autoconf now tests for the size of mode_t, uid_t, gid_t, pid_t,
+	dev_t, major_t, minor_t
+
+-	Schily autoconf now defines a promoted type for mode_t that can be
+	used together with varargs. This is needed as mode_t is smaller than
+	int on some systems.
+
+-	New autoconf tests for getdelim() and strncasecmp()
+
+-	Added a workaround for a auto-dependency creation bug in the HP-UX
+	c-compiler that resulted in wrong dependency files for all files
+	in libshcily/stdio/ and for these files prevented an automated
+	recompilation in case that an include file was changed.
+
+-	Added links for:
+
+	amd64-freebsd-cc.rul
+	amd64-freebsd-gcc.rul
+
+	amd64-openbsd-cc.rul
+	amd64-openbsd-gcc.rul
+
+	x86_64-darwin-cc.rul
+	x86_64-darwin-gcc.rul
+	x86_64-darwin-cc64.rul
+	x86_64-darwin-gcc64.rul
+	x86_64-darwin-cc32.rul
+	x86_64-darwin-gcc32.rul
+
+-	RULES/rules.loc now makes $(PTARGET) depend on $(ARCHDIR) to 
+	support make -j 2
+
+-	New include files include/schily/inttypes.h and include/schily/stdint.h
+
+-	The script conf/makeinc is no longer confused by OpenBSD
+	that has man.7 and mandoc.7 and both match on man*
+
+
+
+-	conf/runrmt_android has been enhanced to better deal with the
+	"runrmt -r file-to-test" calling variant.
+
+-	configure now ignores a stramge directory that is created on Mac OS X
+	when compiling with cc -g and that is in conflict with other rules.
+
+-	Introduce a dependency for man page subdiretories to allow syncing 
+	parallel make calls.
+
+-	Try to support Debian with FreeBSD kernel
+
+-	Better support for Win32 sockets when using cl.exe
+
+-	Avoid problems with the non-standard prototypes for link() unlink()
+	read() and write() from cl.exe
+
+-	Support for Pyro (a Syllable clone) was added.
+	Thanks to Flemming H. Sørensen
+
+-	Add support for semi-static (preconfigured) include files for Android:
+	include/schily/armv5tejl-linux-gcc/xconfig.h
+
+-	New include files include/schily/err_*.h are used to encapsulate
+	#error CPP statements that would otherwise always prevent compilation
+	with K&R compilers.
+
+-	The make program specific configuration files for the Schily Makefilesystem
+	RULES/mk-.id (for SunPro make), RULES/mk-smake.id RULES/mk-gmake.id
+	now include definitions for the macros:
+
+	SPACE		A single space character (' ')
+	NUMBER_SIGN	The ASCII number sing ('#')
+
+	Note that the POSIX standard otherwise requires the make program 
+	to be unable to have the '#' appear in non-comment sections of
+	Makefiles.
+
+-	Try to work around an imprudent change in the file windef.h from
+	Cygwin-1.7.17 (Autumn 2012) related to the type BOOL that makes 
+	windefs.h from the recent Cygwin no longer compatible to the 
+	original file from Microsoft. The fix is in include/schily/windows.h
+
+	Thanks to Alain Hoang, Thomas Plank and others for reporting and
+	help with getting a fix for the problem named above
+
+
+
+-	The Schily makefilesystem now supports CC++_COM for all platforms to
+	allow to overwrite the low level command for the C++-compiler.
+
+
+-	include/schily/stat.h now contains macros to set the nanoseconds
+	in timestamps in a OS-independent way
+
+
+-	Fixed a typo in include/schily/stat.h related to nanosecond
+	handling for NetBSD and OpenBSD
+
+-	New autoconf tests for sys/capability.h and cap_*() functions
+	from Linux -lcap
+
+	WARNING: If you do not see this:
+
+		checking for cap_get_proc in -lcap... yes
+		checking for cap_get_proc... yes
+		checking for cap_set_proc... yes
+		checking for cap_set_flag... yes
+		checking for cap_clear_flag... yes
+
+	your Linux installation is insecure in case you ever use the
+	command "setcap" to set up file capabilities for executable commands.
+
+	Note that cdrtools (as any other command) need to be capabylity-aware
+	in order to avoid security leaks with enhanced privileges. In most
+	cases, privileges are only needed for a very limited set of operations.
+	If cdrtools (cdrecord, cdda2wav, readcd) are installed suid-root, the
+	functions to control privileges are in the basic set of supported
+	functions and thus there is no problem for any program to control it's
+	privileges - if they have been obtained via suid root, you are on a
+	secure system.
+
+	If you are however on an incomplete installation, that supports to
+	raise privileges via fcaps but that does not include developer support
+	for caps, the programs get the privileges without being able to know
+	about the additional privileges and thus keep them because they cannot
+	control them.
+
+	WARNING: If you are on a Linux system that includes support for
+	fcaps (this is seems to be true for all newer systems with 
+	Linux >= 2.6.24) and there is no development support for capabilities
+	in the base system, you are on an inherently insecure system that allows
+	to compile and set up programs with enhanced privileges that cannot 
+	control them.
+
+	In such a case, try to educate the security manager for the related
+	Linux distribution. Note that you may turn your private installation
+	into a secure installation by installing development support for libcap.
+	
+
+-	The autofconf tests for broken Linux kernel headers now avoid to
+	warn for /usr/src/linux/include if this directory is missing.
+
+-	include/schily/priv.h now includes sys/capabilitiy.h if available.
+
+
+-	Due to an incorrect message from last release, here is corrected
+	information on when a Linux installation is potentially dangerous:
+
+	New autoconf tests for sys/capability.h and cap_*() functions
+	from Linux -lcap
+
+	WARNING: If you do not see this:
+
+		checking for sys/capability.h... yes
+
+		...
+
+		checking for cap_get_proc in -lcap... yes
+		checking for cap_get_proc... yes
+		checking for cap_set_proc... yes
+		checking for cap_set_flag... yes
+		checking for cap_clear_flag... yes
+
+	your Linux installation is insecure in case you ever use the
+	command "setcap" to set up file capabilities for executable commands.
+
+	Note that cdrtools (as any other command) need to be capabylity-aware
+	in order to avoid security leaks with enhanced privileges. In most
+	cases, privileges are only needed for a very limited set of operations.
+	If cdrtools (cdrecord, cdda2wav, readcd) are installed suid-root, the
+	functions to control privileges are in the basic set of supported
+	functions and thus there is no problem for any program to control it's
+	privileges - if they have been obtained via suid root, you are on a
+	secure system.
+
+	If you are however on an incomplete installation, that supports to
+	raise privileges via fcaps but that does not include developer support
+	for caps, the programs get the privileges without being able to know
+	about the additional privileges and thus keep them because they cannot
+	control them.
+
+	WARNING: If you are on a Linux system that includes support for
+	fcaps (this is seems to be true for all newer systems with 
+	Linux >= 2.6.24) and there is no development support for capabilities
+	in the base system, you are on an inherently insecure system that allows
+	to compile and set up programs with enhanced privileges that cannot 
+	control them.
+
+	In such a case, try to educate the security manager for the related
+	Linux distribution. Note that you may turn your private installation
+	into a secure installation by installing development support for libcap.
+
+-	WARNING: the include structure of include/schily/*.h and several sources
+	has been restructured to cause less warnings with older OS platforms.
+	If you see any new problem on your personal platform, please report.
+
+-	New includefiles:
+
+	schily/poll.h		Support poll()
+	schily/stdarg.h		An alias to schily/varargs.h (but using the std name)
+	schily/sunos4_proto.h	Missing prototypes for SunOS-4.x to make gcc quiet
+	schily/timeb.h		Needed for users of ftime()
+
+-	Many minor bug-fixes for the files include/schily/*.h
+
+-	include/schily/archconf.h now defines __SUNOS5 for easier coding
+
+-	include/schily/priv.h now defines platform-independent fine-grained privileges
+
+-	Updated README.compile:
+
+	Some typo patches from Jan Engelhardt <jengelh@inai.de>
+
+	Documented the "LINKMODE=" macro to explain how to create dynamically
+	linked bynaries.
+
+
+-	The SCCS keyword expansion for "Mocsw" has been limited to 
+	prevent expansion of date '+%Y%m%d%H%M%S'
+
+-	Mocsw now sets link mode to -Bdirect for recent OpenCSW rules
+
+-	pkgdefs/OCSW/*/checkpkg_override modified to match current OpenCSW
+	rules.
+
+-	Make sure that all schily include files except the primary wrappers
+	include schily/*.h instead of including the system include files directly.
+
+-	Allow a "static" compilation (a compilation without using dynamic -I
+	Paths) on Linux x86 by adding static #includes for Linux x86 in:
+
+		include/schily//align.h
+		include/schily//archdefs.h
+		include/schily//avoffset.h
+		include/schily//xconfig.h
+
+	This is needed if you like to install the schily include files
+	to /usr/include/schily and allow users to "manually" compile
+	programs that use e.g libparanoia.
+
+	To allow this, the autoconf results need to be installed as:
+
+	<schily/i686-linux-gcc/*.h>
+	and
+	<schily/x86_64-linux-gcc/*.h>
+
+
+
+-	The Schily Makefilesystem no longer uses CC= for internal tasks.
+	People who now set $CC to a different value will fail in a similar
+	way as they would fail with other build systems.
+
+-	Added automatic support for ARMv5 and ARMv6. This makes compilation
+	on the RaspberryPI also possible with the non automake-aware gmake.
+
+-	Allow "static" compilation (a compilation that does not use the
+	dynamic defines from the Schily Makefilesystem) on Linux ARMv6 (which
+	is used by RaspberryPI).
+
+-	Allow a "static" compilation (a compilation without using dynamic -I
+	Paths) on Linux on ARMv5 and ARMv6 by adding static #includes for
+	Linux ARM in:
+
+		include/schily//align.h
+		include/schily//archdefs.h
+		include/schily//avoffset.h
+		include/schily//xconfig.h
+
+	This is needed if you like to install the schily include files
+	to /usr/include/schily and allow users to "manually" compile
+	programs that use e.g libparanoia.
+
+	To allow this, the autoconf results need to be installed as:
+
+	<schily/armv5l-linux-gcc/*.h>
+	and
+	<schily/armv6l-linux-gcc/*.h>
+
+
+-	Many sources have been modified to deal __CYGWIN32__ like __CYGWIN__
+	This is neded as newer Cygwin versions that run in 64 Bit mode
+	do no longer define __CYGWIN32__ but __CYGWIN__
+
+-	Added rules for non-automake enabled make programs (like gmake)
+	for: ppc64-linux-cc.rul and ppc64-linux-gcc.rul
+
+-	Added new OS version ID rules for various WIN-DOS versions:
+
+	os-interix-nt-6.0.id
+	os-interix-nt-6.1.id
+	os-cygwin_nt-6.2-wow64.id
+	os-cygwin_nt-6.2.id
+	os-cygwin_nt-6.3-wow64.id
+	os-cygwin_nt-6.3.id
+
+-	New autoconf test in whether struct timespec is defined.
+
+
+-	New autoconf tests for:
+
+	-	NFSv4 ACL support
+
+	-	issetugid()
+
+	-	lpathconf()
+
+	-	utimens()
+	-	futimens()
+	-	lutimens()
+
+
+-	The rules in the Schily Makefilesystem have been restructured in order
+	to allow to avoid problems on platforms like FreeBSD and Mac OS X:
+
+	FreeBSD and Mac OS X banned the not-free-enough (because GPLd)
+	software to /usr/local, forcing us to add -I/usr/local/include
+	and -L/usr/local/lib. Unfortunately, /usr/local/include frequently
+	carries a _very_ outdated and thus wrong copy of "cdda_paranoia.h"
+	which is more than 10 years old and definitely incompatible with
+	dynamic linking on Mac OS X. This defective copy was first in the
+	search path and prevented compilation. 
+
+	We now have a new macro: DEFOSINCDIRS= that grants to add include
+	directories to the end of the search PATH to allow us to find the
+	correct "cdda_paranoia.h" first.
+
+	Please test and report in case of problems.
+
+-	gmake and SunPro make include COMPILE.c with wrong content in their
+	built-in rules. We now clear this macro in RULES/rules.top. It is
+	still possible to provide a modified version from command line
+	or from the environment.
+
+-	include/schily/stdio.h was reordered, as it prevented compilation
+	of the "bsh" on Linux. This was a problem recently introduced,
+	when we added #ifndef NO_SCHILY_STDIO_H
+
+-	Fixed autoconf typo HAVE_MKNODKAT -> HAVE_MKNODAT
+
+-	include/schily/intcvt.h is now self contained.
+
+-	include/schily/windows.h now includes the same type workaround
+	for MINGW32 as for the Microsoft C compiler, as there are the same
+	autoconf detection problems.
+
+-	Added missing include/schily/err_type.h
+
+-	New file include/schily/shedit.h
+
+
+-	New Schily Makefiles rules for armv7l-linux
+
+-	autoconf/xconfig.h.in now treats MinGW32 the same as when compiling
+	with cl.exe
+
+
+-	Define DEV_NULL in include/schily/mconfig.h to address the missing
+	/dev/null on DOS
+
+-	New autoconf tests for:
+	getc_unlocked getchar_unlocked putc_unlocked putchar_unlocked
+	flockfile funlockfile ftrylockfile
+
+-	Symlinks for 
+	armv4tl-linux-cc.rul s390x-linux-cc.rul armv5tel-linux-cc.rul
+	new, to support non automake-aware make programs such as gmake.
+
+
+-	Do not define a gethostname() prototype in schily/hostname.h
+	for MinGW, as MinGW as a wrong prototype is in the non-standard
+	file winsock.h
+
+-	include/schily/stdio.h now implements code that partially unhides
+	the FILE * data structures from the 64 bit Solaris libc.
+	This allows to implement a getc_unlocked() macro even for 64 bit
+	Solaris as done by libc, so libschily is able to achieve similar
+	stdio I/O performance, which is needed to be able to implement
+	a printf() in libschily that is faster than printf() from libc.
+
+
+-	include/schily/varargs.h now includes a new type va_lists_t
+	that is a structure that covers va_list.
+
+-	include/schily/getargs.h now has comments for the arguments and
+	return code of the getargs() callback functions.
+
+-	The schily makefilesystem now includes a new symlink
+	ppc64le-linux-cc.rul for non automake-aware make implementations
+	such as gmake.
+
+-	New autoconf tests for strspn() strcspn() wcsspn() wcscspn()
+
+-	Typo fix in README.compile for the mail address.
+	Thanks to Dennis Clarke for the catch!
+
+-	Fixed the autoconf test for #pragma weak, so it will not
+	believe that "clang" supports #pragma weak in a compatible way.
+	This is needed in order to compile libmdigest/sha2.c using clang.
+
+-	New autoconf tests added for:
+
+	libexpat
+	libpcsclite / winscard.lib
+	libcrypto / libeay32.lib
+	libssl / ssleay32.lib
+
+-	New autoconf test for expat.h
+
+-	The makefile system added the INVERSE_SUBARCHDIR= to allow local
+	autoconfiguration for shared libraries.
+
+-	RULES/rules.top now also calls MKLINKS in the directory TEMPLATES
+
+-	New compiler configuration files:
+
+	RULES/cc-clang.rul
+	RULES/cc-clang32.rul
+	RULES/cc-clang64.rul
+
+-	The Mac OS X related rules now support a new macro:
+
+	LDFRAMEWORKS=
+
+	that allows to add Apple specific libraries.
+
+-	Added a new WIN32_LIBS= macro for Win-DOS specific libraries.
+	These libraries have to be specified in the portable -lfoo
+	format for "libfoo" and also work when compiling for MinGW32.
+	When cl.exe is used, -lfoo is converted to foo.lib.
+
+-	New configuration files:
+
+	RULES/i386-darwin-clang.rul
+	RULES/i386-darwin-clang32.rul
+	RULES/i386-darwin-clang64.rul
+
+-	New configuration files:
+
+	RULES/i386-freebsd-clang.rul
+	RULES/i586-linux-clang.rul
+	RULES/x86_64-linux-clang.rul
+	RULES/i86pc-sunos5-clang.rul
+	RULES/sun4-sunos5-clang.rul
+
+	Note that these files have not been tested yet.
+
+-	RULES/cc-sunpro.rul now also includes rules for
+	RULES/cc-sunpro32.rul and
+	RULES/cc-sunpro64.rul
+
+-	RULES/cc-gcc.rul now also includes rules for
+	RULES/cc-gcc32.rul and
+	RULES/cc-gcc64.rul
+
+-	RULES/cc-sunpro32.rul added for orthogonality
+
+-	RULES/cc-sunpro32.rul and
+	RULES/cc-sunpro64.rul are symlinks to RULES/cc-sunpro.rul
+	and RULES/cc-sunpro.rul uses a macro to include
+	cc-sunpro.rul
+	cc-sunpro32.rul
+	cc-sunpro64.rul
+	as needed
+
+-	RULES/i86pc-sunos5-cc.rul now also includes rules for
+	RULES/i86pc-sunos5-cc32.rul and
+	RULES/i86pc-sunos5-cc64.rul
+
+-	RULES/i86pc-sunos5-gcc.rul now also includes rules for
+	RULES/i86pc-sunos5-gcc32.rul and
+	RULES/i86pc-sunos5-gcc64.rul
+
+-	RULES/sun4-sunos5-cc.rul now also includes rules for
+	RULES/sun4-sunos5-cc32.rul and
+	RULES/sun4-sunos5-cc64.rul
+
+-	RULES/sun4-sunos5-gcc.rul now also includes rules for
+	RULES/sun4-sunos5-gcc32.rul and
+	RULES/sun4-sunos5-gcc64.rul
+
+-	RULES/i586-linux-suncc.rul now also includes rules for
+	RULES/i586-linux-suncc32.rul and
+	RULES/i586-linux-suncc64.rul
+
+-	RULES/9000-725-hp-ux-cc.rul now also includes rules for
+	RULES/9000-725-hp-ux-cc32.rul and
+	RULES/9000-725-hp-ux-cc64.rul
+
+-	RULES/i486-cygwin32_nt-cc.rul now also includes rules for
+	RULES/i486-cygwin32_nt-cc32.rul and
+	RULES/i486-cygwin32_nt-cc64.rul
+
+-	RULES/i486-cygwin32_nt-gcc.rul now also includes rules for
+	RULES/i486-cygwin32_nt-gcc32.rul and
+	RULES/i486-cygwin32_nt-gcc64.rul
+
+-	RULES/ip22-irix-cc.rul now also includes rules for
+	RULES/ip22-irix-cc64.rul
+
+-	RULES/ip22-irix-gcc.rul now also includes rules for
+	RULES/ip22-irix-gcc64.rul
+
+-	RULES/power-macintosh-darwin-cc.rul now also includes rules for
+	RULES/power-macintosh-darwin-cc32.rul and
+	RULES/power-macintosh-darwin-cc64.rul
+
+-	RULES/power-macintosh-darwin-gcc.rul now also includes rules for
+	RULES/power-macintosh-darwin-gcc32.rul and
+	RULES/power-macintosh-darwin-gcc64.rul
+
+-	conf/makeinc now knows that a compiler name may not follow
+	the "cc*" text rule. This helps to support "clang".
+
+-	conf/cc-config.sh has been enhanced to detect whether 
+	"cc" or "gcc" are emulated via "clang".
+
+-	New files in TEMPLATES/ related to "clang"
+
+-	TEMPLATES/ now includes config files for gcc32 and gcc64
+
+-	TEMPLATES/ now includes config files for clang, clang32 and clang64
+
+-	Add comment to DEFAULTS_CSW/sparc-cc.defs
+
+-	config.guess now understands Mac OS X on 64 bit Intel
+
+
+-	Fixed a typo in autoconf/xconfig.h.in that caused the Win-DOS function
+	LoadLibrary() not to be recognised correctly.
+
+-	Added compile support for: amd64-freebsd-clang*.rul
+
+-	include/schily/unistd.h now extends some exceptions to work around
+	problems with the MS C-compiler to MinGW32.
+
+
+-	Various README's, scripts and man pages have been revised to replace
+	berlios.de by sourceforge.net
+
+	Note that some files have not yet been completely updated for that
+	change as there is no easy way to deal with a site like sourceforge
+	that does not support ftp:
+
+		./conf/src-get
+		./conf/setup.sh
+
+	Because we now assume that any UNIX distro includes a ftp(1) program,
+	but we cannot assume that there is wget.
+
+-	include/schily/dlfcn.h now includes a #define HAVE_LOADABLE_LIBS
+	in case we compile on a system that implements runtime loadable
+	libraries and that libschily implements an adoption for this
+	local method to the POSIX dlopen()/dlsym()/dlclose(). This is currently
+	true for Solaris (and similar) that implement dlopen()/dlsym()/dlclose()
+	natively and for HP-UX and Win-DOS.
+
+-	The makefile rules for installing man pages have been changed so that
+	OBJ/<archdir>/man/ is no longer a direct dependency of the man page.
+	This results in repeated "make install" calls not to reinstall
+	up-to-date man pages again.
+
+-	The makefile rules for installing localized scripts have been changed so
+	that OBJ/<archdir>/ is no longer a direct dependency of the man page.
+	This results in repeated "make install" calls not to reinstall
+	up-to-date scripts again.
+
+-	New autoconf test checks whether printf() supports %z
+
+-	Some documentation now mentions sourceforge instead of BerliOS
+
+-	README.compile now mentions how to use instrumented compilers with
+	the Schily Makefilesystem.
+
+-	Support for ARM-64 (aarch64) was added
+
+-	rules.dep (r-make.dep, r-smake.dep, r-gmake.dep) now create 
+	$(ARCHDIR)/man together with $(ARCHDIR) to make sure this
+	directory exists before someone calls "*make install" as root.
+
+-	rules.dep (r-make.dep, r-smake.dep, r-gmake.dep) now make sure
+	that $(ARCHDIR)/Dnull will not be touched in case it already
+	exists. This prevents some unneeded file rebuilds if the make
+	program is changed between two builds.
+
+	Note that echo > $(ARCHDIR)/Dnull already enforces a shell (because
+	the command contains a ">") and the use of an if statement thus
+	does not cause extra costs.
+
+-	$(ARCHDIR)/Dnull no longer depends on $(ARCHDIR), this prevents
+	attempts to re-create $(ARCHDIR)/Dnull after an update in $(ARCHDIR)
+
+-	it is now ensured that $(SRCROOT)/incs/Dnull will not be touched
+	in case it already exists.
+
+-	TEMPLATES/MKLINKS now creates a dummy link to allow it to recognise
+	whether the links already exist.
+
+-	include/schily/sysexits.h adopts to the recent changes on Haiku that
+	prevent usual autoconf tests as #include <sysexits.h> works but symbols
+	are only defined with #define _BSD_SOURCE
+
+-	include/schily/wait.h now knows about the Haiku specific macro
+	WIFCORED() and #defines WCOREDUMP() to WIFCORED().
+
+-	Support for x86_64-haiku-cc.rul and x86_64-haiku-gcc.rul was added
+	to the makefile system.
+
+-	The file RULES/r-gmake.dep was modified to make sure that the 
+	dependency files (*.d) depend on the include files as well.
+	Previous versions included xxx.d instead of $(ARCHDIR)/xxx.d
+
+-	Makefile system: two new targets have been added:
+
+	man		creates localized versions of the man pages in the
+			OBJ directory
+
+	installman	installs only the manual pages
+
+-	include/schily/signal.h now includes siginfo.h to make sure it
+	compiles even on very old Solaris versions where signal.h did not
+	yet include siginfo.h.
+
+-	include/schily/wait.h add a missing closing bracket for Haiku
+
+-	include/schily/wait.h added CLD_* macros and the enum idtype_t in case
+	they are missing. This allows to implement a waitid() emulation.
+
+-	include/schily/wait.h now includes schily/signal.h in case that
+	the local /usrinclude/sys/wait.h is non-POSIX and does not
+	define siginfo_t. This is e.g. the case on FreeBSD.
+
+-	The configure tests now includes a test that correctly identifies
+	Mac OS X as non-POSIX with respect to waitid(). This prevents
+	potential users ofwaitid() from the unusable implementation on
+	Mac OS X.
+
+	The rule for accepting an existing waitid() is the following:
+
+	-	si.si_pid is set to be equal to the awaited pid
+
+	-	si.si_code == CLD_EXITED for a chilt terminated by exit(2)
+
+	-	si.si_status contains at least 16 bits from the exit(2)
+		code. This is still not POSIX but better than what we would
+		get from a historical wait*() call.
+
+-	The configure tests now check for the new FreeBSD wait6() and for
+	idtype_t.
+
+-	A new symlink for x86_64-cygwin32_nt-gcc.rul was added
+
+-	Added support for cygwin32_wow (not the already present cygwin32_wow64).
+
+-	The makefile system now allows to use:
+
+		COPTX=-DNO_PRAGMA_WEAK
+
+	to disable the use of #pragma weak. This may help to debug some
+	oddities of the GNU linker.
+
+-	The makefile system now includes a new test that needs constraints
+	that are not really supported by autoconf: it checks whether the
+	linker supports to link against external weak symbols in another
+	file. For this reason, a handcrafted conftest was written.
+	This (currently) should fail on Cygwin due to a Cygwin bug.
+	A platform that allows to link against weak symbols defines
+	HAVE_LINK_WEAK. This permits the system to automatically detect
+	usability once e.g. linking on Cygwin will be fixed.
+
+	Thanks to Thomas Plank for reporting the known #pragma weak problem
+	in a new source file (libschily/error.c). Note that error() is a
+	UNIX (UNOS) libc function that exists since 1980 but some libc
+	implementors do not follow the rule not to introduce incompatible 
+	interfaces for existing names. So we need to find a workaround
+	on these platforms.
+
+-	autoconf now checks for the type rlim_t in sys/resource.h
+
+-	README.compile now includes an example on how to cross compile 
+	on Linux for Android.
+
+-	include/schily/find.h modified to avoid a GCC warning from
+	using libfind in the Bourne Shell.
+
+-	include/schily/dlfcn.h modified to avoid a GCC warning from
+	the new builtin management code in the Bourne Shell.
+
+-	Support for Win-10 when compiling with no automake-aware
+	make implementations like "gmake" was added.
+
+-	include/schily/mconfig.h fixed a typo: "-DDBD_MALLOC"
+
+-	include/schily/resource.h better comment
+
+-	include/schily/stat.h fixed a typo S_ISCNT -> S_ISCTG and
+	S_IFCNT -> S_IFCTG
+
+-	include/schily/stat.h now includes #define lstat stat in case lstat()
+	does not exist on the current platform.
+
+-	include/schily/dbgmalloc.h: Added a workaround for source files
+	that first #include <schily/standard.h> and thus have no viable
+	BOOL defintion while <schily/mconfig.h> is included. This now permits
+	to compile the whole libschily with
+
+		smake COPTX=-DDBG_MALLOC LDOPTX=-ldbgmalloc
+
+	in order to debug malloc()/free() calls.
+
+Libschily:
+
+-	libschily/?eterrno.c no longer overwrite the _TS_ERRNO definition
+	in order to pass the compile constraints in the Solaris ON consoliation.
+
+-	Several new global symbols in the mapfile for libschily/libschily-mapvers
+
+-	libschily/wcsndup.c had forgotten code and still did internaly implement
+	strndup()
+
+-	libschily now by default renames getline(), fgetline() and
+	fexec*() into js_getline(), js_fgetline() and js_fexec*().
+	This was needed because the POSIX standard commitee ignored
+	POSIX basic rules not to define functions that are in conflict
+	with existing published functions. The functions from libschily
+	have been in the public since more than 25 years and the 
+	functions defined by POSIX.1-2008 even violate POSIX naming rules.
+	The POSIX fexec*() functions would e.g. have to be correctly called
+	fdexec*().
+
+	Existing programs can keep the official names getline(), fgetline()
+	and fexec*() as they are by default #defined to the new js_*() names.
+	To disable this convenience, add:
+
+	#define NO_SCHILY_GETLINE	To disable schily getline(), fgetline()
+	#define	NO_SCHILY_FEXEC		To disable schily fexec*()
+	#define	NO_SCHILY_FSPAWN	To disable schily fspawn*()
+
+-	Libschily now has new "long double" support functions:
+	qftoes() and qftofs()
+
+-	Libschily now supports a locale dependend decimal point for printing
+	floating point numbers.
+
+-	Libschily now supports to print long double numbers using the
+	format() based portable printf() implementation. If this does not
+	work for your platform or if this does not work correctly for
+	your platform, please report. This was needed for our new "od" 
+	implementation.
+
+-	The option parsing implementation getargs()/getfiles() from
+	libschily now supports to combine single character boolean
+	flags even in case the option string mentions to call a callback
+	function if a valid option was found. This was needed for our new 
+	"od" implementation.
+
+-	filereopen() from libschily no longer calls open() internally
+	as long as there is no need to create or truncate the file.
+
+-	libschily's findinpath() now includes a new path parameter
+	to allow to use the function from bsh.
+
+-	fnmatch is now always available as js_fnmatch()
+
+-	New autoconf test for _qecvt() _qfcvt() _qgcvt()
+	and _qecvt_r() _qfcvt_r() _qgcvt_r() on AIX
+
+-	smake's searchfileinpath() moved into libschily to allow it
+	to be generally used for searching for program resources.
+
+-	New functions mkgmtime() mklgmtime() and timegm()
+
+-	New function permtostr() in libschily allows to convert a
+	mode_t like stat.st_mode into a chmod compliant string like:
+
+		u=rw,g=r,o=r
+
+	that is accepted by libschily::getperm() to allow a  conversion
+	back to a mode_t variable.
+
+-	libschily::rename() now uses mktemp() to temorarily save the
+	rename target file.
+
+-	comerr() now maps exit codes that would fold to '0' to EX_CLASH
+	which is -64
+
+-	New functions zerobytes() and cmpmbytes() added to libschily.
+
+-	New functions strstr() and wcsstr() added to libschily.
+
+-	libschily/fexec.c moved the workaround against the Mac OS X linker
+	for "environ" upwards to cover the new code also.
+
+-	Fixed libschily/gettimeofday.c to compile with MSC
+
+-	Fixed libschily/sleep.c to compile with MSC
+
+-	Fixed libschily/usleep.c to be empty with MSC as sleep.c includes
+	a working usleep()
+
+-	libschily/gethostname.c enhanced to support Win-DOS with cl.exe
+
+-	libschily/uname.c New function to support Win-DOS with cl.exe
+
+-	libschily/dirent.c New functions: opendir()/closedir()/readdir()
+				to support Win-DOS with cl.exe
+
+-	libschily/kill.c New function to support Win-DOS with cl.exe
+
+-	libschily/stdio/fgetline.c 64 bit speedup by calling fgets() in
+	case that getc() is not a macro.
+
+-	libschily/stdio/fgetstr.c 64 bit speedup by calling fgets() in
+	case that getc() is not a macro.
+
+-	libschily/chown.c new to support Win-DOS with cl.exe
+
+-	New functions strstr() and wcsstr()
+
+-	New libschily::fgetaline() and libschily::getaline() implement the
+	functionality of the POSIX violating "getline()" from POSIX.1-2008.
+
+-	New file libschily/abspath.c
+
+-	New file libschily/resolvepath.c
+
+-	New file libschily/mkdirs.c
+
+-	An openat() emulation was added to libschily for platforms that
+	miss openat().
+
+-	An fchdir() emulation was added to libschily for platforms that
+	miss fchdir()
+
+-	libschily/at-defs.h new support file for internals from the *at()
+	emulation
+
+-	libschily/lxchdir.c new file to support chdir() to long
+	path names
+
+-	libschily/procnameat.c new file to support *at() functions in case
+	that a newer /proc file system implementation is available
+
+-	libschily/savewd.c new file to support to save the current working
+	directory regardless of whether fchdir() is present or not.
+
+-	libschily/wdabort.c new file with abort functions that are needed
+	in libschily for the case that no system fchdir is available and 
+	an attempt to emulate *at() functions fails
+
+-	New functions strcasecmp() and strncasecmp() for libschily.
+
+-	New functions diropen() dirrdopen() dirclose() for libschily.
+	These functions are needed in order to emulate fchdir() on platforms
+	that do not support fchdir().
+
+-	file_raise(NULL, FALSE) now also affects files that have been
+	opened before the file_raise() call.
+
+-	getperm.c now correctly supports umask +w
+
+-	Libschily is now linked against $(LIB_INTL) when a shared libschily
+	is created.
+
+-	Avoid warnings from cl.exe for libschily/gettimeofday.c
+
+-	Better comment in comerr.c to help to understand exit() code folding
+	to 8 bits and how it may be avoided.
+
+-	libschily::fexecv() now allows to use the parameter "ac" with the
+	value -1 to indicate that the arg count is to be determined by the
+	NULL pointer at the end of the arg list.
+
+-	Added #include <schily/libport.h> to libschily/fnmatch.c 
+
+-	Various Cstyle changes in the include/schily directory.
+
+-	New include file: include/schily/shedit.h
+
+-	Make sure that include/schily/time.h always includes a struct timespec
+	definition.
+
+-	new functions getnstimeofday() and setnstimeofday()
+
+-	New files for libschily:
+
+	at-base.c	generic implementation for *at() functions.
+	fchownat.c	fchownat()
+	fdopendir.c	fdopendir()
+	fstatat.c	fstatat()
+	futimens.c	futimens()
+	futimesat.c	futimesat() Solaris specific old for utimensat()
+	lutimens.c	lutimens()
+	linkat.c	linkat()
+	mkdirat.c	mkdirat()
+	mkfifo.c	mkfifo()
+	mkfifoat.c	mkfifoat()
+	mknodat.c	mknodat()
+	readlinkat.c	readlinkat()
+	renameat.c	renameat()
+	symlinkat.c	symlinkat()
+	unlinkat.c	unlinkat()
+	utimens.c	utimens()
+	utimensat.c	utimensat()
+	at-base.c	The base code for all single fd *at() functions.
+	at-base2.c	The base code for all double fd *at() functions.
+
+	contain emulations for system interfaces introduced in summer 2001 by Sun
+	and with POSIX.1-2008.
+
+-	New functions in libschily:
+
+	absfpath()
+	resolvefpath()
+
+	allow to better control the behavior using flags.
+
+-	The linker map file for libschily now adds some forgotten functions.
+
+-	libschily/strstr.c and libschily/wcsstr.c now include a 
+	CDDL License hint
+
+-	libschily::format.c (printf) now supports length modifiers
+	like h hh l ll t z for the %n format.
+
+-	libschily::format.c has been restructured for parsing the
+	field width parameters in a way that would allow to later
+	introduce support for %n$
+
+-	Try to take care about the fact that MinGW32 does not support
+	a standard compliant mkdir() function with two parameters.
+	This applies top libschily/mkdirat.c and libschily/mkdirs.c
+
+-	Corrected a typo in libschily/mkfifoat.c that called mkdir()
+	instead of mkfifo()
+
+-	libschily/getdtablesize.c needs the same treatment for MinGW32 as for
+	cl.exe
+
+-	New functions xcomerr(), xcomerrno(), fxcomerr(), fxcomerrno()
+	in libschily allow error message and exit with an exit value
+	that differs from errno.
+
+-	a bug in libschily/format.c that caused %.*s to be printed
+	incorrectly has been fixed.
+
+-	libschily/format.c has been redesigned to allow the code to be
+	reused for fprformat() via #include.
+
+-	libschily/fprformat.c
+	New function fprformat() in libschily is implementing the same
+	direct interface as doprnt() from libc and thus allows to implement
+	printf() faster than the printf() from libc on Solaris.
+
+-	libschily/jsprintf.c
+	For Solaris, jsprintf() now is implemented based on fprformat().
+	This allows printf() from libschily to be aprox. 33% faster than
+	printf() from libc on Solaris and aprox. 2x as fast as jsprintf()
+	in libschily has been before. This gives another performance boost
+	for printf() bound programs like hdump/od that is used as a OSS
+	replacement for the closed source od(1) on OpenSolaris. This
+	now makes the OSS od(1) on OpenSolaris typically 5x faster then
+	the closed source version.
+
+-	libschily/getdtablesize.c now treats MinGW the same as when compiling
+	on Win-DOS using cl.exe.
+
+-	libschily/mkdirat.c and libschily/mkdirs.c now take care of the fact
+	that MinGW has a non standard compliant mkdir()
+
+-	libschily/mkfifoat.c fixed a type from, cut/paste the file from mkdirat.c
+
+-	libschily now implements strspn() strcspn() wcsspn() wcscspn()
+
+-	libschily/format.c (the low level printf() implementation) now
+	implements support for %n$ argument repositioning for the
+	case that "n" is 1..30, or if larger points to an int type arg.
+
+-	libschily/fprformat.c fixed a bug that would prevent to use
+	stdio macros with newer OpenSolaris versions, making printf()
+	not as fast as expected.
+
+-	libschily/sleep.c and libschily/usleep.c have been modified to work
+	with MinGW.
+
+-	libschily/format.c fixed to compile again with K&R C that does
+	not support "long double".
+
+-	No longer use fgets() for fgetaline(), fgetline() and fgetstr() 
+	as fgets() cannot deal with embedded '\0' chars before the '\n'.
+
+-	libschily/fstream.c now supports local flags (for the caller)
+	and pushable streams to keep blocks of pushed text atomically.
+
+-	libschily/fchmodat.c was added, it has been forgotten when
+	the emulations for the *at() functions have been introduced.
+	It is needed for the new enhanced isoinfo command.
+
+-	libschily/mknodat.c now correctly provides a mknodat() function even
+	when there is no mknod() command.
+
+-	libschily/futimens.c now is more Sun specific when trying to implement
+	futimens() via utimensat(), as only Solaris supports a f*() interface
+	in case that the path name is a NULL pointer.
+
+-	libschily/faccessat.c with a faccessat() was added. This has been forgotten
+	when the *at() functions have been implemented.
+
+-	libschily/eaccess.c no longer calls access() in case that the OS does not
+	implement eaccess() but rather first checks whether uid == euid and gid == egid.
+
+-	libschily/eaccess.c compiles again in HP-UX using the HP C-compiler
+
+-	libschily/dlfcn.c new file to emulate dlopen() and friends on Win-DOS
+	and HP-UX
+
+-	libschily/lchmod.c was added
+
+-	libschily/fchmodat.c no longer contains lchmod()
+
+-	The linker mapfile libschily/libschily-mapvers now correctly
+	makes the entry faccessat() depend on HAVE_FACCESSAT
+
+-	strlcatl() wcslcatl(): new functions
+
+-	libschily::linkat.c now manually null-terminates the result from
+	resolvepath() as the Solaris syscall implementation does not
+	null-terminate it in all cases.
+
+-	libschily::resolvepath.c comment added to remind on the fact that
+	in contrary to our implementation the Solaris resolvepath() syscall
+	does not null-terminate the buffer.
+
+
+-	New function j_error() works where error() is too generic.
+
+-	make strlcatl() and wcslcatl() work with K&R compilers
+
+-	libschily/getargs.c now is more careful with calling va_arg()
+	and only calls it as many times as a related format is found in the
+	format string.
+
+-	libschily now contains a getdelim() implementation and always uses
+	getdelim() to implement the fgetaline() function.
+
+-	libschily: the *mem.c implementations now include new *mexval()
+	functions to set the exit code on failure to a static value instead
+	of the default "errno" value for the failure.
+
+-	libschily: the linker map file now also lists the forgotten new entries:
+	strlcatl() and wcslcatl()
+
+-	libschily/spawn.c:wait_chld() no longer returns 0 if the child process
+	was killed by a signal.
+
+-	libschily now adds some of the existing (old) man pages for various
+	functions from libschily.
+
+-	libschily/comerr.c and libschily/fcomerr.c now have better 
+	comment.
+
+-	libschily now uses the test:
+
+		#if defined(HAVE_PRAGMA_WEAK) && defined(HAVE_LINK_WEAK)
+
+	to prevent assuming that is sufficient when the compiler supports
+	#pragma weak. We also need to have a linker that links against
+	weak symbols in libraries. HAVE_LINK_WEAK is e.g. not defined
+	on Cygwin...
+
+-	libschily/resolvepath.c now #define's lstat stat if lstat()
+	is missing.
+
+-	libschily/error.c now allows to be compiled without weak
+	symbols by using -DNO_WEAK_SYMBOLS
+
+
+Libedc (Optimized by Jörg Schilling, originated by Heiko Eißfeldt heiko@hexco.de):
+
+-	Some cstyle changes
+
+-	Added #include <schily/libport.h>
+
+
+Libcdrdeflt:
+
+Libdeflt:
+
+-	The function defltcntl() in libdeflt is now working and allows to
+	select a case insensitive mode.
+
+-	New function defltsect() in libdeflt allows to create sub-sections
+	in configuration files. These subsections need to be named:
+	"[section-name]" and the '[' must be at the beginning of a line.
+
+-	Added #include <schily/libport.h>
+
+-	Added defltsect() to the list of exported functions for the 
+	shared library version
+
+
+Libfile:
+
+Libfind:
+
+-	New functions: find_hasprint() and find_hasexec()
+
+-	New flag WALK_STRIPLDOT to strip leading "./" like star does
+
+-	libfind no longer aborts with a lack of memory but writes an error
+	message
+
+-	libfind now correctly frees memory that has been allocated internaly
+	from treewalk()
+
+
+-	libfind/find.c disables -exec in case there is no fork().
+	This is in order to support MINGW
+
+-	libfind/walk.c now uses O_SEARCH to open directories
+
+-	dirname -> dir_name to avoid a gcc warning
+
+-	Fixed a filedesrciptor leak in libfind that hits when using
+	-empty on empty directories.
+
+-	Libfind now allows to check for -type P (Solaris event port).
+	A missing "case 'P':" was added to the parser.
+
+-	libfind/idcache.c now saves uname/gname as long as possible and uses
+	strlcpy() instead of strncpy().
+
+-	libfind: the forgotten entries find_hasexec() and find_hasprint()
+	have been added to the linker map file
+
+-	Workaround a problem with vfork() on Linux caused by missing vfork()
+	definitions in the system include files that cause a coredump from
+	free() when using find -exec
+
+
+Libhfs_iso:
+
+-	Rename variable "utime" to "uxtime" to avoid a compiler warning
+
+Libmdigest:
+
+-	Cygwin is broken, when using #pragma weak, so we cannot create
+	weak symbols on Cygwin for sha2.c
+
+-	Some cstyle changes
+
+-	CSTYLED comment added
+
+-	libmdigest now uses the test:
+
+		#if defined(HAVE_PRAGMA_WEAK) && defined(HAVE_LINK_WEAK)
+
+	to prevent assuming that is sufficuent when the compiler supports
+	#pragma weak. We also need to have a linker that links against
+	weak symbols in libraries. HAVE_LINK_WEAK is e.g. not defined
+	on Cygwin...
+
+Libparanoia (Ported/enhanced by Jörg Schilling, originated by Monty xiphmont@mit.edu):
+
+-	memset() call in i_silence_match() now uses the correct size
+	instead of sizeof (avec).
+	Thanks to a hint from Andrew Dudman <ajdudman@sbcglobal.net>
+
+-	Use dynamic arrays instead of alloca()/malloc() if available.
+
+-	libparanoia now implements the first stage in C2 error pointer
+	support: it now is able to deal with input data that contains
+	C2 pointers and it implements new callbacks to report C2
+	statistics back to the caller.
+
+-	libparanoia now supports to control the size of the read-ahead buffer.
+	This allows libparanoia to be adapted to the current constraints.
+
+
+Libsiconv:
+
+-	new function sic_base() returns the dynamically retrieved install base
+	for the siconv database.
+
+-	sic_open() no longer tries to open all characterset names as files in
+	the current directory but only if the name contains a slash.
+	Thanks to a report from Vladimir Marek <Vladimir.Marek@oracle.com>
+
+-	libsiconv: the forgotten sic_base() was added to the linker map file
+
+
+Libscg:
+
+-	libscg/scg/aspi-dos.h now uses void instead of VOID to allow a compilation
+	with gcc.
+
+-	libscg/scsi-wnt.c (MS-WIN) now supports 64 SCSI busses
+
+-	libscg/scsi-bsd.c tries to better support the SCSI sense data
+	length in the recently upgrades in FreeBSDs ATAPI/CAM module.
+
+-	try to keep SCSI status and error codes when doing a manual GET SENSE
+	on AIX, UnixWare, VMS, Linux Parallel Port, Apollo Domain
+
+-	libscg::scsi-aix.c was updated with some experimental code to support
+	two new SCSI kernel interfaces on AIX.
+
+-	Allow to disable the SCSI low level transport adoption layer
+	from libscg by adding -DNO_SCSI_IMPL
+
+-	libscg/scsihack.c now supports the MSC compiler
+
+-	Several small changes to work around oddoties fount in MS include files
+
+-	Trying to better support AIX again.
+
+-	struct scsi_inquiry is now using a union around the vendor ID strings in
+	order to avoid incorrect buffer overflow warnings from GCC-4.x
+
+-	Some cstyle changes
+
+-	For newer Cygwin versions, we need  an own PACKED definition in
+	libscg/scg/aspi-win32.h
+
+-	Trying to support suid-root-less installation of librscg users on Linux.
+	librscg now understands that a non-root program may be able to 
+	create sockets for a privileged port.
+
+-	Repositioned #ifdefs to avoid unused variable definitions in
+	libscg/scsi-sun.c
+
+-	libscg/scsi-linux-ata.c now aborts early if errno == EPERM. This now
+	makes it behave like libscg/scsi-linux-sg.c
+
+-	A new scg flag SCGF_PERM_PRINT tells libscg to print a more verbose error
+	in case that a SCSI command was aborted with errno == EPERM.
+
+-	Sources have been modified to deal __CYGWIN32__ like __CYGWIN__
+	This is neded as newer Cygwin versions that run in 64 Bit mode
+	do no longer define __CYGWIN32__ but __CYGWIN__
+
+-	Some cstyle changes
+
+-	For newer Cygwin versions, we need  an own PACKED definition in
+	libscg/scg/aspi-win32.h
+
+-	Trying to support suid-root-less installation of librscg users on Linux.
+	librscg now understands that a non-root program may be able to 
+	create sockets for a privileged port.
+
+-	Repositioned #ifdefs to avoid unused variable definitions in
+	libscg/scsi-sun.c
+
+-	libscg/scsi-linux-ata.c now aborts early if errno == EPERM. This now
+	makes it behave like libscg/scsi-linux-sg.c
+
+-	A new scg flag SCGF_PERM_PRINT tells libscg to print a more verbose error
+	in case that a SCSI command was aborted with errno == EPERM.
+
+-	Sources have been modified to deal __CYGWIN32__ like __CYGWIN__
+	This is neded as newer Cygwin versions that run in 64 Bit mode
+	do no longer define __CYGWIN32__ but __CYGWIN__
+
+
+Libscgcmd:
+
+Libsiconv:
+
+-	sic_open() no longer tries to open all characterset names as files in
+	the current directory but only if the name contains a slash.
+	Thanks to a report from Vladimir Marek <Vladimir.Marek@oracle.com>
+
+Rscsi:
+
+Cdrecord:
+
+-	A typo in cdrecord.c was corrected.
+
+-	cdrecord/cue.c now uses a correct byte order for RAW audio data in
+	Intel byte-order
+
+-	Cdrecord now uses gettext() to translate texts.
+	There are currently not yet translated texts. The cdrtools project needs help
+	with translating the texts.
+
+-	cdrecord now warns and aborts if someone tries to write more CD-Text
+	for a single language than permitted by the standard.
+
+-	cdrecord now warns about the correct max. CD-Text size
+	for a single language that is permitted by the standard.
+
+-	Several changes to support mingw and MSC
+
+-	cdrecord man page corrected some small typos in the EXAMPLES section.
+
+-	cdrecord has been converted to be able to run completely root-less
+	and suid-root-less and with no script that calls pfexec(1). This
+	works on OpenSolaris ONNV_140 or later because the functionality
+	of pfexec(1) has been integrated into the kernel.
+
+	To enable this feature. edit the file /etc/security/exec_attr and add:
+
+	Basic Solaris User:solaris:cmd:::/usr/bin/cdrecord:privs=file_dac_read,sys_devices,proc_lock_memory,proc_priocntl,net_privaddr
+	or
+	Basic Solaris User:solaris:cmd:::/opt/schily/bin/cdrecord:privs=file_dac_read,sys_devices,proc_lock_memory,proc_priocntl,net_privaddr
+
+	depending on where you install cdrecord.
+	No special shell is needed anymore.
+
+-	struct scsi_inquiry is now using a union around the vendor ID strings in
+	order to avoid incorrect buffer overflow warnings from GCC-4.x
+
+-	Trying to support suid-root-less installation of cdrecord on Linux.
+	NOTE: You need "file caps" support built into your Linux installation.
+
+	Call:
+
+		setcap cap_sys_resource,cap_dac_override,cap_sys_admin,cap_sys_nice,cap_net_bind_service,cap_ipc_lock,cap_sys_rawio+ep /opt/schily/bin/cdrecord
+	To set up the capabilities on Linux.
+
+
+-	Allow to compile without Linux libcap using "smake COPTX=-DNO_LINUX_CAPS LIB_CAP="
+
+-	Cdrecord now checks whether there are sufficient fine-grained privileges.
+
+-	Cdrecord now uses the new flag SCGF_PERM_PRINT to get better warnings if the
+	permissions granted by the OS are not sufficient.
+
+-	Sources have been modified to deal __CYGWIN32__ like __CYGWIN__
+	This is neded as newer Cygwin versions that run in 64 Bit mode
+	do no longer define __CYGWIN32__ but __CYGWIN__
+
+-	Typo correction in a comment
+
+-	Trying to avoid to confuse users
+	on Solaris and Linux where a fine-grained privilege implementation
+	exists. Before, fine-grained privileges have been given up after
+	initializing the program and this may result in a root user that
+	is treated as a normal user that cannot write into directories 
+	without global write permission. The named programs now no longer
+	give up privileges in case they have been called with the needed
+	privileges already and thus the programs cannot be used for
+	privilege escalations anymore.
+
+-	Fixed some typos in cdrecord
+
+-	Better comment about cdrecord specific enhancements in CUE files.
+
+-	cdrecord/cue.c now has a better comment related to cdrtools specific
+	CUE enhancements.
+
+-	Fixed a typo in cdrecord.dfl
+
+-	The timediff function now in addition prints the time diff in
+	hours : minutes : seconds . thausands of a second.
+
+	Thanks to a hint from Donald R Laster Jr from Slackware.
+
+-	The programs cdrecord adopts to the recent Haiku
+	changes with a randomized address space and now use B_EXACT_ADDRESS
+	instead of B_ANY_ADDRESS for the clone_area() call to get shared memory
+	for a FIFO.
+
+
+Cdda2wav (Maintained/enhanced by Jörg Schilling, originated by Heiko Eißfeldt heiko@hexco.de):
+
+-	Fixed a typo in cdda2wav/cdda2ogg.1 (man page)
+
+-	Cdda2wav now uses gettext() to translate texts.
+	There are currently not yet translated texts. The cdrtools project needs help
+	with translating the texts.
+
+-	many typo fixes to the cdda2wav.1 man page, thanks to John Bradshaw
+
+-	Several changes to support mingw and MSC
+
+-	cdda2wav has been converted to be able to run completely root-less
+	and suid-root-less and with no script that calls pfexec(1). This
+	works on OpenSolaris ONNV_140 or later because the functionality
+	of pfexec(1) has been integrated into the kernel.
+
+	To enable this feature. edit the file /etc/security/exec_attr and add:
+
+	Basic Solaris User:solaris:cmd:::/usr/bin/cdda2wav:privs=file_dac_read,sys_devices,proc_priocntl,net_privaddr
+	or
+	Basic Solaris User:solaris:cmd:::/opt/schily/bin/cdda2wav:privs=file_dac_read,sys_devices,proc_priocntl,net_privaddr
+
+	depending on where you install cdda2wav.
+	No special shell is needed anymore.
+
+-	Better handling of CLONE AREAs on newer Haiku versions.
+
+-	Some cstyle changes
+
+-	cdda2wav now only prints "load cdrom please and press enter" once
+	per line and does not repeat the text for garbage characters that
+	have been in stdin. Thanks to Phi Tran from Oracle for reporting.
+
+-	Trying to support suid-root-less installation of cdda2wav on Linux.
+	NOTE: You need "file caps" support built into your Linux installation.
+
+	Call:
+
+		setcap cap_dac_override,cap_sys_admin,cap_sys_nice,cap_net_bind_service,cap_sys_rawio+ep /opt/schily/bin/cdda2wav
+	To set up the capabilities on Linux.
+
+
+-	Include file reordering to avoid warnings on older platforms
+
+-	Allow to compile without Linux libcap using "smake COPTX=-DNO_LINUX_CAPS LIB_CAP="
+
+-	Repositioned #ifdefs to avoid unused variable definitions in
+	cdda2wav/sndconfig.c
+
+-	Cdda2wav now checks whether there are sufficient fine-grained privileges.
+
+-	Work around a bug in sys/param.h FreeBSD-9.1, that #define's __FreeBSD_kernel__
+	instead of #define __FreeBSD_kernel__ 9 that would be needed for Debian
+	k-FreeBSD compatibility.
+	The bug affects cdda2wav/mycdrom.h
+
+-	Sources have been modified to deal __CYGWIN32__ like __CYGWIN__
+	This is neded as newer Cygwin versions that run in 64 Bit mode
+	do no longer define __CYGWIN32__ but __CYGWIN__
+
+-	Typo correction in a comment
+
+-	Fixed fine-grained privilege handling for Linux.
+	Thanks for Daniel Pielmeier from Gentoo for reporting and testing.
+
+-	Trying to avoid to confuse users
+	on Solaris and Linux where a fine-grained privilege implementation
+	exists. Before, fine-grained privileges have been given up after
+	initializing the program and this may result in a root user that
+	is treated as a normal user that cannot write into directories 
+	without global write permission. The named programs now no longer
+	give up privileges in case they have been called with the needed
+	privileges already and thus the programs cannot be used for
+	privilege escalations anymore.
+
+-	Cddda2wav now flushes stderr before asking for a specific cddb
+	entry index. It seems that on Linux stderr may not be unbuffered
+	as expected.
+
+-	Cdda2wav moved the option parsing code into a separate function
+	gargs().
+
+-	cdda2wav now prints the number of read operations per track when
+	in paranoia mode
+
+-	cdda2wav now prints the read overhead (in percent) per track when
+	in paranoia mode
+
+-	cdda2wav adds a new paraopts= mode: "c2check" to run libparanoia
+	in C2 mode.
+
+-	cdda2wav did get a major overhoul for libparanoia that may
+	make the extract quality better up to a factor of 100x:
+
+	A new suboption "readahead=" for paraopts= allows to modify
+	the read-ahead buffer size to make it large ebough for the amount
+	of RAM in modern drives.
+
+	The interpratation of "problem sectors" was changed to better deal
+	with the fact that in case of bad areas, the libparanoia code
+	tends to do repeated reads in those bad areas. The computation
+	of the percentage of bad sectors now takes care of re-read sectors.
+	Repeated reads still increase the value but no longer in a
+	quadratical way.
+
+-	Better documentation for the libparanoia interface in cdda2wav
+	allows to better understand how it works and how modifying 
+	parameters could influence the extract quality.
+
+-	Add another instance of #undef interface in hope to help with
+	compiling using MinGW32
+
+-	Avoid a redefined xxx warning for cdda2wav/exitcodes.h
+
+-	Added a #undef interface to cdda2wav/interface.h to make sure that
+	the #define interface from windows.h does not cause problems even
+	when using MinGW
+
+-	Cdda2wav no longer includes the new paranoia mode "c2check" in the macro
+	"proof". This has been done because of a report from Géraud Meyer <graud@gmx.com>
+	that gives hints that the drive:
+	Type: ROM, Vendor 'TSSTcorp' Model 'CDDVDW SH-222AB ' Revision 'SB00' MMC+CDDA
+	does not handle hidden tracks when "c2check" is active.
+
+-	Flush stderr before a question in cdda2wav. This is a workaround
+	for a Linux libc bug (stderr must be unbuffered acording to the
+	standard).
+
+-	The programs cdda2wav adopts to the recent Haiku
+	changes with a randomized address space and now use B_EXACT_ADDRESS
+	instead of B_ANY_ADDRESS for the clone_area() call to get shared memory
+	for a FIFO.
+
+
+Readcd:
+
+
+-	Readcd now uses gettext() to translate texts.
+	There are currently not yet translated texts. The cdrtools project needs help
+	with translating the texts.
+
+-	Better algorithm for -edc-corr
+
+-	readcd has been converted to be able to run completely root-less
+	and suid-root-less and with no script that calls pfexec(1). This
+	works on OpenSolaris ONNV_140 or later because the functionality
+	of pfexec(1) has been integrated into the kernel.
+
+	To enable this feature. edit the file /etc/security/exec_attr and add:
+
+	Basic Solaris User:solaris:cmd:::/usr/bin/readcd:privs=file_dac_read,sys_devices,net_privaddr
+	or
+	Basic Solaris User:solaris:cmd:::/opt/schily/bin/readcd:privs=file_dac_read,sys_devices,net_privaddr
+
+	depending on where you install readcd.
+	No special shell is needed anymore.
+
+-	Cygwin is broken, when using #pragma weak, so we cannot create
+	weak symbols on Cygwin for sha2.c
+
+-	avoid a GCC warning when compiling readcd.c
+
+-	Trying to support suid-root-less installation of readcd on Linux.
+	NOTE: You need "file caps" support built into your Linux installation.
+
+	Call:
+
+		setcap cap_dac_override,cap_sys_admin,cap_net_bind_service,cap_sys_rawio+ep /opt/schily/bin/readcd
+	To set up the capabilities on Linux.
+
+
+-	Allow to compile without Linux libcap using "smake COPTX=-DNO_LINUX_CAPS LIB_CAP="
+
+-	Readcd now checks whether there are sufficient fine-grained privileges.
+
+-	Typo correction in a comment
+
+-	Trying to avoid to confuse users
+	on Solaris and Linux where a fine-grained privilege implementation
+	exists. Before, fine-grained privileges have been given up after
+	initializing the program and this may result in a root user that
+	is treated as a normal user that cannot write into directories 
+	without global write permission. The named programs now no longer
+	give up privileges in case they have been called with the needed
+	privileges already and thus the programs cannot be used for
+	privilege escalations anymore.
+
+-	readcd -c2scan now also prints the percentage of sectors with C2 errors.
+
+Scgcheck:
+
+-	Scgcheck now uses gettext() to translate texts.
+	There are currently not yet translated texts. The cdrtools project needs help
+	with translating the texts.
+
+-	Several changes to support mingw and MSC
+
+-	Link now against $(LIB_CAP) also as librscg needs it on Linux
+
+
+Scgskeleton:
+
+-	Scgskeleton now uses gettext() to translate texts.
+	There are currently not yet translated texts. The cdrtools project needs help
+	with translating the texts.
+
+-	Link now against $(LIB_CAP) also as librscg needs it on Linux
+
+
+Btcflash:
+
+-	Btcflash now uses gettext() to translate texts.
+	There are currently not yet translated texts. The cdrtools project needs help
+	with translating the texts.
+
+-	Link now against $(LIB_CAP) also as librscg needs it on Linux
+
+Mkisofs (Maintained/enhanced by Jörg Schilling since 1997, originated by Eric Youngdale):
+
+-	Added a hint that the option -b needs a boot image argument that is
+	located inside the ISO image tree.
+
+-	Added an additional hint on changed files in case that mkisofs encounteres
+	a file that did grow or shrink.
+
+-	Removed a superfluous second #include <schily/stat.h> from isoinfo.c
+
+-	Typo corrections in mkisofs/mkisofs.8 man page
+
+-	A bug was fixed with -sort and files > 4 GB. Mkisofs now correctly sorts the
+	disk addresses of the file content is such a case.
+
+-	New options -long-rr-time -no-long-rr-time -short-rr-time allow to control
+	the time format used for files with Rock Ridge extensions.
+
+	-	The short time format supports year 1900..2155 with a one second
+		granularity
+
+	-	The long time format supports year 0..9999 with a 10ms granularity.
+
+	Note that the Linux kernel only implements partial Rock Ridge support and 
+	unfortunately does not support the long time format. It is planned to 
+	make the long time stamp format the default in the future, so I encourage
+	the Linux kernel folks to add support for this time format.
+
+-	isoinfo now supports the new option -find (via libfind) and allows to use
+	find expressions on ISO-9660 images. If the find expression neither contains
+	-print nor -ls and isoinfo is called:
+
+		isoinfo -i xxx.iso -l -find .....
+
+	the ISO-9660 listing function from isoinfo is called whenever the find expression
+	returns TRUE. If there is a print or list primary in the find expression, then
+	the ISO-9660 listing is never called.
+
+
+-	Mkisofs and the diagnostic programs now use gettext() to translate texts.
+	There are currently not yet translated texts. The cdrtools project needs help
+	with translating the texts.
+
+-	Add several forgotten options to the mkisofs man page.
+
+-	Fixed several typos in the mkisofs man page and in mkisofs
+
+-	Mkisofs now correctly supports El Torito multi boot entries by introducing
+	a Boot Section Header before a list of alternate boot entries.
+
+-	New option -eltorito-platform allows to set the El Torito platform id
+	for a boot entry or for a list of boot entries. Supported values for the
+	parameter are:
+
+	-	x86	the standard value vor x86 based PCs
+
+	-	PPC	the Power PC platform
+
+	-	Mac	The Apple Mac platform
+
+	-	efi	EFI based boot for PCs
+
+	-	#	an arbitrary numerical value
+
+-	New option -modification-date allows to specify a predictable UUID for grub.
+
+	The syntax is: YYYY[MM[DD[HH[MM[SS]]]]][.hh][+-GHGM] and is forgiving
+	enought to accept the pupular POSIX date format created by:
+
+		date "+%Y-%m-%d %H:%M:%S %z"
+
+-	The mkisofs diagnostic tools now support MSC that does not support
+	POSIX terminal handling.
+
+-	While introducing the new option -modification-date, we did accidently remove the
+	code to set up the creation date in te PVD. Now creation date again contains 
+	correct data.
+
+-	Avoid to access illegal memory from dvd_file.c::uniq()
+
+-	Avoid a 32 bit integer overflow while computing sector addresses for
+	Rock Ridge CE entries.
+
+-	A compile bug with QNX was corrected
+
+-	A new option -ignore-error alows to continue on some errors.
+
+-	Revert a change to dvd_file.c::uniq() that was made because of a "valgrind"
+	warning that claims illegal memory access. With the change from 3.01a09, mkisofs
+	however does not deal correctly with DVD-Video padding, so the valgrind warning is
+	wrong.
+
+-	mkisofs now reserves more space for the file names to avoid a
+	path buffer overrun
+
+-	Fixed a bug that caused to put more than one UDF direcory entry for a file
+	in case that the file is a ISO-0660 multi-segment file.
+
+-	Fixed a bug that caused the wrong start sector address to be used for UDF
+	in case that the file is a ISO-9660 multi-segment file and the -sort option 
+	was used.
+
+-	mkisofs now identifies itdelf by default (inside the APPID string)
+	as being UDF capable.
+
+-	mkisofs now sets link count and "unique id" == inode number for files.
+	Note that this may still not result in useful hardlinked files on all
+	platforms as e.g. Solaris and Linux ignore the UDF unique ID and rather
+	use the location of the file_entry as inode number. This will never
+	return the same number for different filenames that point to the
+	same file data and thus prevents hard linked files from being visible.
+
+	This is however not a Solaris problem, the problem is rather in the
+	UDF standard that does not require the unique id to be in a 32 bit
+	range as long as the media size is = 8 TB. Note that 32 bit UNIX
+	programs cannot access files with an inode number that cannot be
+	expressed as 32 bit number, so inode numbers that do not fit into
+	32 bits may cause problems. Ths only way to work around this problem
+	would be to enance the Solaris and Linux UDF filesystem module to
+	recognize whether a filesystem has been created by mkisofs that grants
+	useful inode numbers. The same is already done for ISO-9660.
+
+-	mkisofs now supports additional file types with UDF:
+
+	-	named pipes
+	-	sockets
+	-	character devices
+	-	block devices
+
+-	mkisofs now supports all three UNIX times with microsecond granularity in UDF
+
+-	mkisofs now sets correct user/group/permission for symlinks in UDF
+
+-	mkisofs now supports S_ISUID, S_ISGID, S_ISVTX (set uid, set gid, sticky) in UDF
+
+-	-new-dir-mode now just superseeds the effect of -dir-mode on
+	directories that have been "invented" by mkisofs.
+	This is a more intuitive behavior.
+
+-	Link now against $(LIB_CAP) also as librscg needs it on Linux
+
+-	Make mkisofs compile without -DUDF and without -DDVD_VIDEO
+	Thanks to a hint from rmd4work@mail.ru
+
+-	Fixed a typo in the mkisofs man page (had \-max\-ISO-9660\-filenames
+	instead of \-max\-iso9660\-filenames)
+
+-	mkisofs/mkisofs.8 fixed illegal troff sequence "\\" to "\e"
+
+-	Try to avoid a direct string "/dev/null" in mkisofs.c to allow
+	it to work on Win-DOS without POSIX layer.
+
+-	Better error messages in mkisofs/apple.c
+
+-	mkisofs now inplements a new option -legacy that allows to get back the
+	options -H/-L/-P that have been deprecated in 2002 and disabled in 2006
+	in the definition from the 1990s.
+	If you like to use this feature, write a wrapper shell script that calls:
+
+		mkisofs -legacy "$@"
+
+	Note that -H/-L/-P have been disabled in 2006 and mkisofs will soon
+	introduce -H/-L/-P with a POSIX compatible definition as announced since
+	2002. So take care to convert your scripts to call:
+
+		-map			for the old definition of -H 
+					(valid between 2000 and 2002)
+		-allow-leading-dots	for the old definition of -L
+					(valid between 1995 and 2002)
+		-publisher		for the old definition of -P
+					(valid between 1993 and 2002)
+
+-	The mkisofs now correctly documents the new behavior from libsiconv
+
+-	mkisofs was slightly modified to reduce CPU time requirements.
+	It now reads/writes in 64kBytes chunks instead of stdio buffer
+	size which is typically 8 kB.
+
+-	Fixed a typo in the mkisofs man page.
+	Thanks to a hint from Donald R Laster Jr from Slackware.
+
+-	Mkisofs now in addition prints "-iso-level 3 or more required"
+	in case that a large file was skipped because of the current mkisofs settings.
+
+	Thanks to a hint from Donald R Laster Jr from Slackware.
+
+-	A problem in isoinfo has been fixed.
+	This problem caused "isoinfo -R -find -ls" to print Jan 1 1970 timestamps
+	in case that Rock Ridge was not present.
+
+	WARNING: the new version of the isoinfo program makes use of the 
+		*at() series of functions that have been introduced by Sun
+		in August 2001 and added to POSIX.1-2008. For older platforms,
+		libschily now includes emulations for these functions but
+		these emulations have not yet been tested thouroughly.
+		Please report problems!
+
+-	The man page isoinfo.8 was enhanced by mentioning the option -s (print
+	file sizes in multiple if 2048 byte sectors) and by documenting the 
+	list format that is used with -l.
+
+-	isoinfo now evaluates the Rock Ridge "PN" signature and thus supports
+	to display and use the major/minor device numbers.
+
+-	isoinfo now extracts time stamps with sub second granularity in 
+	order to be able to set fine-grained file timestamps, see -X option
+	below.
+
+-	isoinfo now knows how to find out whether a ISO-9660 filesystem was
+	created by a newer mkisofs and thus includes useful inode numbers
+	in ISO-9660. These ISO-9660 based inode numbers are used in case that
+	there is no Rock Ridge-1.12 that includes inode numbers in the "PX"
+	signature.
+
+-	isoinfo now has a new option -X that extracts all files (in case that
+	-find is not used) or files selected by a -find expression. Note that
+	-find expressions may include -chown, -chgrp and -chmod to modify the
+	meta data of files.
+
+-	Fixed a bug in mkisofs: -eltorito-platform Mac no longer uses the
+	constant EL_TORITO_ARCH_PPC but EL_TORITO_ARCH_MAC as expected.
+	Thanks to Ady <ady-sf@hotmail.com> for reporting.
+
+-	Fixed an option parsing bug in mkisofs that was a result from
+	option names that are beginning substrings of others. Mkisofs did
+	try to fix this in 2006, but it seems that one option was missed
+	in 2006. Now -hide-hfs was fixed, thanks to: Valery Ushakov
+
+-	The mkisofs program isoinfo no longer tries to print Rock Ridge
+	attribute data for ISO images that do not have correct RR data.
+
+-	The mkisofs program isovfy no longer tries to print Rock Ridge
+	attribute data for ISO images that do not have correct RR data.
+
+-	The mkisofs program isodump no longer tries to print Rock Ridge
+	attribute data for ISO images that do not have correct RR data.
+
+	This is a result from trying to use these programs on the
+	plan9 CD image.
+
+
+-	mkisofs: isodump did not compile on non c99 compilers.
+
+-	mkisofs/diag/isoinfo.c now test for HAVE_MKNOD in order to avoid
+	calling mknod() on MINGW32.
+
+-	mkisofs has also been corrected to use
+	S_IFCTG and S_ISCTG instead of the S_IFCNT and S_ISCNT
+
+
+HELIOS TODO:
+
+	-	Add the HELIOS UNICODE mapping code. This needs to be done 
+		at UCS-2 level for Joliet and UDF (instead of UTF-8) and only
+		for Rock Ridge (in case of a UTF-8 based target locale) using
+		UTF-8 based translations.
+
+	-	Make the Apple extensions work again with "mkisofs -find"
+
+TODO:
+
+	-	read Joliet filenames with multi-session if no TRANS.TBL
+		or RR is present. I am looking for a volunteer for this task!
+
+		Note that this can never be 100% correct as there is no relation
+		between the names on the master (UNIX) filesystem, the ISO-9660
+		names and the Joliet names. Only the Rock Ridge names are
+		untranslated with respect to the original files on the
+		master (UNIX) filesystem.
+
+	-	add libecc/edc for CDI and similar.
+
+
+CYGWIN NT-4.0 NOTES:
+
+To compile on Cygwin32, get Cygwin and install it.
+For more information read README.win32
+
+The files are located on:
+
+http://sourceforge.net/projects/cdrtools/files/alpha/ ...
+
+NOTE:	These tar archives are 100% POSIX compatible. GNU tar may get some
+	minor trouble. If you like a 100% POSIX compliant tar, get star from
+	http://sourceforge.net/projects/s-tar/files/ of from the schily-*
+	tarball at: http://sourceforge.net/projects/schilytools/files/
+
+WARNING: Do not use 'winzip' to extract the tar file!
+	Winzip cannot extract symbolic links correctly.
+
+Joerg

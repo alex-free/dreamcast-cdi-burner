@@ -1,0 +1,61 @@
+CD-Text Usage (to copy CD-Text from master CD):
+
+	cdda2wav -D 6,0 -vall -B	# To extract audio information
+	cdrecord dev=6,0 -vv -toc	# To extract CD-Text information
+
+	and then
+
+	cdrecord dev=6,0 -v -dao textfile=cdtext.dat -useinfo *.wav
+	or
+	cdrecord dev=6,0 -v -raw96r textfile=cdtext.dat -useinfo *.wav
+
+	If the CD-Text information contains more CRC errors than
+	cdrecord can correct, you need to reload the CD and to
+	re-read the CD-Text information from the master disk.
+
+	Writing of CD-Text is supported for all drives that support
+	CD-Text in SAO write mode and for all drives that support
+	to write in RAW/RAW96R mode (use -raw96r in this case).
+
+	NOTE: not all writers that support MMC SAO mode support
+		to write CD-Text in this write mode.
+		If you have a drive that does not support CD-Text
+		but supports RAW/RAW96R mode use this mode as
+		in RAW/RAW96R mode the drive does not need to know
+		about CD-Text. This way even old drives like the
+		Plextor PX-R 412C will write CD-Text.
+
+	NOTE that cdda2wav will read CD-Text and fill in the 
+	CD-Text fields in the *.inf files if vou use -vall.
+
+	The new cdda2wav option cddb= allows you to tell cdda2wav to
+	retrieve CDDB information from freedb.freedb.org.
+	cddb=0 means ask if ambiguous, cddb=1 means take first entry.
+	The information in this case is filled into the fields
+	in the *.inf files.
+
+Creating a CD with CD-Text based on CDDB information from freedb.freedb.org:
+
+	Tell cdda2wav to fetch data from freedb.freedb.org, call
+
+	cdda2wav -D 6,0 -vall -B cddb=1	# To extract audio information/fetch CDDB data
+
+	and then call
+
+	cdrecord dev=6,0 -v -dao -text -useinfo *.wav
+	or
+	cdrecord dev=6,0 -v -raw96r -text -useinfo *.wav
+
+
+If you like to create your own CD-text data for a CD use the
+following method:
+
+	First extract all tracks with cdda2wav -vall (see above),
+
+	then edit the *.inf Files and add album and song titles.
+
+	Now call cdrecord as if the *.inf files contain CD-Text 
+	information.
+
+	Note that it is recommended to use less that 160 characters
+	for a single string.

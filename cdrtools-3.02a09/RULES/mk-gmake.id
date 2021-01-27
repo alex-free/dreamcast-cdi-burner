@@ -1,0 +1,100 @@
+#ident "@(#)mk-gmake.id	1.24 12/12/29 "
+###########################################################################
+# Written 1996 by J. Schilling
+###########################################################################
+#
+# Name of make program (make/gmake/smake)
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+
+_SETENV=	$(_UNIQ)$(SETENV)
+__SETENV=	$(_SETENV:$(_UNIQ)=rules.env)
+___SETENV=	$(__SETENV:$(_UNIQ)none=rules.nul)
+SET_ENV=	$(___SETENV:$(_UNIQ)%=%)
+
+include		$(SRCROOT)/$(RULESDIR)/$(SET_ENV)
+
+MAKEPROG=	gmake
+.SHELLFLAGS=	-ce	# switch gmake-3.82 ff. to POSIX behavior
+WAIT=			# gmake is unable to wait for parallel targets
+
+SPACE=		$(_UNIQ:$(_UNIQ)%= )
+PRE_NUMBER=	pre\#
+NUMBER_SIGN=	$(PRE_NUMBER:pre%=%)
+
+###########################################################################
+#
+# standard (automatic) machine identification
+#
+###########################################################################
+#
+# XP_ARCH = uname -p	= mach	  # Processor (sparc/mc68020)
+# XK_ARCH = uname -m	= arch -k # Kernel (sun3/sun4c/sun4m)
+# XM_ARCH = arch	~ arch -k # Machine (sun3/sun4)
+#
+###########################################################################
+#
+# Due to a bug in /usr/xpg*/bin/tr on Solaris, we cannot directly translit
+# many different chars to '-' using e.g. tr ', /\\()"' ',------'
+# This is why we first tranliterate everything to '/ and later to '-'
+#
+# Due to a bug in *BSDs sed, we cannot use sed 'y%ABC\\%abc-%'
+#
+###########################################################################
+
+ifndef		ARCH_DONE
+
+ifndef		GMAKE_NOWARN
+__gmake_warn:=	$(shell cat $(SRCROOT)/$(RULESDIR)/gmake.wrn 1>&2; sleep 2)
+endif
+
+_MACHCMD=	(mach || uname -p || true)	2> /dev/null
+_ARCHCMD=	(arch || /usr/ucb/arch || true)	2> /dev/null
+
+XP_ARCH:=	$(shell $(_MACHCMD) | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-')
+XK_ARCH:=	$(shell uname -m    | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-')
+XM_ARCH:=	$(shell $(_ARCHCMD) | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-')
+
+P_ARCH=		$(XP_ARCH)
+K_ARCH=		$(XK_ARCH)
+M_ARCH=		$(XM_ARCH)
+
+_XP_ARCH=	$(XP_ARCH:unknown=$(K_ARCH))
+
+_P_ARCH=	$(_UNIQ)$(_XP_ARCH)
+__P_ARCH=	$(_P_ARCH:$(_UNIQ)=$(K_ARCH))
+P_ARCH=		$(__P_ARCH:$(_UNIQ)%=%)
+
+_M_ARCH=	$(_UNIQ)$(XM_ARCH)
+__M_ARCH=	$(_M_ARCH:$(_UNIQ)=$(K_ARCH))
+M_ARCH=		$(__M_ARCH:$(_UNIQ)%=%)
+
+OSNAME:=	$(shell uname -s | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-')
+OSREL:=		$(shell uname -r | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-')
+OSVERSION:=	$(shell uname -v | tr 'ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"' 'abcdefghijklmnopqrstuvwxyz,//////' | tr ',/' ',\-')
+
+ARCH_DONE=	TRUE
+
+export		XP_ARCH
+export		K_ARCH
+export		XM_ARCH
+export		P_ARCH
+export		M_ARCH
+export		OSNAME
+export		OSREL
+export		OSVERSION
+export		ARCH_DONE
+
+endif

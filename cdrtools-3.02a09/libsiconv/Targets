@@ -1,0 +1,3 @@
+#ident @(#)Targets	1.1 07/05/19 
+#
+CFILES=	sic_nls.c

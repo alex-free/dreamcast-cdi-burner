@@ -1,0 +1,5 @@
+# @(#)Targets	1.1 08/10/25 Copyright 2008 J. Schilling
+
+CFILES=		cdrdeflt.c
+
+HFILES=		cdrdeflt.h

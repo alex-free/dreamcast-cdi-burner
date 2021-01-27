@@ -1,0 +1,111 @@
+#ident @(#)rules.ins	1.27 17/08/01 
+###########################################################################
+# Written 1996-2017 by J. Schilling
+###########################################################################
+#
+# Rules for target installation
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+# A copy of the CDDL is also available via the Internet at
+# http://www.opensource.org/licenses/cddl1.txt
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+$(DEST_DIR)$(INSBASE)/$(INSDIR)$(SUBINSDIR)$(SUBINS):
+			$(INSMKDIR) -p $@
+$(SRCROOT)/bins/$(OARCH):
+			$(MKDIR) -p $@
+
+$(DEST_DIR)$(INSBASE)/$(INSDIR)$(SUBINSDIR)$(SUBINS)/$(TARGET)$(_EXEEXT):	$(PTARGET) \
+					$(DEST_DIR)$(INSBASE)/$(INSDIR)$(SUBINSDIR)$(SUBINS)
+			$(INSTALL) $(INSFLAGS) $(INSOPTX) $(PTARGET) $@
+
+$(SRCROOT)/bins/$(OARCH)/$(TARGET)$(_EXEEXT):	$(PTARGET)
+			$(INSTALL) $(INSFLAGS) $(INSOPTX) $(PTARGET) $@
+
+PHARDLINKS=	$(HARDLINKS:%=$(DEST_DIR)$(INSBASE)/$(INSDIR)$(SUBINSDIR)$(SUBINS)/%$(_EXEEXT))
+hardlinks:	finstall $(PHARDLINKS)
+
+PSYMLINKS=	$(SYMLINKS:%=$(DEST_DIR)$(INSBASE)/$(INSDIR)$(SUBINSDIR)$(SUBINS)/%$(_EXEEXT))
+symlinks:	finstall $(PSYMLINKS)
+
+_INSMODEINS=	$(_UNIQ)$(INSMODEI)
+__INSMODEINS=	$(_INSMODEINS:$(_UNIQ)=$(INSMODEX))
+INSMODEINS=	$(__INSMODEINS:$(_UNIQ)%=%)
+
+dummy $(PHARDLINKS):	$(DEST_DIR)$(INSBASE)/$(INSDIR)$(SUBINSDIR)$(SUBINS)/$(TARGET)$(_EXEEXT)
+	@echo "	==> INSTALLING link \"$@\""; $(RM) $(RM_FORCE) $@; [ ! -d "$(@D)" ] && sh $(SRCROOT)/conf/mkdir-sh -p "$(@D)"; $(LN) $(DEST_DIR)$(INSBASE)/$(INSDIR)$(SUBINSDIR)$(SUBINS)/$(TARGET)$(_EXEEXT) $@
+
+symdummy $(PSYMLINKS):	$(DEST_DIR)$(INSBASE)/$(INSDIR)$(SUBINSDIR)$(SUBINS)/$(TARGET)$(_EXEEXT)
+	@echo "	==> INSTALLING symlink \"$@\""; $(RM) $(RM_FORCE) $@; [ ! -d "$(@D)" ] && sh $(SRCROOT)/conf/mkdir-sh -p "$(@D)"; $(SYMLINK) $(TARGET)$(_EXEEXT) $@
+
+xinstall: finstall
+	@if [ ".$(XMK_FILE)" != . ] ; then				\
+		for XMK_F in $(XMK_FILE) XxZzY-- ; do			\
+			(						\
+			if [ -r ./$$XMK_F ] ; then				\
+				echo "	==> MAKING \"install\" ON SUBCOMPONENT \"$(CURDIR)/$$XMK_F\""; \
+				"$(MAKE)" -f $$XMK_F $(MAKEMACS) XARCH=$(XARCH) install;	\
+			else							\
+				if [ $$XMK_F != XxZzY-- ]; then		\
+					echo "NOTICE: Partial source ($(DIRNAME)/$$XMK_F) missing";\
+				fi					\
+			fi						\
+			);						\
+		done							\
+	fi
+
+xuninstall:
+	@if [ ".$(XMK_FILE)" != . ] ; then				\
+		for XMK_F in $(XMK_FILE) XxZzY-- ; do			\
+			(						\
+			if [ -r ./$$XMK_F ] ; then				\
+				echo "	==> MAKING \"uninstall\" ON SUBCOMPONENT \"$(CURDIR)/$$XMK_F\""; \
+				"$(MAKE)" -f $$XMK_F $(MAKEMACS) XARCH=$(XARCH) uninstall;	\
+			else							\
+				if [ $$XMK_F != XxZzY-- ]; then		\
+					echo "NOTICE: Partial source ($(DIRNAME)/$$XMK_F) missing";\
+				fi					\
+			fi						\
+			);						\
+		done							\
+	fi
+
+man installman:
+	@if [ ".$(XMK_FILE)" != . ] ; then				\
+		for XMK_F in $(XMK_FILE) XxZzY-- ; do			\
+			(						\
+			if [ -r ./$$XMK_F ] ; then				\
+				echo "	==> MAKING \"$@\" ON SUBCOMPONENT \"$(CURDIR)/$$XMK_F\""; \
+				"$(MAKE)" -f $$XMK_F $(MAKEMACS) XARCH=$(XARCH) $@;	\
+			else							\
+				if [ $$XMK_F != XxZzY-- ]; then		\
+					echo "NOTICE: Partial source ($(DIRNAME)/$$XMK_F) missing";\
+				fi					\
+			fi						\
+			);						\
+		done							\
+	fi
+
+finstall:		$(DEST_DIR)$(INSBASE)/$(INSDIR)$(SUBINSDIR)$(SUBINS) \
+			$(DEST_DIR)$(INSBASE)/$(INSDIR)$(SUBINSDIR)$(SUBINS)/$(TARGET)$(_EXEEXT)
+
+install:	all	finstall \
+			hardlinks symlinks \
+			xinstall
+
+uninstall:	xuninstall
+			$(RM) $(RM_FORCE) $(PSYMLINKS) $(PHARDLINKS) \
+			$(DEST_DIR)$(INSBASE)/$(INSDIR)$(SUBINSDIR)$(SUBINS)/$(TARGET)$(_EXEEXT)
+
+ibins:		all	$(SRCROOT)/bins/$(OARCH) \
+			$(SRCROOT)/bins/$(OARCH)/$(TARGET)$(_EXEEXT)

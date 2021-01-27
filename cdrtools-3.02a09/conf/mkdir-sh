@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+# Replacement for mkdir -p ... functionality.
+#
+# BSD-4.3, NeXT Step <= 3.x and similar don't accept the -p flag
+#
+# @(#)mkdir-sh	1.2 98/12/14 Copyright 1998 J. Schilling
+#
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only.
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+
+if [ $# -lt 1 ]; then
+	echo "Usage: mkdir-sh [-p] dir ...."
+	exit 1
+fi
+
+dop=false
+case $1 in
+-p)
+	dop=true
+	shift
+	;;
+esac
+
+if [ $dop = false ]; then
+	for i in "$@"; do
+		mkdir "$i"
+	done
+else
+	for i in "$@"; do
+		if [ -d "$i" ]; then
+			continue
+		fi
+		# Don't use ${i:-.}, BSD4.3 doen't like it
+		#
+		fullname="$i"
+		if [ ."$i" = . ]; then
+			fullname=.
+		fi
+		dirname=`expr \
+			"$fullname/" : '\(/\)/*[^/]*//*$'  \| \
+			"$fullname/" : '\(.*[^/]\)//*[^/][^/]*//*$' \| \
+			.`
+		sh $0 -p "$dirname"
+		mkdir "$i"
+	done
+fi

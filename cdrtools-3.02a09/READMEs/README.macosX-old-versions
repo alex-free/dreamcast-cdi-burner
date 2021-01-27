@@ -1,0 +1,104 @@
+*********************************************************************************
+*										*
+*			WARNING							*
+*										*
+*	This is only valid for OLD MacOS X versions				*
+*	This are versions _before_ MacOS X-10.1	(Darwin-1.4)			*
+*										*
+*										*
+*********************************************************************************
+
+If uname -a does print something like:
+
+Darwin HOST 1.4 Darwin Kernel Version 1.4: Sun Sep  9 15:39:59 PDT 2001; root:xnu/xnu-201.obj~1/RELEASE_PPC  Power Macintosh powerpc
+
+or a version > 1.4 then you should rather read  README.macosX
+
+/*--------------------------------------------------------------------------*/
+
+Unfortunately, Apple does not deliver a consistent Mac OS-X system
+The longer they work on it, the more bugs they introduce...
+
+In addition, there is no visible 'clean' road of development.
+Release names (from 'uname') are confusing and don't help to find out what
+release they refer to.
+
+/*--------------------------------------------------------------------------*/
+	The next hint is for Mac OS X versions up to January 2000 only:
+
+The file <bsd/dev/scsireg.h> tries to include <kern/queue.h> which cannot
+be found.
+
+To be able to compile, I suggest to create a symlink:
+
+System/Library/Frameworks/System.framework/Versions/B/Headers/kern -> kernserv
+
+To do this, chdir to:
+
+System/Library/Frameworks/System.framework/Versions/B/Headers/
+
+and call 
+
+ln -s kernserv kern
+
+as root.
+/*--------------------------------------------------------------------------*/
+
+
+/*--------------------------------------------------------------------------*/
+	This hint is for Mac OS X version starting ~ April 2000:
+
+Apple did remove the generic SCSI transport driver for unknown reasons!
+Cdrtools compile, but as there is no SCSI transport, you may only write
+CD's connected to other systems using the REMOTE SCSI protocol.
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+	This hint is for Mac OS X versions starting around March 2001:
+
+If your compile log looks like this:
+
+         ==> MAKING "all" ON SUBCOMPONENT ".../libschily.mk"
+         ==> COMPILING "OBJ/powerpc-darwin-cc/cmpbytes.o"
+cmpbytes.c: In function `cmpbytes':
+cmpbytes.c:49: invalid operands to binary |
+make[1]: *** [OBJ/powerpc-darwin-cc/cmpbytes.o] Error 1
+make: *** [all] Error 2
+
+You are hit by the Apple developers. Some time ago they started to introduce
+a file <inttypes.h> which uses types defines in <sys/types.h>
+While the buggy types are ignored in <sys/types.h> they are used if found
+in <inttypes.h>.
+
+As a workaround, you may edit  
+
+	incs/power-macintosh-darwin-cc/xconfig.h
+
+after it has been created by autoconf and make the lint containing
+HAME_INTTYPES_H this way:
+
+/* #undef HAVE_INTTYPES_H */    /* to use UNIX-98 inttypes.h */ 
+
+This will tell the autoconf using code to ignore the system supplied
+<inttypes.h> and use the internal version.
+
+IMPORTANT: Don't forget to tell the Apple support that MacOSX sucks until they
+fix such fundamental bugs in the system include files!
+
+In case you are interested in the full details: the reason why cdrecord
+does not compile is that MacOS X defines a type
+
+typedef	int *		intptr_t;
+typedef	unsigned int *	uintptr_t;
+
+instead of the correct:
+
+typedef	long		intptr_t;
+typedef	unsigned long	intptr_t;
+
+... a result of either Apple developers being unwilling to read or unable to 
+understand simple standards written in English :-(
+
+See: http://www.opengroup.org/onlinepubs/7908799/xsh/inttypes.h.html
+
+/*--------------------------------------------------------------------------*/

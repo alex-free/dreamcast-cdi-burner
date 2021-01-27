@@ -1,0 +1,47 @@
+# @(#)CONTRIBUTING	1.4 14/12/03 Copyright 2006 J. Schilling
+
+If you like to send patches or code to add to the project, you are welcome.
+
+Before you send code or patches, please make sure that the following
+requirements apply to your code:
+
+§1	Your code does not duplicate existing functionality
+
+§2	Integrating your code does not take more time than it would
+	take to write it from scratch
+
+§3	Your code is cleanly written, is byteorder independent and
+	does compile on all supported platforms
+
+§4	Your code does not cause this project to break or otherwise
+	fail on one of the supported platforms
+
+§5	Your code does not rely on a specific compiler
+
+§6	Your code is cleanly indented (matches the coding style 
+	from "Cstyle"). See files:
+
+		http://sf.net/projects/schilytools/files/cstyle/Cstyle
+	and
+		http://sf.net/projects/schilytools/files/cstyle/cstyle
+
+§7	You allow me to publish the code under any OSI approved
+	license (see http://www.opensource.org/). If you like to
+	see your code under a specific license and this license
+	grants less freedom than the CDDL, there is little chance
+	to integrate your code.
+
+§8	Include not only the code patches but also include the related
+	extensions to the man pages.
+
+§9	If you like to make a bigger contribution, provide white papers
+	and other documentation that allows to understand your patch
+	within a reasonable amount of time.
+
+Pleae note for §7: Licenses may not last forever and it may sometimes
+be apropriate to change the license. In case that contributors did
+insist in a specific license when contributing and are no longer
+reachable via mail, this undertaking may be impossible and kill the 
+future of the project. So please help with your contributing to ensure
+the future of this project.
+

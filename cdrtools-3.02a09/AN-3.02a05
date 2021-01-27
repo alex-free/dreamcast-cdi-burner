@@ -1,0 +1,187 @@
+***************** Important news ******************************
+
+For the 'Slottable Source Plugin Module' SSPM Features read README.SSPM
+
+***************** Please Test *********************************
+
+NEW features of cdrtools-3.02a05:
+
+This is the first localization step for cdrtools. All programs now (hopefully)
+call gettext() for all strings that need localization.
+
+-	The next step will include dgettext() calls for the libraries.
+
+-	The following step will include the extracted strings
+
+-	The last step will include German translations and install support
+	for the resulting binary message object files.
+
+----------> Please test and report compilation problems! <---------
+
+***** NOTE: As mentioned since 2004, frontends to cdrtools should *****
+*****		call all programs from cdrtools in the "C" locale *****
+*****		by e.g. calling: LC_ALL=C cdrecord ....		  *****
+*****		unless these frontends support localized strings  *****
+*****		used by the cdrtools with NLS support.		  *****
+
+This version compiles on Win-DOS using the Microsoft compiler cl.exe but
+warning: due to missing POSIX compliance with basic features (e.g. stat()
+does not return inode numbers), there are many problems with the resulting
+code and thus it is recommended to better use a POSIX layer on top of 
+WIN-DOS.
+
+		*** WARNING        ***
+		*** Need new smake ***
+
+	*** Due to the fact that schily-2014-04-03 introduced to use new macro
+	*** expansions and a related bug fix in smake, you need a new smake
+	*** to compile this source. To ensure this, get a recent "schily"
+	*** tarball from http://sourceforge.net/projects/schilytools/files/
+	*** and call:
+
+	cd ./psmake
+	./MAKE-all
+	cd ..
+	psmake/smake
+	psmake/smake install
+
+	The new smake version mentioned above is smake-1.2.4.
+	Note that smake-1.2.5 exists and is preferrable.
+
+	Now you have a new smake that is able to compile this source.
+
+	Note that the major makefile restructuring introduced in
+	schily-2014-04-03 is now more than one month ago and thus seems
+	to work without problems.
+
+	WARNING: the new version of the isoinfo program makes use of the 
+		*at() series of functions that have been introduced by Sun
+		in August 2001 and added to POSIX.1-2008. For older platforms,
+		libschily now includes emulations for these functions but
+		these emulations have not yet been tested thoroughly.
+		Please report problems!
+
+
+All:
+
+-	include/schily/prototyp.h now defines ALERT to abstract from 
+	the K&R C vs. ANSI C and the missing support for \a in K&R C
+
+Libschily:
+
+-	libschily/getfp.c Try to disable the address sanitizer for getfp()
+	to avoid unhelpful messages.
+	Thanks to a hint from Heiko Eißfeldt.
+
+-	libschily/searchinpath.c Avoid a memory leak on platforms that do not
+	support getexecname()
+	Thanks to a hint from Heiko Eißfeldt.
+
+Libcdrdeflt:
+
+Libdeflt:
+
+Libedc (Optimized by Jörg Schilling, originated by Heiko Eißfeldt heiko@hexco.de):
+
+Libfile:
+
+Libfind:
+
+Libhfs_iso:
+
+Libmdigest:
+
+-	libmdigest: sha3 entry function names changed to match
+	other digest functions. 
+
+-	libmdigest: the shared library mapfile now includes the sha3 functions
+
+Libparanoia (Ported/enhanced by Jörg Schilling, originated by Monty xiphmont@mit.edu):
+
+Libscg:
+
+Libscgcmd:
+
+Libsiconv:
+
+Rscsi:
+
+Cdrecord:
+
+Cdda2wav (Maintained/enhanced by Jörg Schilling, originated by Heiko Eißfeldt heiko@hexco.de):
+
+Readcd:
+
+Scgcheck:
+
+Scgskeleton:
+
+Btcflash:
+
+Mkisofs (Maintained/enhanced by Jörg Schilling since 1997, originated by Eric Youngdale):
+
+-	mkisofs: Avoid coredumps from dereferencing NULL pointers with some
+	kind of rotten iso images when in multi session mode.
+	Thanks for Heiko Eißfeldt for reporting this problem based on a test
+	using "The American fuzzy lop".
+
+-	mkisofs: Avoid coredumps from dereferencing NULL pointers with some 
+        kind of rotten iso images when in multi session mode and other incorrect
+	length computations. This in special means multi.c
+	Thanks for Heiko Eißfeldt for reporting and for doing a code review.
+
+-	mkisofs: Avoid to address wrong memory when scanning old ISO images.
+	Thanks for Heiko Eißfeldt for reporting and for doing a code review.
+
+-	mkisofs/joliet.c: convert_to_unicode() no longer tries to access the
+	input string past the null byte.
+	Thanks to a hint from Heiko Eißfeldt.
+
+-	mkisofs/write.c: mkisofs -sort with multi extent files (files > 4 GB)
+	no longer computes the size of the file twice while computing the
+	start sectors for files.
+	Thanks to a report from Arpad Biro <biro.arpad@gmail.com>
+
+
+
+HELIOS TODO:
+
+	-	Add the HELIOS UNICODE mapping code. This needs to be done 
+		at UCS-2 level for Joliet and UDF (instead of UTF-8) and only
+		for Rock Ridge (in case of a UTF-8 based target locale) using
+		UTF-8 based translations.
+
+	-	Make the Apple extensions work again with "mkisofs -find"
+
+TODO:
+
+	-	read Joliet filenames with multi-session if no TRANS.TBL
+		or RR is present. I am looking for a volunteer for this task!
+
+		Note that this can never be 100% correct as there is no relation
+		between the names on the master (UNIX) filesystem, the ISO-9660
+		names and the Joliet names. Only the Rock Ridge names are
+		untranslated with respect to the original files on the
+		master (UNIX) filesystem.
+
+	-	add libecc/edc for CDI and similar.
+
+
+CYGWIN NT-4.0 NOTES:
+
+To compile on Cygwin32, get Cygwin and install it.
+For more information read README.win32
+
+The files are located on:
+
+http://sourceforge.net/projects/cdrtools/files/alpha/ ...
+
+NOTE:	These tar archives are 100% POSIX compatible. GNU tar may get some
+	minor trouble. If you like a 100% POSIX compliant tar, get star from
+	http://sourceforge.net/projects/s-tar/files/ of from the schily-*
+	tarball at: http://sourceforge.net/projects/schilytools/files/
+
+WARNING: Do not use 'winzip' to extract the tar file!
+	Winzip cannot extract symbolic links correctly.
+
+Joerg

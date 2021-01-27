@@ -1,0 +1,43 @@
+. \"  Manual Seite fuer filepos
+. \" @(#)filepos.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH FILEPOS 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+filepos() \- returns the logical position in a file
+.SH SYNOPSIS
+.nf
+.B
+long filepos(f)
+.B	FILE *f;
+.fi
+.SH DESCRIPTION
+filepos() returns the current file position as an offset in bytes
+from the beginning of the file. This is the position of the next
+byte to be read or written.
+.SH RETURNS
+Returns the current offset into file f.
+.SH NOTES
+The numbering of bytes in a file starts at 0. For byte
+sequential devices, such as a terminal, the value returned will
+be the number of bytes read or written from the current file,
+unless a seek call is issued which changes the logical position
+but does not affect the device.
+.PP
+File positions may be set to arbitrary values (via fileseek() )
+and are only used by the file system when actual reading or
+writing occur.
+.PP
+Normally, the file position is incremented by the amount of data
+transferred for each sequential read or write.

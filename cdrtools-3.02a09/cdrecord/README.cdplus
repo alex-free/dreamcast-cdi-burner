@@ -1,0 +1,75 @@
+Cdrecord allows you to create multi-session CD's with all
+supported drives. Cdrecord comes with a hacked mkisofs
+that allows you to that on even on systems that don't support
+a sectorsize 2048 Bytes (e.g. SGI IRIX and old versions of Solaris)
+or systems that don't support raw device access (e.g. OS/2 W95/W98/WNT).
+This is possible because current versions of mkisofs may
+use my scg driver to read the old session from the CD-Recorder.
+
+According to www.cd-info.com, a CD+ is a CD with two sessions.
+The first session is an audio session, the second session a data
+session.
+
+Creating a CD+ is first writing an audio session in 
+multi session mode and then writing a data session.
+
+If you like to append a filesystem to a audio CD, first extract the 
+CD by calling:
+
+	cdda2wav -B -vall
+
+This first audio session may be written in TAO mode with the command
+
+	cdrecord -multi -audio file1 ....
+
+or in DAO mode with the command
+
+	cdrecord -dao -multi -useinfo -audio file1 ....
+
+To add the second session that contains the data track, you need
+to create an ISO-9660 file system that starts not at sector 0.
+
+With the current mkisofs, you must use the following method:
+
+
+-	First call cdrecord -msinfo for your prepared multi-session audio CD.
+
+	you will get something like 0,12345
+
+-	Now call mkisofs:
+
+	mkisofs -o fs.raw -C 0,12345 root_directory_for_new_cd
+
+	replace 0,12345 with your actual cdrecord -msinfo output.
+
+the image in fs.raw may now be written with cdrecord as second session.
+
+See my README.multi for more info on how to create multi session CD's
+
+
+The procedure again in short form:
+
+	cdda2wav -vall -B
+
+	cdrecord -multi -audio audio_tracks ....
+or
+	cdrecord -dao -useinfo -multi -audio audio_tracks ....
+
+	cdrecord -msinfo ....
+	(output is e.g. 0,12345)
+
+	mkisofs -R -o cd_plus.raw -C 0,12345 root_dir_of_fs
+
+	cdrecord -data cd_plus.raw
+or
+	cdrecord -multi cd_plus.raw
+
+Note that most drives do not support to append the data session in SAO mode.
+For this reason, it is recommended to add the -tao option to the cdrecord
+command line that appends cd_plus.raw to the audio session.
+
+Note: If you want to create an HFS hybrid as the data track, then you must
+use the '-part' option to mkisofs. Otherwise, the data track will be mounted
+as an ISO9660/Joliet CD when used on a Mac.
+	
+Jörg

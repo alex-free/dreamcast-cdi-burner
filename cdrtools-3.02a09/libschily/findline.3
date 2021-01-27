@@ -1,0 +1,64 @@
+. \"  Manual Seite fuer findline
+. \" @(#)findline.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH FINDLINE 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+findline() \- finds a line that has a matching field
+.SH SYNOPSIS
+.nf
+.B
+int findline(fname,delim,string,field,array,arraysize)
+.B
+	char *fname;	/* file name */
+.B
+	char delim;	/* field delimiter */
+.B
+	char *string;	/* string to match */
+.B
+	int field;	/* field number to match, 0-n */
+.B
+	char *array[];	/* array to fill pointers in */
+.B
+	int arraysize;	/* number of entries in the arrays */
+.fi
+.SH DESCRIPTION
+findline() retrieves specific fields from the first line of the
+file fname.
+.PP
+findline() fills in array with pointers to strings that make up
+the fields on the line. The strings are allocated new storage.
+The field delimiter, delim, is used to break up each line of the
+file into fields. string is the string to match. fieldno is
+the field number to match. Fields are numbered 0..n. array is
+an array of pointers to fill in. arraysize is the number of
+elements in the array.
+.SH RETURNS
+.TP
+.B +1
+match.
+.TP
+.B \-1
+no match.
+.TP
+.B \-2
+arg error.
+.TP
+.B \-3
+cannot open file.
+.TP
+.B \-4
+not enough memory to allocate space for fields.
+.SH NOTES
+Each line of the file must be less than 512 characters long.

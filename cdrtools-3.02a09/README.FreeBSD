@@ -1,0 +1,95 @@
+Important notice for ATAPI support on FreeBSD:
+
+A long time it was not possible to decently write CD's using ATAPI drives
+on FreeBSD because ATAPI was not supported in an orthogonal way on FreeBSD.
+
+These days (in the mid of november 2001) first ATAPI support for FreeBSD is
+available as patch. Please read:
+
+http://www.freebsd.org/cgi/getmsg.cgi?fetch=136602+0+/usr/local/www/db/text/2001/freebsd-current/20011111.freebsd-current
+
+and get the FreeBSD kernel patch from:
+
+http://www.cuivre.fr.eu.org/~thomas/atapicam/
+
+Thanks to Thomas Quinot <thomas@cuivre.fr.eu.org> for the patch.
+
+We tested the patch with a collegue today (23.11.2001), here is the result:
+
+-	From our tests, it compiles with FreeBSD 4.x and FreeBSD current (5.0)
+	but does not boot with FreeBSD current so we used 4.x for our tests
+	I hope that Thomas Quinot <thomas@cuivre.fr.eu.org> and
+	Kenneth D. Merry <ken@kdm.org> will help to make it work with
+	FreeBSD current soon.
+
+-	The Author of the patch, Thomas Quinot <thomas@cuivre.fr.eu.org>, observed
+	that it runs on *some* -CURRENT machines and hangs on *some* -STABLE
+	machines so you may want to test what works best for you.
+
+-	It does not run the SCSI commands in silent mode so the ATAPI low level
+	code prints unwanted kernel messages when you start cdrecord.
+
+-	cdrecord runs without problems so far it has been tested!
+
+You need to apply the patch, change your kernel configuration to include
+
+options                ATAPICAM
+
+and then recompile install and boot the new kernel.
+Make enough /dev/pass* devices and start testing.....
+
+/*--------------------------------------------------------------------------*/
+From shamrock@cypherpunks.to Mon May  3 07:35:50 1999
+Received: from pakastelohi.cypherpunks.to (pakastelohi.cypherpunks.to [212.26.192.194])
+	by mailhub.fokus.gmd.de (8.8.8/8.8.8) with ESMTP id HAA18680
+	for <schilling@fokus.gmd.de>; Mon, 3 May 1999 07:35:48 +0200 (MET DST)
+Received: from localhost (shamrock@localhost)
+	by pakastelohi.cypherpunks.to (8.9.1a/8.9.1) with SMTP id HAA26150
+	for <schilling@fokus.gmd.de>; Mon, 3 May 1999 07:35:44 +0200 (CEST)
+Date: Mon, 3 May 1999 07:35:44 +0200 (CEST)
+From: Lucky Green <shamrock@cypherpunks.to>
+To: schilling@fokus.gmd.de
+Subject: Re: Cdrecord "RR-scheduler not available" (fwd)
+Message-ID: <Pine.BSF.3.96.990503073330.26028A-100000@pakastelohi.cypherpunks.to>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Status: R
+Content-Length: 1423
+
+Schily,
+Please add the following info to your readme for FreeBSD. Enabling POSIX
+scheduling as described below does in fact make the error message go away.
+
+Thanks,
+-- Lucky Green <shamrock@cypherpunks.to> PGP v5 encrypted email preferred.
+
+---------- Forwarded message ----------
+Date: Sun, 2 May 1999 14:46:57 +0200 (SAT)
+From: Khetan Gajjar <khetan@link.freebsd.os.org.za>
+Reply-To: Khetan Gajjar <khetan@os.org.za>
+To: Lucky Green <shamrock@adsl.cypherpunks.to>
+Cc: freebsd-questions@FreeBSD.ORG
+Subject: Re: Cdrecord "RR-scheduler not available"
+
+On Sat, 1 May 1999, Lucky Green wrote:
+
+>Having spent a week on trying to get an ATAPI CD burner working, I saw the
+>light and purchased a SCSI-based burner. It burns, but I am getting an
+>error about the RR-scheduler not being available. What is an RR-scheduler
+>and how do I make it available? (If I even need it....)
+
+Enable the Posix scheduling stuff in your kernel; you'll produce
+more reliable burns at higher speeds if your machine is busy
+(well, that's been my experience)
+
+options         "P1003_1B"
+options         "_KPOSIX_PRIORITY_SCHEDULING"
+options         "_KPOSIX_VERSION=199309L"
+--- 
+Khetan Gajjar       (!kg1779) * khetan@iafrica.com ; khetan@os.org.za
+http://www.os.org.za/~khetan  * Talk/Finger khetan@chain.freebsd.os.org.za
+FreeBSD enthusiast            * http://www2.za.freebsd.org/
+Security-wise, NT is a OS with a "kick me" sign taped to it  
+
+
+

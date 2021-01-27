@@ -1,0 +1,57 @@
+. \"  Manual Seite fuer breakline
+. \" @(#)breakline.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH BREAKLINE 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+breakline() \- breaks a buffer into fields
+.SH SYNOPSIS
+.nf
+.B int breakline(buf, delim, array, max)
+.B	char *buf;
+.B	char delim;
+.B	char *array[];
+.B	int max;
+.fi
+.SH DESCRIPTION
+breakline() breaks the buffer buf into fields delimited by the
+character delim, replacing the occurrences of delim in buf with
+the NULL character ('\\0'). It fills in the array with pointers
+to the beginning of each field in the buffer. max defines how
+many entries to fill in the array. If there are not enough
+fields in buf, the extra entries in the array will point to a
+NULL string.
+.SH RETURNS
+Returns the number of fields actually in the buffer, but not
+more than max.
+.SH EXAMPLES
+.nf
+char *buf = "a:bc:d:efg";
+char *array[10];
+
+breakline(buf, ':', array, 10);
+
+now the `:' are replaced by '\\0' and:
+
+	array[0] = "a";
+	array[1] = "bc";
+	array[2] = "d"
+	array[3] = "efg";
+	array[4] .\|.\|. array[9] = "";
+
+.fi
+.SH "SEE ALSO"
+findline(3)
+.SH NOTES
+none

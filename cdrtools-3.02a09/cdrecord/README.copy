@@ -1,0 +1,52 @@
+Ho to copy CD's and CD-R/CD-RW's
+
+Copying audio CD's:
+
+If you want to copy audio CD's, look for 'cdda2wav'. Be sure tu use use
+at least a cdda2wav-0.95beta or later. Older releases will not read correctly
+from SCSI-3/mmc compliant drives.
+
+Copying data CD's:
+
+The best way to copy a data disk is to copy the raw data on the master CD.
+This may be done by reading the data from the raw device by using 'readcd'.
+
+
+NOTE:	All CD-R's written in Track At Once mode end in two unreadable 
+	run-out sectors. If the disk has been written with a Yamaha CD-R100
+	or with a Yamaha CD-R102, there are even more run-out sectors.
+
+For this reason, you will not be able to read such a CD correctly with 'dd'.
+
+I recommend to write all disks in Disk at Once mode if your drive
+is supported in DAO mode with cdrecord. In addition, you may wish to 
+add padding (see cdrecord / mkisofs man pages).
+
+If you want to copy such a CD directly with cdrecord, you may call:
+
+	cdrecord -v dev=... -isosize /dev/rdsk/c0t6d0s0
+
+But this may fail if the master gives read errors. To copy such a CD to a file
+you may use the program 'readcd' from this package
+
+Call 'readcd [target] [lun] [scsibusno]' and select function 11.
+Or call readcd -help to get alternate usage.
+To prevent readcd from reading the run-out sectors, reduce the 
+number of sectors to copy by 2.
+
+Recent readcd versions may be called: readcd dev=b,t,l f=outfile
+To reduce the numbers of sectors to copy you may use the sectors= option.
+
+If the master disk is made of several partitions (like a Solaris boot CD),
+the best way to copy a CD is to use the program 'readcd'. It ignores
+the partition info and does raw SCSI reads.
+
+If you like to copy audio CD's in a way that preserves as much accuracy as
+possible, use:
+
+cdda2wav -vall -D... -B
+cdrecord -v dev=... -dao -useinfo *.wav
+
+This will preserve pre-gap sizes, indices ...
+
+

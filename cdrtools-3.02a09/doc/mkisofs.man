@@ -1,0 +1,3498 @@
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+NNAAMMEE
+     mkisofs   -   create   an   hybrid   ISO-9660/JOLIET/HFS/UDF
+     filesystem-image with optional Rock Ridge attributes.
+
+SSYYNNOOPPSSIISS
+     mmkkiissooffss [ _o_p_t_i_o_n_s ] [ -oo _f_i_l_e_n_a_m_e ] _p_a_t_h_s_p_e_c [_p_a_t_h_s_p_e_c ...]
+     mmkkiissooffss [ _o_p_t_i_o_n_s ] [ -oo _f_i_l_e_n_a_m_e ] -ffiinndd [_f_i_n_d _e_x_p_r_e_s_s_i_o_n]
+
+DDEESSCCRRIIPPTTIIOONN
+     mmkkiissooffss is effectively a pre-mastering program  to  generate
+     an ISO-9660/JOLIET/HFS/UDF hybrid filesystem.
+
+     ISO-9660/JOLIET/UDF filesystems are  limited  to  a  maximum
+     size  of  8 TB.   The  maximum size of a single file is 8 TB
+     (single  files  in  UDF  are  currently  limited  to  aprox.
+     200 GB).   If  yo  like  to have files larger than 2 GB, you
+     need to specify -iissoo-lleevveell 33 or above.  If a HFS  hybrid  is
+     created,  the  maximum file size for files in the HFS hybrid
+     is 2 GB in any case.
+
+  HHyybbrriidd ffiilleessyysstteemm ssuuppppoorrtt
+     mmkkiissooffss is capable of generating the SSyysstteemm UUssee SShhaarriinngg PPrroo--
+     ttooccooll rreeccoorrddss ((SSUUSSPP)) specified by the RRoocckk RRiiddggee IInntteerrcchhaannggee
+     PPrroottooccooll.. This is used to further describe the files in  the
+     ISO-9660 filesystem to a unix host, and provides information
+     such as longer filenames, uid/gid, posix  permissions,  sym-
+     bolic links, hard links, block and character devices.
+
+     If Joliet, HFS or UDF hybrid command line options are speci-
+     fied,  mmkkiissooffss  will  create  additional separate filesystem
+     meta data for Joliet, HFS or UDF.  The file content in  this
+     case  refers  to the same data blocks on the media.  It will
+     generate a pure ISO-9660 filesystem unless the  Joliet,  HFS
+     or UDF hybrid command line options are given.
+
+     mmkkiissooffss can generate a _t_r_u_e (or _s_h_a_r_e_d) HFS hybrid  filesys-
+     tem. The same files are seen as HFS files when accessed from
+     a Macintosh and as ISO-9660 files when accessed  from  other
+     machines. HFS stands for _H_i_e_r_a_r_c_h_i_c_a_l _F_i_l_e _S_y_s_t_e_m and is the
+     native  file  system  used  on  Macintosh  computers  up  to
+     Mac OS 9.
+
+     As an alternative, mmkkiissooffss can generate the _A_p_p_l_e _E_x_t_e_n_s_i_o_n_s
+     _t_o  _I_S_O-_9_6_6_0  or _U_D_F for each file. These extensions provide
+     each file with CREATOR, TYPE and certain Finder  Flags  when
+     accessed  from  a Macintosh. See the HHFFSS MMAACCIINNTTOOSSHH FFIILLEE FFOORR--
+     MMAATTSS section below.
+
+  FFuunnccttiioonnaall ddeessccrriippttiioonn
+     mmkkiissooffss takes a snapshot of a given directory tree, and gen-
+     erates  a  binary image which will correspond to an ISO-9660
+     or Joliet/HFS/UDF filesystem when written to a block device.
+
+
+
+Version 3.0          Last change: 2010/04/25                    1
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     Each file written to the ISO-9660  filesystem  must  have  a
+     filename  in the 8.3 format (8 characters, period, 3 charac-
+     ters, all upper case), even if Rock Ridge attributes are  in
+     use.   This filename is used on systems that are not able to
+     make use of the Rock Ridge extensions (such as MS-DOS),  and
+     each  filename  in each directory must be different from the
+     other filenames in the same  directory.   mmkkiissooffss  generally
+     tries  to form correct names by forcing the unix filename to
+     upper case and truncating as required, but often times  this
+     yields unsatisfactory results when there are cases where the
+     truncated names are not all unique.  mmkkiissooffss assigns weight-
+     ings  to  each filename, and if two names that are otherwise
+     the same are found the  name  with  the  lower  priority  is
+     renamed  to have a 3 digit number as an extension (where the
+     number is guaranteed to be  unique).   An  example  of  this
+     would  be  the  files  foo.bar  and  foo.bar.~1~  - the file
+     foo.bar.~1~ would be written as FOO000.BAR;1  and  the  file
+     foo.bar would be written as FOO.BAR;1
+
+     When used with various HFS  or  UDF  options,  mmkkiissooffss  will
+     attempt  to recognise files stored in a number of Apple/Unix
+     file formats and will copy the data and  resource  forks  as
+     well  as any relevant finder information. See the HHFFSS MMAACCIINN--
+     TTOOSSHH FFIILLEE FFOORRMMAATTSS  section  below  for  more  about  formats
+     mmkkiissooffss supports.
+
+     Note that mmkkiissooffss is not designed to communicate with  writ-
+     ers   for   optical   media  directly.   Most  writers  have
+     proprietary command sets which vary from one manufacturer to
+     another,  and  you  need a specialized tool like ccddrreeccoorrdd to
+     actually burn the disk.
+
+     The ccddrreeccoorrdd utility is a  utility  capable  of  burning  an
+     actual  disc.   The  latest version of ccddrreeccoorrdd is available
+     from          ffttpp::////ffttpp..bbeerrlliiooss..ddee//ppuubb//ccddrreeccoorrdd           or
+     ffttpp::////ffttpp..bbeerrlliiooss..ddee//ppuubb//ccddrreeccoorrdd//aallpphhaa
+
+     Also you should know that most cd writers are very  particu-
+     lar about timing.  Once you start to burn a disc, you cannot
+     let their buffer empty before you are done, or you will  end
+     up  with  a  corrupt  disc.  Thus it is critical that you be
+     able to maintain an uninterrupted data stream to the  writer
+     for the entire time that the disc is being written.
+
+  DDeeaalliinngg wwiitthh ppaatthh nnaammeess
+     ppaatthhssppeecc is the path of the directory tree to be copied into
+     the  ISO-9660  filesystem.  Multiple paths can be specified,
+     and mmkkiissooffss will merge the files found in all of the  speci-
+     fied path components to form the cdrom image.
+
+     If the option -ggrraafftt-ppooiinnttss has been specified, it is possi-
+     ble  to  graft  the  paths  at  points  other  than the root
+
+
+
+Version 3.0          Last change: 2010/04/25                    2
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     directory, and it is possible to graft files or  directories
+     onto  the  cdrom  image  with names different than what they
+     have in the source filesystem.  This is  easiest  to  illus-
+     trate  with  a couple of examples.   Let's start by assuming
+     that a local file ../old.lis exists, and you wish to include
+     it in the cdrom image.
+
+
+          foo/bar/=../old.lis
+
+     will  include  the  file  old.lis  in  the  cdrom  image  at
+     /foo/bar/old.lis, while
+
+          foo/bar/xxx=../old.lis
+
+     will  include  the  file  old.lis  in  the  cdrom  image  at
+     /foo/bar/xxx.   The  same  sort  of  syntax can be used with
+     directories as well.  mmkkiissooffss will  create  any  directories
+     required such that the graft points exist on the cdrom image
+     - the directories do not need to appear in one of the paths.
+     By default, any directories that are created on the fly like
+     this will have permissions 0555 and appear to  be  owned  by
+     the  person  running mkisofs.  If you wish other permissions
+     or owners of the intermediate directories, see  -uuiidd,  -ggiidd,
+     -ddiirr-mmooddee, -ffiillee-mmooddee and -nneeww-ddiirr-mmooddee.
+
+     mmkkiissooffss will also run on Win9_x/NT_x  machines  when  compiled
+     with        Cygnus'       cygwin       (available       from
+     http://sourceware.cygnus.com/cygwin/). Therefore most refer-
+     ences in this man page to _U_n_i_x also apply to _W_i_n_3_2 or _W_i_n_6_4.
+
+
+OOPPTTIIOONNSS
+     -aabbssttrraacctt _F_I_L_E
+          Specifies the abstract file name in the primary  volume
+          descriptor.   There is space on the disc for 37 charac-
+          ters of information.  The related Joliet entry is  lim-
+          ited  to 18 characters.  This parameter can also be set
+          in the file ..mmkkiissooffssrrcc with ABST=filename.   If  speci-
+          fied in both places, the command line version is used.
+
+          It is up to the user of mmkkiissooffss to include a file  with
+          the apropriate name in the created filesystem tree.
+
+     -AA _a_p_p_l_i_c_a_t_i_o_n__i_d
+          Specifies a text string that will be written  into  the
+          volume  header.   This  should describe the application
+          that will be on the disc.  There is space on  the  disc
+          for  128 characters of information.  The related Joliet
+          entry is limited to 64 characters.  This parameter  can
+          also  be  set  in the file ..mmkkiissooffssrrcc with APPI=id.  If
+          specified in both places, the command line  version  is
+
+
+
+Version 3.0          Last change: 2010/04/25                    3
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          used.
+
+     -aallllooww-lleeaaddiinngg-ddoottss
+
+     -llddoottss
+          Allow ISO-9660 filenames to begin with a period.   Usu-
+          ally,  a  leading dot is replaced with an underscore in
+          order to maintain MS-DOS compatibility.
+          This violates the ISO-9660 standard, but it happens  to
+          work on many systems.  Use with caution.
+
+     -aallllooww-lloowweerrccaassee
+          This options allows lower case characters to appear  in
+          ISO-9660 filenames.
+          This violates the ISO-9660 standard, but it happens  to
+          work on some systems.  Use with caution.
+
+     -aallllooww-mmuullttiiddoott
+          This options allows more than  one  dot  to  appear  in
+          ISO-9660  filenames.   A leading dot is not affected by
+          this option, it may be  allowed  separately  using  the
+          -aallllooww-lleeaaddiinngg-ddoottss option.
+          This violates the ISO-9660 standard, but it happens  to
+          work on many systems.  Use with caution.
+
+     -bbiibblliioo _F_I_L_E
+          Specifies the bibliographic file name  in  the  primary
+          volume  descriptor.   There is space on the disc for 37
+          characters of information.  The related Joliet entry is
+          limited  to  18 characters.  This parameter can also be
+          set in the file  ..mmkkiissooffssrrcc  with  BIBLO=filename.   If
+          specified  in  both places, the command line version is
+          used.
+
+          It is up to the user of mmkkiissooffss to include a file  with
+          the apropriate name in the created filesystem tree.
+
+     -ccaacchhee-iinnooddeess
+          Cache inode and device numbers to find  hard  links  to
+          files.   If mmkkiissooffss finds a hard link (a file with mul-
+          tiple names), then the file will only  appear  once  on
+          the CD. This helps to save space on the CD.  The option
+          -ccaacchhee-iinnooddeess is default on UNIX  like  operating  sys-
+          tems.   Be careful when using this option on a filesys-
+          tem without unique inode numbers as it  may  result  in
+          files containing the wrong content on CD.
+
+          If inodes are not cached, mmkkiissooffss will  revert  to  the
+          old  Rrip  Version-1.10 (see -rrrriipp111100) and mmkkiissooffss will
+          not be able to create ccoorrrreecctt iinnooddee  nnuummbbeerrss  for  zero
+          sized files.
+
+
+
+
+Version 3.0          Last change: 2010/04/25                    4
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     -nnoo-ccaacchhee-iinnooddeess
+          Do not cache inode and device numbers.  This option  is
+          needed whenever a filesystem does not have unique inode
+          numbers. It is the default on old CCyyggwwiinn versions.   As
+          the  Microsoft  operating system that runs below CCyyggwwiinn
+          uses 64 bit inode numbers for NTFS, it  does  not  have
+          unique  inode  numbers in the 32 bit range.  Old Cygwin
+          versions create fake 32-bit inode numbers from  a  hash
+          algorithm  and  thus  create  non-unique  numbers.   If
+          mmkkiissooffss would cache inodes on old Cygwin  versions,  it
+          would  believe  that  some files are identical although
+          they are not. The result in this case  are  files  that
+          contain  the  wrong  content if a significant amount of
+          different files (> ~5000) is in inside the tree that is
+          to   be  archived.   This  does  not  happen  when  the
+          -nnoo-ccaacchhee-iinnooddeess is used, but the disadvantage is  that
+          mmkkiissooffss cannot detect hardlinks anymore and the result-
+          ing CD image may be larger than expected.
+
+          If inodes are not cached, mmkkiissooffss will  revert  to  the
+          old  Rrip  Version-1.10 (see -rrrriipp111100) and mmkkiissooffss will
+          not be able to create ccoorrrreecctt iinnooddee  nnuummbbeerrss  for  zero
+          sized files.
+
+     -bb _e_l_t_o_r_i_t_o__b_o_o_t__i_m_a_g_e
+          Specifies the path and filename of the boot image to be
+          used  when making an "El Torito" bootable CD. The path-
+          name must be relative to the source path  specified  to
+          mmkkiissooffss.. This option is required to make an "El Torito"
+          bootable CD.  The boot image must be exactly  the  size
+          of  either  a  1200,  1440,  or  a  2880 kB floppy, and
+          mmkkiissooffss will use this size  when  creating  the  output
+          ISO-9660  filesystem.  It is assumed that the first 512
+          byte sector should be read from the boot image  (it  is
+          essentially  emulating  a  normal  floppy drive).  This
+          will work, for example, if the boot  image  is  a  LILO
+          based boot floppy.
+
+          If the boot image is not an image of a floppy, you need
+          to   add   one  of  the  options:   -hhaarrdd-ddiisskk-bboooott  or
+          -nnoo-eemmuull-bboooott.  If the system should not boot  off  the
+          emulated disk, use -nnoo-bboooott.
+
+          If the -ssoorrtt option has not been  specified,  the  boot
+          images  are sorted with low priority (+2) to the begin-
+          ning of the medium.  If you don't like this,  you  need
+          to specify a sort weight of 0 for the boot images.
+
+     -eellttoorriittoo-aalltt-bboooott
+          Start with a new set of "El  Torito"  boot  parameters.
+          This  allows  to have more than one El Torito boot on a
+          CD.  A maximum of 63 El Torito boot entries may be  put
+
+
+
+Version 3.0          Last change: 2010/04/25                    5
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          on a single CD.
+
+
+     eerrrrccttll== _n_a_m_e
+
+     eerrrrccttll== _e_r_r_o_r _c_o_n_t_r_o_l _s_p_e_c
+          Add the content from file _n_a_m_e  to  the  error  control
+          definitions or add _e_r_r_o_r _c_o_n_t_r_o_l _s_p_e_c to the error con-
+          trol definitions.  More than one error control file and
+          more  than  one _e_r_r_o_r _c_o_n_t_r_o_l _s_p_e_c as well as a mixture
+          of both forms is possible.
+
+          The reason for using error control is to  make  mmkkiissooffss
+          quiet  about  error  conditions  that  are  known to be
+          irrelevant on the quality of the created filesystem  or
+          to  tell  mmkkiissooffss  to abort on certain error conditions
+          instead of trying to continue with the filesystem.
+
+          A typical reason to use error control  is  to  suppress
+          warnings  about  growing log files while doing a backup
+          on a live file system.  Another typical reason  to  use
+          error  control  is  to  tell mmkkiissooffss to abort if e.g. a
+          file could not be archived  instead  of  continuing  to
+          archive other files from a list.
+
+          The error control file contains a set  of  lines,  each
+          starting  with a list of error conditions to be ignored
+          followed by white space followed by a file name pattern
+          (see  mmaattcchh(1)  or  ppaattmmaattcchh(3)  for more information).
+          The _e_r_r_o_r _c_o_n_t_r_o_l _s_p_e_c uses the same syntax as a single
+          line  from  the  error  control file.  If the file name
+          pattern  needs  to  start  with  white  space,  use   a
+          backslash  to  escape the start of the file name. It is
+          not possible to have new line characters  in  the  file
+          name  pattern.   Whenever an error situation is encoun-
+          tered, mmkkiissooffss checks the lines in  the  error  control
+          file  starting from the top.  If the current error con-
+          dition is listed on a line in the error  control  file,
+          then  mmkkiissooffss checks whether the pattern on the rest of
+          the line matches the current file name.  If this is the
+          case, mmkkiissooffss uses the current error control specifica-
+          tion to control the current error condition.
+
+          The list of error conditions to be handled may use  one
+          or  more  (in  this  case separated by a '|' character)
+          identifiers from the list below:
+
+          AABBOORRTT       If this meta condition is  included  in  an
+                      error  condition, mmkkiissooffss aborts (exits) as
+                      soon as possible after this error condition
+                      has  been  seen  instead  of making mmkkiissooffss
+                      quiet  about  the  condition.   This  error
+
+
+
+Version 3.0          Last change: 2010/04/25                    6
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+                      condition  flag  may  only be used together
+                      with at another error condition or  a  list
+                      of  error  conditions  (separated  by a '|'
+                      character).
+
+          WWAARRNN        If this meta condition is  included  in  an
+                      error condition, mmkkiissooffss prints the warning
+                      about the error  condition  but  the  error
+                      condition  does not affect the exit code of
+                      mmkkiissooffss and the error statistics (which  is
+                      printed  to  the  end) does not include the
+                      related errors.  This error condition  flag
+                      may  only  be used together with at another
+                      error condition or a list of  error  condi-
+                      tions  (separated by a '|' character).  The
+                      WWAARRNN meta condition has a lower  precedence
+                      than AABBOORRTT.
+
+          AALLLL         This is a shortcut for all error conditions
+                      below.
+
+          SSTTAATT        Suppress warnings that  mmkkiissooffss  could  not
+                      ssttaatt(2) a file.
+
+          GGEETTAACCLL      Suppress  warnings  about  files  on  which
+                      mmkkiissooffss  had  problems  to retrieve the ACL
+                      information.
+
+          OOPPEENN        Suppress warnings about  files  that  could
+                      not be opened.
+
+          RREEAADD        Suppress warnings read errors on files.
+
+          WWRRIITTEE       Suppress warnings write errors on files.
+
+          RREEAADDLLIINNKK    Suppress  warnings  rreeaaddlliinnkk(2)  errors  on
+                      symbolic links.
+
+          GGRROOWW        Suppress warnings about files that did grow
+                      while they have been archived.
+
+          SSHHRRIINNKK      Suppress  warnings  about  files  that  did
+                      shrink while they have been archived.
+
+          MMIISSSSLLIINNKK    Suppress warnings  about  files  for  which
+                      mmkkiissooffss  was  unable  to  archive  all hard
+                      links.
+
+          NNAAMMEETTOOOOLLOONNGG Suppress warnings about  files  that  could
+                      not  be  archived  because  the name of the
+                      file is too long for the archive format.
+
+
+
+
+Version 3.0          Last change: 2010/04/25                    7
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          FFIILLEETTOOOOBBIIGG  Suppress warnings about  files  that  could
+                      not  be  archived  because  the size of the
+                      file is too big for the archive format.
+
+          SSPPEECCIIAALLFFIILLEE Suppress warnings about  files  that  could
+                      not  be  archived  because the file type is
+                      not supported by the archive format.
+
+          GGEETTXXAATTTTRR    Suppress  warnings  about  files  on   that
+                      mmkkiissooffss  could  not  retrieve  the extended
+                      file attribute information.
+
+          SSEETTTTIIMMEE     Suppress  warnings  about  files  on   that
+                      mmkkiissooffss  could not set the time information
+                      during extraction.
+
+          SSEETTMMOODDEE     Suppress  warnings  about  files  on   that
+                      mmkkiissooffss could not set the access modes dur-
+                      ing extraction.
+
+          SSEECCUURRIITTYY    Suppress warnings  about  files  that  have
+                      been  skipped  on  extraction  because they
+                      have been considered to be a security risk.
+                      This  currently  applies  to all files that
+                      have a '/../' sequence inside when -....  has
+                      not been specified.
+
+          LLSSEECCUURRIITTYY   Suppress warnings  about  links  that  have
+                      been  skipped  on  extraction  because they
+                      have been considered to be a security risk.
+                      This  currently  applies  to all link names
+                      that  start  with  '/'  or  have  a  '/../'
+                      sequence inside when -sseeccuurree-lliinnkkss has been
+                      specified.  In this case, mmkkiissooffss tries  to
+                      match  the link name against the pattern in
+                      the error control file.
+
+          SSAAMMEEFFIILLEE    Suppress warnings  about  links  that  have
+                      been  skipped  on extraction because source
+                      and target of the link are pointing to  the
+                      same file.  If mmkkiissooffss would not skip these
+                      files, it would end up  with  removing  the
+                      file  completely.   In  this  case, mmkkiissooffss
+                      tries to match the link  name  against  the
+                      pattern in the error control file.
+
+          BBAADDAACCLL      Suppress  warnings  access   control   list
+                      conversion problems.
+
+          SSEETTAACCLL      Suppress  warnings  about  files  on   that
+                      mmkkiissooffss  could  not set the ACL information
+                      during extraction.
+
+
+
+Version 3.0          Last change: 2010/04/25                    8
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          SSEETTXXAATTTTRR    Suppress  warnings  about  files  on   that
+                      mmkkiissooffss  could  not  set  the extended file
+                      attribute information during extraction.
+
+     If a specific error condition is  ignored,  then  the  error
+     condition  is  not  only  handled  in  a silent way but also
+     excluded from the error statistics that are printed  at  the
+     end of the mmkkiissooffss run.
+
+     Be very careful when using error control as you  may  ignore
+     any  error  condition.  If you ignore the wrong error condi-
+     tions, you may not be able to see real problems anymore.
+
+     Note that currently only the tags OOPPEENN, RREEAADD, GGRROOWW,  SSHHRRIINNKK,
+     are checked from mmkkiissooffss.
+
+
+     -BB _i_m_g__s_u_n_4,_i_m_g__s_u_n_4_c,_i_m_g__s_u_n_4_m,_i_m_g__s_u_n_4_d,_i_m_g__s_u_n_4_e
+
+     -ssppaarrcc-bboooott _i_m_g__s_u_n_4,_i_m_g__s_u_n_4_c,_i_m_g__s_u_n_4_m,_i_m_g__s_u_n_4_d,_i_m_g__s_u_n_4_e
+          Specifies a comma separated list of  boot  images  that
+          are  needed  to  make  a bootable CD for sparc systems.
+          Partition 0 is used for the ISO-9660 image,  the  first
+          image  file  is  mapped  to  partition 1.  There may be
+          empty fields in the comma separated list.  The  maximum
+          number  of possible partitions is 8 so it is impossible
+          to specify more than 7 partition images.   This  option
+          is  required  to  make a bootable CD for Sun sparc sys-
+          tems.  If the -BB or -ssppaarrcc-bboooott option has been  speci-
+          fied, the first sector of the resulting image will con-
+          tain a Sun disk label. This disk label specifies  slice
+          0  for  the  ISO-9660 image and slice 1 ... slice 7 for
+          the boot images that  have  been  specified  with  this
+          option.  Byte  offset  512  ... 8191 within each of the
+          additional boot images must contain a primary boot that
+          works  for the appropriate sparc architecture. The rest
+          of each of the images usually contains an ufs  filesys-
+          tem that is used primary kernel boot stage.
+
+          The implemented boot method is the  boot  method  found
+          with  SunOS  4.x  and  SunOS 5.x.  However, it does not
+          depend on SunOS internals but only on properties of the
+          Open  Boot  prom.  For this reason, it should be usable
+          for any OS that boots off a sparc system.
+
+          For more information also see the NNOOTTEESS section below.
+
+          If the special filename ...... is used, the actual and all
+          following  boot  partitions  are mapped to the previous
+          partition. If mmkkiissooffss is called with -GG  _i_m_a_g_e  -BB  ...
+          all  boot  partitions  are mapped to the partition that
+          contains the ISO-9660 filesystem image and the  generic
+
+
+
+Version 3.0          Last change: 2010/04/25                    9
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          boot  image  that is located in the first 16 sectors of
+          the disk is used for all architectures.
+
+     -GG _g_e_n_e_r_i_c__b_o_o_t__i_m_a_g_e
+          Specifies the path and filename  of  the  generic  boot
+          image  to  be  used  when making a generic bootable CD.
+          The ggeenneerriicc__bboooott__iimmaaggee will be placed on the  first  16
+          sectors of the CD. The first 16 sectors are the sectors
+          that are located before  the  ISO-9660  primary  volume
+          descriptor.   If  this option is used together with the
+          -ssppaarrcc-bboooott option, the Sun disk label will overlay the
+          first 512 bytes of the generic boot image.
+
+     -hhaarrdd-ddiisskk-bboooott
+          Specifies that the boot image used to create  "El  Tor-
+          ito"  bootable  CDs is a hard disk image. The hard disk
+          image must begin with a master boot  record  that  con-
+          tains a single partition.
+
+     -nnoo-eemmuull-bboooott
+          Specifies that the boot image used to create  "El  Tor-
+          ito" bootable CDs is a 'no emulation' image. The system
+          will load and execute this image without performing any
+          disk emulation.
+
+     -nnoo-bboooott
+          Specifies that the created "El  Torito"  CD  should  be
+          marked as not bootable. The system will provide an emu-
+          lated drive for the image, but will boot off a standard
+          boot device.
+
+     -bboooott-llooaadd-sseegg _s_e_g_m_e_n_t__a_d_d_r_e_s_s
+          Specifies the load segment address of  the  boot  image
+          for no-emulation "El Torito" CDs.
+
+     -bboooott-llooaadd-ssiizzee _l_o_a_d__s_e_c_t_o_r_s
+          Specifies the number of "virtual" (512-byte) sectors to
+          load  in no-emulation mode.  The default is to load the
+          entire boot file.  Some BIOSes  may  have  problems  if
+          this is not a multiple of 4.
+
+     -bboooott-iinnffoo-ttaabbllee
+          Specifies that a 56-byte table with information of  the
+          CD-ROM  layout  will  be  patched in at offset 8 in the
+          boot file.  If this option is given, the boot  file  is
+          modified in the source filesystem, so make sure to make
+          a copy if this file cannot be easily regenerated!   See
+          the EELL TTOORRIITTOO BBOOOOTT IINNFFOO TTAABBLLEE section for a description
+          of this table.
+
+     -CC _l_a_s_t__s_e_s_s__s_t_a_r_t,_n_e_x_t__s_e_s_s__s_t_a_r_t
+          This option is needed when mmkkiissooffss is used to create  a
+
+
+
+Version 3.0          Last change: 2010/04/25                   10
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          CDextra  or  the  image of a second session or a higher
+          level session for a multi session disk.  The option  -CC
+          takes  a  pair of two numbers separated by a comma. The
+          first number is the sector number of the  first  sector
+          in the last session of the disk that should be appended
+          to.  The second number is the starting sector number of
+          the  new  session.  The expected pair of numbers may be
+          retrieved by calling ccddrreeccoorrdd -mmssiinnffoo  ......  If  the  -CC
+          option  is  used  in  conjunction  with  the -MM option,
+          mmkkiissooffss will create a filesystem image that is intended
+          to  be  a continuation of the previous session.  If the
+          -CC option is used without the -MM option,  mmkkiissooffss  will
+          create  a  filesystem image that is intended to be used
+          for a second session on a CDextra. This is a multi ses-
+          sion  CD that holds audio data in the first session and
+          a ISO-9660 filesystem in the second session.
+
+     -cc _b_o_o_t__c_a_t_a_l_o_g
+          Specifies the path and filename of the boot catalog  to
+          be  used  when  making  an "El Torito" bootable CD. The
+          pathname must be relative to the source path  specified
+          to  mmkkiissooffss.. This option is required to make a bootable
+          CD.  This file will be inserted into  the  output  tree
+          and  not  created  in the source filesystem, so be sure
+          the specified filename does not conflict with an exist-
+          ing  file,  as it will be excluded. Usually a name like
+          "boot.catalog" is chosen.
+
+          If the -ssoorrtt option has not been  specified,  the  boot
+          catalog  sorted with low priority (+1) to the beginning
+          of the medium.  If you don't like  this,  you  need  to
+          specify a sort weight of 0 for the boot catalog.
+
+     -cchheecckk-oollddnnaammeess
+          Check all filenames imported from old session for  com-
+          pliance with actual mmkkiissooffss ISO-9660 file naming rules.
+          It his option is not present, only names with a  length
+          > 31 are checked as these files are a hard violation of
+          the ISO-9660 standard.
+
+     -cchheecckk-sseessssiioonn _F_I_L_E
+          Check all  old  sessions  for  compliance  with  actual
+          mmkkiissooffss  ISO-9660  file  naming  rules.  This is a high
+          level option that is a combination of the options:   -MM
+          _F_I_L_E  -CC 00,,00 -cchheecckk-oollddnnaammeess For the parameter _F_I_L_E see
+          description of -MM option.
+
+     -ccooppyyrriigghhtt _F_I_L_E
+          Specifies the Copyright file name in the primary volume
+          descriptor.   There is space on the disc for 37 charac-
+          ters of information.  The related Joliet entry is  lim-
+          ited  to 18 characters.  This parameter can also be set
+
+
+
+Version 3.0          Last change: 2010/04/25                   11
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          in the file ..mmkkiissooffssrrcc with COPY=filename.   If  speci-
+          fied in both places, the command line version is used.
+
+          It is up to the user of mmkkiissooffss to include a file  with
+          the apropriate name in the created filesystem tree.
+
+     -dd   Omit trailing period from files  that  do  not  have  a
+          period.
+          This violates the ISO-9660 standard, but it happens  to
+          work on many systems.  Use with caution.
+
+     -DD   Do not use deep directory relocation, and instead  just
+          pack them in the way we see them.
+          If ISO-9660:1999 has not been selected,  this  violates
+          the  ISO-9660  standard, but it happens to work on many
+          systems.  Use with caution.
+
+     -ddaattaa-cchhaannggee-wwaarrnn
+          If the size of a file changes while the file  is  being
+          archived,  treat  this condition as a warning only that
+          does not cause mmkkiissooffss to abort.  A warning message  is
+          still written if the condition is not otherwise ignored
+          by  another  rule  from   an   eerrrrccttll==   option.    The
+          -ddaattaa-cchhaannggee-wwaarrnn  option  works  as  if the last error
+          control option was
+
+               eerrrrccttll=="_W_A_R_N|_G_R_O_W|_S_H_R_I_N_K *"
+
+
+     -ddiirr-mmooddee _m_o_d_e
+          Overrides the mode of directories used  to  create  the
+          image  to  _m_o_d_e.   Specifying this option automatically
+          enables Rock Ridge extensions.
+
+     -ddvvdd-vviiddeeoo
+          Generate DVD-Video compliant UDF file system.  This  is
+          done  by  sorting  the  order  of  the  content  of the
+          appropriate files and by  adding  padding  between  the
+          files  if  needed.  Note that the sorting only works if
+          the DVD-Video filenames include upper  case  characters
+          only.
+          Note  that  in  order  to  get  a  DVD-Video  compliant
+          filesystem  image, you need to prepare a DVD-Video com-
+          pliant directory tree. This means you need  to  have  a
+          directory  VIDEO_TS (all caps) in the root directory of
+          the resulting DVD  and  you  should  have  a  directory
+          AUDIO_TS.  The  directory VIDEO_TS needs to include all
+          needed files (file names must be all caps) for  a  com-
+          pliant DVD-Video filesystem.
+
+     -ff   Follow all symbolic links when generating the  filesys-
+          tem.   When  this  option is not in use, symbolic links
+
+
+
+Version 3.0          Last change: 2010/04/25                   12
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          will be entered using Rock Ridge if enabled,  otherwise
+          the file will be ignored.
+
+          See also -ppoossiixx-LL option.
+
+     -ffiillee-mmooddee _m_o_d_e
+          Overrides the mode of regular files used to create  the
+          image  to  _m_o_d_e.   Specifying this option automatically
+          enables Rock Ridge extensions.
+
+     -ffiinndd
+          This option acts a  separator.   If  it  is  used,  all
+          mmkkiissooffss  options  must  be  to  the  left  of the -ffiinndd
+          option. To the  right  of  the  -ffiinndd  option,  mmkkiissooffss
+          accepts the ffiinndd command line syntax only.
+
+          The ffiinndd expression acts as a filter between the source
+          of  file  names  and  the  consumer, which is archiving
+          engine.  If the ffiinndd expression evaluated as TRUE, then
+          the  related file is selected for processing, otherwise
+          it is omited.
+
+          In order to make the evaluation of the ffiinndd  expression
+          more  convenient,  mmkkiissooffss  implements  additional ffiinndd
+          pprriimmaarriieess that have side effects on the file meta data.
+          MMkkiissooffss  implements  the following additional ffiinndd pri-
+          maries:
+
+          -hheellpp
+               Lists the available ffiinndd(1) syntax.
+
+          -cchhggrrpp _g_n_a_m_e
+               The primary always evaluates as true; it sets  the
+               group of the file to _g_n_a_m_e.
+
+          -cchhmmoodd _m_o_d_e
+               The primary always evaluates as true; it sets  the
+               permissions  of  the file to _m_o_d_e.  Octal and sym-
+               bolic permissions are accepted for  _m_o_d_e  as  with
+               cchhmmoodd(1).
+
+          -cchhoowwnn _u_n_a_m_e
+               The primary always evaluates as true; it sets  the
+               owner of the file to _u_n_a_m_e.
+
+          -ffaallssee
+               The primary always evaluates as false;  it  allows
+               to  make  the  result  of the full expression dif-
+               ferent from the result of a part  of  the  expres-
+               sion.
+
+          -ttrruuee
+
+
+
+Version 3.0          Last change: 2010/04/25                   13
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+               The primary always evaluates as true; it allows to
+               make  the  result of the full expression different
+               from the result of a part of the expression.
+
+          The command line:
+
+          mmkkiissooffss --oo oo..iissoo --ffiinndd .. (( --ttyyppee dd --llss --oo ffaallssee )) --oo  !!
+          --ttyyppee dd
+
+          lists all directories and puts all  non-directories  to
+          the image oo..iissoo.
+
+          The command line:
+
+          mmkkiissooffss --oo oo..iissoo --ffiinndd .. (( --ttyyppee dd --cchhoowwnn rroooott --oo  ttrruuee
+          ))
+
+          archives all directories so they appear to be owned  by
+          root  in  the archive, all non-directories are archived
+          as they are in the file system.
+
+          Note that the -llss, -eexxeecc and the -ookk primary cannot  be
+          used if ssttddiinn or stdout has not been redirected.
+
+     -ggiidd _g_i_d
+          Overrides the gid read from the  source  files  to  the
+          value  of  _g_i_d.   Specifying  this option automatically
+          enables Rock Ridge extensions.
+
+     -gguuii Switch the behaviour for a GUI.  This  currently  makes
+          the  output  more verbose but may have other effects in
+          future.
+
+     -ggrraafftt-ppooiinnttss
+          Allow to use graft points for filenames. If this option
+          is  used,  all  filenames are checked for graft points.
+          The filename is divided at the  first  unescaped  equal
+          sign.  All  occurrences of '\\' and '=' characters must
+          be escaped with '\\' if -_g_r_a_f_t-_p_o_i_n_t_s has  been  speci-
+          fied.
+
+     -hhiiddee _g_l_o_b
+          Hide _g_l_o_b from being seen on the ISO-9660 or Rock Ridge
+          directory.   _g_l_o_b  is  a  shell wild-card-style pattern
+          that must match any part of the filename or path.  Mul-
+          tiple  globs  may  be hidden.  If _g_l_o_b matches a direc-
+          tory, then the contents of that directory will be  hid-
+          den.  In order to match a directory name, make sure the
+          pathname does not include  a  trailing  '/'  character.
+          All  the hidden files will still be written to the out-
+          put  CD  image  file.   Should   be   used   with   the
+          -hhiiddee-jjoolliieett option. See README.hide for more details.
+
+
+
+Version 3.0          Last change: 2010/04/25                   14
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     -hhiiddee-lliisstt _f_i_l_e
+          A file containing a list  of  _g_l_o_b_s  to  be  hidden  as
+          above.
+
+     -hhiiddddeenn _g_l_o_b
+          Add the hidden (existence) ISO-9660 directory attribute
+          for  _g_l_o_b.  This attribute will prevent _g_l_o_b from being
+          listed on DOS based systems if the /A flag is not  used
+          for  the listing.  _g_l_o_b is a shell wild-card-style pat-
+          tern that must match any part of the filename or  path.
+          In order to match a directory name, make sure the path-
+          name does not include a trailing '/' character.  Multi-
+          ple globs may be hidden.
+
+     -hhiiddddeenn-lliisstt _f_i_l_e
+          A file containing a list of _g_l_o_b_s  to  get  the  hidden
+          attribute as above.
+
+     -hhiiddee-jjoolliieett _g_l_o_b
+          Hide _g_l_o_b from being  seen  on  the  Joliet  directory.
+          _g_l_o_b is a shell wild-card-style pattern that must match
+          any part of the filename or path.  Multiple  globs  may
+          be  hidden.  If _g_l_o_b matches a directory, then the con-
+          tents of that directory will be hidden.   In  order  to
+          match a directory name, make sure the pathname does not
+          include a trailing '/' character.  All the hidden files
+          will  still  be  written  to  the output CD image file.
+          Should be used with the -hhiiddee option.  See  README.hide
+          for more details.
+
+     -hhiiddee-jjoolliieett-lliisstt _f_i_l_e
+          A file containing a list  of  _g_l_o_b_s  to  be  hidden  as
+          above.
+
+     -hhiiddee-jjoolliieett-ttrraannss-ttbbll
+          Hide the TTRRAANNSS..TTBBLL files from the Joliet  tree.   These
+          files  usually  don't make sense in the Joliet World as
+          they list the real name and the ISO-9660 name which may
+          both be different from the Joliet name.
+
+     -hhiiddee-rrrr-mmoovveedd
+          Rename the directory RRRR__MMOOVVEEDD to ..rrrr__mmoovveedd in the  Rock
+          Ridge  tree.   It  seems to be impossible to completely
+          hide the RRRR__MMOOVVEEDD directory from the Rock  Ridge  tree.
+          This  option  only  makes  the  visible  tree better to
+          understand for people who don't know what  this  direc-
+          tory is for.  If you need to have no RRRR__MMOOVVEEDD directory
+          at all, you should use the -DD option. Note that in case
+          that  the  -DD  option has been specified, the resulting
+          filesystem is not ISO-9660 level-1 compliant  and  will
+          not  be readable on MS-DOS.  See also NNOOTTEESS section for
+          more information on the RRRR__MMOOVVEEDD directory.
+
+
+
+Version 3.0          Last change: 2010/04/25                   15
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     -hhiiddee-uuddff _g_l_o_b
+          Hide _g_l_o_b from being seen on the UDF  directory.   _g_l_o_b
+          is  a shell wild-card-style pattern that must match any
+          part of the filename or path.  Multiple  globs  may  be
+          hidden.  If _g_l_o_b matches a directory, then the contents
+          of that directory will be hidden.  In order to match  a
+          directory name, make sure the pathname does not include
+          a trailing '/' character.  All the  hidden  files  will
+          still  be  written to the output CD image file.  Should
+          be used with the -hhiiddee option. See README.hide for more
+          details.
+
+     -hhiiddee-uuddff-lliisstt _f_i_l_e
+          A file containing a list  of  _g_l_o_b_s  to  be  hidden  as
+          above.
+
+
+     -iinnppuutt-cchhaarrsseett _c_h_a_r_s_e_t
+          Set up the input charset that  defines  the  characters
+          used in local file names.  To get a list of valid char-
+          set names, call mmkkiissooffss -iinnppuutt-cchhaarrsseett hheellpp.. To  get  a
+          1:1  mapping,  you  may use ddeeffaauulltt as charset name. If
+          the input charset has not been set up from  the  locale
+          in  the  environment,  the  default  initial values are
+          _c_p_4_3_7 on DOS based systems and _i_s_o_8_8_5_9-_1 on  all  other
+          systems.   See  CCHHAARRAACCTTEERR  SSEETTSS  section below for more
+          details.
+
+          If -iinnppuutt-cchhaarrsseett has not been specified,  it  will  be
+          set  up from the locale in the environment. If you like
+          to disable this automatic setup, use the  empty  string
+          as locale name.
+
+     -oouuttppuutt-cchhaarrsseett _c_h_a_r_s_e_t
+          Set up the output charset that defines  the  characters
+          that will be used in Rock Ridge file names. Defaults to
+          the input charset. See CCHHAARRAACCTTEERR SSEETTSS section below for
+          more details.
+
+     -iissoo-lleevveell _l_e_v_e_l
+          Set the ISO-9660 conformance level. Valid  numbers  are
+          1..3 and 4.
+
+          With level 1, files may only consist of one section and
+          filenames are restricted to 8.3 characters.
+
+          With level 2, files may only consist of one section.
+
+          With  level  3,  no  restrictions  (other   than   ISO-
+          9660:1988) do apply.  Starting with this level, mkisofs
+          also allows files to be larger than 4 GB by  implement-
+          ing ISO-9660 multi-extent files.
+
+
+
+Version 3.0          Last change: 2010/04/25                   16
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          With all ISO-9660 levels from 1..3, all  filenames  are
+          restricted  to  upper  case  letters,  numbers  and the
+          underscore (_). The maximum  filename  length  is  res-
+          tricted  to  31 characters, the directory nesting level
+          is restricted to 8 and the maximum path length is  lim-
+          ited to 255 characters.
+
+          Level 4 officially does not exists but mmkkiissooffss maps  it
+          to ISO-9660:1999 which is ISO-9660 version 2.
+
+          With level 4, an enhanced volume descriptor  with  ver-
+          sion  number and file structure version number set to 2
+          is emitted.  There may be more than 8 levels of  direc-
+          tory  nesting, there is no need for a file to contain a
+          dot and the dot has no more special meaning, file names
+          do  not  have  version  numbers, the maximum length for
+          files and directory is raised to 207.  If Rock Ridge is
+          used,  the  maximum  ISO-9660 name length is reduced to
+          197.
+
+          When  creating  Version  2  images,  mmkkiissooffss  emits  an
+          enhanced  volume  descriptor  which  looks similar to a
+          primary volume descriptor but is slightly different. Be
+          careful  not  to  use  broken software to make ISO-9660
+          images bootable by  assuming  a  second  PVD  copy  and
+          patching this putative PVD copy into an El Torito VD.
+
+     -JJ   Generate Joliet directory records in addition to  regu-
+          lar ISO-9660 file names.  This is primarily useful when
+          the discs are to be used on  Windows-NT  or  Windows-95
+          machines.    The  Joliet  filenames  are  specified  in
+          Unicode and each path component can be up to 64 Unicode
+          characters  long.   Note  that  Joliet is no standard -
+          CD's that use only Joliet extensions  but  no  standard
+          Rock  Ridge  extensions  may  usually  only  be used on
+          Microsoft Win32 systems. Furthermore, the fact that the
+          filenames  are  limited  to  64 characters and the fact
+          that Joliet uses the UTF-16 coding for Unicode  charac-
+          ters causes interoperability problems.
+
+     -jjoolliieett-lloonngg
+          Allow Joliet filenames to be up to 103 Unicode  charac-
+          ters.  This  breaks  the  Joliet  specification  -  but
+          appears to work. Use with caution. The  number  103  is
+          derived  from:  the  maximum  Directory  Record  Length
+          (254), minus the length of Directory Record (33), minus
+          CD-ROM   XA  System  Use  Extension  Information  (14),
+          divided by the UTF-16 character size (2).
+
+     -jjcchhaarrsseett _c_h_a_r_s_e_t
+          Same as using -iinnppuutt-cchhaarrsseett _c_h_a_r_s_e_t  and  -JJ  options.
+          See CCHHAARRAACCTTEERR SSEETTSS section below for more details.
+
+
+
+Version 3.0          Last change: 2010/04/25                   17
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     -ll   Allow full 31 character filenames.  Normally  the  ISO-
+          9660  filename will be in an 8.3 format which is compa-
+          tible with MS-DOS, even though  the  ISO-9660  standard
+          allows  filenames  of  up to 31 characters.  If you use
+          this option, the disc may be difficult to use on a  MS-
+          DOS  system, but this comes in handy on some other sys-
+          tems (such as the Amiga).  Use with caution.
+
+     -LL   Outdated   option   reserved   by   POSIX.1-2001,   use
+          -aallllooww-lleeaaddiinngg-ddoottss  instead.   This  option  will  get
+          POSIX.1-2001 semantics with mkisofs-2.02.
+
+     -lloogg-ffiillee _l_o_g__f_i_l_e
+          Redirect all error, warning and informational  messages
+          to _l_o_g__f_i_l_e instead of the standard error.
+
+     -mm _g_l_o_b
+          Exclude _g_l_o_b from being written to CDROM.   _g_l_o_b  is  a
+          shell  wild-card-style  pattern that must match part of
+          the filename (not the path as with option -xx).  Techni-
+          cally _g_l_o_b is matched against the _d->_d__n_a_m_e part of the
+          directory  entry.   Multiple  globs  may  be  excluded.
+          Example:
+
+          mkisofs -o rom -m '*.o' -m core -m foobar
+
+          would exclude all files ending in ".o",  called  "core"
+          or "foobar" to be copied to CDROM. Note that if you had
+          a directory called "foobar" it too (and of  course  all
+          its descendants) would be excluded.
+
+          NOTE: The -mm and -xx option description should  both  be
+          updated,  they  are wrong.  Both now work identical and
+          use filename globbing. A file is excluded if either the
+          last component matches or the whole path matches.
+
+     -eexxcclluuddee-lliisstt _f_i_l_e
+          A file containing a list of  _g_l_o_b_s  to  be  exclude  as
+          above.
+
+     -mmaaxx-IISSOO--99666600-ffiilleennaammeess
+          Allow 37 chars  in  ISO-9660  filenames.   This  option
+          forces  the  -NN option as the extra name space is taken
+          from the space reserved for ISO-9660 version numbers.
+          This violates the ISO-9660 standard, but it happens  to
+          work  on  many systems.  Although a conforming applica-
+          tion needs to provide a buffer space  of  at  least  37
+          characters,  disks created with this option may cause a
+          buffer overflow in the reading  operating  system.  Use
+          with extreme care.
+
+     -MM _p_a_t_h
+
+
+
+Version 3.0          Last change: 2010/04/25                   18
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          or
+
+     -MM _d_e_v_i_c_e
+          or
+
+     -ddeevv _d_e_v_i_c_e
+          Specifies path to existing ISO-9660 image to be merged.
+          The  alternate  form takes a SCSI device specifier that
+          uses the same syntax as the ddeevv== parameter of ccddrreeccoorrdd..
+          The  output  of  mmkkiissooffss  will  be  a new session which
+          should get written to the end of the image specified in
+          -M.   Typically  this requires multi-session capability
+          for the recorder and cdrom drive that you are  attempt-
+          ing  to  write  this image to.  This option may only be
+          used in conjunction with the -CC option.
+
+     -NN   Omit version numbers from ISO-9660 file names.
+          This violates the ISO-9660 standard, but no one  really
+          uses the version numbers anyway.  Use with caution.
+
+     -nneeww-ddiirr-mmooddee _m_o_d_e
+          Mode to use when creating new directories in the iso fs
+          image.  The default mode is 0555.
+
+     -nnoobbaakk
+
+     -nnoo-bbaakk
+          Do not include  backup  files  files  on  the  ISO-9660
+          filesystem.   If the -nnoo-bbaakk option is specified, files
+          that contain the characters '~' or '#' or end in '.bak'
+          will  not be included (these are typically backup files
+          for editors under unix).
+
+     -nnoo-lliimmiitt-ppaatthhttaabblleess
+          A ISO-9660 filesystem contains path tables that contain
+          a  list  of  directories.   This  list may contain many
+          directories but only 65535 of them may be parent direc-
+          tories.   When  -nnoo-lliimmiitt-ppaatthhttaabblleess is in use, further
+          parent directories will be folded to the root directory
+          and  the  resulting filesystem will no longer be usable
+          on DDOOSS.
+
+     -ffoorrccee-rrrr
+          Do not use the automatic Rock Ridge attributes recogni-
+          tion  for previous sessions.  This helps to show rotten
+          ISO-9660 extension records  as  e.g.  created  by  NERO
+          burning ROM.
+
+     -nnoo-rrrr
+          Do not use the Rock Ridge attributes from previous ses-
+          sions.   This  may  help  to avoid getting into trouble
+          when mmkkiissooffss finds illegal Rock Ridge signatures on  an
+
+
+
+Version 3.0          Last change: 2010/04/25                   19
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          old session.
+
+     -nnoo-sspplliitt-ssyymmlliinnkk-ccoommppoonneennttss
+          Don't split the SL components, but  begin  a  new  Con-
+          tinuation Area (CE) instead. This may waste some space,
+          but the SunOS 4.1.4 cdrom driver has a bug  in  reading
+          split SL components (link_size = component_size instead
+          of link_size += component_size).
+
+          Note that this  option  has  been  introduced  by  Eric
+          Youngdale in 1997.  It is questionable whether it makes
+          sense at all.  When it has been introduced, mmkkiissooffss did
+          have  a serious bug that did create defective CE signa-
+          tures if a symlink contained `/../'.  This CE signature
+          bug in mmkkiissooffss has been fixed in May 2003.
+
+     -nnoo-sspplliitt-ssyymmlliinnkk-ffiieellddss
+          Don't split the SL fields, but begin a new Continuation
+          Area  (CE)  instead. This may waste some space, but the
+          SunOS 4.1.4 and Solaris 2.5.1 cdrom driver have  a  bug
+          in reading split SL fields (a `/' can be dropped).
+
+          Note that this  option  has  been  introduced  by  Eric
+          Youngdale in 1997.  It is questionable whether it makes
+          sense at all.  When it has been introduced, mmkkiissooffss did
+          have  a serious bug that did create defective CE signa-
+          tures if a symlink contained `/../'.  This CE signature
+          bug in mmkkiissooffss has been fixed in May 2003.
+
+     -oo _f_i_l_e_n_a_m_e
+          is the name of the file to which the ISO-9660  filesys-
+          tem  image should be written.  This can be a disk file,
+          a tape drive, or it can correspond directly to the dev-
+          ice name of the optical disc writer.  If not specified,
+          stdout is used.  Note that the output  can  also  be  a
+          block special device for a regular disk drive, in which
+          case the disk partition can be mounted and examined  to
+          ensure that the premastering was done correctly.
+
+     -ppaadd Pad the end of the whole image by 150 sectors (300 kB).
+          If  the  option  -BB is used, then there is a padding at
+          the end of the ISO-9660 partition and before the begin-
+          ning  of the boot partitions.  The size of this padding
+          is chosen to make the first boot partition start  on  a
+          sector number that is a multiple of 16.
+
+          The padding is needed as many operating  systems  (e.g.
+          Linux)  implement  read  ahead bugs in their filesystem
+          I/O. These bugs result in read errors on  one  or  more
+          files  that are located at the end of a track. They are
+          usually present when the CD is written in Track at Once
+          mode or when the disk is written as mixed mode CD where
+
+
+
+Version 3.0          Last change: 2010/04/25                   20
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          an audio track follows the data track.
+
+          To avoid problems with I/O error on the  last  file  on
+          the  filesystem,  the  -ppaadd  option  has  been made the
+          default.
+
+     -nnoo-ppaadd
+          Do not Pad the end by 150 sectors (300 kB) and  do  not
+          make  the the boot partitions start on a multiple of 16
+          sectors.
+
+     -ppaatthh-lliisstt _f_i_l_e
+          A file containing a list of  _p_a_t_h_s_p_e_c  directories  and
+          filenames  to be added to the ISO-9660 filesystem. This
+          list of pathspecs are processed after any  that  appear
+          on  the  command  line.  If the argument is -, then the
+          list is read from the standard input.
+
+     -PP   Outdated option reserved  by  POSIX.1-2001,  use  -ppuubb--
+          lliisshheerr  instead.   This  option  will  get POSIX.1-2001
+          semantics with mkisofs-2.02.
+
+     -ppuubblliisshheerr _p_u_b_l_i_s_h_e_r__i_d
+          Specifies a text string that will be written  into  the
+          volume  header.   This should describe the publisher of
+          the CDROM, usually with a  mailing  address  and  phone
+          number.   There is space on the disc for 128 characters
+          of information.  The related Joliet entry is limited to
+          64  characters.   This parameter can also be set in the
+          file ..mmkkiissooffssrrcc  with  PUBL=.   If  specified  in  both
+          places, the command line version is used.
+
+     -pp _p_r_e_p_a_r_e_r__i_d
+          Specifies a text string that will be written  into  the
+          volume  header.   This  should describe the preparer of
+          the CDROM, usually with a  mailing  address  and  phone
+          number.   There is space on the disc for 128 characters
+          of information.  The related Joliet entry is limited to
+          64  characters.   This parameter can also be set in the
+          file ..mmkkiissooffssrrcc  with  PREP=.   If  specified  in  both
+          places, the command line version is used.
+
+     -ppoossiixx-HH
+          Follow all symbolic links encountered on  command  line
+          when generating the filesystem.
+
+     -ppoossiixx-LL
+          Follow all symbolic links when generating the  filesys-
+          tem.   When  this  option is not in use, symbolic links
+          will be entered using Rock Ridge if enabled,  otherwise
+          the file will be ignored.
+
+
+
+
+Version 3.0          Last change: 2010/04/25                   21
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     -ppoossiixx-PP
+          Do  not  follow  symbolic  links  when  generating  the
+          filesystem  (this  is  the  default).   If  -ppoossiixx-PP is
+          specified after -ppoossiixx-HH or  -ppoossiixx-LL,  the  effect  of
+          these options will be reset.
+
+     -pprriinntt-ssiizzee
+          Print estimated filesystem size  in  multiples  of  the
+          sector  size  (2048  bytes)  and  exit.  This option is
+          needed for Disk At Once mode and with some CD-R  drives
+          when  piping directly into ccddrreeccoorrdd.. In this case it is
+          needed to know the size of the  filesystem  before  the
+          actual  CD-creation  is  done.   The option -print-size
+          allows to get this size from a "dry-run" before the  CD
+          is actually written.  Old versions of mmkkiissooffss did write
+          this information (among other information)  to  _s_t_d_e_r_r.
+          As  this  turns  out  to  be  hard to parse, the number
+          without any other information is now printed on  ssttddoouutt
+          too.   If  you  like  to  write  a simple shell script,
+          redirect ssttddeerrrr and catch the number from ssttddoouutt.  This
+          may be done with:
+
+          ccddbblloocckkss==`` mmkkiissooffss -pprriinntt-ssiizzee -qquuiieett ...... ``
+
+          mmkkiissooffss ...... || ccddrreeccoorrdd ...... ttssiizzee==$${{ccddbblloocckkss}}ss --
+
+     -qquuiieett
+          This makes mmkkiissooffss even less verbose.  No progress out-
+          put will be provided.
+
+     -RR   Generate SUSP and RR records using the Rock Ridge  pro-
+          tocol  to  further  describe  the files on the ISO-9660
+          filesystem.  The Rock Ridge protocol is needed in order
+          to  add  POSIX  like  file  meta data like permissions,
+          extended time stamps,  user/group  is'd,  link  counts,
+          inode numbers and symbolic links. The Rock Ridge proto-
+          col allows to archive hierarchy  trees  with  unlimited
+          depth.
+
+     -rr   This is like the -R  option,  but  file  ownership  and
+          modes  are  set to more useful values.  The uid and gid
+          are set to zero, because they are usually  only  useful
+          on  the  author's system, and not useful to the client.
+          All the file read bits are set true, so that files  and
+          directories  are  globally  readable on the client.  If
+          any execute bit is set for a file, set all of the  exe-
+          cute  bits, so that executables are globally executable
+          on the client.  If any search bit is set for  a  direc-
+          tory,  set  all of the search bits, so that directories
+          are globally searchable on the client.  All write  bits
+          are  cleared,  because the CD-Rom will be mounted read-
+          only in any case.  If any of the special mode bits  are
+
+
+
+Version 3.0          Last change: 2010/04/25                   22
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          set, clear them, because file locks are not useful on a
+          read-only file system, and set-id bits are  not  desir-
+          able  for uid 0 or gid 0.  When used on Win32, the exe-
+          cute bit is set on _a_l_l files. This is a result  of  the
+          lack  of file permissions on Win32 and the Cygwin POSIX
+          emulation  layer.   See  also  -uid  -gid,   -dir-mode,
+          -file-mode and -new-dir-mode.
+
+     -rreellaaxxeedd-ffiilleennaammeess
+          The option -rreellaaxxeedd-ffiilleennaammeess allows ISO-9660 filenames
+          to  include digits, upper case characters and all other
+          7 bit ASCII characters (resp. anything except lowercase
+          characters).
+          This violates the ISO-9660 standard, but it happens  to
+          work on many systems.  Use with caution.
+
+     -rroooott _d_i_r
+          Moves all files and directories into _d_i_r in the  image.
+          This is essentially the same as using --ggrraafftt--ppooiinnttss and
+          adding _d_i_r in front of every pathspec, but is easier to
+          use.
+
+          _d_i_r may actually be several levels deep. It is  created
+          with the same permissions as other graft points.
+
+     -rrrriipp111100
+          Create ISO-9660 file system images that follow the  old
+          Rrip  Version-1.10  standard from 1993. This option may
+          be needed if you know of systems that do not  implement
+          the Rrip protocol correctly and like the file system to
+          be read by such a system.  Currently no such system  is
+          known.
+
+          If a file system has been created  with  -rrrriipp111100,  the
+          Rock  Ridge  attributes  do  not  include  inode number
+          information.
+
+     -rrrriipp111122
+          Create ISO-9660 file system images that follow the  new
+          Rrip  Version-1.12  standard  from  1994,  this  is the
+          default.
+
+     -oolldd--rroooott _d_i_r
+          This option is necessary when  writing  a  multisession
+          image  and  the  previous  (or  even older) session was
+          written with --rroooott _d_i_r.  Using  a  directory  name  not
+          found  in  the previous session causes mmkkiissooffss to abort
+          with an error.
+
+          Without this option, mmkkiissooffss would not be able to  find
+          unmodified  files  and  would  be forced to write their
+          data into the image once more.
+
+
+
+Version 3.0          Last change: 2010/04/25                   23
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          -rroooott and -oolldd--rroooott are meant to be used together to do
+          incremental  backups.   The  initial session would e.g.
+          use:  mmkkiissooffss -rroooott bbaacckkuupp__11 _d_i_r_s.  The next  incremen-
+          tal   backup  with  mmkkiissooffss  -rroooott  bbaacckkuupp__22  -oolldd--rroooott
+          bbaacckkuupp__11 _d_i_r_s.  would take another  snapshot  of  these
+          directories.  The  first  snapshot  would  be  found in
+          bbaacckkuupp__11, the second one in bbaacckkuupp__22, but only modified
+          or  new  files  need to be written into the second ses-
+          sion.
+
+          Without these options, new files would be added and old
+          ones   would  be  preserved.  But  old  ones  would  be
+          overwritten if the file was  modified.  Recovering  the
+          files by copying the whole directory back from CD would
+          also restore files  that  were  deleted  intentionally.
+          Accessing  several  older  versions  of a file requires
+          support by the operating system to  choose  which  ses-
+          sions are to be mounted.
+
+     -ss _s_e_c_t_o_r _t_y_p_e
+
+     -sseeccttyyppee _s_e_c_t_o_r _t_y_p_e
+          Set the _s_e_c_t_o_r _t_y_p_e to be used for the output file with
+          the  ISO-9660  filesystem.   The _s_e_c_t_o_r _t_y_p_e may be one
+          of:
+
+          ddaattaa This is the default. It results in standard CD-ROM
+               data sectors with 2048 bytes per sector.
+
+          xxaa11  This sets the sector type to CD-ROM XA mode 1 with
+               2056  bytes  per  sector.  This sector type is the
+               official sector type  for  multi-session  CDs,  it
+               should  be  used  together  with the -XXAA option of
+               mkisofs.  It is required to write Kodak Photo  CDs
+               and  Kodak  Picture CDs.  Use the -xxaa11 option from
+               ccddrreeccoorrdd to tell ccddrreeccoorrdd to write CD-ROM XA  mode
+               1 sectors.  Do not use for DVD or BluRay media.
+
+          rraaww  This sets the sector type  to  raw  audio  sectors
+               with  2352 bytes per sector.  This is reserved for
+               future enhancements.  Do not use for DVD or BluRay
+               media.
+
+     -ssoorrtt _s_o_r_t _f_i_l_e
+          Sort file locations on the media. Sorting is controlled
+          by  a file that contains pairs of filenames and sorting
+          offset weighting.  If the weighting is higher, the file
+          will  be  located closer to the beginning of the media,
+          if the weighting is lower, the  file  will  be  located
+          closer  to the end of the media. There must be only one
+          space or tabs character between the  filename  and  the
+          weight  and the weight must be the last characters on a
+
+
+
+Version 3.0          Last change: 2010/04/25                   24
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          line. The filename is taken to include all the  charac-
+          ters  up  to,  but  not including the last space or tab
+          character on a line. This is to allow for space charac-
+          ters  to  be  in,  or  at  the end of a filename.  This
+          option does nnoott sort the order of the file  names  that
+          appear in the ISO-9660 directory. It sorts the order in
+          which the file data is written to the CD image -  which
+          may be useful in order to optimize the data layout on a
+          CD. See README.sort for more details.
+
+     -ssppaarrcc-bboooott _i_m_g__s_u_n_4,_i_m_g__s_u_n_4_c,_i_m_g__s_u_n_4_m,_i_m_g__s_u_n_4_d,_i_m_g__s_u_n_4_e
+          See -BB option above.
+
+     -ssppaarrcc-llaabbeell _l_a_b_e_l
+          Set the Sun disk label name for the Sun disk label that
+          is created with the -ssppaarrcc--bboooott option.
+
+     -sspplliitt-oouuttppuutt
+          Split the output image into several files  of  approxi-
+          mately  1  GB.  This helps to create DVD sized ISO-9660
+          images on operating systems without large file support.
+          Cdrecord  will  concatenate  more  than one file into a
+          single  track  if  writing   to   a   DVD.    To   make
+          -sspplliitt-oouuttppuutt  work,  the  -oo  _f_i_l_e_n_a_m_e  option must be
+          specified. The resulting output images will  be  named:
+          _f_i_l_e_n_a_m_e__0_0,_f_i_l_e_n_a_m_e__0_1,filename_02...
+
+     -ssttrreeaamm-mmeeddiiaa-ssiizzee #
+          Select streaming operation and set the media size to  #
+          sectors.  This allows you to pipe the output of the tar
+          program into mkisofs and to create a ISO-9660  filesys-
+          tem  without  the  need  of an intermediate tar archive
+          file. If this option has been specified, mmkkiissooffss  reads
+          from ssttddiinn and creates a file with the name SSTTRREEAAMM..IIMMGG.
+          The maximum size of the file (with padding) is 200 sec-
+          tors less than the specified media size. If -nnoo-ppaadd has
+          been specified, the file size is 50 sectors  less  than
+          the specified media size.  If the file is smaller, then
+          mkisofs will write padding. This may take a while.
+
+          The option -ssttrreeaamm-mmeeddiiaa-ssiizzee creates  simple  ISO-9660
+          filesystems  only and may not used together with multi-
+          session or hybrid filesystem options.
+
+     -ssttrreeaamm-ffiillee-nnaammee _n_a_m_e
+          Set the file name used with -ssttrreeaamm-mmeeddiiaa-ssiizzee #  to  a
+          value  different  from  SSTTRREEAAMM..IIMMGG.   If this option is
+          used, the filesystem is created as if -iissoo-lleevveell 4  has
+          been specified.
+
+     -ssuunnxx8866-bboooott _U_F_S-_i_m_g,,,_A_U_X_1-_i_m_g
+          Specifies a comma separated list of  filesystem  images
+
+
+
+Version 3.0          Last change: 2010/04/25                   25
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          that  are  needed to make a bootable CD for Solaris x86
+          systems.
+
+          Note that partition 1 is used for  the  ISO-9660  image
+          and  that partition 2 is the whole disk, so partition 1
+          and 2 may not be used by external partition data.   The
+          first  image  file is mapped to partition 0.  There may
+          be empty fields in the comma separated list,  and  list
+          entries  for partition 1 and 2 must be empty.  The max-
+          imum number of supported partitions is 8 (although  the
+          Solaris x86 partition table could support up to 16 par-
+          titions), so it is impossible to specify  more  than  6
+          partition  images.   This  option is required to make a
+          bootable CD for Solaris x86 systems.
+
+          If the -ssuunnxx8866-bboooott  option  has  been  specified,  the
+          first  sector  of the resulting image will contain a PC
+          fdisk label with a Solaris type  0x82  fdisk  partition
+          that  starts  at offset 512 and spans the whole CD.  In
+          addition, for the Solaris type  0x82  fdisk  partition,
+          there  is a SVr4 disk label at offset 1024 in the first
+          sector of the CD.  This disk label  specifies  slice  0
+          for  the first (usually UFS type) filesystem image that
+          is used to boot the PC and slice  1  for  the  ISO-9660
+          image.   Slice 2 spans the whole CD slice 3 ... slice 7
+          may be used for additional filesystem images that  have
+          been specified with this option.
+
+          A Solaris x86 boot CD uses a 1024  byte  sized  primary
+          boot that uses the EEll--TToorriittoo nnoo--eemmuullaattiioonn boot mode and
+          a secondary generic boot that is in CD  sectors  1..15.
+          For this reason, both --bb _b_o_o_t_i_m_a_g_e --nnoo-eemmuull-bboooott and -GG
+          _g_e_n_b_o_o_t must be specified.
+
+     -ssuunnxx8866-llaabbeell _l_a_b_e_l
+          Set the SVr4 disk label name for the  SVr4  disk  label
+          that is created with the -ssuunnxx8866--bboooott option.
+
+     -ssyyssiidd _I_D
+          Specifies the system ID.  There is space  on  the  disc
+          for  32  characters of information.  This parameter can
+          also be set in the file ..mmkkiissooffssrrcc with SYSI=system_id.
+          If  specified  in both places, the command line version
+          is used.
+
+     -TT   Generate a file TRANS.TBL  in  each  directory  on  the
+          CDROM, which can be used on non-Rock Ridge capable sys-
+          tems to help establish the correct file  names.   There
+          is  also information present in the file that indicates
+          the major and minor numbers  for  block  and  character
+          devices, and each symlink has the name of the link file
+          given.
+
+
+
+Version 3.0          Last change: 2010/04/25                   26
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     -ttaabbllee-nnaammee _T_A_B_L_E__N_A_M_E
+          Alternative translation table file  name  (see  above).
+          Implies  the  -TT  option.  If you are creating a multi-
+          session image you must use the same name as in the pre-
+          vious session.
+
+     -uuccss-lleevveell _l_e_v_e_l
+          Set Unicode conformance level in the  Joliet  SVD.  The
+          default  level  is 3.  It may be set to 1..3 using this
+          option.
+
+     -UUDDFF Include a UUDDFF hybrid in the generated filesystem image.
+          As  mmkkiissooffss always creates a ISO-9660 filesystem, it is
+          not possible to create UDF only images. Note  that  UUDDFF
+          wastes  the  space from sector ~20 to sector 256 at the
+          beginning of the disk in addition to the  spcae  needed
+          for real UUDDFF data structures.
+
+     -uuddff Rationalized UDF with user and group set to 0 and  with
+          simplified  permissions.  See -rr option for more infor-
+          mation.
+
+     -uuddff-ssyymmlliinnkkss
+          Support  symlinks  in  UUDDFF  filesystems.  This  is  the
+          default.
+
+     -nnoo-uuddff-ssyymmlliinnkkss
+          Do not support symlinks in UUDDFF filesystems.
+
+     -uuiidd _u_i_d
+          Overrides the uid read from the  source  files  to  the
+          value  of  _u_i_d.   Specifying  this option automatically
+          enables Rock Ridge extensions.
+
+     -uussee-ffiilleevveerrssiioonn
+          The option -uussee-ffiilleevveerrssiioonn allows mkisofs to use  file
+          version  numbers from the filesystem.  If the option is
+          not specified, mmkkiissooffss creates a version  number  of  1
+          for  all files.  File versions are strings in the range
+          ;_1 to ;_3_2_7_6_7 This option is the default on VMS.
+
+     -UU   Allows "Untranslated" filenames,  completely  violating
+          the  ISO-9660  standards described above. Forces on the
+          -d, -l,  -N,  -allow-leading-dots,  -relaxed-filenames,
+          -allow-lowercase, -allow-multidot and -no-iso-translate
+          flags. It allows more than one  '.'  character  in  the
+          filename,  as  well  as  mixed case filenames.  This is
+          useful  on  HP-UX  system,  where  the  built-in   CDFS
+          filesystem  does not recognize ANY extensions. Use with
+          extreme caution.
+
+     -nnoo-iissoo-ttrraannssllaattee
+
+
+
+Version 3.0          Last change: 2010/04/25                   27
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          Do not translate the characters '#' and '~'  which  are
+          invalid  for  ISO-9660 filenames.  These characters are
+          though invalid often used by Microsoft systems.
+          This violates the ISO-9660 standard, but it happens  to
+          work on many systems.  Use with caution.
+
+     -VV _v_o_l_i_d
+          Specifies the volume ID (volume name or  label)  to  be
+          written  into  the  master block. There is space on the
+          disc for 32 characters of information.  This  parameter
+          can  also  be  set in the file ..mmkkiissooffssrrcc with VOLI=id.
+          If specified in both places, the command  line  version
+          is  used.  Note that if you assign a volume ID, this is
+          the name that will be used as the mount point  used  by
+          the  Solaris volume management system and the name that
+          is assigned to the disc on a Microsoft Win32  or  Apple
+          Mac platform.
+
+     -vvoollsseett _I_D
+          Specifies the volset ID.  There is space  on  the  disc
+          for  128 characters of information.  The related Joliet
+          entry is limited to 64 characters.  This parameter  can
+          also be set in the file ..mmkkiissooffssrrcc with VOLS=volset_id.
+          If specified in both places, the command  line  version
+          is used.
+
+     -vvoollsseett-ssiizzee #
+          Sets the volume set size to #.  The volume set size  is
+          the  number  of  CD's  that  are in a CD volume set.  A
+          volume set is a collection of one or more  volumes,  on
+          which a set of files is recorded.
+
+          Volume Sets are not intended to be used to create a set
+          numbered  CD's that are part of e.g. a Operation System
+          installation set of CD's.  Volume Sets are rather  used
+          to  record a big directory tree that would not fit on a
+          single volume.  Each volume of a Volume Set contains  a
+          description  of  all the directories and files that are
+          recorded on the volumes where the sequence numbers  are
+          less than, or equal to, the assigned Volume Set Size of
+          the current volume.
+
+          MMkkiissooffss currently does not support a -vvoollsseett-ssiizzee  that
+          is larger than 1.
+
+          The  option  -vvoollsseett-ssiizzee  must  be  specified   before
+          -vvoollsseett-sseeqqnnoo on each command line.
+
+     -vvoollsseett-sseeqqnnoo #
+          Sets the volume set sequence number to #.   The  volume
+          set  sequence number is the index number of the current
+          CD in a  CD  set.   The  option  -vvoollsseett-ssiizzee  must  be
+
+
+
+Version 3.0          Last change: 2010/04/25                   28
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          specified before -vvoollsseett-sseeqqnnoo on each command line.
+
+     -vv   Verbose execution. If given twice on the command  line,
+          extra debug information will be printed.
+
+     -xx _p_a_t_h
+          Exclude _p_a_t_h from being written to CDROM.  _p_a_t_h must be
+          the  complete  pathname that results from concatenating
+          the pathname given as command  line  argument  and  the
+          path relative to this directory.  Multiple paths may be
+          excluded.  Example:
+
+          mkisofs -o cd -x /local/dir1 -x /local/dir2 /local
+
+          NOTE: The -mm and -xx option description should  both  be
+          updated,  they  are wrong.  Both now work identical and
+          use filename globbing. A file is excluded if either the
+          last component matches or the whole path matches.
+
+     -XXAA  Generate  XA  iso-directory  attributes  with  original
+          owner and mode information.  This option is required to
+          create conforming multi session  CDs  as  used  by  the
+          Kodak  Photo CD and the Kodak Picture CD.  A conforming
+          XA CD uses CD-ROM XA mode 1 sectors,  see  the  -sseeccttoorr
+          _x_a_2 option for more information.
+
+     -xxaa  Generate XA iso-directory attributes with  rationalized
+          owner  and  mode information.  User ID and group ID are
+          set to 0.  See -XXAA for more information.
+
+     -zz   Generate  special  RRIP   records   for   transparently
+          compressed files.  This is only of use and interest for
+          hosts that support transparent decompression,  such  as
+          Linux  2.4.14  or later.  You must specify the -RR or -rr
+          options to enable RockRidge,  and  generate  compressed
+          files   using   the  mmkkzzffttrreeee  utility  before  running
+          mmkkiissooffss.  Note that transparent compression is  a  non-
+          standard Rock Ridge extension.  The resulting disks are
+          only transparently readable if used on Linux.  On other
+          operating  systems  you  will  need to call mmkkzzffttrreeee by
+          hand to decompress the files.
+
+
+HHFFSS OOPPTTIIOONNSS
+     -hhffss Create an ISO-9660/HFS hybrid CD. This option should be
+          used  in  conjunction  with the -mmaapp, -mmaaggiicc and/or the
+          various _d_o_u_b_l_e _d_a_s_h options given below.
+
+     -nnoo-hhffss
+          Do not create an ISO-9660/HFS  hybrid  CD  even  though
+          other options may imply to do so.
+
+
+
+
+Version 3.0          Last change: 2010/04/25                   29
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     -aappppllee
+          Create an ISO-9660 CD with Apple's extensions.  Similar
+          to the -hhffss option, except that the Apple Extensions to
+          ISO-9660 are added instead of creating  an  HFS  hybrid
+          volume.  Former mmkkiissooffss versions did include Rock Ridge
+          attributes by default if  -aappppllee  was  specified.  This
+          versions  of  mmkkiissooffss  does not do this anymore. If you
+          like to have Rock Ridge attributes, you need to specify
+          this separately.
+
+     -mmaapp _m_a_p_p_i_n_g__f_i_l_e
+          Use the _m_a_p_p_i_n_g__f_i_l_e to set the CREATOR and TYPE infor-
+          mation  for a file based on the filename's extension. A
+          filename is mapped only if it is not one  of  the  know
+          Apple/Unix  file formats. See the HHFFSS CCRREEAATTOORR//TTYYPPEE sec-
+          tion below.
+
+     -mmaaggiicc _m_a_g_i_c__f_i_l_e
+          The CREATOR and TYPE information  is  set  by  using  a
+          file's  _m_a_g_i_c  _n_u_m_b_e_r (usually the first few bytes of a
+          file). The _m_a_g_i_c__f_i_l_e is only used if a file is not one
+          of  the  known Apple/Unix file formats, or the filename
+          extension has not been mapped using  the  -mmaapp  option.
+          See   the  HHFFSS  CCRREEAATTOORR//TTYYPPEE  section  below  for  more
+          details.
+
+     -hhffss-ccrreeaattoorr _C_R_E_A_T_O_R
+          Set the default CREATOR for all files. Must be  exactly
+          4  characters.  See  the HHFFSS CCRREEAATTOORR//TTYYPPEE section below
+          for more details.
+
+     -hhffss-ttyyppee _T_Y_P_E
+          Set the default TYPE for all files. Must be  exactly  4
+          characters.  See the HHFFSS CCRREEAATTOORR//TTYYPPEE section below for
+          more details.
+
+     -pprroobbee
+          Search  the  contents  of  files  for  all  the   known
+          Apple/Unix  file  formats.   See the HHFFSS MMAACCIINNTTOOSSHH FFIILLEE
+          FFOORRMMAATTSS section below for  more  about  these  formats.
+          However,  the  only  way  to  check  for  _M_a_c_B_i_n_a_r_y and
+          _A_p_p_l_e_S_i_n_g_l_e files is to open and read  them.  Therefore
+          this  option _m_a_y increase processing time. It is better
+          to use one or more _d_o_u_b_l_e _d_a_s_h options given  below  if
+          the Apple/Unix formats in use are known.
+
+     -nnoo-ddeesskkttoopp
+          Do not create (empty) Desktop files.  New  HFS  Desktop
+          files  will  be created when the CD is used on a Macin-
+          tosh (and stored in the System  Folder).   By  default,
+          empty Desktop files are added to the HFS volume.
+
+
+
+
+Version 3.0          Last change: 2010/04/25                   30
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     -mmaacc-nnaammee
+          Use the HFS filename as  the  starting  point  for  the
+          ISO-9660, Joliet and Rock Ridge file names. See the HHFFSS
+          MMAACCIINNTTOOSSHH FFIILLEE NNAAMMEESS section below  for  more  informa-
+          tion.
+
+     -bboooott-hhffss-ffiillee _d_r_i_v_e_r__f_i_l_e
+          Installs the _d_r_i_v_e_r__f_i_l_e that _m_a_y make the CD  bootable
+          on  a Macintosh. See the HHFFSS BBOOOOTT DDRRIIVVEERR section below.
+          (Alpha).
+
+     -ppaarrtt
+          Generate an HFS partition table. By default, no  parti-
+          tion table is generated, but some older Macintosh CDROM
+          drivers need an HFS partition table on the CDROM to  be
+          able to recognize a hybrid CDROM.
+
+     -aauuttoo _A_u_t_o_S_t_a_r_t__f_i_l_e
+          Make the HFS CD use the QuickTime 2.0 Autostart feature
+          to   launch  an  application  or  document.  The  given
+          filename must be the name of a document or  application
+          located  at  the top level of the CD. The filename must
+          be less than 12 characters. (Alpha).
+
+     -cclluusstteerr-ssiizzee _s_i_z_e
+          Set the size in bytes  of  the  cluster  or  allocation
+          units  of  PC  Exchange  files.  Implies the --eexxcchhaannggee
+          option. See the  HHFFSS  MMAACCIINNTTOOSSHH  FFIILLEE  FFOORRMMAATTSS  section
+          below.
+
+     -hhiiddee-hhffss _g_l_o_b
+          Hide _g_l_o_b from the HFS volume. The  file  or  directory
+          will  still  exist in the ISO-9660 and/or Joliet direc-
+          tory.  _g_l_o_b is a  shell  wild-card-style  pattern  that
+          must  match any part of the filename Multiple globs may
+          be excluded.  Example:
+
+          mkisofs -o rom -hfs -hide-hfs '*.o' -hide-hfs foobar
+
+          would exclude  all  files  ending  in  ".o"  or  called
+          "foobar"  from  the  HFS volume. Note that if you had a
+          directory called "foobar" it too (and of course all its
+          descendants) would be excluded.  The _g_l_o_b can also be a
+          path name relative to the source directories  given  on
+          the command line. Example:
+
+          mkisofs -o rom -hfs -hide-hfs src/html src
+
+          would exclude just the file or directory called  "html"
+          from  the  "src" directory. Any other file or directory
+          called "html" in the tree will not be excluded.  Should
+          be used with the -hhiiddee and/or -hhiiddee-jjoolliieett options.  In
+
+
+
+Version 3.0          Last change: 2010/04/25                   31
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          order to match a directory name, make sure the pathname
+          does   not   include  a  trailing  '/'  character.  See
+          README.hide for more details.
+
+     -hhiiddee-hhffss-lliisstt _f_i_l_e
+          A file containing a list  of  _g_l_o_b_s  to  be  hidden  as
+          above.
+
+     -hhffss-vvoolliidd _h_f_s__v_o_l_i_d
+          Volume name for the HFS partition.  This  is  the  name
+          that  is  assigned  to  the  disc  on  a  Macintosh and
+          replaces the _v_o_l_i_d used with the -VV option
+
+     -iiccoonn-ppoossiittiioonn
+          Use the icon position information, if it  exists,  from
+          the Apple/Unix file.  The icons will appear in the same
+          position as they would on a Macintosh  desktop.  Folder
+          location  and  size  on  screen,  its scroll positions,
+          folder View (view as Icons, Small Icons, etc.) are also
+          preserved.   This  option  may become set by default in
+          the future.  (Alpha).
+
+     -rroooott-iinnffoo _f_i_l_e
+          Set the location, size  on  screen,  scroll  positions,
+          folder  View etc. for the root folder of an HFS volume.
+          See README.rootinfo for more information.  (Alpha)
+
+     -pprreepp-bboooott _F_I_L_E
+          PReP  boot  image  file.  Up  to  4  are  allowed.  See
+          README.prep_boot (Alpha)
+
+     -cchhrrpp--tt
+          Create a CHRP boot in boot partition 1.  See -pprreepp-bboooott
+          for further information.
+
+     -iinnppuutt-hhffss-cchhaarrsseett _c_h_a_r_s_e_t
+          Input charset that defines the characters used  in  HFS
+          file  names  when  used with the -_m_a_c-_n_a_m_e option.  The
+          default charset is cp10000  (Mac  Roman)  _c_p_1_0_0_0_0  (Mac
+          Roman)  See CCHHAARRAACCTTEERR SSEETTSS and HHFFSS MMAACCIINNTTOOSSHH FFIILLEE NNAAMMEESS
+          sections below for more details.
+
+     -oouuttppuutt-hhffss-cchhaarrsseett _c_h_a_r_s_e_t
+          Output charset that defines the characters that will be
+          used in the HFS file names. Defaults to the input char-
+          set. See CCHHAARRAACCTTEERR SSEETTSS section below for more details.
+
+     -hhffss-uunnlloocckk
+          By default, mmkkiissooffss will create an HFS volume  that  is
+          _l_o_c_k_e_d.  This option leaves the volume unlocked so that
+          other applications  (e.g.   hfsutils)  can  modify  the
+          volume.  See the HHFFSS PPRROOBBLLEEMMSS//LLIIMMIITTAATTIIOONNSS section below
+
+
+
+Version 3.0          Last change: 2010/04/25                   32
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          for warnings about using this option.
+
+     -hhffss-bblleessss _f_o_l_d_e_r__n_a_m_e
+          "Bless" the given directory (folder). This  is  usually
+          the  SSyysstteemm FFoollddeerr and is used in creating HFS bootable
+          CDs. The name of the directory must be the  whole  path
+          name  as mmkkiissooffss sees it. e.g. if the given pathspec is
+          ./cddata and  the  required  folder  is  called  System
+          Folder,  then  the  whole path name is "./cddata/System
+          Folder" (remember to use quotes if  the  name  contains
+          spaces).
+
+     -hhffss-ppaarrmmss _P_A_R_A_M_E_T_E_R_S
+          Override certain parameters used to create the HFS file
+          system.  Unlikely  to  be used in normal circumstances.
+          See the libhfs_iso/hybrid.h source file for details.
+
+     --ccaapp
+          Look for AUFS  CAP  Macintosh  files.  Search  for  CAP
+          Apple/Unix  file  formats only. Searching for the other
+          possible Apple/Unix file formats  is  disabled,  unless
+          other _d_o_u_b_l_e _d_a_s_h options are given.
+
+     --nneettaattaallkk
+          Look for NETATALK Macintosh files
+
+     --ddoouubbllee
+          Look for AppleDouble Macintosh files
+
+     --eetthheerrsshhaarree
+          Look for Helios EtherShare Macintosh files
+
+     --uusshhaarree
+          Look for IPT UShare Macintosh files
+
+     --eexxcchhaannggee
+          Look for PC Exchange Macintosh files
+
+     --ssggii
+          Look for SGI Macintosh files
+
+     --xxiinneett
+          Look for XINET Macintosh files
+
+     --mmaaccbbiinn
+          Look for MacBinary Macintosh files
+
+     --ssiinnggllee
+          Look for AppleSingle Macintosh files
+
+     --ddaavvee
+          Look for Thursby Software Systems DAVE Macintosh files
+
+
+
+Version 3.0          Last change: 2010/04/25                   33
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     --ssffmm
+          Look for Microsoft's Services for Macintosh  files  (NT
+          only) (Alpha)
+
+     --oossxx-ddoouubbllee
+          Look for MacOS X AppleDouble Macintosh files
+
+     --oossxx-hhffss
+          Look for MacOS X HFS Macintosh files
+
+
+CCHHAARRAACCTTEERR SSEETTSS
+     mmkkiissooffss processes file names in a  POSIX  compliant  way  as
+     strings  of  8-bit characters.  To represent all codings for
+     all languages, 8-bit characters are not sufficient.  Unicode
+     or  IISSOO--1100664466 define character codings that need at least 21
+     bits  to  represent  all  known  languages.  They   may   be
+     represented  with  UUTTFF--3322,  UUTTFF--1166  or UUTTFF--88 coding.  UUTTFF--3322
+     uses a plain 32-bit coding but seems to be  uncommon.  UUCCSS--22
+     is  used by Microsoft with Win32.  This coding is similar to
+     UUTTFF--1166 with the disadvantage that it only supports a 16  bit
+     subset  of all codes and that 16-bit characters are not com-
+     pliant with the POSIX filesystem interface.
+
+     Modern UNIX operating  systems  may  use  UUTTFF--88  coding  for
+     filenames.  This  coding  allows to use the complete Unicode
+     code set.  Each 32-bit character is represented  by  one  or
+     more  8-bit  characters.   If  a  character is coded in IISSOO--
+     88885599--11 (used in Central Europe and North  America)  is  maps
+     1:1  to  a  UUTTFF--3322  or UUTTFF--1166 coded Unicode character.  If a
+     character is coded in 77--BBiitt AASSCCIIII (used  in  USA  and  other
+     countries  with limited character set) is maps 1:1 to a UUTTFF--
+     3322, UUTTFF--1166 or  UUTTFF--88  coded  Unicode  character.   Character
+     codes  that  cannot be represented as a single byte in UTF-8
+     (typically if the value is > 0x7F) use escape sequences that
+     map to more than one 8-bit character.
+
+     If all operating systems would  use  UUTTFF--88  coding,  mmkkiissooffss
+     would  not  need to recode characters in file names.  Unfor-
+     tunately, Apple  uses  completely  nonstandard  codings  and
+     Microsoft  uses a Unicode coding that is not compatible with
+     the POSIX filename interface.
+
+     For all non UUTTFF--88 coded operating systems, the actual  char-
+     acter that each byte represents depends on the _c_h_a_r_a_c_t_e_r _s_e_t
+     or _c_o_d_e_p_a_g_e (which is the name used by  Microsoft)  used  by
+     the  local  operating  system  in  use - the characters in a
+     character set will reflect the region  or  natural  language
+     used by the user.
+
+     Usually character codes 0x00-0x1f  are  control  characters,
+     codes  0x20-0x7f are the 7 bit ASCII characters and (on PC's
+
+
+
+Version 3.0          Last change: 2010/04/25                   34
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     and Mac's) 0x80-0xff are used for other characters.   Unfor-
+     tunately  even  this  does  not  follow  ISO  standards that
+     reserve the range 0x80-0x9f for control characters and  only
+     allow 0xa0-0xff for other characters.
+
+     As there is a lot more than 256 characters/symbols  in  use,
+     only  a  small  subset  are  represented in a character set.
+     Therefore the same character code may represent a  different
+     character  in  different character sets. So a file name gen-
+     erated, say in central Europe,  may  not  display  the  same
+     character when viewed on a machine in, say eastern Europe.
+
+     To make matters more complicated, different  operating  sys-
+     tems   use  different  character  sets  for  the  region  or
+     language. For example the character code for "small  e  with
+     acute  accent" may be character code 0x82 on a PC, code 0x8e
+     on a Macintosh and code 0xe9 on a UNIX system.   Note  while
+     the  codings  used  on  a PC or Mac are nonstandard, Unicode
+     codes this character as 0x00000000e9 which is basically  the
+     same value as the value used by most UNIX systems.
+
+     As long as not all operating systems and  applications  will
+     use the Unicode character set as the basis for file names in
+     a unique way, it may be necessary to specify which character
+     set  your file names use in and which character set the file
+     names should appear on the CD.
+
+     There are four options to specify  the  character  sets  you
+     want to use:
+
+     -input-charset
+          Defines the local character set you are using  on  your
+          host  machine.  Any character set conversions that take
+          place will use this character set as the staring point.
+          The default input character sets are _c_p_4_3_7 on DOS based
+          systems and _i_s_o_8_8_5_9-_1 on all other systems.
+
+          If the -_J option is given, then the Unicode equivalents
+          of  the  input character set will be used in the Joliet
+          directory. Using the -_j_c_h_a_r_s_e_t option is  the  same  as
+          using the -_i_n_p_u_t-_c_h_a_r_s_e_t and -_J options.
+
+     -output-charset
+          Defines the character set that will be  used  with  for
+          the  Rock  Ridge names on the CD. Defaults to the input
+          character set. Only likely to be useful if  used  on  a
+          non-Unix  platform.  e.g.  using mmkkiissooffss on a Microsoft
+          Win32 machine to create Rock  Ridge  CDs.  If  you  are
+          using  mmkkiissooffss on a Unix machine, it is likely that the
+          output character set will be  the  same  as  the  input
+          character set.
+
+
+
+
+Version 3.0          Last change: 2010/04/25                   35
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     -input-hfs-charset
+          Defines the HFS character set used for HFS  file  names
+          decoded  from  any  of the various Apple/Unix file for-
+          mats. Only useful when used with -_m_a_c-_n_a_m_e option.  See
+          the  HHFFSS  MMAACCIINNTTOOSSHH  FFIILLEE  NNAAMMEESS  for more information.
+          Defaults to _c_p_1_0_0_0_0 (Mac Roman).
+
+     -output-hfs-charset
+          Defines the HFS character set used to create  HFS  file
+          names  from  the  input  character  set in use. In most
+          cases this will be from the character  set  given  with
+          the  -_i_n_p_u_t-_c_h_a_r_s_e_t  option.  Defaults to the input HFS
+          character set.
+
+     There are a number of character sets built  in  to  _m_k_i_s_o_f_s.
+     To get a listing, use mmkkiissooffss -iinnppuutt-cchhaarrsseett hheellpp..
+
+     Additional character sets from iiccoonnvv(1) may be used on  sys-
+     tems, that support iiccoonnvv(1).  In this case, call iiccoonnvv -ll to
+     get a list of valid character sets from this coding  method.
+     To force an iiccoonnvv(1) based coding, use iiccoonnvv::_n_a_m_e instead of
+     _n_a_m_e for the character set.
+
+     If using non iiccoonnvv(1) based character sets, additional char-
+     acter  sets  can  be read from file for any of the character
+     set options by giving a filename  as  the  argument  to  the
+     options.  The  given file will only be read if its name does
+     not match one of the built in character sets.
+
+     The format of the character set files is  the  same  as  the
+     mapping            files            available           from
+     http://www.unicode.org/Public/MAPPINGS The format  of  these
+     files is:
+
+          Column #1 is the input byte code (in hex as 0xXX)
+          Column #2 is the Unicode (in hex as 0xXXXX)
+          Rest of the line is ignored.
+
+     Any blank line, line without two (or more)  columns  in  the
+     above  format or comments lines (starting with the # charac-
+     ter) are ignored without any  warnings.  Any  missing  input
+     code is mapped to Unicode character 0x0000.
+
+     Note that there is no support for 16 bit UNICODE (UTF-16) or
+     32  bit  UNICODE  (UTF-32) coding because this coding is not
+     POSIX compliant. There should be support for  UTF-8  UNICODE
+     coding  which is compatible to POSIX filenames and supported
+     by moder UNIX implementations such as Solaris.
+
+     A 1:1 character set mapping can be defined by using the key-
+     word  _d_e_f_a_u_l_t  as  the  argument to any of the character set
+     options. This is the behaviour of older (v1.12) versions  of
+
+
+
+Version 3.0          Last change: 2010/04/25                   36
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     mmkkiissooffss.
+
+     The ISO-9660 file names generated from the  input  filenames
+     are not converted from the input character set. The ISO-9660
+     character set is a very limited subset of the ASCII  charac-
+     ters, so any conversion would be pointless.
+
+     Any character that mmkkiissooffss can not convert will be  replaced
+     with a '_' character.
+
+HHFFSS CCRREEAATTOORR//TTYYPPEE
+     A Macintosh file has two properties associated with it which
+     define  which  application created the file, the _C_R_E_A_T_O_R and
+     what data the file contains, the _T_Y_P_E.  Both are (exactly) 4
+     letter  strings.  Usually  this  allows  a Macintosh user to
+     double-click on a file and launch  the  correct  application
+     etc.  The CREATOR and TYPE of a particular file can be found
+     by using something like ResEdit (or similar) on a Macintosh.
+
+     The CREATOR and TYPE information is stored in all the  vari-
+     ous  Apple/Unix encoded files.  For other files it is possi-
+     ble to base the CREATOR and TYPE on the filename's extension
+     using  a  _m_a_p_p_i_n_g  file  (the  -mmaapp option) and/or using the
+     _m_a_g_i_c _n_u_m_b_e_r (usually a _s_i_g_n_a_t_u_r_e in the first few bytes) of
+     a file (the -mmaaggiicc option). If both these options are given,
+     then their order on the command line is  important.  If  the
+     -mmaapp  option is given first, then a filename extension match
+     is attempted before a magic number match.  However,  if  the
+     -mmaaggiicc  option  is given first, then a magic number match is
+     attempted before a filename extension match.
+
+     If a mapping or magic file is not used, or no match is found
+     then  the default CREATOR and TYPE for all regular files can
+     be set by using entries in the ..mmkkiissooffssrrcc file or using  the
+     -hhffss-ccrreeaattoorr and/or -hhffss-ttyyppee options, otherwise the default
+     CREATOR and TYPE are 'unix' and 'TEXT'.
+
+     The format of the _m_a_p_p_i_n_g file is the same _a_f_p_f_i_l_e format as
+     used by _a_u_f_s.  This file has five columns for the _e_x_t_e_n_s_i_o_n,
+     _f_i_l_e _t_r_a_n_s_l_a_t_i_o_n, _C_R_E_A_T_O_R, _T_Y_P_E and _C_o_m_m_e_n_t.  Lines starting
+     with the '#' character are comment lines and are ignored. An
+     example file would be like:
+
+     # Example filename mapping file
+     #
+     # EXTN   XLate   CREATOR   TYPE     Comment
+     .tif     Raw     '8BIM'    'TIFF'   "Photoshop TIFF image"
+     .hqx     Ascii   'BnHq'    'TEXT'   "BinHex file"
+     .doc     Raw     'MSWD'    'WDBN'   "Word file"
+     .mov     Raw     'TVOD'    'MooV'   "QuickTime Movie"
+     *        Ascii   'ttxt'    'TEXT'   "Text file"
+
+
+
+
+Version 3.0          Last change: 2010/04/25                   37
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     Where:
+
+          The first column _E_X_T_N defines the Unix filename  exten-
+          sion to be mapped. The default mapping for any filename
+          extension that doesn't match is defined  with  the  "*"
+          character.
+
+          The _X_l_a_t_e column defines the type of  text  translation
+          between  the  Unix  and Macintosh file it is ignored by
+          mmkkiissooffss, but is kept to  be  compatible  with  aauuffss(1).
+          Although mmkkiissooffss does not alter the contents of a file,
+          if a binary file has its TYPE set as 'TEXT', it _m_a_y  be
+          read  incorrectly  on  a  Macintosh. Therefore a better
+          choice for the default TYPE may be '????'
+
+          The _C_R_E_A_T_O_R and _T_Y_P_E keywords must be 4 characters long
+          and enclosed in single quotes.
+
+          The comment field is enclosed in double quotes - it  is
+          ignored  by  mmkkiissooffss, but is kept to be compatible with
+          aauuffss.
+
+     The format of the _m_a_g_i_c file  is  almost  identical  to  the
+     mmaaggiicc(4)  file  used by the Linux ffiillee(1) command - the rou-
+     tines for reading and decoding the _m_a_g_i_c file are  based  on
+     the Linux ffiillee(1) command.
+
+     This file has  four  tab  separated  columns  for  the  _b_y_t_e
+     _o_f_f_s_e_t, _t_y_p_e, _t_e_s_t and _m_e_s_s_a_g_e.  Lines starting with the '#'
+     character are comment lines and are ignored. An example file
+     would be like:
+
+     # Example magic file
+     #
+     # off   type      test       message
+     0       string    GIF8       8BIM GIFf  GIF image
+     0       beshort   0xffd8     8BIM JPEG  image data
+     0       string    SIT!       SIT! SIT!  StuffIt Archive
+     0       string     37235     LZIV ZIVU  standard unix compress
+     0       string     37213     GNUz ZIVU  gzip compressed data
+     0       string    %!         ASPS TEXT  Postscript
+     0       string     04%!      ASPS TEXT  PC Postscript with a ^D to start
+     4       string    moov       txtt MooV  QuickTime movie file (moov)
+     4       string    mdat       txtt MooV  QuickTime movie file (mdat)
+
+     The format of the file is  described  in  the  mmaaggiicc(4)  man
+     page. The only difference here is that for each entry in the
+     magic file, the _m_e_s_s_a_g_e for the initial  offset  mmuusstt  be  4
+     characters  for the CREATOR followed by 4 characters for the
+     TYPE - white space is optional between them. Any other char-
+     acters on this line are ignored.  Continuation lines (start-
+     ing with a '>') are  also  ignored  i.e.  only  the  initial
+
+
+
+Version 3.0          Last change: 2010/04/25                   38
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     offset lines are used.
+
+     Using the -mmaaggiicc option may significantly increase  process-
+     ing  time  as  each  file has to opened and read to find its
+     magic number.
+
+     In summary, for all files, the default CREATOR is 'unix' and
+     the  default  TYPE is 'TEXT'.  These can be changed by using
+     entries in the ._m_k_i_s_o_f_s_r_c file or by using the  -hhffss-ccrreeaattoorr
+     and/or -hhffss-ttyyppee options.
+
+     If the a file is in one of the known Apple/Unix formats (and
+     the format has been selected), then the CREATOR and TYPE are
+     taken from the values stored in the Apple/Unix file.
+
+     Other files can have their CREATOR and TYPE set  from  their
+     file name extension (the -mmaapp option), or their magic number
+     (the -mmaaggiicc option). If the default match  is  used  in  the
+     _m_a_p_p_i_n_g file, then these values override the default CREATOR
+     and TYPE.
+
+     A   full   CREATOR/TYPE   database   can   be    found    at
+     http://www.angelfire.com/il/szekely/index.html
+
+
+HHFFSS MMAACCIINNTTOOSSHH FFIILLEE FFOORRMMAATTSS
+     Macintosh files have two parts called the _D_a_t_a and  _R_e_s_o_u_r_c_e
+     fork.  Either  may  be  empty. Unix (and many other OSs) can
+     only cope with files having one part (or fork).  To  add  to
+     this, Macintosh files have a number of attributes associated
+     with them - probably the most important  are  the  TYPE  and
+     CREATOR.  Again Unix has no concept of these types of attri-
+     butes.
+
+     e.g. a Macintosh file may be a JPEG image where the image is
+     stored  in  the  Data fork and a desktop thumbnail stored in
+     the Resource fork. It is usually the information in the data
+     fork that is useful across platforms.
+
+     Therefore to store a Macintosh file on a Unix filesystem,  a
+     way has to be found to cope with the two forks and the extra
+     attributes (which are  referred  to  as  the  _f_i_n_d_e_r  _i_n_f_o).
+     Unfortunately,  it  seems  that  every software package that
+     stores Macintosh files on Unix has chosen a completely  dif-
+     ferent storage method.
+
+     The Apple/Unix formats  that  _m_k_i_s_o_f_s  (partially)  supports
+     are:
+
+     CAP AUFS format
+          Data fork stored in a file. Resource fork in  subdirec-
+          tory  .resource with same filename as data fork. Finder
+
+
+
+Version 3.0          Last change: 2010/04/25                   39
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          info in .finderinfo subdirectory with same filename.
+
+     AppleDouble/Netatalk
+          Data fork stored in a file. Resource fork stored  in  a
+          file with same name prefixed with "%". Finder info also
+          stored in same "%" file. Netatalk uses the same format,
+          but the resource fork/finderinfo stored in subdirectory
+          .AppleDouble with same name as data fork.
+
+     AppleSingle
+          Data structures similar to above, except both forks and
+          finder info are stored in one file.
+
+     Helios EtherShare
+          Data fork stored in a file. Resource  fork  and  finder
+          info  together in subdirectory .rsrc with same filename
+          as data fork.
+
+     IPT UShare
+          Very similar to the EtherShare format, but  the  finder
+          info is stored slightly differently.
+
+     MacBinary
+          Both forks and finder info stored in one file.
+
+     Apple PC Exchange
+          Used by Macintoshes to store Apple files on  DOS  (FAT)
+          disks.   Data  fork  stored in a file. Resource fork in
+          subdirectory  resource.frk  (or  RESOURCE.FRK).  Finder
+          info  as one record in file finder.dat (or FINDER.DAT).
+          Separate finder.dat for each data fork directory.
+
+          Note: _m_k_i_s_o_f_s needs to know the native FAT cluster size
+          of  the disk that the PC Exchange files are on (or have
+          been  copied  from).  This  size  is   given   by   the
+          -cclluusstteerr-ssiizzee  option.   The cluster or allocation size
+          can be found by using the DOS utility CCHHKKDDSSKK.
+
+          May not work with PC  Exchange  v2.2  or  higher  files
+          (available  with  MacOS  8.1).  DOS media containing PC
+          Exchange files should be mounted  as  type  mmssddooss  (not
+          vvffaatt) when using Linux.
+
+     SGI/XINET
+          Used by SGI machines when they mount  HFS  disks.  Data
+          fork  stored  in  a file. Resource fork in subdirectory
+          .HSResource with same name. Finder info as  one  record
+          in  file  .HSancillary.  Separate .HSancillary for each
+          data fork directory.
+
+     Thursby Software Systems DAVE
+          Allows Macintoshes to store Apple files on SMB servers.
+
+
+
+Version 3.0          Last change: 2010/04/25                   40
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          Data  fork stored in a file. Resource fork in subdirec-
+          tory resource.frk. Uses the AppleDouble format to store
+          resource fork.
+
+     Services for Macintosh
+          Format of files stored by NT Servers on  NTFS  filesys-
+          tems.  Data fork is stored as "filename". Resource fork
+          stored as a NTFS _s_t_r_e_a_m called "filename:AFP_Resource".
+          The  finder  info  is  stored  as  a NTFS _s_t_r_e_a_m called
+          "filename:Afp_AfpInfo".  These  streams  are   normally
+          invisible to the user.
+
+          Warning: mkisofs only partially supports the  SFM  for-
+          mat.  If  an HFS file or folder stored on the NT server
+          contains an _i_l_l_e_g_a_l NT character in its name,  then  NT
+          converts  these characters to _P_r_i_v_a_t_e _U_s_e _U_n_i_c_o_d_e char-
+          acters. The characters are: " * / < > ?  | also a space
+          or period if it is the last character of the file name,
+          character codes 0x01 to 0x1f (control  characters)  and
+          Apple' apple logo.
+
+          Unfortunately, these private Unicode characters are not
+          readable  by  the  mkisofs NT executable. Therefore any
+          file or directory name containing these characters will
+          be  ignored - including the contents of any such direc-
+          tory.
+
+     MacOS X AppleDouble
+          When HFS/HFS+ files are copied or saved by MacOS  X  on
+          to  a  non-HFS  file  system  (e.g. UFS, NFS etc.), the
+          files are stored  in  AppleDouble  format.   Data  fork
+          stored  in  a file. Resource fork stored in a file with
+          same name prefixed with "._". Finder info  also  stored
+          in same "._" file.
+
+     MacOS X HFS (Alpha)
+          Not really an Apple/Unix encoding, but actual  HFS/HFS+
+          files  on a MacOS X system. Data fork stored in a file.
+          Resource fork stored in a pseudo  file  with  the  same
+          name  with  the  suffix '/rsrc'. The finderinfo is only
+          available via a MacOS X library call.
+
+          Notes: (also see README.macosx)
+
+          Only works when used on MacOS X.
+
+          If a file is found with a zero length resource fork and
+          empty  finderinfo,  it  is  assumed  not  to  have  any
+          Apple/Unix encoding - therefore a TYPE and CREATOR  can
+          be set using other methods.
+
+
+
+
+
+Version 3.0          Last change: 2010/04/25                   41
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     _m_k_i_s_o_f_s will attempt to set the CREATOR, TYPE, date and pos-
+     sibly  other flags from the finder info. Additionally, if it
+     exists, the Macintosh filename is set from the finder  info,
+     otherwise the Macintosh name is based on the Unix filename -
+     see the HHFFSS MMAACCIINNTTOOSSHH FFIILLEE NNAAMMEESS section below.
+
+     When using the -aappppllee  option,  the  TYPE  and  CREATOR  are
+     stored  in the optional System Use or SUSP field in the ISO-
+     9660 Directory Record - in much the same  way  as  the  Rock
+     Ridge  attributes  are. In fact to make life easy, the Apple
+     extensions are added at the beginning of the  existing  Rock
+     Ridge  attributes  (i.e. to get the Apple extensions you get
+     the Rock Ridge extensions as well).
+
+     The Apple extensions require the resource fork to be  stored
+     as an ISO-9660 _a_s_s_o_c_i_a_t_e_d file. This is just like any normal
+     file stored in the ISO-9660 filesystem except that the asso-
+     ciated  file  flag  is  set in the Directory Record (bit 2).
+     This file has the same name as the data fork (the file  seen
+     by   non-Apple  machines).  Associated  files  are  normally
+     ignored by other OSs
+
+     When using the -hhffss option, the TYPE and CREATOR plus  other
+     finder  info,  are  stored  in a separate HFS directory, not
+     visible on the ISO-9660 volume. The HFS directory references
+     the same data and resource fork files described above.
+
+     In most cases, it is better to use the -hhffss  option  instead
+     of  the  -aappppllee  option,  as  the latter imposes the limited
+     ISO-9660 characters allowed in filenames. However, the Apple
+     extensions  do  give the advantage that the files are packed
+     on the disk more efficiently and it may be possible  to  fit
+     more  files  on  a CD - important when the total size of the
+     source files is approaching 650MB.
+
+
+HHFFSS MMAACCIINNTTOOSSHH FFIILLEE NNAAMMEESS
+     Where possible, the HFS filename  that  is  stored  with  an
+     Apple/Unix file is used for the HFS part of the CD. However,
+     not all the Apple/Unix encodings store the HFS filename with
+     the  finderinfo. In these cases, the Unix filename is used -
+     with escaped special characters. Special characters  include
+     '/' and characters with codes over 127.
+
+     Aufs escapes these characters by using ":" followed  by  the
+     character  code  as  two hex digits. Netatalk and EtherShare
+     have a similar scheme, but uses "%" instead of a ":".
+
+     If mkisofs can't find an HFS filename, then it uses the Unix
+     name,  with any %xx or :xx characters (xx == two hex digits)
+     converted to a single character code. If "xx"  are  not  hex
+     digits  ([0-9a-fA-F]),  then  they are left alone - although
+
+
+
+Version 3.0          Last change: 2010/04/25                   42
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     any remaining ":" is converted to "%" as colon  is  the  HFS
+     directory separator. Care must be taken, as an ordinary Unix
+     file with %xx or :xx will also be converted. e.g.
+
+     This:2fFile   converted to This/File
+
+     This:File     converted to This%File
+
+     This:t7File   converted to This%t7File
+
+     Although HFS filenames appear to  support  upper  and  lower
+     case  letters,  the filesystem is case insensitive. i.e. the
+     filenames "aBc" and "AbC" are the same. If a file  is  found
+     in  a  directory  with  the same HFS name, then _m_k_i_s_o_f_s will
+     attempt, where possible, to make a unique name by adding '_'
+     characters to one of the filenames.
+
+     If an HFS filename exists for a file, then mkisofs  can  use
+     this name as the starting point for the ISO-9660, Joliet and
+     Rock Ridge filenames using the -mmaacc-nnaammee option. Normal Unix
+     files  without  an  HFS name will still use their Unix name.
+     e.g.
+
+     If  a  _M_a_c_B_i_n_a_r_y  (or  _P_C  _E_x_c_h_a_n_g_e)  file  is   stored   as
+     _s_o_m_e_i_m_a_g_e._g_i_f._b_i_n on the Unix filesystem, but contains a HFS
+     file called _s_o_m_e_i_m_a_g_e._g_i_f, then this is the name that  would
+     appear  on  the HFS part of the CD. However, as mkisofs uses
+     the Unix name as the starting point  for  the  other  names,
+     then   the   ISO-9660   name   generated  will  probably  be
+     _S_O_M_E_I_M_A_G._B_I_N   and   the   Joliet/Rock   Ridge   would    be
+     _s_o_m_e_i_m_a_g_e._g_i_f._b_i_n.   Although the actual data (in this case)
+     is a GIF image. This option will use the HFS filename as the
+     starting  point  and  the  ISO-9660  name  will  probably be
+     _S_O_M_E_I_M_A_G._G_I_F   and   the   Joliet/Rock   Ridge   would    be
+     _s_o_m_e_i_m_a_g_e._g_i_f.
+
+     Using the -mmaacc-nnaammee option will not currently work with  the
+     -TT  option  -  the  Unix  name will be used in the TRANS.TBL
+     file, not the Macintosh name.
+
+     The character set used to convert any HFS  file  name  to  a
+     Joliet/Rock Ridge file name defaults to _c_p_1_0_0_0_0 (Mac Roman).
+     The  character  set  used  can  be   specified   using   the
+     -_i_n_p_u_t-_h_f_s-_c_h_a_r_s_e_t option. Other built in HFS character sets
+     are:  cp10006  (MacGreek),  cp10007  (MacCyrillic),  cp10029
+     (MacLatin2), cp10079 (MacIcelandandic) and cp10081 (MacTurk-
+     ish).
+
+     Note: the character codes used by HFS file names taken  from
+     the various Apple/Unix formats will not be converted as they
+     are assumed to be in the correct Apple character  set.  Only
+     the  Joliet/Rock Ridge names derived from the HFS file names
+
+
+
+Version 3.0          Last change: 2010/04/25                   43
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     will be converted.
+
+     The existing mkisofs code will filter out any illegal  char-
+     acters for the ISO-9660 and Joliet filenames, but as mkisofs
+     expects to be dealing directly with Unix  names,  it  leaves
+     the  Rock  Ridge  names  as  is.   But as '/' is a legal HFS
+     filename character, the -mmaacc-nnaammee option converts '/'  to  a
+     '_' in Rock Ridge filenames.
+
+     If the Apple extensions are used,  then  only  the  ISO-9660
+     filenames  will  appear  on  the  Macintosh. However, as the
+     Macintosh ISO-9660 drivers can use _L_e_v_e_l _2  filenames,  then
+     you can use options like -aallllooww-mmuullttiiddoott without problems on
+     a Macintosh - still take care over the  names,  for  example
+     _t_h_i_s._f_i_l_e._n_a_m_e will be converted to _T_H_I_S._F_I_L_E i.e. only have
+     one '.', also filename _a_b_c_d_e_f_g_h will be seen as _A_B_C_D_E_F_G_H but
+     _a_b_c_d_e_f_g_h_i  will be seen as _A_B_C_D_E_F_G_H_I. i.e. with a '.' at the
+     end  -  don't  know  if  this  is  a  Macintosh  problem  or
+     mkisofs/mkhybrid  problem.  All  filenames  will be in upper
+     case when viewed  on  a  Macintosh.  Of  course,  DOS/Win3.X
+     machines will not be able to see Level 2 filenames...
+
+
+HHFFSS CCUUSSTTOOMM VVOOLLUUMMEE//FFOOLLDDEERR IICCOONNSS
+     To give a HFS CD a custom icon,  make  sure  the  root  (top
+     level)  folder  includes  a  standard  Macintosh volume icon
+     file. To give a volume a custom icon on a Macintosh, an icon
+     has  to  be  pasted over the volume's icon in the "Get Info"
+     box of the volume. This creates  an  invisible  file  called
+     'Icon\r'  ('\r'  is  the 'carriage return' character) in the
+     root folder.
+
+     A custom folder icon is very similar  -  an  invisible  file
+     called 'Icon\r' exits in the folder itself.
+
+     Probably the easiest  way  to  create  a  custom  icon  that
+     mkisofs  can  use, is to format a blank HFS floppy disk on a
+     Mac, paste an icon to its "Get Info"  box.  If  using  Linux
+     with  the HFS module installed, mount the floppy using some-
+     thing like:
+
+                mount -t hfs /dev/fd0 /mnt/floppy
+
+     The floppy will be mounted as a CAP file system by  default.
+     Then run mkisofs using something like:
+
+                mkisofs --cap -o output source_dir /mnt/floppy
+
+     If you are not using Linux, then you can use the hfsutils to
+     copy  the icon file from the floppy. However, care has to be
+     taken, as the icon file contains a control character. e.g.
+
+
+
+
+Version 3.0          Last change: 2010/04/25                   44
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+                hmount /dev/fd0
+                hdir -a
+                hcopy -m Icon^V^M icon_dir/icon
+
+     Where '^V^M' is control-V followed by  control-M.  Then  run
+     mmkkiissooffss by using something like:
+
+                mkisofs --macbin -o output source_dir icon_dir
+
+     The procedure for creating/using custom folder icons is very
+     similar  -  paste  an  icon  to  folder's "Get Info" box and
+     transfer the resulting 'Icon\r' file to the relevant  direc-
+     tory in the mkisofs source tree.
+
+     You may want to hide the icon files from  the  ISO-9660  and
+     Joliet trees.
+
+     To give a custom icon to a Joliet CD,  follow  the  instruc-
+     tions                        found                       at:
+     http://www.fadden.com/cdrfaq/faq03.html#[3-21]
+
+
+HHFFSS BBOOOOTT DDRRIIVVEERR
+     It _m_a_y be possible to make  the  hybrid  CD  bootable  on  a
+     Macintosh.
+
+     A bootable HFS CD requires an Apple CD-ROM  (or  compatible)
+     driver,  a  bootable HFS partition and the necessary System,
+     Finder, etc. files.
+
+     A driver can be obtained from any other  Macintosh  bootable
+     CD-ROM using the _a_p_p_l_e__d_r_i_v_e_r utility. This file can then be
+     used with the -bboooott-hhffss-ffiillee option.
+
+     The HFS partition (i.e. the hybrid disk in  our  case)  must
+     contain  a suitable System Folder, again from another CD-ROM
+     or disk.
+
+     For a partition to be bootable, it must have its _b_o_o_t  _b_l_o_c_k
+     set.  The  boot block is in the first two blocks of a parti-
+     tion. For a non-bootable partition the boot block is full of
+     zeros.  Normally,  when a System file is copied to partition
+     on a Macintosh disk, the boot block is filled with a  number
+     of  required  settings - unfortunately I don't know the full
+     spec for the boot block, so I'm guessing that the  following
+     will work OK.
+
+     Therefore, the utility _a_p_p_l_e__d_r_i_v_e_r also extracts  the  boot
+     block  from  the  first  HFS partition it finds on the given
+     CD-ROM and this is used for the  HFS  partition  created  by
+     mmkkiissooffss.
+
+
+
+
+Version 3.0          Last change: 2010/04/25                   45
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     PLEASE NOTE
+          By using a driver from an Apple CD  and  copying  Apple
+          software  to  your  CD, you become liable to obey Apple
+          Computer, Inc. Software License Agreements.
+
+EELL TTOORRIITTOO BBOOOOTT IINNFFOORRMMAATTIIOONN TTAABBLLEE
+     When the -bboooott-iinnffoo-ttaabbllee  option  is  given,  mmkkiissooffss  will
+     modify the boot file specified by the -bb option by inserting
+     a 56-byte "boot information table" at offset 8 in the  file.
+     This  modification is done in the source filesystem, so make
+     sure you use a copy if this file is  not  easily  recreated!
+     This file contains pointers which may not be easily or reli-
+     ably obtained at boot time.
+
+     The format of this table is as follows; all integers are  in
+     section 7.3.1 ("little endian") format.
+
+       Offset    Name           Size      Meaning
+        8        bi_pvd         4 bytes   LBA of primary volume descriptor
+       12        bi_file        4 bytes   LBA of boot file
+       16        bi_length      4 bytes   Boot file length in bytes
+       20        bi_csum        4 bytes   32-bit checksum
+       24        bi_reserved    40 bytes  Reserved
+
+     The 32-bit checksum is the sum of all the  32-bit  words  in
+     the  boot file starting at byte offset 64.  All linear block
+     addresses (LBAs) are given  in  CD  sectors  (normally  2048
+     bytes).
+
+CCOONNFFIIGGUURRAATTIIOONN
+     mmkkiissooffss looks for the ..mmkkiissooffssrrcc file, first in the  current
+     working  directory,  then  in the user's home directory, and
+     then in the directory in which the mmkkiissooffss binary is stored.
+     This  file  is  assumed  to contain a series of lines of the
+     form TTAAGG==_v_a_l_u_e , and in this way  you  can  specify  certain
+     options.   The  case  of  the  tag is not significant.  Some
+     fields in the volume header are not settable on the  command
+     line,  but  can  be altered through this facility.  Comments
+     may be placed in this file, using lines which start  with  a
+     hash (#) character.
+
+     AAPPPPII The application identifier should describe the applica-
+          tion  that  will be on the disc.  There is space on the
+          disc for 128 characters of  information.   The  related
+          Joliet entry is limited to 64 characters.  May be over-
+          ridden using the -AA command line option.
+
+     CCOOPPYY The copyright information, often the name of a file  on
+          the  disc  containing  the  copyright notice.  There is
+          space in the disc for  37  characters  of  information.
+          The  related  Joliet entry is limited to 18 characters.
+          May be overridden using  the  -ccooppyyrriigghhtt  command  line
+
+
+
+Version 3.0          Last change: 2010/04/25                   46
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+          option.
+
+     AABBSSTT The abstract information, often the name of a  file  on
+          the disc containing an abstract.  There is space in the
+          disc for 37 characters  of  information.   The  related
+          Joliet entry is limited to 18 characters.  May be over-
+          ridden using the -aabbssttrraacctt command line option.
+
+     BBIIBBLL The bibliographic information, often the name of a file
+          on  the disc containing a bibliography.  There is space
+          in the disc for  37  characters  of  information.   The
+          related  Joliet entry is limited to 18 characters.  May
+          be overridden using the -bbiilliioo command line option.
+
+     PPRREEPP This should describe the preparer of the CDROM, usually
+          with  a  mailing  address  and  phone number.  There is
+          space on the disc for 128  characters  of  information.
+          The  related  Joliet entry is limited to 64 characters.
+          May be overridden using the -pp command line option.
+
+     PPUUBBLL This should describe the publisher of the  CDROM,  usu-
+          ally with a mailing address and phone number.  There is
+          space on the disc for 128  characters  of  information.
+          The  related  Joliet entry is limited to 64 characters.
+          May be overridden using  the  -ppuubblliisshheerr  command  line
+          option.
+
+     SSYYSSII The System Identifier.  There is space on the disc  for
+          32  characters of information.  May be overridden using
+          the -ssyyssiidd command line option.
+
+     VVOOLLII The Volume Identifier.  There is space on the disc  for
+          32  characters of information.  May be overridden using
+          the -VV command line option.
+
+     VVOOLLSS The Volume Set Name.  There is space on  the  disc  for
+          128  characters  of  information.   The  related Joliet
+          entry is limited to 64 characters.  May  be  overridden
+          using the -vvoollsseett command line option.
+
+     HHFFSS__TTYYPPEE
+          The default TYPE for Macintosh files. Must be exactly 4
+          characters.  May be overridden using the -hhffss-ttyyppee com-
+          mand line option.
+
+     HHFFSS__CCRREEAATTOORR
+          The  default  CREATOR  for  Macintosh  files.  Must  be
+          exactly  4  characters.   May  be  overridden using the
+          -hhffss-ccrreeaattoorr command line option.
+
+     mmkkiissooffss can also be configured at compile time with defaults
+     for many of these fields.  See the file defaults.h.
+
+
+
+Version 3.0          Last change: 2010/04/25                   47
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+EEXXAAMMPPLLEESS
+     To create a vanilla ISO-9660 filesystem image  in  the  file
+     _c_d._i_s_o,  where  the  directory  _c_d__d_i_r  will become the root
+     directory of the CD ISO image, call:
+
+     % mkisofs -o cd.iso cd_dir
+
+     To create a CD with Rock  Ridge  extensions  of  the  source
+     directory _c_d__d_i_r:
+
+     % mkisofs -o cd.iso -R cd_dir
+
+     To create a CD with Rock  Ridge  extensions  of  the  source
+     directory  _c_d__d_i_r where all files have at least read permis-
+     sion and all files are owned by _r_o_o_t, call:
+
+     % mkisofs -o cd.iso -r cd_dir
+
+     To write a tar archive directly to a CD that will later con-
+     tain a simple ISO-9660 filesystem with the tar archive call:
+
+     % star -c . | mkisofs -stream-media-size 333000 | \
+     cdrecord dev=b,t,l -dao tsize=333000s -
+
+     To create a HFS hybrid CD with the  Joliet  and  Rock  Ridge
+     extensions of the source directory _c_d__d_i_r:
+
+     % mkisofs -o cd.iso -R -J -hfs cd_dir
+
+     To create a HFS hybrid CD from the source  directory  _c_d__d_i_r
+     that contains Netatalk Apple/Unix files:
+
+     % mkisofs -o cd.iso --netatalk cd_dir
+
+     To create a HFS hybrid CD from the source directory  _c_d__d_i_r,
+     giving  all  files  CREATOR  and  TYPES  based on just their
+     filename extensions listed in the file "mapping".:
+
+     % mkisofs -o cd.iso -map mapping cd_dir
+
+     To create a CD with the 'Apple Extensions to ISO-9660', from
+     the source directories _c_d__d_i_r and _a_n_o_t_h_e_r__d_i_r.  Files in all
+     the known Apple/Unix format are decoded and any other  files
+     are given CREATOR and TYPE based on their magic number given
+     in the file "magic":
+
+     % mkisofs -o cd.iso -apple -magic magic -probe \
+             cd_dir another_dir
+
+     The following example puts different files on  the  CD  that
+     all  have  the name README, but have different contents when
+     seen as a ISO-9660/RockRidge, Joliet or HFS CD.
+
+
+
+Version 3.0          Last change: 2010/04/25                   48
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     Current directory contains:
+
+     % ls -F
+     README.hfs     README.joliet  README.unix    cd_dir/
+
+     The following command puts the  contents  of  the  directory
+     _c_d__d_i_r  on  the  CD  along with the three README files - but
+     only one will be seen from each of the three filesystems:
+
+     % mkisofs -o cd.iso -hfs -J -r -graft-points \
+             -hide README.hfs -hide README.joliet \
+             -hide-joliet README.hfs -hide-joliet README.unix \
+             -hide-hfs README.joliet -hide-hfs README.unix \
+             README=README.hfs README=README.joliet \
+             README=README.unix cd_dir
+
+     i.e. the file README.hfs will be seen as README on  the  HFS
+     CD  and the other two README files will be hidden. Similarly
+     for the Joliet and ISO-9660/RockRidge CD.
+
+     There are probably all sorts  of  strange  results  possible
+     with combinations of the hide options ...
+
+
+AAUUTTHHOORR
+     Eric Youngdale <ericy@gnu.ai.mit.edu> or  <eric@andante.org>
+     wrote  the  first  versions  (1993  ... 1998) of the mkisofs
+     utility.  The copyright for  old  versions  of  the  mkisofs
+     utility is held by Yggdrasil Computing, Incorporated.  Joerg
+     Schilling wrote the SCSI transport library and  its  adapta-
+     tion  layer  to mmkkiissooffss and newer parts (starting from 1997)
+     of the utility.  Joerg Schilling is the  primary  maintainer
+     since 1999, this makes mmkkiissooffss Copyright (C) 1997-2010 Joerg
+     Schilling.
+
+     HFS hybrid code Copyright (C) James Pearson 1997 ... 2001.
+
+     libhfs code Copyright (C) 1996, 1997 Robert Leslie.
+
+     libfile code Copyright (C) Ian F. Darwin 1986,  1987,  1989,
+     1990, 1991, 1992, 1994, 1995.
+
+NNOOTTEESS
+     MMkkiissooffss may safely be  installed  suid  root.  This  may  be
+     needed  to  allow  mmkkiissooffss to read the previous session when
+     creating a multi session image.
+
+     mmkkiissooffss is not based on the standard mk*fs tools  for  unix,
+     because  we  must  generate  a  complete copy of an existing
+     filesystem on a disk in the  ISO-9660 filesystem.  The  name
+     mkisofs  is  probably a bit of a misnomer, since it not only
+     creates the filesystem, but it also populates  it  as  well.
+
+
+
+Version 3.0          Last change: 2010/04/25                   49
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     However,  the  appropriate  tool  name  for a UNIX tool that
+     creates populated filesystems - mmkkpprroottoo - is not well known.
+
+     If mmkkiissooffss is creating a filesystem image  with  Rock  Ridge
+     attributes  and  the  directory  nesting level of the source
+     directory tree is too much for  ISO-9660,  mmkkiissooffss  will  do
+     deep  directory  relocation.   This  results  in a directory
+     called RRRR__MMOOVVEEDD in the root directory of the CD. You  cannot
+     avoid  this  directory in the directory tree that is visible
+     with ISO-9660 but it it automatically  hidden  in  the  RRoocckk
+     RRiiddggee tree.
+
+     The  sparc  boot  support  that  is  implemented  with   the
+     -ssppaarrcc-bboooott options completely follows the official Sparc CD
+     boot requirements from the Boot prom in Sun  Sparc  systems.
+     Some Linux distributions for Sparc systems use a boot loader
+     called SSIILLOO that unfortunately is not Sparc CD boot  compli-
+     ant.  It is annoyingly to see that the Authors of SILO don't
+     fix SILO but instead provide a completely  unneeded  "patch"
+     to  mkisofs  that  incorporates far more source than the fix
+     for SILO would need.
+
+BBUUGGSS
+     +o    Does not properly read relocated directories in  multi-
+          session mode when adding data.
+
+          Any relocated deep directory is lost if the new session
+          does not include the deep directory.
+
+          Repeat by: create first  session  with  deep  directory
+          relocation  then add new session with a single dir that
+          differs from the old deep path.
+
+     +o    Does not re-use RR_MOVED when doing multi-session  from
+          TRANS.TBL
+
+     There may be some other ones.  Please, report  them  to  the
+     author.
+
+
+HHFFSS PPRROOBBLLEEMMSS//LLIIMMIITTAATTIIOONNSS
+     I have had to make several assumptions on how I  expect  the
+     modified  libhfs  routines  to  work,  however  there may be
+     situations that either I haven't thought of, or come  across
+     when  these  assumptions  fail.  Therefore I can't guarantee
+     that mkisofs will work as expected (although I haven't had a
+     major problem yet). Most of the HFS features work fine, how-
+     ever, some are not fully tested. These are marked  as  _A_l_p_h_a
+     above.
+
+     Although HFS filenames appear to  support  upper  and  lower
+     case  letters,  the filesystem is case insensitive. i.e. the
+
+
+
+Version 3.0          Last change: 2010/04/25                   50
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     filenames "aBc" and "AbC" are the same. If a file  is  found
+     in  a  directory  with  the same HFS name, then _m_k_i_s_o_f_s will
+     attempt, where possible, to make a unique name by adding '_'
+     characters to one of the filenames.
+
+     HFS file/directory names that share the first 31  characters
+     have  _N' (N == decimal number) substituted for the last few
+     characters to generate unique names.
+
+     Care must be  taken  when  "grafting"  Apple/Unix  files  or
+     directories  (see above for the method and syntax involved).
+     It is not possible to use  a  new  name  for  an  Apple/Unix
+     encoded  file/directory.  e.g.  If a Apple/Unix encoded file
+     called "oldname" is to added to the CD, then you can not use
+     the command line:
+
+          mkisofs    -o     output.raw     -hfs     -graft-points
+          newname=oldname cd_dir
+
+     mkisofs will be unable to decode "oldname". However, you can
+     graft Apple/Unix encoded files or directories as long as you
+     do not attempt to give them new names as above.
+
+     When creating an HFS volume with the  multisession  options,
+     -MM and -CC, only files in the last session will be in the HFS
+     volume. i.e. mkisofs can not _a_d_d existing files from  previ-
+     ous sessions to the HFS volume.
+
+     However, if each session is created with the  -ppaarrtt  option,
+     then  each  session  will  appear  as  separate volumes when
+     mounted on a Mac. In this case, it is worth using the -VV  or
+     -hhffss-vvoolliidd option to give each session a unique volume name,
+     otherwise each "volume" will appear on the Desktop with  the
+     same name.
+
+     Symbolic links (as with all other non-regular files) are not
+     added to the HFS directory.
+
+     Hybrid volumes may be larger than pure ISO-9660 volumes con-
+     taining  the  same  data.  In  some  cases  (e.g.  DVD sized
+     volumes) the hybrid volume may be significantly  larger.  As
+     an HFS volume gets bigger, so does the allocation block size
+     (the smallest amount of space a file  can  occupy).   For  a
+     650Mb  CD,  the allocation block is 10Kb, for a 4.7Gb DVD it
+     will be about 70Kb.
+
+     The maximum number of files in an HFS volume is about  65500
+     - although the real limit will be somewhat less than this.
+
+     The resulting hybrid  volume  can  be  accessed  on  a  Unix
+     machine  by using the hfsutils routines. However, no changes
+     can be made to the volume as it is set as lloocckkeedd.. The option
+
+
+
+Version 3.0          Last change: 2010/04/25                   51
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     -hhffss-uunnlloocckk  will  create an output image that is unlocked -
+     however no changes should be made to  the  contents  of  the
+     volume  (unless  you really know what you are doing) as it's
+     not a "real" HFS volume.
+
+     Using the -mmaacc-nnaammee option will not currently work with  the
+     -TT  option  -  the  Unix  name will be used in the TRANS.TBL
+     file, not the Macintosh name.
+
+     Although mmkkiissooffss does not alter the contents of a file, if a
+     binary  file  has  its  TYPE  set  as 'TEXT', it _m_a_y be read
+     incorrectly on a Macintosh. Therefore a  better  choice  for
+     the default TYPE may be '????'
+
+     The -mmaacc-bboooott-ffiillee option may not work at all...
+
+     May not work with PC Exchange v2.2 or higher  files  (avail-
+     able  with  MacOS  8.1).   DOS  media containing PC Exchange
+     files should be mounted as type mmssddooss (not vvffaatt) when  using
+     Linux.
+
+     The SFM format is only partially supported - see HHFFSS  MMAACCIINN--
+     TTOOSSHH FFIILLEE FFOORRMMAATTSS section above.
+
+     It  is  not  possible  to  use  the   the   -ssppaarrcc-bboooott   or
+     -ggeenneerriicc-bboooott options with the -bboooott-hhffss-ffiillee the -pprreepp-bboooott
+     or -cchhrrpp-bboooott options.
+
+     mmkkiissooffss should be able to create HFS hybrid images over 4Gb,
+     although this has not been fully tested.
+
+
+SSEEEE AALLSSOO
+     ccddrreeccoorrdd(1), mmkkzzffttrreeee(1), mmaaggiicc(5), aappppllee__ddrriivveerr(8).
+
+
+FFUUTTUURREE IIMMPPRROOVVEEMMEENNTTSS
+     Some sort of gui interface.
+
+AAVVAAIILLAABBIILLIITTYY
+     mmkkiissooffss is available as part of the  cdrecord  package  from
+     ftp://ftp.berlios.de/pub/cdrecord/
+
+     hhffssuuttiillss from ftp://ftp.mars.org/pub/hfs
+
+     mmkkzzffttrreeee is available as part of  the  zisofs-tools  package
+     from ftp://ftp.kernel.org/pub/linux/utils/fs/zisofs/
+
+MMAAIILLIINNGG LLIISSTTSS
+     If you want to actively take  part  on  the  development  of
+     mkisofs,  you  may  join the developer mailing list via this
+     URL:
+
+
+
+Version 3.0          Last change: 2010/04/25                   52
+
+
+
+
+
+
+Maintenance Procedures                                 MKISOFS(8)
+
+
+
+     hhttttpp::////lliissttss..bbeerrlliiooss..ddee//mmaaiillmmaann//lliissttiinnffoo//ccddrreeccoorrdd--ddeevveellooppeerrss
+
+
+MMAAIINNTTAAIINNEERR
+     Joerg Schilling
+     Seestr. 110
+     D-13353 Berlin
+     Germany
+
+HHFFSS MMKKHHYYBBRRIIDD MMAAIINNTTAAIINNEERR
+     James Pearson
+
+     j.pearson@ge.ucl.ac.uk
+
+
+     If you have support questions, send them to:
+
+     ccddrreeccoorrdd--ssuuppppoorrtt@@bbeerrlliiooss..ddee
+
+     If you definitly found a bug, send a mail to:
+
+     ccddrreeccoorrdd--ddeevveellooppeerrss@@bbeerrlliiooss..ddee
+     or jjooeerrgg..sscchhiilllliinngg@@ffookkuuss..ffrraauunnhhooffeerr..ddee
+
+     To subscribe, use:
+
+     hhttttpp::////lliissttss..bbeerrlliiooss..ddee//mmaaiillmmaann//lliissttiinnffoo//ccddrreeccoorrdd--ddeevveellooppeerrss
+     or hhttttpp::////lliissttss..bbeerrlliiooss..ddee//mmaaiillmmaann//lliissttiinnffoo//ccddrreeccoorrdd--ssuuppppoorrtt
+
+IINNTTEERRFFAACCEE SSTTAABBIILLIITTYY
+     The interfaces provided by mmkkiissooffss  are  designed  for  long
+     term  stability.   As mmkkiissooffss depends on interfaces provided
+     by the underlying operating system,  the  stability  of  the
+     interfaces  offered by mmkkiissooffss depends on the interface sta-
+     bility of the OS interfaces. Modified interfaces in  the  OS
+     may enforce modified interfaces in mmkkiissooffss.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 3.0          Last change: 2010/04/25                   53
+
+
+

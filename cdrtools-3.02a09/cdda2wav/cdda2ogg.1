@@ -1,0 +1,191 @@
+'\"
+.\" @(#)cdda2ogg.1	1.5 10/09/21 Copyright 2010 J. Schilling
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License, Version 1.0 only
+.\" (the "License").  You may not use this file except in compliance
+.\" with the License.
+.\"
+.\" See the file CDDL.Schily.txt in this distribution for details.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file CDDL.Schily.txt from this distribution.
+.\"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.75n'U
+.if t .ds s \\(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.if t .ds m \\(*m
+.if n .ds m micro
+.TH "cdda2ogg" 1 "Version 3.0"
+.SH NAME
+cdda2ogg, cdda2mp3 \- extract CD audio tracks and encode them
+.SH SYNOPSIS
+.PP
+.B cdda2ogg
+[
+.I options
+][
+.BI dev= device
+]
+.RI [ "file prefix" ]
+.RI [ "ogg opts" ]
+.PP
+.B cdda2mp3
+[
+.I options
+][
+.BI dev= device
+]
+.RI [ "file prefix" ]
+.RI [ "lame opts" ]
+.SH DESCRIPTION
+.PP
+.B cdda2ogg
+is a script that uses the
+.B cdda2wav
+command to extract all audio tracks with the
+.B cdda2wav
+command and encode them using the
+.BR oggenc (1)
+.B Ogg Vorbis
+encoder.
+.PP
+.B cdda2mp3
+is a script that uses the
+.B cdda2wav
+command to extract all audio tracks with the
+.B cdda2wav
+command and encode them using the
+.BR lame (1)
+.B MP3
+encoder.
+.PP
+There is no CDDB support yet.
+
+.SH OPTIONS
+.TP 12
+.B \-help
+print a short online usage message and exit.
+.TP
+.BI dev= device
+The device to read the data from. If there is only
+one CD-ROM drive in the system, the 
+.B dev= 
+option may be omitted. For possible values of the 
+.I device
+parameter, see the
+.BR cdrecord (1)
+man page.
+.TP
+.B \-*
+Any other option beginning with a '-' sign is passed to the
+.B cdda2wav
+program.
+.PP
+Any other option past the
+.B file prefix
+argument and beginning with a '-' sign is passed to the
+encoder program.
+.PP
+.SH "ENVIRONMENT VARIABLES"
+The following environment variables may be used to change the behavior of the
+.B cdda2ogg
+and the
+.B cdda2mp3
+command:
+.TP
+.B CDDA2WAV
+Defines the command to extract WAV data from the CD.
+The default value is
+.BR cdda2wav .
+.TP
+.B CDDA2WAV_OPTS
+Defines the options passed to the CDDA program while extracting
+from the CD.
+The default value is
+.BR "\-H \-q" .
+.TP
+.B MP_CODER
+The encoder program used to compress the audio data.
+The default value is
+.B oggenc
+for 
+.B cdda2ogg
+and
+.B lame
+for 
+.BR cdda2mp3 .
+.TP
+.B MP_OPTIONS
+Options passed to the encoder program.
+The default is empty.
+.TP
+.B FILEPREFIX
+The base filename part of the resulting audio files.
+The default file name is
+.B $TRACK-$FILEPREFIX.ogg
+for
+.B cdda2ogg
+and
+.B $TRACK-$FILEPREFIX.mp3
+for
+.B cdda2mp3
+if no 
+.I file prefix
+argument was given on the command line.
+.ne 15
+.SH FILES
+.PP
+If the following files are present, then the scripts source them
+to set up local defaults:
+.TP
+.B /etc/default/cdda2ogg
+To set up default values for
+.BR cdda2ogg .
+.TP
+.B /etc/default/cdda2mp3
+To set up default values for
+.BR cdda2mp3 .
+.PP
+The content may be set up to modify environment variables or to set up
+local defaults.
+
+.SH "SEE ALSO"
+.BR cdda2wav (1),
+.BR cdrecord (1),
+.BR oggenc (1),
+.BR lame (1).
+.SH  NOTES
+.PP
+If a CD contains a hidden audio track before track 1, a file name
+with track number 00 is created with the content of the hidden track.
+.PP
+The program
+.BR oggenc (1)
+is part of the
+.B vorbis-tools
+project
+See
+.B http://www.vorbis.com
+for more information.
+.sp
+The program
+.BR lame (1)
+is part of the
+.B lame
+project.
+See
+.B http://lame.sourceforge.net/
+for more information.
+.SH AUTHOR
+.PP
+The first versions of the scripts have been based on a news article by Tom Kludy.

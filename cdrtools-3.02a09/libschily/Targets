@@ -1,0 +1,95 @@
+# @(#)Targets	1.56 17/08/05 Copyright 1995-2014 J. Schilling
+
+CFILES_STDIO=	cvmod.c dat.c fcons.c fdown.c fdup.c \
+		ffileread.c ffilewrite.c \
+		fgetaline.c fgetline.c fgetstr.c file_getraise.c file_raise.c \
+		fileclose.c fileluopen.c fileopen.c filemopen.c \
+		filepos.c fileread.c filereopen.c fileseek.c filesize.c \
+		filestat.c filewrite.c flag.c flush.c fpipe.c \
+		getdelim.c \
+		niread.c niwrite.c nixread.c nixwrite.c openfd.c peekc.c \
+		fcons64.c fdup64.c fileluopen64.c fileopen64.c filemopen64.c \
+		filepos64.c filereopen64.c fileseek64.c filesize64.c \
+		filestat64.c openfd64.c
+
+HFILES_STDIO=	schilyio.h
+
+#
+# Note: getfp.c must be before getav0.c
+# Otherwise getfp.o would be made as dependency of avoffset
+#
+
+CFILES_REST=	abspath.c astoi.c astoll.c astoul.c astoull.c basename.c breakline.c \
+		checkerr.c comerr.c fcomerr.c \
+		chown.c \
+		cmpbytes.c cmpmbytes.c cmpnullbytes.c \
+		dirent.c dirname.c diropen.c \
+		dlfcn.c \
+		eaccess.c error.c \
+		faccessat.c fchdir.c \
+		fchmodat.c fchownat.c fconv.c fdopendir.c fexec.c fillbytes.c \
+		findinpath.c \
+		findbytes.c findline.c fnmatch.c format.c \
+		fprformat.c \
+		fstatat.c fstream.c \
+		futimens.c futimesat.c \
+		getargs.c getav0.c geterrno.c getexecpath.c getfp.c \
+		getgrent.c \
+		getdtablesize.c \
+		getdomainname.c gethostid.c gethostname.c getpagesize.c \
+		getlogin.c \
+		getnum.c getxnum.c \
+		gettnum.c getxtnum.c \
+		getperm.c \
+		getpwent.c \
+		getnstimeofday.c gettimeofday.c \
+		gid.c \
+		handlecond.c \
+		jsdprintf.c jsprintf.c jssnprintf.c jssprintf.c \
+		kill.c \
+		lchmod.c linkat.c lutimens.c \
+		lxchdir.c \
+		match.c matchl.c matchmb.c matchmbl.c matchw.c matchwl.c \
+		movebytes.c movecbytes.c \
+		mkdirat.c mkdirs.c mkfifo.c mkfifoat.c mkgmtime.c mknodat.c \
+		mkstemp.c \
+		mem.c jmem.c fjmem.c \
+		openat.c \
+		permtostr.c \
+		procnameat.c \
+		raisecond.c readlinkat.c rename.c renameat.c resolvepath.c \
+		saveargs.c savewd.c \
+		searchinpath.c serrmsg.c seterrno.c setfp.c \
+		setnstimeofday.c \
+		sleep.c \
+		snprintf.c \
+		spawn.c \
+		strcasecmp.c strncasecmp.c strcasemap.c \
+		strcat.c strcatl.c strchr.c strcmp.c strcpy.c strcspn.c \
+		strdup.c streql.c strlen.c strlcat.c strlcatl.c strlcpy.c strncat.c strncmp.c \
+		strncpy.c strndup.c strnlen.c strrchr.c strspn.c strstr.c \
+		swabbytes.c \
+		symlinkat.c \
+		timegm.c \
+		uid.c unlinkat.c uname.c usleep.c utimens.c utimensat.c \
+		wcscat.c wcscatl.c wcschr.c wcscmp.c wcscpy.c wcscspn.c \
+		wcsdup.c wcseql.c wcslen.c wcslcat.c wcslcatl.c wcslcpy.c wcsncat.c wcsncmp.c \
+		wcsncpy.c wcsndup.c wcsnlen.c wcsrchr.c wcsspn.c wcsstr.c \
+		wctype.c \
+		wdabort.c \
+		zerobytes.c
+
+HFILES_REST=	at-defs.h
+
+#
+# These interfaces have been moved to libschilypr in order to make
+# programs that use libschily compatible with all software.
+#
+# printf.c snprintf.c sprintf.c 
+#
+# snprintf.c however is needed for portability on systems
+# that do not provide snprintf()
+
+CFILES=		$(CFILES_STDIO) $(CFILES_REST)
+
+HFILES=		$(HFILES_STDIO) $(HFILES_REST)

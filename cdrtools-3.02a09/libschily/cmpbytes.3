@@ -1,0 +1,51 @@
+. \"  Manual Seite fuer cmpbytes
+. \" @(#)cmpbytes.3	1.1 17/02/15 Copyright 1988-2017 J. Schilling
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.75n'U
+.if t .ds s \(*b
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds A Ae
+.if n .ds O Oe
+.if n .ds U Ue
+.if n .ds s sz
+.ds S SS
+.TH CMPBYTES 3 "%e%" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+cmpbytes() \- compare data
+.SH SYNOPSIS
+.nf
+.B
+ssize_t cmpbytes(from, to, cnt)
+.B		const void *from;
+.B		const void *to;
+.B		ssize_t cnt;
+.fi
+.SH DESCRIPTION
+cmpbytes() compares size bytes from from to to.
+.SH RETURN VALUE
+The the offset of the first differing character in the strings.
+.I to
+string.
+.SH ERRORS
+.LP
+No errors are defined
+.SH EXAMPLES
+.SH "SEE ALSO"
+.LP
+.BR cmpmbytes (3),
+.BR cmpnullbytes (3),
+.BR fillbytes (3),
+.BR findbytes (3),
+.BR movebytes (3),
+.BR movecbytes (3),
+.BR swapbytes (3),
+.BR zerobytes (3)
+.SH NOTES
+This routine correctly handles overlapping buffers.

@@ -1,0 +1,7 @@
+SCHILY_1.0 {
+global:
+	scg_remote;
+	remote_ops;
+local:
+	*;
+};

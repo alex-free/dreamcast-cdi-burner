@@ -1,0 +1,92 @@
+#!/bin/sh
+# @(#)runrmt_android	1.4 12/03/11 Copyright 2011 J. Schilling
+###########################################################################
+# Written 2011 by J. Schilling
+###########################################################################
+# Remotely execute a test from "configure" and copy back "conftestval" as
+# well as the exit code from the program on the remote platform.
+#
+# This is the Android emulator variant that calls commands via the
+# Android Debug Bridge.
+#
+# Note that the shell variable '$?' needs to be handled with caution in
+# order to prevent early expansion.
+# We use "sh -c" to make sure that this script will work correctly in case
+# the remote user has a strange login shell.
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+
+remote_test=FALSE
+if test "$1" = "-r" ; then
+	remote_test=TRUE
+	shift
+fi
+
+if test $# -lt 1 ; then
+	echo "Usage: runrmt_android program-to-execute" 1>&2
+	echo "or"
+	echo "       runrmt -r file-to-test" 1>&2
+	exit 255
+fi
+
+if test $remote_test = FALSE -a ! -r $1 ; then
+	echo "$1: not found" 1>&2
+	exit 254
+fi
+
+#
+# We should tar and feather the Android authors for redefining the name
+# of the standard UNIX debugger for their tool. Hey, next time you could use
+# "ls", "ps", "df" or something similar to cause even more fun.
+#
+# Edit this line if your Android Emulator is on a different location:
+rmt=$HOME/android-sdk-linux_x86/platform-tools/adb
+
+#
+# Only do debugging when we are called from the schily makefilesystem
+#
+if test ."$CONFIG_RMTDEBUG" != . -a ."$CONFIG_NOFAIL" != . ; then
+	echo "REMOTE \c" 1>&6	# configure checking messages are on fd 6
+fi
+
+if test $remote_test = TRUE; then
+	#
+	# Android has no "test" command, do the best we can do...
+	# As "ls" on Android does not implement -L, we may be fooled by symlinks.
+	#
+	$rmt shell "cd /data/local/tmp;ls -l $1>/dev/null 2>/dev/null;echo "'$?'" > o.exit"	2> /dev/null
+	$rmt pull /data/local/tmp/o.exit .				2> /dev/null
+	$rmt shell "rm /data/local/tmp/o.exit"				2> /dev/null > /dev/null
+	$rmt shell "rm /data/local/tmp/core"				2> /dev/null > /dev/null
+else
+	F=`echo $1 |  sed -e 's,.*/,,'`
+	$rmt push $1 /data/local/tmp					2> /dev/null
+	$rmt shell "cd /data/local/tmp;./$F > o.out 2> o.err ;echo "'$?'" > o.exit"	2> /dev/null
+	$rmt pull /data/local/tmp/o.exit .				2> /dev/null
+	$rmt pull /data/local/tmp/o.out .				2> /dev/null
+	$rmt pull /data/local/tmp/o.err .				2> /dev/null
+	$rmt pull /data/local/tmp/conftestval .				2> /dev/null
+	$rmt shell "rm /data/local/tmp/$F /data/local/tmp/o.exit"	2> /dev/null > /dev/null
+	$rmt shell "rm /data/local/tmp/o.out /data/local/tmp/o.err"	2> /dev/null > /dev/null
+	$rmt shell "rm /data/local/tmp/core"				2> /dev/null > /dev/null
+	$rmt shell "rm /data/local/tmp/conftestval"			2> /dev/null > /dev/null
+fi
+excode=`cat ./o.exit`
+if [ -f o.out ]; then
+	cat o.out
+fi
+if [ -f o.err ]; then
+	cat o.err 1>&2
+fi
+rm -f ./o.exit ./o.out ./o.err
+#echo excode: $excode
+exit $excode

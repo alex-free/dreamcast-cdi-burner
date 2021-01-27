@@ -1,0 +1,29 @@
+The Sony CDU-924 was the first drive that has no hardware support
+for CDROM XA2 mode 1. If you want to create a multi session disk,
+you need to switch back to -data (plain CD-ROM)
+
+If you have a Sony drive that gives you problems with multi session disks,
+please always check the following:
+
+	For some Sony drives you may need to call cdrecord -multi -data
+	if you like to create multi-session CD's.
+
+	Some Sony drives do not allow to write XA2 tracks with
+	hardware support of the drive.
+
+There is currently a bug in the Sony code (for _old_ non MMC drives)
+of cdrecord that does not allow you to have different track types 
+in one session.
+
+All Sony drives that have CDUxxx type names are _old_ non MMC drives.
+	Here I expect that no XA support is in the firmware.
+
+All Sony drives that have CRXxxx type names are MMC compliant.
+	These drives should support XA-mode2-form1 as it is mandatory with MMC.
+
+NOTE: many HP CD-writers are nased on Sony OEM drives.
+
+
+NOTE: As for 18.5.2001, a fix was introduced that prevented cdrecord
+	to do multi session with new MMC compliant Sony drives.
+

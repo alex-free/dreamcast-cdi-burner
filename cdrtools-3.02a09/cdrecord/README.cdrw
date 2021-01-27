@@ -1,0 +1,13 @@
+Using CD-RW media Mini Howto FAQ
+
+CD-RW drives usually support packet writing, but as there
+is currently no usable UDF filesystem support you may only use
+the simple cdrecord approach.
+
+Cdrecord writes to CD-RW media in exactly the same way as it
+does with CD-R.
+
+You may erase a complete disk in preparation to reuse it.
+Check the man page entry for the blank= option of cdrecord.
+Not all drives support all blanking modes. Usually
+blank=fast or blank=full are working.

@@ -1,0 +1,65 @@
+# /* @(#)libhfs-mapvers        1.1 10/10/02 Copyright 2005-2010 J. Schilling */
+
+SCHILY_1.0 {
+global:
+	d_dtoutime;
+	d_fetchb;
+	d_fetchl;
+	d_fetchs;
+	d_fetchw;
+	d_getb;
+	d_getl;
+	d_getw;
+	d_putb;
+	d_putl;
+	d_putw;
+	d_relstring;
+	d_storeb;
+	d_storel;
+	d_stores;
+	d_storew;
+	d_tomtime;
+	d_toutime;
+	hfs_chdir;
+	hfs_close;
+	hfs_closedir;
+	hfs_create;
+	hfs_curvol;
+	hfs_delete;
+	hfs_dirinfo;
+	hfs_error;
+	hfs_flush;
+	hfs_flushall;
+	hfs_format;
+	hfs_fsetattr;
+	hfs_fstat;
+	hfs_get_drAllocPtr;
+	hfs_getcwd;
+	hfs_getfork;
+	hfs_getvol;
+	hfs_lseek;
+	hfs_mkdir;
+	hfs_mount;
+	hfs_mounts;
+	hfs_open;
+	hfs_opendir;
+	hfs_read;
+	hfs_readdir;
+	hfs_rename;
+	hfs_rmdir;
+	hfs_set_drAllocPtr;
+	hfs_setattr;
+	hfs_setcwd;
+	hfs_setfork;
+	hfs_setvol;
+	hfs_stat;
+	hfs_truncate;
+	hfs_umount;
+	hfs_umountall;
+	hfs_vsetbless;
+	hfs_vstat;
+	hfs_write;
+
+local:
+	*;
+};

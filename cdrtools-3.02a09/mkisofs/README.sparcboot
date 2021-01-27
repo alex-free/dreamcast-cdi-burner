@@ -1,0 +1,76 @@
+# @(#)README.sparcboot	1.1 99/12/12 joerg
+#
+The sparc boot feature does allow you to create your own Sun sparc boot disk.
+This will allow you to create modified Solaris install disks or to create
+installation CD's for other OS that run on sparc systems.
+
+A CD that is bootable on a Sun sparc system has a Sun disk label on sector 0
+and some Sun sparc disk partitions behind the ISO-9660 filesystem image.
+
+The layout of a sparc boot CD:
+
+----------------------------------------------------------------------------------------------------
+|Sun disk label| Iso 9660 filesystem |Generic sun4 boot|sun4c boot|sun4m boot|sun4d boot|sun4e boot|
+----------------------------------------------------------------------------------------------------
+
+On older system CD's all boot partition contain a full UFS miniroot filesystem.
+On newer CD's the images on slice 2 and above only contain boot redirects to
+slice 1.
+
+To create a CD that is bootable on Sun sparc systems you need to have the
+boot images for the apropriate sparc architecture.
+
+A boot image file usually is a UFS filesystem image that contains the 
+primary boot image at byte offset 512 ... 8191.
+
+You may get such boot images by extracting partitions 1..5 from a Sun Solaris install CD,
+but any bootable image should work.
+
+Here is an expample how to do this with the Solaris 7 install CD.
+
+dd if=/vol/dev/dsk/c0t6/sol_7_sparc_sun_srvr/s1 of=sun4
+dd if=/vol/dev/dsk/c0t6/sol_7_sparc_sun_srvr/s2 of=sun4c
+dd if=/vol/dev/dsk/c0t6/sol_7_sparc_sun_srvr/s3 of=sun4m
+dd if=/vol/dev/dsk/c0t6/sol_7_sparc_sun_srvr/s4 of=sun4d
+dd if=/vol/dev/dsk/c0t6/sol_7_sparc_sun_srvr/s5 of=sun4e
+
+
+mkisofs -R -sparc-boot sun4,sun4c,sun4m,sun4d,sun4e -o boot.img /mnt/install
+
+Will create the bootable image in boot.img.
+
+If you like to make the boot images smaller, you may call 'fstyp -v'
+on the images and use the 'size' value to get the needed minimal 
+boot image size in kB.
+
+The result for the S7 boot CD is:
+
+ufs
+magic   11954   format  dynamic time    Wed Oct  7 00:00:30 1998
+sblkno  8       cblkno  12      iblkno  16      dblkno  252
+sbsize  2048    cgsize  2048    cgoffset 20     cgmask  0xfffffff0
+ncg     7       size    25704   blocks  23987
+			^^^^^
+			This is the number of interest.
+bsize   8192    shift   13      mask    0xffffe000
+fsize   2048    shift   11      mask    0xfffff800
+frag    4       shift   2       fsbtodb 2
+minfree 10%     maxbpg  2048    optim   time
+maxcontig 256   rotdelay 0ms    rps     90
+csaddr  252     cssize  2048    shift   9       mask    0xfffffe00
+ntrak   14      nsect   72      spc     1008    ncyl    102
+cpg     16      bpg     1008    fpg     4032    ipg     3776
+nindir  2048    inopb   64      nspf    4
+nbfree  1768    ndir    667     nifree  24329   nffree  9
+cgrotor 2       fmod    0       ronly   0
+
+So you should call:
+
+dd if=/vol/dev/dsk/c0t6/sol_7_sparc_sun_srvr/s1 of=sun4 bs=1k count=25704
+
+To modify this filesystem, you can mount it using the fbk driver:
+
+chmod +t ./sun4		# Need to do this to avoid vm cache aliasing problems
+
+mount -F fbk -o rw,type=ufs /dev/fbk0:sun4 /mnt
+

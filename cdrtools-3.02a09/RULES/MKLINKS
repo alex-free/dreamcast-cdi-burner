@@ -1,0 +1,448 @@
+#!/bin/sh
+###########################################################################
+#ident "@(#)MKLINKS	1.130 17/08/01 "
+###########################################################################
+# Written 1996-2015 by J. Schilling
+###########################################################################
+# Copyright (c) 1996-2015 J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+# A copy of the CDDL is also available via the Internet at
+# http://www.opensource.org/licenses/cddl1.txt
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+if [ -r ldummy.lnk ]; then
+	if [ $# -le 0 ]; then
+		exit 0
+	fi
+fi
+###########################################################################
+symlink="ln -s"
+MKLINKS_TEST=${MKLINKS_TEST-:}
+if [ ".$MKLINKS_COPY" = '.' ]; then
+	rm -f xxzzy.123 xxzzy.345
+	echo test > xxzzy.123
+	$symlink xxzzy.123 xxzzy.345
+	test $? = 0 || symlink=cp
+	test -r xxzzy.345 || symlink=cp
+	${MKLINKS_TEST} -h xxzzy.345 || symlink=cp
+	rm -f xxzzy.123 xxzzy.345
+else
+	symlink=cp
+fi
+###########################################################################
+
+$symlink	ldummy.cnf		ldummy.lnk
+$symlink	mk-.id			mk-make.id
+#
+$symlink	mk-smake.id		mk-build.id
+$symlink	r-smake.dep		r-build.dep
+$symlink	r-smake.obj		r-build.obj
+$symlink	r-smake.tag		r-build.tag
+$symlink	r-make.obj		r-gmake.obj
+$symlink	r-make.obj		r-sunpro.obj
+$symlink	r-make.tag		r-sunpro.tag
+
+$symlink	cc-clang.rul		cc-clang32.rul
+$symlink	cc-clang.rul		cc-clang64.rul
+$symlink	cc-gcc.rul		cc-gcc32.rul
+$symlink	cc-gcc.rul		cc-gcc64.rul
+$symlink	cc-sunpro.rul		cc-sunpro32.rul
+$symlink	cc-sunpro.rul		cc-sunpro64.rul
+$symlink	cc-ibm.rul		cc-ibm32.rul
+$symlink	cc-ibm.rul		cc-ibm64.rul
+
+if [ -r r-make.c4x ]; then
+	$symlink	r-make.c4x		r-gmake.c4x
+	$symlink	r-make.c4x-dep		r-gmake.c4x-dep
+	$symlink	r-smake.c4x		r-build.c4x
+	$symlink	r-smake.c4x-dep		r-build.c4x-dep
+fi
+
+$symlink	9000-725-hp-ux-cc.rul	9000-725-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-710-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-712-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-715-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-735-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-743-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-755-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-777-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-778-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-780-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-782-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-785-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-800-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-820-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-831-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	9000-899-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc.rul	ia64-hp-ux-cc.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-710-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-712-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-715-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-735-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-743-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-755-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-777-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-778-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-780-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-782-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-785-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-800-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-820-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-831-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	9000-899-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-cc64.rul	ia64-hp-ux-cc64.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-710-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-712-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-715-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-735-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-743-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-755-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-777-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-778-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-780-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-782-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-785-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-800-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-820-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-831-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	9000-899-hp-ux-gcc.rul
+$symlink	9000-725-hp-ux-gcc.rul	ia64-hp-ux-gcc.rul
+$symlink	hppa-nextstep-cc.rul	i386-nextstep-cc.rul
+$symlink	hppa-nextstep-cc.rul	m68k-nextstep-cc.rul
+$symlink	hppa-nextstep-cc.rul	sparc-nextstep-cc.rul
+$symlink	hppa-nextstep-cc.rul	i386-nextstep-gcc.rul
+$symlink	hppa-nextstep-cc.rul	m68k-nextstep-gcc.rul
+$symlink	hppa-nextstep-cc.rul	sparc-nextstep-gcc.rul
+$symlink	os-irix.id		os-irix64.id
+$symlink	ip22-irix-cc.rul	ip22-irix-cc64.rul
+# it is not clear whether the next entry works:
+# comment was:  does not work because of GCC_OPT64= -mabi=64
+$symlink	ip22-irix-gcc.rul	ip22-irix-gcc64.rul
+$symlink	ip22-irix-cc.rul	ip17-irix-cc.rul
+$symlink	ip22-irix-cc.rul	ip20-irix-cc.rul
+$symlink	ip22-irix-cc.rul	ip27-irix-cc.rul
+$symlink	ip22-irix-cc.rul	ip28-irix-cc.rul
+$symlink	ip22-irix-cc.rul	ip30-irix-cc.rul
+$symlink	ip22-irix-cc.rul	ip32-irix-cc.rul
+$symlink	ip22-irix-cc.rul	ip35-irix-cc.rul
+$symlink	ip22-irix-gcc.rul	ip17-irix-gcc.rul
+$symlink	ip22-irix-gcc.rul	ip20-irix-gcc.rul
+$symlink	ip22-irix-gcc.rul	ip27-irix-gcc.rul
+$symlink	ip22-irix-gcc.rul	ip28-irix-gcc.rul
+$symlink	ip22-irix-gcc.rul	ip30-irix-gcc.rul
+$symlink	ip22-irix-gcc.rul	ip32-irix-gcc.rul
+$symlink	ip22-irix-gcc.rul	ip35-irix-gcc.rul
+$symlink	ip22-irix-cc64.rul	ip17-irix-cc64.rul
+$symlink	ip22-irix-cc64.rul	ip20-irix-cc64.rul
+$symlink	ip22-irix-cc64.rul	ip27-irix-cc64.rul
+$symlink	ip22-irix-cc64.rul	ip28-irix-cc64.rul
+$symlink	ip22-irix-cc64.rul	ip30-irix-cc64.rul
+$symlink	ip22-irix-cc64.rul	ip32-irix-cc64.rul
+$symlink	ip22-irix-cc64.rul	ip35-irix-cc64.rul
+$symlink	ip22-irix-gcc64.rul	ip17-irix-gcc64.rul
+$symlink	ip22-irix-gcc64.rul	ip20-irix-gcc64.rul
+$symlink	ip22-irix-gcc64.rul	ip27-irix-gcc64.rul
+$symlink	ip22-irix-gcc64.rul	ip28-irix-gcc64.rul
+$symlink	ip22-irix-gcc64.rul	ip30-irix-gcc64.rul
+$symlink	ip22-irix-gcc64.rul	ip32-irix-gcc64.rul
+$symlink	ip22-irix-gcc64.rul	ip35-irix-gcc64.rul
+$symlink	i386-at386-gnu-cc.rul	i686-at386-gnu-cc.rul
+$symlink	i386-at386-gnu-gcc.rul	i686-at386-gnu-gcc.rul
+$symlink	i386-freebsd-cc.rul	sparc64-freebsd-cc.rul
+$symlink	i386-freebsd-clang.rul	i386-freebsd-clang32.rul
+$symlink	i386-freebsd-clang.rul	i386-freebsd-clang64.rul
+$symlink	i386-freebsd-clang.rul	amd64-freebsd-clang.rul
+$symlink	i386-freebsd-clang.rul	amd64-freebsd-clang32.rul
+$symlink	i386-freebsd-clang.rul	amd64-freebsd-clang64.rul
+$symlink	i386-freebsd-clang.rul	arm64-freebsd-clang.rul
+$symlink	i386-freebsd-clang.rul	arm64-freebsd-clang32.rul
+$symlink	i386-freebsd-clang.rul	arm64-freebsd-clang64.rul
+$symlink	i386-freebsd-gcc.rul	sparc64-freebsd-gcc.rul
+$symlink	i386-freebsd-cc.rul	amd64-freebsd-cc.rul
+$symlink	i386-freebsd-gcc.rul	amd64-freebsd-gcc.rul
+$symlink	i386-freebsd-cc.rul	i386-dragonfly-cc.rul
+$symlink	i386-freebsd-gcc.rul	i386-dragonfly-gcc.rul
+$symlink	i386-freebsd-cc.rul	x86_64-dragonfly-cc.rul
+$symlink	i386-freebsd-gcc.rul	x86_64-dragonfly-gcc.rul
+$symlink	i386-netbsd-cc.rul	amd64-netbsd-cc.rul
+$symlink	i386-netbsd-gcc.rul	amd64-netbsd-gcc.rul
+$symlink	i386-netbsd-cc.rul	alpha-netbsd-cc.rul
+$symlink	i386-netbsd-gcc.rul	alpha-netbsd-gcc.rul
+$symlink	i386-netbsd-cc.rul	sparc-netbsd-cc.rul
+$symlink	i386-netbsd-gcc.rul	sparc-netbsd-gcc.rul
+$symlink	i386-netbsd-cc.rul	mac68k-netbsd-cc.rul
+$symlink	i386-netbsd-gcc.rul	mac68k-netbsd-gcc.rul
+$symlink	i386-netbsd-cc.rul	amiga-netbsd-cc.rul
+$symlink	i386-netbsd-gcc.rul	amiga-netbsd-gcc.rul
+$symlink	i386-netbsd-cc.rul	macppc-netbsd-cc.rul
+$symlink	i386-netbsd-gcc.rul	macppc-netbsd-gcc.rul
+$symlink	i386-openbsd-cc.rul	amd64-openbsd-cc.rul
+$symlink	i386-openbsd-gcc.rul	amd64-openbsd-gcc.rul
+$symlink	amd64-bitrig-clang.rul	amd64-bitrig-clang32.rul
+$symlink	amd64-bitrig-clang.rul	amd64-bitrig-clang64.rul
+$symlink	amd64-bitrig-clang.rul	i386-bitrig-clang.rul
+$symlink	i386-bsd-os-cc.rul	sparc-bsd-os-cc.rul
+$symlink	i386-bsd-os-gcc.rul	sparc-bsd-os-gcc.rul
+$symlink	i386-bsd-os3-cc.rul	sparc-bsd-os3-cc.rul
+$symlink	i386-bsd-os3-gcc.rul	sparc-bsd-os3-gcc.rul
+$symlink	i586-linux-cc.rul	i586-linux-cc64.rul
+$symlink	i586-linux-cc.rul	i386-linux-cc.rul
+$symlink	i586-linux-clang.rul	i586-linux-clang32.rul
+$symlink	i586-linux-clang.rul	i586-linux-clang64.rul
+$symlink	i586-linux-cc.rul	i486-linux-cc.rul
+$symlink	i586-linux-cc.rul	i686-linux-cc.rul
+$symlink	i586-linux-gcc.rul	i586-linux-gcc32.rul
+$symlink	i586-linux-gcc.rul	i586-linux-gcc64.rul
+$symlink	i586-linux-gcc.rul	i386-linux-gcc.rul
+$symlink	i586-linux-gcc.rul	i486-linux-gcc.rul
+$symlink	i586-linux-gcc.rul	i686-linux-gcc.rul
+$symlink	i586-linux-cc.rul	sparc-linux-cc.rul
+$symlink	i586-linux-gcc.rul	sparc-linux-gcc.rul
+$symlink	i586-linux-cc.rul	sparc64-linux-cc.rul
+$symlink	i586-linux-gcc.rul	sparc64-linux-gcc.rul
+$symlink	i586-linux-cc.rul	alpha-linux-cc.rul
+$symlink	i586-linux-gcc.rul	alpha-linux-gcc.rul
+$symlink	i586-linux-cc.rul	ppc-linux-cc.rul
+$symlink	i586-linux-gcc.rul	ppc-linux-gcc.rul
+$symlink	i586-linux-cc.rul	ppc64-linux-cc.rul
+$symlink	i586-linux-gcc.rul	ppc64-linux-gcc.rul
+$symlink	i586-linux-cc.rul	ppc64le-linux-cc.rul
+$symlink	i586-linux-gcc.rul	ppc64le-linux-gcc.rul
+$symlink	i586-linux-cc.rul	m68k-linux-cc.rul
+$symlink	i586-linux-gcc.rul	m68k-linux-gcc.rul
+$symlink	i586-linux-cc.rul	armv4l-linux-cc.rul
+$symlink	i586-linux-gcc.rul	armv4l-linux-gcc.rul
+$symlink	i586-linux-cc.rul	armv4tl-linux-cc.rul
+$symlink	i586-linux-gcc.rul	armv4tl-linux-gcc.rul
+$symlink	i586-linux-cc.rul	mips-linux-cc.rul
+$symlink	i586-linux-gcc.rul	mips-linux-gcc.rul
+$symlink	i586-linux-cc.rul	mipsel-linux-cc.rul
+$symlink	i586-linux-gcc.rul	mipsel-linux-gcc.rul
+$symlink	i586-linux-cc.rul	mips64-linux-cc.rul
+$symlink	i586-linux-gcc.rul	mips64-linux-gcc.rul
+$symlink	i586-linux-cc.rul	s390-linux-cc.rul
+$symlink	i586-linux-gcc.rul	s390-linux-gcc.rul
+$symlink	i586-linux-cc.rul	s390x-linux-cc.rul
+$symlink	i586-linux-gcc.rul	s390x-linux-gcc.rul
+$symlink	i586-linux-cc.rul	parisc-linux-cc.rul
+$symlink	i586-linux-gcc.rul	parisc-linux-gcc.rul
+$symlink	i586-linux-cc.rul	parisc64-linux-cc.rul
+$symlink	i586-linux-gcc.rul	parisc64-linux-gcc.rul
+$symlink	i586-linux-cc.rul	ia64-linux-cc.rul
+$symlink	i586-linux-gcc.rul	ia64-linux-gcc.rul
+$symlink	i586-linux-cc.rul	x86_64-linux-cc.rul
+$symlink	i586-linux-clang.rul	x86_64-linux-clang.rul
+$symlink	i586-linux-clang32.rul	x86_64-linux-clang32.rul
+$symlink	i586-linux-clang64.rul	x86_64-linux-clang64.rul
+$symlink	i586-linux-gcc.rul	x86_64-linux-gcc.rul
+$symlink	i586-linux-cc.rul	armv5l-linux-cc.rul
+$symlink	i586-linux-gcc.rul	armv5l-linux-gcc.rul
+$symlink	i586-linux-cc.rul	armv5teb-linux-cc.rul
+$symlink	i586-linux-gcc.rul	armv5teb-linux-gcc.rul
+$symlink	i586-linux-cc.rul	armv5tejl-linux-cc.rul
+$symlink	i586-linux-gcc.rul	armv5tejl-linux-gcc.rul
+$symlink	i586-linux-cc.rul	armv5tel-linux-cc.rul
+$symlink	i586-linux-gcc.rul	armv5tel-linux-gcc.rul
+$symlink	i586-linux-cc.rul	armv6l-linux-cc.rul
+$symlink	i586-linux-gcc.rul	armv6l-linux-gcc.rul
+$symlink	i586-linux-cc.rul	armv7l-linux-cc.rul
+$symlink	i586-linux-gcc.rul	armv7l-linux-gcc.rul
+$symlink	i586-linux-cc.rul	aarch64-linux-cc.rul
+$symlink	i586-linux-clang.rul	aarch64-linux-clang.rul
+$symlink	i586-linux-clang32.rul	aarch64-linux-clang32.rul
+$symlink	i586-linux-clang64.rul	aarch64-linux-clang64.rul
+$symlink	i586-linux-gcc.rul	aarch64-linux-gcc.rul
+$symlink	i586-linux-gcc32.rul	aarch64-linux-gcc32.rul
+$symlink	i586-linux-gcc64.rul	aarch64-linux-gcc64.rul
+$symlink	i586-linux-cc.rul	sh3-linux-cc.rul
+$symlink	i586-linux-gcc.rul	sh3-linux-gcc.rul
+$symlink	i586-linux-cc.rul	sh4-linux-cc.rul
+$symlink	i586-linux-gcc.rul	sh4-linux-gcc.rul
+$symlink	i586-linux-cc.rul	sh4a-linux-cc.rul
+$symlink	i586-linux-gcc.rul	sh4a-linux-gcc.rul
+$symlink	i586-linux-gcc32.rul	x86_64-linux-gcc32.rul
+$symlink	i586-linux-gcc.rul	x86_64-linux-gcc64.rul
+$symlink	i586-linux-gcc32.rul	sparc64-linux-gcc32.rul
+$symlink	i586-linux-gcc.rul	sparc64-linux-gcc64.rul
+$symlink	i586-linux-gcc32.rul	mips64-linux-gcc32.rul
+$symlink	i586-linux-gcc32.rul	parisc64-linux-gcc32.rul
+$symlink	i586-linux-suncc.rul	i586-linux-suncc32.rul
+$symlink	i586-linux-suncc.rul	i586-linux-suncc64.rul
+$symlink	i586-linux-suncc.rul	i686-linux-suncc.rul
+$symlink	i586-linux-suncc.rul	i486-linux-suncc.rul
+$symlink	i586-linux-suncc.rul	i386-linux-suncc.rul
+$symlink	i586-linux-suncc.rul	x86_64-linux-suncc.rul
+$symlink	i586-linux-suncc64.rul	i686-linux-suncc64.rul
+$symlink	i586-linux-suncc64.rul	x86_64-linux-suncc64.rul
+$symlink	i586-linux-cc.rul	i386-gnu-kfreebsd-cc.rul
+$symlink	i586-linux-gcc.rul	i386-gnu-kfreebsd-gcc.rul
+$symlink	i586-linux-cc.rul	i486-gnu-kfreebsd-cc.rul
+$symlink	i586-linux-gcc.rul	i486-gnu-kfreebsd-gcc.rul
+$symlink	i586-linux-cc.rul	i586-gnu-kfreebsd-cc.rul
+$symlink	i586-linux-gcc.rul	i586-gnu-kfreebsd-gcc.rul
+$symlink	i586-linux-cc.rul	i686-gnu-kfreebsd-cc.rul
+$symlink	i586-linux-gcc.rul	i686-gnu-kfreebsd-gcc.rul
+$symlink	i586-linux-cc.rul	amd64-gnu-kfreebsd-cc.rul
+$symlink	i586-linux-gcc.rul	amd64-gnu-kfreebsd-gcc.rul
+$symlink	i586-linux-gcc32.rul	amd64-gnu-kfreebsd-gcc32.rul
+$symlink	i586-linux-cc.rul	x86_64-gnu-kfreebsd-cc.rul
+$symlink	i586-linux-gcc.rul	x86_64-gnu-kfreebsd-gcc.rul
+$symlink	i586-linux-gcc32.rul	x86_64-gnu-kfreebsd-gcc32.rul
+#$symlink	os-cygwin32_nt.id	os-cygwin_95-4.0.id
+#$symlink	os-cygwin32_nt.id	os-cygwin_98-4.0.id
+#$symlink	os-cygwin32_nt.id	os-cygwin_98-4.10.id
+#$symlink	os-cygwin32_nt.id	os-cygwin_me-4.90.id 
+#$symlink	os-cygwin32_nt.id	os-cygwin_nt-4.0.id
+#$symlink	os-cygwin32_nt.id	os-cygwin_nt-5.0.id
+#$symlink	os-cygwin32_nt.id	os-cygwin_nt-5.1.id
+$symlink	os-cygwin_95-4.0.id	os-cygwin_98-4.0.id
+$symlink	os-unixware.id		os-openunix.id
+$symlink	i486-cygwin32_nt-cc.rul	i486-cygwin32_nt-cc32.rul
+$symlink	i486-cygwin32_nt-cc.rul	i486-cygwin32_nt-cc64.rul
+$symlink	i486-cygwin32_nt-gcc.rul	i486-cygwin32_nt-gcc32.rul
+$symlink	i486-cygwin32_nt-gcc.rul	i486-cygwin32_nt-gcc64.rul
+$symlink	i486-cygwin32_nt-cc.rul	i386-cygwin32_nt-cc.rul
+$symlink	i486-cygwin32_nt-cc.rul	i586-cygwin32_nt-cc.rul
+$symlink	i486-cygwin32_nt-cc.rul	i686-cygwin32_nt-cc.rul
+$symlink	i486-cygwin32_nt-cc.rul	i786-cygwin32_nt-cc.rul
+$symlink	i486-cygwin32_nt-cc.rul	i686-cygwin32_wow-cc.rul
+$symlink	i486-cygwin32_nt-cc.rul	i786-cygwin32_wow-cc.rul
+$symlink	i486-cygwin32_nt-cc.rul	i686-cygwin32_wow64-cc.rul
+$symlink	i486-cygwin32_nt-cc.rul	i786-cygwin32_wow64-cc.rul
+$symlink	i486-cygwin32_nt-cc64.rul	i686-cygwin32_wow-cc64.rul
+$symlink	i486-cygwin32_nt-cc64.rul	i786-cygwin32_wow-cc64.rul
+$symlink	i486-cygwin32_nt-cc64.rul	i686-cygwin32_wow64-cc64.rul
+$symlink	i486-cygwin32_nt-cc64.rul	i786-cygwin32_wow64-cc64.rul
+$symlink	i486-cygwin32_nt-cl.rul	i386-cygwin32_nt-cl.rul
+$symlink	i486-cygwin32_nt-cl.rul	i586-cygwin32_nt-cl.rul
+$symlink	i486-cygwin32_nt-cl.rul	i686-cygwin32_nt-cl.rul
+$symlink	i486-cygwin32_nt-cl.rul	i786-cygwin32_nt-cl.rul
+$symlink	i486-cygwin32_nt-cl.rul	i686-cygwin32_wow-cl.rul
+$symlink	i486-cygwin32_nt-cl.rul	i786-cygwin32_wow-cl.rul
+$symlink	i486-cygwin32_nt-cl.rul	i686-cygwin32_wow64-cl.rul
+$symlink	i486-cygwin32_nt-cl.rul	i786-cygwin32_wow64-cl.rul
+$symlink	i686-cygwin32_wow64-cl64.rul	i686-cygwin32_nt-cl64.rul
+$symlink	i686-cygwin32_wow64-cl64.rul	i786-cygwin32_nt-cl64.rul
+$symlink	i686-cygwin32_wow64-cl64.rul	i686-cygwin32_wow-cl64.rul
+$symlink	i686-cygwin32_wow64-cl64.rul	i786-cygwin32_wow-cl64.rul
+$symlink	i486-cygwin32_nt-gcc.rul	i386-cygwin32_nt-gcc.rul
+$symlink	i486-cygwin32_nt-gcc.rul	i586-cygwin32_nt-gcc.rul
+$symlink	i486-cygwin32_nt-gcc.rul	i686-cygwin32_nt-gcc.rul
+$symlink	i486-cygwin32_nt-gcc.rul	i786-cygwin32_nt-gcc.rul
+$symlink	i486-cygwin32_nt-gcc.rul	i686-cygwin32_wow-gcc.rul
+$symlink	i486-cygwin32_nt-gcc.rul	i786-cygwin32_wow-gcc.rul
+$symlink	i486-cygwin32_nt-gcc.rul	i686-cygwin32_wow64-gcc.rul
+$symlink	i486-cygwin32_nt-gcc.rul	i786-cygwin32_wow64-gcc.rul
+$symlink	i486-cygwin32_nt-gcc64.rul	i686-cygwin32_wow-gcc64.rul
+$symlink	i486-cygwin32_nt-gcc64.rul	i786-cygwin32_wow-gcc64.rul
+$symlink	i486-cygwin32_nt-gcc64.rul	i686-cygwin32_wow64-gcc64.rul
+$symlink	i486-cygwin32_nt-gcc64.rul	i786-cygwin32_wow64-gcc64.rul
+$symlink	i486-cygwin32_nt-gcc.rul	x86_64-cygwin32_nt-gcc.rul
+$symlink	i486-cygwin32_nt-gcc32.rul	x86_64-cygwin32_nt-gcc32.rul
+$symlink	i486-cygwin32_nt-gcc64.rul	x86_64-cygwin32_nt-gcc64.rul
+$symlink	power-macintosh-rhapsody-cc.rul	power-macintosh-mac-os10-cc.rul
+$symlink	power-macintosh-rhapsody-gcc.rul	power-macintosh-mac-os10-gcc.rul
+$symlink	power-macintosh-darwin-cc.rul	power-macintosh-darwin-cc32.rul
+$symlink	power-macintosh-darwin-cc.rul	power-macintosh-darwin-cc64.rul
+$symlink	power-macintosh-darwin-gcc.rul	power-macintosh-darwin-gcc32.rul
+$symlink	power-macintosh-darwin-gcc.rul	power-macintosh-darwin-gcc64.rul
+$symlink	power-macintosh-darwin-cc.rul	i386-darwin-cc.rul
+$symlink	power-macintosh-darwin-gcc.rul	i386-darwin-gcc.rul
+$symlink	power-macintosh-darwin-cc64.rul	i386-darwin-cc64.rul
+$symlink	power-macintosh-darwin-gcc64.rul	i386-darwin-gcc64.rul
+$symlink	power-macintosh-darwin-cc32.rul	i386-darwin-cc32.rul
+$symlink	power-macintosh-darwin-gcc32.rul	i386-darwin-gcc32.rul
+$symlink	power-macintosh-darwin-cc.rul	x86_64-darwin-cc.rul
+$symlink	power-macintosh-darwin-gcc.rul	x86_64-darwin-gcc.rul
+$symlink	power-macintosh-darwin-cc64.rul	x86_64-darwin-cc64.rul
+$symlink	power-macintosh-darwin-gcc64.rul	x86_64-darwin-gcc64.rul
+$symlink	power-macintosh-darwin-cc32.rul	x86_64-darwin-cc32.rul
+$symlink	power-macintosh-darwin-gcc32.rul	x86_64-darwin-gcc32.rul
+$symlink	i386-darwin-clang.rul	i386-darwin-clang32.rul
+$symlink	i386-darwin-clang.rul	i386-darwin-clang64.rul
+$symlink	i386-darwin-clang.rul	x86_64-darwin-clang.rul
+$symlink	i386-darwin-clang32.rul	x86_64-darwin-clang32.rul
+$symlink	i386-darwin-clang64.rul	x86_64-darwin-clang64.rul
+$symlink	i86pc-sunos5-cc.rul	i86pc-sunos5-cc32.rul
+$symlink	i86pc-sunos5-cc.rul	i86pc-sunos5-cc64.rul
+$symlink	i86pc-sunos5-clang.rul	i86pc-sunos5-clang32.rul
+$symlink	i86pc-sunos5-clang.rul	i86pc-sunos5-clang64.rul
+$symlink	i86pc-sunos5-gcc.rul	i86pc-sunos5-gcc32.rul
+$symlink	i86pc-sunos5-gcc.rul	i86pc-sunos5-gcc64.rul
+$symlink	sun4-sunos5-gcc.rul	aarch64-sunos5-gcc.rul
+$symlink	sun4-sunos5-gcc.rul	aarch64-sunos5-gcc32.rul
+$symlink	sun4-sunos5-gcc.rul	aarch64-sunos5-gcc64.rul
+$symlink	sun4-sunos5-clang.rul	aarch64-sunos5-clang.rul
+$symlink	sun4-sunos5-clang.rul	aarch64-sunos5-clang32.rul
+$symlink	sun4-sunos5-clang.rul	aarch64-sunos5-clang64.rul
+$symlink	sun4-sunos5-cc.rul	sun4-sunos5-cc32.rul
+$symlink	sun4-sunos5-cc.rul	sun4-sunos5-cc64.rul
+$symlink	sun4-sunos5-clang.rul	sun4-sunos5-clang32.rul
+$symlink	sun4-sunos5-clang.rul	sun4-sunos5-clang64.rul
+$symlink	sun4-sunos5-gcc.rul	sun4-sunos5-gcc32.rul
+$symlink	sun4-sunos5-gcc.rul	sun4-sunos5-gcc64.rul
+$symlink	sun4-sunos4-cc.rul	sun4c-sunos4-cc.rul
+$symlink	sun4-sunos4-gcc.rul	sun4c-sunos4-gcc.rul
+$symlink	sun4-sunos5-cc.rul	sun4c-sunos5-cc.rul
+$symlink	sun4-sunos5-gcc.rul	sun4c-sunos5-gcc.rul
+$symlink	sun4-sunos4-cc.rul	sun4m-sunos4-cc.rul
+$symlink	sun4-sunos4-gcc.rul	sun4m-sunos4-gcc.rul
+$symlink	sun4-sunos5-cc.rul	sun4m-sunos5-cc.rul
+$symlink	sun4-sunos5-gcc.rul	sun4m-sunos5-gcc.rul
+$symlink	sun4-sunos5-cc.rul	sun4d-sunos5-cc.rul
+$symlink	sun4-sunos5-gcc.rul	sun4d-sunos5-gcc.rul
+$symlink	sun4-sunos5-cc.rul	sun4e-sunos5-cc.rul
+$symlink	sun4-sunos5-gcc.rul	sun4e-sunos5-gcc.rul
+$symlink	sun4-sunos5-cc.rul	sun4L-sunos5-cc.rul
+$symlink	sun4-sunos5-gcc.rul	sun4L-sunos5-gcc.rul
+$symlink	sun4-sunos5-cc.rul	sun4u-sunos5-cc.rul
+$symlink	sun4-sunos5-gcc.rul	sun4u-sunos5-gcc.rul
+$symlink	sun4-sunos5-cc64.rul	sun4u-sunos5-cc64.rul
+$symlink	sun4-sunos5-gcc64.rul	sun4u-sunos5-gcc64.rul
+$symlink	sun4-sunos5-cc.rul	sun4us-sunos5-cc.rul
+$symlink	sun4-sunos5-gcc.rul	sun4us-sunos5-gcc.rul
+$symlink	sun4-sunos5-cc64.rul	sun4us-sunos5-cc64.rul
+$symlink	sun4-sunos5-gcc64.rul	sun4us-sunos5-gcc64.rul
+$symlink	sun4-sunos5-cc.rul	sun4v-sunos5-cc.rul
+$symlink	sun4-sunos5-gcc.rul	sun4v-sunos5-gcc.rul
+$symlink	sun4-sunos5-cc64.rul	sun4v-sunos5-cc64.rul
+$symlink	sun4-sunos5-gcc64.rul	sun4v-sunos5-gcc64.rul
+$symlink	i386-unixware-cc.rul	i486-unixware-cc.rul
+$symlink	i386-unixware-gcc.rul	i486-unixware-gcc.rul
+$symlink	i386-unixware-cc.rul	i586-unixware-cc.rul
+$symlink	i386-unixware-gcc.rul	i586-unixware-gcc.rul
+$symlink	i386-unixware-cc.rul	pentium-iii-unixware-cc.rul
+$symlink	i386-unixware-gcc.rul	pentium-iii-unixware-gcc.rul
+$symlink	i386-unixware-cc.rul	pentium-pro-unixware-cc.rul
+$symlink	i386-unixware-gcc.rul	pentium-pro-unixware-gcc.rul
+$symlink	i386-unixware-cc.rul	pentium-4-unixware-cc.rul
+$symlink	i386-unixware-gcc.rul	pentium-4-unixware-gcc.rul
+$symlink	i386-ms-dos-gcc.rul	i486-ms-dos-gcc.rul
+$symlink	i386-ms-dos-gcc.rul	i586-ms-dos-gcc.rul
+$symlink	i386-ms-dos-gcc.rul	i686-ms-dos-gcc.rul
+$symlink	i386-ms-dos-gcc.rul	i786-ms-dos-gcc.rul
+$symlink	atarist-freemint-gcc.rul	atariclone-freemint-gcc.rul
+$symlink	atarist-freemint-gcc.rul	atariste-freemint-gcc.rul
+$symlink	atarist-freemint-gcc.rul	ataritt-freemint-gcc.rul
+$symlink	atarist-freemint-gcc.rul	falcon-freemint-gcc.rul
+$symlink	atarist-freemint-gcc.rul	milan-freemint-gcc.rul
+$symlink	atarist-freemint-gcc.rul	hades-freemint-gcc.rul
+$symlink	atarist-freemint-gcc.rul	aranym-freemint-gcc.rul
+$symlink	bepc-beos-gcc.rul	bemac-beos-gcc.rul
+$symlink	bepc-haiku-cc.rul	bemac-haiku-cc.rul
+$symlink	bepc-haiku-gcc.rul	bemac-haiku-gcc.rul
+$symlink	bepc-haiku-cc.rul	x86_64-haiku-cc.rul
+$symlink	bepc-haiku-gcc.rul	x86_64-haiku-gcc.rul
+$symlink	alpha-openvms-cc.rul	alphaserver_ds20_500_mhz-openvms-cc.rul
+$symlink	rs6000-aix-cc.rul	rs6000-aix-cc32.rul
+$symlink	rs6000-aix-cc.rul	rs6000-aix-cc64.rul
+$symlink	rs6000-aix-gcc.rul	rs6000-aix-gcc32.rul
+$symlink	rs6000-aix-gcc.rul	rs6000-aix-gcc64.rul

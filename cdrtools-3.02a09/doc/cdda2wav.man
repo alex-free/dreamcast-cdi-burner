@@ -1,0 +1,1584 @@
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+NNAAMMEE
+     cdda2wav - dumps CD audio data into sound files  with  extra
+     data verification
+
+SSYYNNOOPPSSIISS
+     ccddddaa22wwaavv [ _o_p_t_i_o_n_s ][ ddeevv==_d_e_v_i_c_e ] [_f_i_l_e(_s) or _d_i_r_e_c_t_o_r_i_e_s]
+
+DDEESSCCRRIIPPTTIIOONN
+     ccddddaa22wwaavv can retrieve audio tracks from  CDROM  drives  that
+     are  capable of reading audio data digitally to the host via
+     SCSI (CCDDDDAA).
+
+     As ccddddaa22wwaavv implements strategies  to  work  around  typical
+     defects on audio CDs it reads many disks that cannot be read
+     by other software.  As ccddddaa22wwaavv may  be  told  to  use  lliibb--
+     ppaarraannooiiaa  (see  -ppaarraannooiiaa  option  below) to verify the data
+     that has been read from the  medium,  it  delivers  superior
+     quality  even  if the medium is dusty, scratched or if other
+     problems occur.
+
+     As ccddddaa22wwaavv may be directed  to  write  the  audio  data  to
+     stdout, it writes all it's informational output to stderr by
+     default. See oouutt-ffdd==_d_e_s_c_r_i_p_t_o_r option below.
+
+  DDeeffaauulltt sseettttiinnggss
+     CCddddaa22wwaavv defaults to reead the first audio  track  from  the
+     medium   and   the   default   verbose   level   is  set  to
+     -vvttoocc,,ssuummmmaarryy,,sseeccttoorrss,,ttiittlleess and ccddddaa22wwaavv by default  writes
+     **..iinnff  files.   To  extract  all  audio  tracks with quality
+     verification, it is recommended to call:
+
+     ccddddaa22wwaavv --vvaallll ccddddbb==00 --ppaarraannooiiaa --BB
+
+  DDeevviiccee nnaammiinngg
+     Most users do not need to care about device naming  at  all.
+     If  no  ddeevv==  option was specified, ccddddaa22wwaavv implements aauuttoo
+     ttaarrggeett support and automagically finds  the  drive  in  case
+     that  exactly one CD-ROM type drive is available in the sys-
+     tem.  In case that more than one CD-ROM type drive exists on
+     the system, a list of possible device name parameters may be
+     retrieved with ccddddaa22wwaavv -ssccaannbbuuss or from the target  example
+     from  the output of ccddddaa22wwaavv ddeevv==hheellpp, then the ddeevv== parame-
+     ter may be set based on the device listing.
+
+     The _d_e_v_i_c_e parameter to  the  ddeevv==  option  explained  below
+     refers  to _s_c_s_i_b_u_s/_t_a_r_g_e_t/_l_u_n of the CD/DVD/BluRay-Recorder.
+     If a file /etc/default/cdrecord exists, the parameter to the
+     ddeevv== option may also be a drive name label in said file (see
+     FILES section).
+
+
+
+
+
+
+SunOS 5.10          Last change: Version 3.0                    1
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+OOPPTTIIOONNSS
+  IInnffoorrmmaattiivvee ooppttiioonnss
+     -hh
+
+     -hheellpp
+          display version information for  cdda2wav  on  standard
+          output.
+
+     -vveerrssiioonn
+          display version and Copyright information.
+
+  AAuuddiioo ooppttiioonnss
+     -aa _d_i_v_i_d_e_r
+
+     -ddiivviiddeerr _d_i_v_i_d_e_r
+          sets rate to 44100Hz / _d_i_v_i_d_e_r.   Possible  values  are
+          listed with the -RR option.
+
+          The default divider value is 1.
+
+     -BB
+
+     -bbuullkk
+
+     -aallllttrraacckkss
+          copies each track into a separate file.
+
+          The default is not to extract all tracks.
+
+     -bb _b_i_t_s
+
+     -bbiittss-ppeerr-ssaammppllee _b_i_t_s
+          sets _b_i_t_s per sample per channel:  88, 1122 or 1166.
+
+          The default is 16 bits per sample.
+
+     -cc _c_h_a_n_n_e_l_s
+
+     -cchhaannnneellss _c_h_a_n_n_e_l_s
+          use:
+
+          11    for mono recording
+
+          22    for stereo recording
+
+          ss    for stereo recording with both channels swapped
+
+          The default is to do stereo recording.
+
+     -CC _e_n_d_i_a_n_e_s_s
+
+     -ccddrroomm-eennddiiaanneessss _e_n_d_i_a_n_e_s_s
+
+
+
+SunOS 5.10          Last change: Version 3.0                    2
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+          sets endianess of the input samples to 'little', 'big',
+          'machine'  or  'guess' to override defaults.  The value
+          'machine' or 'host' is evaluated  as  the  actual  byte
+          order of the host CPU in the current OS.
+
+          The default is to detect cdrom endianess automatically.
+
+     -ccuueeffiillee
+          Create a CDRWIN compatible CUE file.  A CUE  file  that
+          completely follows the CDRWIN documentation can only be
+          used to create 1:1 copies if there  is  a  single  file
+          with  audio  data  for  the whole disk.  The *.inf file
+          format implements  more  audio  CD  features  than  the
+          CDRWIN CUE format and it allows to create 1:1 copies if
+          there is one audio data file per track.   Use  the  CUE
+          file  format for meta data only if you really need this
+          format.
+
+          To allow ccddddaa22wwaavv to create CUE files,  you  must  also
+          specify  -tt  aallll  to  switch  ccddddaa22wwaavv into a mode that
+          creates a single audio data file for the whole CD.
+
+     -TT
+
+     -ddeeeemmpphhaassiizzee
+          undo the effect of pre-emphasis in the input samples.
+
+          The default is to keep the audio data in the same state
+          as  on the medium and to mark the pre-emphasis state in
+          the **..iinnff files.
+
+     -LL _c_d_d_b _m_o_d_e
+
+     -ccddddbb _c_d_d_b _m_o_d_e
+          does a cddbp album- and track title lookup based on the
+          cddb  id.  The parameter cddb mode defines how multiple
+          entries shall be handled.
+  _______________________________________________________________________
+ | Parameter|  Description                                              |
+ |___________|____________________________________________________________|
+ |        -1|  disable cddb queries. This is the default.               |
+ |         0|  interactive mode. The user selects the entry to use.     |
+ |         1|  first fit mode. The first entry is taken unconditionally.|
+ |___________|____________________________________________________________|
+
+     ccddddbbpp-sseerrvveerr==_s_e_r_v_e_r_n_a_m_e
+          sets the server to be contacted for title lookups.
+
+     ccddddbbpp-ppoorrtt==_p_o_r_t_n_u_m_b_e_r
+          sets the port number to be used for title lookups.
+
+     -dd _d_u_r_a_t_i_o_n
+
+
+
+SunOS 5.10          Last change: Version 3.0                    3
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     -dduurraattiioonn _d_u_r_a_t_i_o_n
+          sets recording time in seconds or frames.  Frames (sec-
+          tors)  are  indicated  by a 'f' suffix (like 75f for 75
+          sectors).  00 sets the time for whole track.
+
+          The default is to extract the whole track.
+
+     -EE _e_n_d_i_a_n_e_s_s
+
+     -oouuttppuutt-eennddiiaanneessss _e_n_d_i_a_n_e_s_s
+          sets endianess of the output samples to 'little', 'big'
+          or  'machine' to override the default which is 'network
+          byte order'  (big  endian).   The  value  'machine'  or
+          'host'  is  evaluated  as  the actual byte order of the
+          host CPU in the current OS.
+
+     -FF
+
+     -ffiinndd-eexxttrreemmeess
+          finds extreme amplitudes in samples.
+
+     -GG
+
+     -ffiinndd-mmoonnoo
+          finds if input samples are in mono.
+
+     -gg
+
+     -gguuii formats the output to be better parsable by  gui  fron-
+          tends.
+
+     -HH
+
+     -nnoo-iinnffooffiillee
+          does not write an info file, a cddb file and no  cdtext
+          file.
+
+     -ii _i_n_d_e_x
+
+     -iinnddeexx _i_n_d_e_x
+          selects the start index.
+
+     -JJ
+
+     -iinnffoo-oonnllyy
+          does not write to a file,  it  just  gives  information
+          about the disc.
+
+     -MM
+
+     -mmdd55 enables calculation of  MD-5  checksum  for  all  audio
+          bytes  from  the beginning of a track. The audio header
+
+
+
+SunOS 5.10          Last change: Version 3.0                    4
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+          is skipped when calculating the MD-5 checksum to  allow
+          to  compare  MD-5  sums  even  for files with different
+          header type.
+
+     -mm
+
+     -mmoonnoo
+          sets to mono recording.
+
+     -nnoo-hhiiddddeenn-ttrraacckk
+          Ignore hidden tracks on the CD.  By  default,  ccddddaa22wwaavv
+          checks  whether  there  might  be a hidden track before
+          track 1.  This check may take a few  seconds  and  thus
+          can be disabled with -nnoo-hhiiddddeenn-ttrraacckk.
+
+     -NN
+
+     -nnoo-wwrriittee
+          does not write to a  file,  it  just  reads  (e.g.  for
+          debugging  purposes).   If this option is used together
+          with the -ee option, the CD is read and the  audio  con-
+          tent  is played back to the sound device without creat-
+          ing output files with audio data.
+
+     -nnoo-tteexxttddeeffaauullttss
+          By default, ccddddaa22wwaavv replaces empty CD-Text fields from
+          tracks  by the related CD-Text fiel for the whole CD in
+          case this is defined. If the option -nnoo-tteexxttddeeffaauullttss is
+          used,  ccddddaa22wwaavv leaves the track related CD-Text fields
+          empty in such a case.
+
+     -nnoo-tteexxttffiillee
+          If ccddddaa22wwaavv encounters useful  CD-Text  information  on
+          the   CD,   it  writes  a  .cdtext  file.   The  option
+          -nnoo-tteexxttffiillee allows to suppress  the  creation  of  the
+          .cdtext file.
+
+     -oo _o_f_f_s_e_t
+
+     -ooffffsseett _o_f_f_s_e_t
+          starts _o_f_f_s_e_t sectors behind start  track  (one  sector
+          equivalents 1/75 seconds).
+
+     -OO _a_u_d_i_o_t_y_p_e
+
+     -oouuttppuutt-ffoorrmmaatt _a_u_d_i_o_t_y_p_e
+          can be _w_a_v (for wav files) or _a_i_f_f (for apple/sgi  aiff
+          files)  or _a_i_f_c (for apple/sgi aifc files) or _a_u or _s_u_n
+          (for sun .au PCM files) or _c_d_r or _r_a_w  (for  headerless
+          files to be used for cd writers).
+
+          The default output format is now wwaavv for all  platforms
+
+
+
+SunOS 5.10          Last change: Version 3.0                    5
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+          as  this file format has become the most common format.
+          Note that former versions of ccddddaa22wwaavv made an exception
+          and by default did create aauu type files on Solaris.
+
+     -pp _p_e_r_c_e_n_t_a_g_e
+
+     -ppllaayybbaacckk-rreeaallttiimmee _p_e_r_c_e_n_t_a_g_e
+          changes pitch of audio data copied to sound device.
+
+     -PP _s_e_c_t_o_r_s
+
+     -sseett-oovveerrllaapp _s_e_c_t_o_r_s
+          sets the initial number of overlap _s_e_c_t_o_r_s  for  jitter
+          correction  in  non-paranoia mode. Note that overlapped
+          reads re handled differently in paranoia mode.
+
+          The default overlap in non-paranoia mode is 1.
+
+     -ppaarraannooiiaa
+          use  the  paranoia  library  as  a  filter  on  top  of
+          cdda2wav's routines for reading.  In ppaarraannooiiaa mode, the
+          latency time for the -iinntteerraaccttiivvee mode is increased  to
+          typically  5..10  seconds.  This  is caused by the fact
+          that the ppaarraannooiiaa code reads anything  at  least  twice
+          and in between needs to take care of emptying the cache
+          RAM of the CD-ROM drive.
+
+          If the ppaarraannooiiaa mode is used,  ccddddaa22wwaavv  displays  some
+          quality  statistics for each extracted track.  The fol-
+          lowing items appear in the list:
+    ___________________________________________________________________
+   |   Value|  Description                                            |
+   |_________|__________________________________________________________|
+   |   rderr|  Number of hard read errors                             |
+   |    skip|  Number of sectors skipped due to exhausted retries     |
+   |    atom|  Number of intra sector jitters (frame jitters) detected|
+   |    edge|  Number of jitters between sectors detected             |
+   |    drop|  Number of dropped bytes fixed                          |
+   |     dup|  Number of duplicate bytes fixed                        |
+   |   drift|  Number of drifts detected                              |
+   | overlap|  Number of dynamic overlap size raises                  |
+   |_________|__________________________________________________________|
+
+
+
+
+
+
+
+
+
+
+
+
+
+SunOS 5.10          Last change: Version 3.0                    6
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     -ppaarraaooppttss==_l_i_s_t
+          _L_i_s_t is a comma separated list of suboptions passed  to
+          the paranoia library.
+_______________________________________________________________________________
+|        Option|  Description                                                 |
+_|_______________|_______________________________________________________________|
+|          help|  lists all paranoia options.                                 |
+|       disable|  disables paranoia mode. Libparanoia is still being used     |
+|     no-verify|  switches verify off, and static overlap on                  |
+|retries=amount|  set the number of maximum retries per sector                |
+|overlap=amount|  set the number of sectors used for statical paranoia overlap|
+|minoverlap=amt|  set the min. number of sectors for dynamic paranoia overlap |
+|maxoverlap=amt|  set the max. number of sectors for dynamic paranoia overlap |
+|         proof|  set maxoverlap=_s_e_c_t_o_r_s-_p_e_r-_r_e_q_u_e_s_t-1,retries=200            |
+_|_______________|_______________________________________________________________|
+
+     -qq
+
+     -qquuiieett
+          quiet operation, no screen output.
+
+     -rr _r_a_t_e
+
+     -rraattee _r_a_t_e
+          sets _r_a_t_e in samples per second.  Possible  values  are
+          listed with the -RR option.
+
+     -RR
+
+     -dduummpp-rraatteess
+          shows a list of all sample rates and their dividers.
+
+     -SS _s_p_e_e_d
+
+     -ssppeeeedd _s_p_e_e_d
+          sets the cdrom device to one of the  selectable  speeds
+          for  reading.   For  maximum  extraction quality, it is
+          recommended to use speed values of 8 or below.
+
+          The default is to extract at maximum speed.
+
+     -ss
+
+     -sstteerreeoo
+          sets to stereo recording.
+
+     -ssttaarrtt-sseeccttoorr _s_e_c_t_o_r
+          set an absolute start sector. This option  is  mutually
+          exclusive to -ttrraacckk and -ooffffsseett.
+
+
+
+
+
+
+SunOS 5.10          Last change: Version 3.0                    7
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     -tt _t_r_a_c_k[+_e_n_d_t_r_a_c_k]
+
+     -ttrraacckk _t_r_a_c_k[+_e_n_d_t_r_a_c_k]
+
+     -ttrraacckk _t_r_a_c_k++mmaaxx
+
+     -ttrraacckk aallll
+          selects the start track and optionally the  end  track.
+          If  -tt aallll  is used, all audio tracks are selected.  If
+          -tt 22++mmaaxx is used, all audio tracks starting with  track
+          2 are selected.
+
+     -vv _i_t_e_m_l_i_s_t
+
+     -vveerrbboossee-lleevveell _i_t_e_m_l_i_s_t
+          Retrieves and prints verbose information about the  CD.
+          LLeevveell  is  a  list  of comma separated suboptions. Each
+          suboption  controls  the  type  of  information  to  be
+          reported.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SunOS 5.10          Last change: Version 3.0                    8
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+_______________________________________________________________________________
+|   Suboption|  Description                                                   |
+_|_____________|_________________________________________________________________|
+|           !|  invert the meaning of the following string                    |
+|         not|  invert the meaning of the following string                    |
+|     disable|  no information is given, warnings appear however              |
+|         all|  all information is given                                      |
+|         toc|  show table of contents                                        |
+|     summary|  show a summary of the recording parameters                    |
+|     indices|  determine and display index offsets                           |
+|     catalog|  retrieve and display the media catalog number MCN             |
+|         mcn|  retrieve and display the media catalog number MCN             |
+|     trackid|  retrieve and display all Intern. Standard Recording Codes ISRC|
+|        isrc|  retrieve and display all Intern. Standard Recording Codes ISRC|
+|     sectors|  show the table of contents in start sector notation           |
+|      titles|  show the table of contents with track titles (when available) |
+|audio-tracks|  list the audio tracks and their start sectors                 |
+_|_____________|_________________________________________________________________|
+
+          The   default   value   for   the   verbose-level    is
+          ttoocc,,ssuummmmaarryy,,sseeccttoorrss,,ttiittlleess .
+
+     -ww
+
+     -wwaaiitt
+          waits for signal, then start recording.
+
+     -xx
+
+     -mmaaxx sets maximum (CD) quality.
+
+  SSCCSSII ooppttiioonnss
+     ddeevv==_d_e_v_i_c_e
+
+     -DD _d_e_v_i_c_e
+
+     -ddeevviiccee _d_e_v_i_c_e
+          uses _d_e_v_i_c_e as the source for CDDA reading.  For  exam-
+          ple  /dev/cdrom  for  the  ccooookkeedd__iiooccttll  interface  and
+          Bus,ID,Lun for the ggeenneerriicc__ssccssii interface.  The  _d_e_v_i_c_e
+          has  to  correspond with the interface setting if given
+          (see -II and -iinntteerrffaaccee option below).
+
+          If no -II or -iinntteerrffaaccee option has been  specified,  the
+          interface  setting is derived from the device name syn-
+          tax. A device name that is in the  form  Bus,ID,Lun  or
+          contains  a  colon  (':')  defaults to the ggeenneerriicc__ssccssii
+          interface.
+
+          Using the ccooookkeedd__iiooccttll is not recommended as this makes
+          ccddddaa22wwaavv  mainly depend on the audio extraction quality
+          of the operating system which is usually extremely bad.
+
+
+
+SunOS 5.10          Last change: Version 3.0                    9
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+          For   this   reason,   avoid   using   parameters  like
+          ddeevv==/dev/cdrom for the device.
+
+          The setting of the environment variable CCDDDDAA__DDEEVVIICCEE  is
+          overridden by this option.
+
+          If no ddeevv== option is present, or  if  the  ddeevv==  option
+          only  contains  a  transport  specifyer but no address,
+          ccddddaa22wwaavv tries to scan the SCSI address space  for  CD-
+          ROM  drives.   If exactly one is found, this is used by
+          default.
+
+          For more information, see the description of  the  ddeevv==
+          option from ccddrreeccoorrdd(1).
+
+     ddeebbuugg==#
+
+     ddeebbuugg--ssccssii==#
+          Set the debug level for the lliibbssccgg SCSI OS  abstraction
+          layer.
+
+     kkddeebbuugg==#
+
+     kkddeebbuugg--ssccssii==#
+
+     kkdd==# Set the kernel debug level for the kernel driver called
+          by the lliibbssccgg SCSI OS abstraction layer. This option is
+          not supported on all platforms.
+
+     -ssccaannbbuuss
+          Scan all SCSI devices on all SCSI busses and print  the
+          inquiry  strings.  This option may be used to find SCSI
+          address  of  the  CD/DVD-Recorder  on  a  system.   The
+          numbers  printed  out  as labels are computed by: bbuuss **
+          110000 ++ ttaarrggeett
+
+     ttss==# Set the maximum transfer size for a single SCSI command
+          to #.  The syntax for the ttss== option is the same as for
+          cdrecord fs=# or sdd bs=#.
+
+          If no ttss== option has been specified, ccddddaa22wwaavv  defaults
+          to a transfer size of 3 MB. If libscg gets lower values
+          from the operating system, the value is reduced to  the
+          maximum value that is possible with the current operat-
+          ing system.  Sometimes, it may help to  further  reduce
+          the  transfer  size  or to enhance it, but note that it
+          may take a long time to find a better value by  experi-
+          menting with the ttss== option.
+
+          Some operating systems return wrong values for the max-
+          imum  transfer  size.  If the transfer totally hangs or
+          resets occur, it  may  be  appropriate  to  reduce  the
+
+
+
+SunOS 5.10          Last change: Version 3.0                   10
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+          transfer  size  to less than 64 kB or even less than 32
+          kB.
+
+     -VV
+
+     -vveerrbboossee-ssccssii
+          enable SCSI command logging to  the  console.  This  is
+          mainly used for debugging.
+
+     -QQ
+
+     -ssiilleenntt-ssccssii
+          suppress SCSI command error  reports  to  the  console.
+          This is mainly used for guis.
+
+
+  OOSS IInntteerrffaaccee ooppttiioonnss
+     -AA _a_u_x_d_e_v_i_c_e
+
+     -aauuxxddeevviiccee _a_u_x_d_e_v_i_c_e
+          uses _a_u_x_d_e_v_i_c_e as CDROM drive  to  allow  to  send  the
+          CDROMMULTISESSION   ioctl   on   Linux   although   the
+          ggeenneerriicc__ssccssii interface is in use.
+
+     -II _i_n_t_e_r_f_a_c_e
+
+     -iinntteerrffaaccee _i_n_t_e_r_f_a_c_e
+          specifies the _i_n_t_e_r_f_a_c_e to use for accessing the CDROM:
+
+
+          ggeenneerriicc__ssccssii
+               for sending SCSI commands directly to the drive.
+
+          ccooookkeedd__iiooccttll
+               for using the programming  interface  supplied  by
+               the OS kernel.
+
+          The latter is not recommended as it gives lower quality
+          and only works on a limited number of platforms.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SunOS 5.10          Last change: Version 3.0                   11
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     -iinntteerraaccttiivvee
+          Go into interactive mode that reads commands from ssttddiinn
+          and  writes  the textual replies to ssttddeerrrr, or the file
+          descriptor  that  has  been  specified  by  the  oouutt-ffdd
+          option.   This mode has been introduced mainly to allow
+          cdrecord to be called by gstreamer plugins.
+
+          If ccddddaa22wwaavv was called with the option -iinntteerraaccttiivvee, it
+          reads  the  TOC from the medium and then waits for com-
+          mand input as if it has been issued a ssttoopp command.  If
+          the  next  command  is  a  ccoonntt  command, then ccddddaa22wwaavv
+          extracts the whole audio part of the  medium.   If  the
+          next  command  is  a rreeaadd command, then ccddddaa22wwaavv starts
+          extracting from the position that was indicated by  the
+          rreeaadd command parameter.
+____________________________________________________________________________
+|Command|  Parameters           |  Description                             |
+_|________|________________________|___________________________________________|
+| cont  |                       |  continue processing at current position |
+| exit  |                       |  exit processing                         |
+| help  |                       |  print command help and wait for input   |
+| quit  |                       |  exit processing                         |
+| read  |  sectors _s_e_c_t_o_r _n_u_m_b_e_r|  read sectors starting from _s_e_c_t_o_r _n_u_m_b_e_r|
+| read  |  tracks _t_r_a_c_k _n_u_m_b_e_r  |  read sectors starting from _t_r_a_c_k _n_u_m_b_e_r |
+| stop  |                       |  stop processing and wait for new input  |
+_|________|________________________|___________________________________________|
+
+     oouutt-ffdd==_d_e_s_c_r_i_p_t_o_r
+          Redirect informational output to  the  file  descriptor
+          named  by  ddeessccrriippttoorr.  The parameter ddeessccrriippttoorr speci-
+          fies  a  UNIX  file  descriptor  number.   By  default,
+          ccddddaa22wwaavv   sends   informational   output   to  ssttddeerrrr.
+          Redirecting the informational  output  to  a  different
+          file  descriptor  helps  gui's  and other programs that
+          call ccddddaa22wwaavv via pipes.
+
+     aauuddiioo-ffdd==_d_e_s_c_r_i_p_t_o_r
+          In case that the file name for the audio data  file  is
+          "-", redirect audio output to the file descriptor named
+          by ddeessccrriippttoorr.  The parameter  ddeessccrriippttoorr  specifies  a
+          UNIX  file  descriptor  number.   By  default, ccddddaa22wwaavv
+          sends audio  data  to  ssttddoouutt  if  the  output  is  not
+          directed  into a file.  Redirecting the audio output to
+          a different file descriptor helps gui's and other  pro-
+          grams that call ccddddaa22wwaavv via pipes.
+
+     -nnoo--ffoorrkk
+          Do not fork for extended buffering. If -nnoo--ffoorrkk is used
+          and ccddddaa22wwaavv is used to play back audio CDs in ppaarraannooiiaa
+          mode, the playback is not always uninterrupted  due  to
+          lack   of  buffering.   On  the  other  side,  allowing
+          ccddddaa22wwaavv to fork will increase the latency time for the
+
+
+
+SunOS 5.10          Last change: Version 3.0                   12
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+          -iinntteerraaccttiivvee mode.
+
+     -ee
+
+     -eecchhoo
+          copies audio data to sound device  from  the  operating
+          system e.g.  //ddeevv//ddsspp.
+
+     ssoouunndd-ddeevviiccee==_s_o_u_n_d_d_e_v_i_c_e
+          set an alternate sound device to use for -ee.
+
+     -nn _s_e_c_t_o_r_s
+
+     -sseeccttoorrss-ppeerr-rreeqquueesstt _s_e_c_t_o_r_s
+          reads _s_e_c_t_o_r_s per request.
+
+     -ll _b_u_f_f_e_r_s
+
+     -bbuuffffeerrss-iinn-rriinngg _b_u_f_f_e_r_s
+          uses a ring buffer with _b_u_f_f_e_r_s total.
+
+
+EENNVVIIRROONNMMEENNTT VVAARRIIAABBLLEESS
+     Some defaults for ccddddaa22wwaavv are compiled in and depend on the
+     MMaakkeeffiillee others on the eennvviirroonnmmeenntt vvaarriiaabbllee settings.
+
+     CCDDDDAA__DDEEVVIICCEE
+          is used to set the device name. The  device  naming  is
+          compatible with ccddrreeccoorrdd(1).
+
+     CCDDDDBBPP__SSEERRVVEERR
+          is used for cddbp title lookups when supplied.
+
+     CCDDDDBBPP__PPOORRTT
+          is used for cddbp title lookups when supplied.
+
+     RRSSHH  If the RRSSHH environment variable is present, the  remote
+          connection  will not be created via rrccmmdd(3) but by cal-
+          ling  the  program  pointed  to  by  RRSSHH.    Use   e.g.
+          RRSSHH==/usr/bin/ssh to create a secure shell connection.
+
+          Note that this forces ccddddaa22wwaavv to create a pipe to  the
+          rrsshh((11))  program  and  disallows  ccddddaa22wwaavv  to  directly
+          access the network socket to the remote  server.   This
+          makes  it  impossible  to set up performance parameters
+          and slows down the connection compared to a  rroooott  ini-
+          tiated rrccmmdd((33)) connection.
+
+     RRSSCCSSII
+          If the  RRSSCCSSII  environment  variable  is  present,  the
+          remote   SCSI   server   will   not   be   the  program
+          //oopptt//sscchhiillyy//ssbbiinn//rrssccssii but the program  pointed  to  by
+
+
+
+SunOS 5.10          Last change: Version 3.0                   13
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+          RRSSCCSSII.   Note  that the remote SCSI server program name
+          will be ignored if you log in using an account that has
+          been created with a remote SCSI server program as login
+          shell.
+
+EEXXIITT SSTTAATTUUSS
+     ccddddaa22wwaavv uses the following exit codes to  indicate  various
+     degress of success:
+_______________________________________________________________________________
+|Exitcode|  Description                                                       |
+_|_________|_____________________________________________________________________|
+|       0|  no errors encountered, successful operation.                      |
+|       1|  usage or syntax error. cdda2wav got inconsistent arguments.       |
+|       2|  permission (un)set errors. permission changes failed.             |
+|       3|  read errors on the cdrom/burner device encountered.               |
+|       4|  write errors while writing one of the output files encountered.   |
+|       5|  errors with soundcard handling (initialization/write).            |
+|       6|  errors with stat() system call on the read device (cooked ioctl). |
+|       7|  pipe communication errors encountered (in forked mode).           |
+|       8|  signal handler installation errors encountered.                   |
+|       9|  allocation of shared memory failed (in forked mode).              |
+|      10|  dynamic heap memory allocation failed.                            |
+|      11|  errors on the audio cd medium encountered.                        |
+|      12|  device open error in ioctl handling detected.                     |
+|      13|  race condition in ioctl interface handling detected.              |
+|      14|  error in ioctl() operation encountered.                           |
+|      15|  internal error encountered. Please report back!!!                 |
+|      16|  error in semaphore operation encountered (install / request).     |
+|      17|  could not get the scsi transfer buffer.                           |
+|      18|  could not create pipes for process communication (in forked mode).|
+_|_________|_____________________________________________________________________|
+
+DDIISSCCUUSSSSIIOONN
+     ccddddaa22wwaavv is able to read parts of an aauuddiioo CD or  mmuullttiimmeeddiiaa
+     CDROM  (containing  audio  parts)  directly digitally. These
+     parts can be written to a file, a pipe, or to a  sound  dev-
+     ice.
+
+     ccddddaa22wwaavv stands for CCDDDDAA to WWAAVV (where CCDDDDAA stands for  com-
+     pact  disc  digital  audio  and WWAAVV is a sound sample format
+     introduced by MS Windows).  It  allows  copying  CCDDDDAA  audio
+     data  from  the CDROM drive into a file in WWAAVV or other for-
+     mats.
+
+     Some versions of ccddddaa22wwaavv may try to  get  higher  real-time
+     scheduling   priorities  to  ensure  smooth  (uninterrupted)
+     operation. These priorities are available  for  super  users
+     and are higher than those of 'normal' processes. Thus delays
+     are minimized.
+
+     If you only have one CDROM and it is loaded  with  an  audio
+     CD,  you  may  simply invoke ccddddaa22wwaavv and it will create the
+
+
+
+SunOS 5.10          Last change: Version 3.0                   14
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     sound file aauuddiioo..wwaavv recording  the  whole  track  beginning
+     with track 1 in stereo at 16 bit at 44100 Hz sample rate, if
+     your file system has enough space free.  Otherwise recording
+     time  will  be  limited.  For  details  see files RREEAADDMMEE and
+     RREEAADDMMEE..IINNSSTTAALLLL.
+
+     If you have more then one CD-ROM type drive in  the  system,
+     you need to specify the ddeevv== option.
+
+HHIINNTTSS OONN OOPPTTIIOONNSS
+     Most of the options are used to control the  format  of  the
+     WAV  file.  In the following text most of them are discussed
+     in a more verbose way.
+
+  SSeelleecctt DDeevviiccee
+     ddeevv==_d_e_v_i_c_e selects the CDROM drive device to be  used.   The
+     specifier  given should correspond to the selected interface
+     (see below).  For the ccooookkeedd__iiooccttll  interface  this  is  the
+     cdrom  device  descriptor.   TThhee  SSCCSSII ddeevviicceess uusseedd wwiitthh tthhee
+     ggeenneerriicc SSCCSSII iinntteerrffaaccee  hhoowweevveerr  aarree  aaddddrreesssseedd  wwiitthh  tthheeiirr
+     SSCCSSII--BBuuss,,  SSCCSSII--IIdd,, aanndd SSCCSSII--LLuunn iinnsstteeaadd ooff tthhee ggeenneerriicc SSCCSSII
+     ddeevviiccee ddeessccrriippttoorr.. One example for a SCSI CDROM drive on bus
+     0 with SCSI ID 3 and lun 0 is ddeevv==00,,33,,00.
+
+  SSeelleecctt AAuuxxiilliiaarryy ddeevviiccee
+     -AA _a_u_x_d_e_v_i_c_e may be needed in some rare cases  for  CD-Extra
+     handling.   CCddddaa22wwaavv  usually  has  no  problem  to  get the
+     multi-session information for CD-Extra using raw  SCSI  com-
+     mands.  For Non-SCSI-CDROM drives this is the same device as
+     given by ddeevv== (see above). For SCSI-CDROM drives it  is  the
+     CDROM  drive (SCSI) device (i.e. //ddeevv//ssrr00 ) corresponding to
+     the SCSI device (i.e.  00,,33,,00 ). It has to match  the  device
+     used for sampling.
+
+  SSeelleecctt IInntteerrffaaccee
+     -II _i_n_t_e_r_f_a_c_e selects the CDROM drive  communication  method.
+     This  interface  method  is typically automatically selected
+     from the device name.  For SCSI drives ggeenneerriicc__ssccssii is  used
+     (cooked_ioctl  may not be available for all devices).  Valid
+     names are ggeenneerriicc__ssccssii and ccooookkeedd__iiooccttll.  The first uses the
+     generic  SCSI  interface,  the  latter uses the ioctl of the
+     CDROM driver. The latter variant works only when the  kernel
+     driver  supports  CCDDDDAA  reading. This entry has to match the
+     selected CDROM device (see above).
+
+  EEnnaabbllee eecchhoo ttoo ssoouunnddccaarrdd
+     -ee copies audio data to the sound card while  recording,  so
+     you  hear  it  nearly simultaneously. The soundcard gets the
+     same data that is recorded. This is  time  critical,  so  it
+     works  best with the -qq option.  To use ccddddaa22wwaavv as a pseudo
+     CD player without recording in a file you could use
+
+
+
+
+SunOS 5.10          Last change: Version 3.0                   15
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     ccddddaa22wwaavv -qq -ee -tt22 -dd00 -NN
+
+     to play the whole second track or
+
+     ccddddaa22wwaavv -qq -ee -BB -NN
+
+     to play the whole disk.  This feature reduces the  recording
+     speed to at most onefold speed.
+
+  CChhaannggee ppiittcchh ooff eecchhooeedd aauuddiioo
+     -pp ppeerrcceennttaaggee changes the pitch of all  audio  echoed  to  a
+     sound  card. Only the copy to the soundcard is affected, the
+     recorded audio samples in a file remain  the  same.   Normal
+     pitch,  which  is the default, is given by 100%.  Lower per-
+     centages correspond to lower pitches, i.e.  -p 50 transposes
+     the  audio  output  one  octave  lower.  See also the script
+     ppiittcchhppllaayy as an example. This option was contributed by Raul
+     Sobon.
+
+  SSeelleecctt mmoonnoo oorr sstteerreeoo rreeccoorrddiinngg
+     -mm or -cc 11 selects mono recording (both stereo channels  are
+     mixed), -ss or -cc 22 or -cc ss selects stereo recording. Parame-
+     ter s will swap both sound channels.
+
+  SSeelleecctt mmaaxxiimmuumm qquuaalliittyy
+     -xx will set stereo, 16 bits per sample at 44.1 KHz (full  CD
+     quality).   Note  that  other format options given later can
+     change this setting.
+
+  SSeelleecctt ssaammppllee qquuaalliittyy
+     -bb 88 specifies 8 bit (1 Byte) for each sample in each  chan-
+     nel; -bb 1122 specifies 12 bit (2 Byte) for each sample in each
+     channel; -bb 1166 specifies 16 bit (2 Byte) for each sample  in
+     each  channel  (Ensure that your sample player or sound card
+     is capable of playing 12-bit or 16-bit  samples).  Selecting
+     12 or 16 bits doubles file size.  12-bit samples are aligned
+     to 16-bit samples, so they waste some disk space.
+
+  SSeelleecctt ssaammppllee rraattee
+     -rr _s_a_m_p_l_e_r_a_t_e selects a sample rate.  _s_a_m_p_l_e_r_a_t_e can be in a
+     range  between  44100 and 900. Option -RR lists all available
+     rates.
+
+  SSeelleecctt ssaammppllee rraattee ddiivviiddeerr
+     -aa _d_i_v_i_d_e_r selects a sample rate divider.   _d_i_v_i_d_e_r  can  be
+     minimally  1  and  maximally  50.5 and everything between in
+     steps of 0.5.  Option -RR lists all available rates.
+
+     To make the sound smoother at lower sampling rates, ccddddaa22wwaavv
+     sums  over  _n samples (where _n is the specific dividend). So
+     for 22050 Hertz output we have to sum over  2  samples,  for
+     900  Hertz  we  have  to  sum over 49 samples.  This cancels
+
+
+
+SunOS 5.10          Last change: Version 3.0                   16
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     higher frequencies. Standard sector  size  of  an  audio  CD
+     (ignoring additional information) is 2352 Bytes. In order to
+     finish summing for an output sample at sector boundaries the
+     rates  above have to be chosen.  Arbitrary sampling rates in
+     high quality would require some interpolation scheme,  which
+     needs much more sophisticated programming.
+
+  LLiisstt aa ttaabbllee ooff aallll ssaammpplliinngg rraatteess
+     -RR shows a list of all  sample  rates  and  their  dividers.
+     Dividers can range from 1 to 50.5 in steps of 0.5.
+
+  SSeelleecctt ssttaarrtt ttrraacckk aanndd ooppttiioonnaallllyy eenndd ttrraacckk
+     -tt _n+_m selects nn as the start track and optionally mm as  the
+     last  track of a range to be recorded.  These tracks must be
+     from the table of  contents.   This  sets  the  track  where
+     recording  begins. Recording can advance through the follow-
+     ing tracks as well (limited by the  optional  end  track  or
+     otherwise  depending on recording time). Whether one file or
+     different files are then created depends on  the  -BB  option
+     (see below).
+
+  SSeelleecctt ssttaarrtt iinnddeexx
+     -ii _n selects the index to  start  recording  with.   Indices
+     other  than 1 will invoke the index scanner, which will take
+     some time to find the correct start position. An offset  may
+     be given additionally (see below).
+
+  SSeett rreeccoorrddiinngg dduurraattiioonn
+     -dd  nn sets recording time to _n seconds or set recording time
+     for  whole track if _n is zero. In order to specify the dura-
+     tion in frames (sectors) also,  the  argument  can  have  an
+     appended  'f'. Then the numerical argument is to be taken as
+     frames (sectors) rather than seconds.  Please note  that  if
+     track  ranges  are being used they define the recording time
+     as well thus overriding any -dd option specified times.
+
+     Recording time is defined as the time the  generated  sample
+     will  play  (at the defined sample rate). Since it's related
+     to the amount of generated samples, it's not the time of the
+     sampling  process  itself (which can be less or more).  It's
+     neither strictly coupled with the time  information  on  the
+     audio  CD  (shown  by your hifi CD player).  Differences can
+     occur by the usage of the -oo option (see below). Notice that
+     recording  time  will be shortened, unless enough disk space
+     exists. Recording can be aborted at anytime by pressing  the
+     break character (signal SIGQUIT).
+
+  RReeccoorrdd aallll ttrraacckkss ooff aa ccoommpplleettee aauuddiioo CCDD iinn sseeppaarraattee ffiilleess
+     -BB copies each track into a separate file. A base  name  can
+     be  given.  File  names have an appended track number and an
+     extension corresponding to the audio format. To  record  all
+     audio  tracks  of a CD, use a sufficient high duration (i.e.
+
+
+
+SunOS 5.10          Last change: Version 3.0                   17
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     -d99999).
+
+  SSeett ssttaarrtt sseeccttoorr ooffffsseett
+     -oo _s_e_c_t_o_r_s increments start sector of the track by  _s_e_c_t_o_r_s.
+     By  this option you are able to skip a certain amount at the
+     beginning of a track so you can pick exactly  the  part  you
+     want.  Each  sector  runs for 1/75 seconds, so you have very
+     fine control. If your offset is so high that  it  would  not
+     fit  into the current track, a warning message is issued and
+     the offset is ignored.  Recording time is not reduced.   (To
+     skip  introductory  quiet passages automagically, use the -ww
+     option see below.)
+
+  WWaaiitt ffoorr ssiiggnnaall ooppttiioonn
+     -ww Turning on this option will suppress all silent output at
+     startup,  reducing  possibly file size.  ccddddaa22wwaavv will watch
+     for any signal in the output signal and switches on  writing
+     to file.
+
+  FFiinndd eexxttrreemmee ssaammpplleess
+     -FF Turning on this option will display the most negative and
+     the  most  positive  sample value found during recording for
+     both channels.  This  can  be  useful  for  readjusting  the
+     volume.  The values shown are not reset at track boundaries,
+     they cover the complete sampling  process.  They  are  taken
+     from  the  original  samples  and have the same format (i.e.
+     they are independent of the selected output format).
+
+  FFiinndd iiff iinnppuutt ssaammpplleess aarree iinn mmoonnoo
+     -GG If this option is given, input samples for both  channels
+     will  be  compared.  At the end of the program the result is
+     printed. Differences in the channels indicate stereo, other-
+     wise when both channels are equal it will indicate mono.
+
+  UUnnddoo tthhee pprree--eemmpphhaassiiss iinn tthhee iinnppuutt ssaammpplleess
+     -TT Some older audio CDs are recorded with  a  modified  fre-
+     quency response called pre-emphasis. This is found mostly in
+     classical recordings. The correction  can  be  seen  in  the
+     flags  of the Table Of Contents often. But there are record-
+     ings, that show this setting only  in  the  subchannels.  If
+     this  option  is  given,  the index scanner will be started,
+     which reads the q-subchannel of each track. If  pre-emphasis
+     is  indicated in the q-subchannel of a track, but not in the
+     TOC, pre-emphasis will be assumed to be present, and  subse-
+     quently  a  reverse  filtering is done for this track before
+     the samples are written into the audio file.
+
+  SSeett aauuddiioo ffoorrmmaatt
+     -OO  aauuddiioottyyppee can be _w_a_v (for wav files) or _a_u or  _s_u_n  (for
+     sun  PCM  files)  or  _c_d_r or _r_a_w (for headerless files to be
+     used for cd writers).  All file samples are coded in  linear
+     pulse  code  modulation  (as  done in the audio compact disc
+
+
+
+SunOS 5.10          Last change: Version 3.0                   18
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     format). This holds for all audio formats.   Wav  files  are
+     compatible  to  Wind*ws  sound files, they have lsb,msb byte
+     order which is the opposite byte order to the  one  used  on
+     the audio cd. The default filename extension is '.wav'.  Sun
+     type files are not like  the  older  common  logarithmically
+     coded  .au  files, but instead as mentioned above linear PCM
+     is used. The byte order is msb,lsb  to  be  compatible.  The
+     default filename extension is '.au'.  The AIFF and the newer
+     variant AIFC from the Apple/SGI world store their samples in
+     bigendian  format (msb,lsb). In AIFC no compression is used.
+     Finally the easiest 'format', the cdr aka raw format. It  is
+     done  per default in msb,lsb byte order to satisfy the order
+     wanted by most cd writers. Since there is no header informa-
+     tion in this format, the sample parameters can only be iden-
+     tified by playing the samples on a soundcard or similar. The
+     default filename extension is '.cdr' or '.raw'.
+
+  SSeelleecctt ccddrroomm ddrriivvee rreeaaddiinngg ssppeeeedd
+     -SS  ssppeeeedd allows to switch the  cdrom  drive  to  a  certain
+     level  of speed in order to reduce read errors. The argument
+     is transferred verbatim to the drive.  Details  depend  very
+     much  on  the cdrom drives.  An argument of 0 for example is
+     often the default speed of the drive, a  value  of  1  often
+     selects single speed.
+
+  EEnnaabbllee MMDD55 cchheecckkssuummss
+     -MM  ccoouunntt enables calculation of MD-5 checksum  for  'count'
+     bytes from the beginning of a track. This was introduced for
+     quick comparisons of tracks.
+
+  UUssee MMoonnttyy''ss lliibbppaarraannooiiaa ffoorr rreeaaddiinngg ooff sseeccttoorrss
+     -ppaarraannooiiaa selects an alternate way of extracting audio  sec-
+     tors.  Monty's  library  is  used with the following default
+     options:
+
+     PARANOIA_MODE_FULL, but without PARANOIA_MODE_NEVERSKIP
+
+     for details see Monty's libparanoia documentation.  In  this
+     case the option -PP has no effect.
+
+  DDoo lliinneeaarr oorr oovveerrllaappppiinngg rreeaaddiinngg ooff sseeccttoorrss
+     (This applies unless option -ppaarraannooiiaa is used.)  -PP  sseeccttoorrss
+     sets  the  given  number of sectors for initial overlap sam-
+     pling for jitter  correction.  Two  cases  are  to  be  dis-
+     tinguished.  For nonzero values, some sectors are read twice
+     to enable cdda2wav's jitter correction.  If an  argument  of
+     zero  is  given,  no  overlap  sampling  will  be used.  For
+     nonzero overlap sectors  cdda2wav  dynamically  adjusts  the
+     setting during sampling (like cdparanoia does).  If no match
+     can be found, cdda2wav retries the read  with  an  increased
+     overlap.   If the amount of jitter is lower than the current
+     overlapped samples, cdda2wav reduces  the  overlap  setting,
+
+
+
+SunOS 5.10          Last change: Version 3.0                   19
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     resulting in a higher reading speed.  The argument given has
+     to be lower than the total number  of  sectors  per  request
+     (see option -_n below).  Cdda2wav will check this setting and
+     issues a error message otherwise.  The case of zero  sectors
+     is  nice on low load situations or errorfree (perfect) cdrom
+     drives and perfect (not scratched) audio cds.
+
+  SSeett tthhee ttrraannssffeerr ssiizzee
+     -nn  sseeccttoorrss will set the transfer size to the specified sec-
+     tors per request.
+
+  SSeett nnuummbbeerr ooff rriinngg bbuuffffeerr eelleemmeennttss
+     -ll  bbuuffffeerrss will  allocate  the  specified  number  of  ring
+     buffer elements.
+
+  SSeett eennddiiaanneessss ooff iinnppuutt ssaammpplleess
+     -CC  eennddiiaanneessss will override  the  default  settings  of  the
+     input  format.  Endianess can be set explicitly to "little",
+     "big" or "machine" or to the automatic  endianess  detection
+     based on voting with "guess".
+
+  SSeett eennddiiaanneessss ooff oouuttppuutt ssaammpplleess
+     -EE   eennddiiaanneessss  (endianess  can  be   "little",   "big"   or
+     "machine")  will override the default settings of the output
+     format.
+
+  VVeerrbboossee ooppttiioonn
+     -vv  iitteemmlliisstt prints more information. A list  allows  selec-
+     tion of different information items.
+
+
+     hheellpp      Print a summary of possible members  of  the  dif-
+               fopts list.
+
+     !!         Invert the meaning of  the  following  string.  No
+               comma is needed after the exclamation mark.
+
+     nnoott       Invert the meaning of all members in the  diffopts
+               list i.e. exclude all present options from an ini-
+               tially complete  set  compare  list.   When  using
+               ccsshh(1) you might have problems to use !! due to its
+               strange parser.  This is why the nnoott alias exists.
+
+     ddiissaabbllee   disables verbosity
+
+     aallll       all information is given
+
+     ttoocc       displays the table of contents
+
+     ssuummmmaarryy   displays a summary of recording parameters
+
+     iinnddiicceess   invokes  the  index  scanner  and  displays  start
+
+
+
+SunOS 5.10          Last change: Version 3.0                   20
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+               positions of indices
+
+     ccaattaalloogg   retrieves and displays a media catalog number
+
+     ttrraacckkiidd   retrieves  and  displays  international   standard
+               recording codes
+
+     sseeccttoorrss   displays track start positions in absolute  sector
+               notation
+
+     To  combine  several  requests  just  list  the   suboptions
+     separated with commas.
+
+  TThhee ttaabbllee ooff ccoonntteennttss
+     The display will show the table of contents with  number  of
+     tracks   and  total  time  (displayed  in  _m_m:_s_s._h_h  format,
+     _m_m=minutes, _s_s=seconds, _h_h=rounded 1/100 seconds).  The fol-
+     lowing  list  displays  track number and track time for each
+     entry.  The summary gives a line per  track  describing  the
+     type of the track.
+
+         ttrraacckk pprreeeemmpphhaassiiss ccooppyyppeerrmmiitttteedd ttrraacckkttyyppee cchhaannss
+
+     The ttrraacckk column holds the track number.  pprreeeemmpphhaassiiss  shows
+     if  that  track  has  been  given  a  non  linear  frequency
+     response.  NOTE: You  can  undo  this  effect  with  the  -TT
+     option.   ccooppyy-ppeerrmmiitttteedd  indicates if this track is allowed
+     to copy.  ttrraacckkttyyppee can be data or audio. On multimedia  CDs
+     (except  hidden  track  CDs) both of them should be present.
+     cchhaannnneellss is defined for audio tracks only. There can be  two
+     or four channels.
+
+  NNoo ffiillee oouuttppuutt
+     -NN this debugging option switches off writing to a file.
+
+  NNoo iinnffooffiillee ggeenneerraattiioonn
+     -HH this option switches off creation of an info file  and  a
+     cddb file.
+
+  GGeenneerraattiioonn ooff ssiimmppllee oouuttppuutt ffoorr gguuii ffrroonntteennddss
+     -gg this option switches on simple line formatting, which  is
+     needed to support gui frontends (like xcd-roast).
+
+  VVeerrbboossee SSCCSSII llooggggiinngg
+     -VV this option switches on logging of  SCSI  commands.  This
+     will  produce  a  lot of output (when SCSI devices are being
+     used).  This is needed for debugging purposes. The format is
+     the  same  as  being  used  with  the  cdrecord program, see
+     ccddrreeccoorrdd(1) for more information.
+
+  QQuuiieett ooppttiioonn
+     -qq suppresses all screen output except error messages.  That
+
+
+
+SunOS 5.10          Last change: Version 3.0                   21
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     reduces cpu time resources.
+
+  JJuusstt sshhooww iinnffoorrmmaattiioonn ooppttiioonn
+     -JJ does not write a file, it only prints  information  about
+     the  disc  (depending  on  the  -vv option). This is just for
+     information purposes.
+
+CCDDDDBBPP ssuuppppoorrtt
+  LLooookkuupp aallbbuumm aanndd ttrraacckk ttiittlleess ooppttiioonn
+     -LL  ccddddbbpp mmooddee Cdda2wav tries to retrieve performer, album-,
+     and  track  titles  from  a cddbp server. The default server
+     right now is 'freedb.freedb.org'.  It  is  planned  to  have
+     more  control over the server handling later.  The parameter
+     defines how multiple entries are handled:
+
+     00    interactive mode, the user chooses one of the entries.
+
+     11    take the first entry without asking.
+
+  SSeett sseerrvveerr ffoorr ttiittllee llooookkuuppss
+     ccddddbbpp-sseerrvveerr  sseerrvveerrnnaammee When using -L or -cddb, the  server
+     being contacted can be set with this option.
+
+  SSeett ppoorrttnnuummbbeerr ffoorr ttiittllee llooookkuuppss
+     ccddddbbpp-ppoorrtt  ppoorrttnnuummbbeerr When using -L or  -cddb,  the  server
+     port being contacted can be set with this option.
+
+HHIINNTTSS OONN UUSSAAGGEE
+     Don't create samples you cannot read. First check your  sam-
+     ple  player  software and sound card hardware. I experienced
+     problems with very low sample rates (stereo <= 1575 Hz, mono
+     <=  3675  Hz)  when  trying  to  play them with standard WAV
+     players for sound blaster (maybe they are not legal  in  WWAAVV
+     format). Most CD-Writers insist on audio samples in a bigen-
+     dian format.  Now cdda2wav supports the -EE  eennddiiaanneessss option
+     to control the endianess of the written samples.
+
+     If your hardware is fast enough  to  run  cdda2wav  uninter-
+     rupted  and  your CD drive is one of the 'perfect' ones, you
+     will gain speed when switching all overlap sampling off with
+     the  -PP   00 option. Further fine tuning can be done with the
+     -nn  sseeccttoorrss option. You can specify how much sectors  should
+     be requested in one go.
+
+     Cdda2wav supports  ppiippeess.   Use  a  filename  of  -  to  let
+     cdda2wav output its samples to standard output.
+
+     Conversion to other sound formats can be done using the  ssooxx
+     program  package  (although  the use of ssooxx -xx to change the
+     byte order of samples  should  be  no  more  necessary;  see
+     option -EE to change the output byteorder).
+
+
+
+
+SunOS 5.10          Last change: Version 3.0                   22
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     If you want to sample more than  one  track  into  different
+     files  in  one  run,  this is currently possible with the -BB
+     option. When recording time exceeds the track  limit  a  new
+     file will be opened for the next track.
+
+FFIILLEESS
+     Cdda2wav can generate a lot of files for various purposes.
+
+  AAuuddiioo ffiilleess::
+     There are audio files containing samples with default exten-
+     sions  .wav,  .au,  .aifc,  .aiff, and .cdr according to the
+     selected sound format.  These files are not  generated  when
+     option (-NN) is given. Multiple files may be written when the
+     bulk copy option (-BB) is used. Individual file names can  be
+     given  as  arguments.  If  the number of file names given is
+     sufficient to cover all  included  audio  tracks,  the  file
+     names  will  be used verbatim.  Otherwise, if there are less
+     file names than files needed to write the  included  tracks,
+     the  part  of the file name before the extension is extended
+     with '_dd' where dd represents the current track number.
+
+  CCddddbb aanndd CCddiinnddeexx ffiilleess::
+     If cdda2wav detects cd-extra or cd-text (album/track)  title
+     information, then .cddb, .cdindex and .cdtext files are gen-
+     erated unless suppressed by the  option  -HH.   They  contain
+     suitable  formatted entries for submission to audio cd track
+     title databases in the internet. The  CDINDEX  and  CDDB(tm)
+     systems are currently supported. For more information please
+     visit www.musicbrainz.org and www.freedb.com.
+
+  IInnff ffiilleess::
+     The inf files are describing the sample files and  the  part
+     from  the  audio  cd, it was taken from. They are a means to
+     transfer information to a cd burning program like  cdrecord.
+     For  example,  if  the  original  audio  cd had pre-emphasis
+     enabled, and cdda2wav -TT did remove the  pre-emphasis,  then
+     the  inf file has pre-emphasis not set (since the audio file
+     does not have it anymore), while the .cddb and the  .cdindex
+     have pre-emphasis set as the original does.
+
+WWAARRNNIINNGG
+     IIMMPPOORRTTAANNTT:: it is prohibited to sell  copies  of  copyrighted
+     material  by  noncopyright  holders. This program may not be
+     used to circumvent copyrights.  The user  acknowledges  this
+     constraint when using the software.
+
+BBUUGGSS
+     The index scanner may give timeouts.
+
+     The resampling (rate conversion code) uses polynomial inter-
+     polation, which is not optimal.
+
+
+
+
+SunOS 5.10          Last change: Version 3.0                   23
+
+
+
+
+
+
+User Commands                                         CDDA2WAV(1)
+
+
+
+     Cdda2wav should use threads.
+
+     Cdda2wav currently cannot sample hidden  audio  tracks  that
+     reside in track #1 index 0.
+
+AACCKKNNOOWWLLEEDDGGEEMMEENNTTSS
+     Thanks  goto   Project   MODE   (http://www.mode.net/)   and
+     Fraunhofer  Institut  fuer integrierte Schaltungen (FhG-IIS)
+     (http://www.iis.fhg.de/)  for  financial  support.   Plextor
+     Europe  and  Ricoh  Japan  provided cdrom disk drives and cd
+     burners which helped a lot to develop this software.   Rammi
+     has  helped  a  lot  with  the debugging and showed a lot of
+     stamina when hearing 100 times the first 16 seconds  of  the
+     first  track  of  the Krupps CD.  Libparanoia contributed by
+     Monty (Christopher Montgomery) xiphmont@mit.edu.
+
+AAUUTTHHOORR
+     Heiko Eissfeldt heiko@colossus.escape.de (1993-2004)
+
+     2004-today:
+
+     Joerg Schilling
+     Seestr. 110
+     D-13353 Berlin
+     Germany
+
+DDAATTEE
+     12 Jan 2010
+
+IINNTTEERRFFAACCEE SSTTAABBIILLIITTYY
+     The interfaces provided by ccddddaa22wwaavv are  designed  for  long
+     term  stability.  As ccddddaa22wwaavv depends on interfaces provided
+     by the underlying operating system,  the  stability  of  the
+     interfaces offered by ccddddaa22wwaavv depends on the interface sta-
+     bility of the OS interfaces. Modified interfaces in  the  OS
+     may enforce modified interfaces in ccddddaa22wwaavv.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SunOS 5.10          Last change: Version 3.0                   24
+
+
+

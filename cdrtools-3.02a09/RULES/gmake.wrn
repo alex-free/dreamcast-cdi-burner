@@ -1,0 +1,25 @@
+		W A R N I N G	Messages like:
+
+gmake[2]: Entering directory `/tmp/cdrtools-2.01/libschily'
+../RULES/r-gmake.dep:76: OBJ/<arch-dir>/cvmod.d: No such file or directory
+../RULES/r-gmake.dep:76: OBJ/<arch-dir>/dat.d: No such file or directory
+../RULES/r-gmake.dep:76: OBJ/<arch-dir>/fcons.d: No such file or directory
+../RULES/r-gmake.dep:76: OBJ/<arch-dir>/fdown.d: No such file or directory
+../RULES/r-gmake.dep:76: OBJ/<arch-dir>/fdup.d: No such file or directory
+../RULES/r-gmake.dep:76: OBJ/<arch-dir>/ffileread.d: No such file or directory
+../RULES/r-gmake.dep:76: OBJ/<arch-dir>/ffilewrite.d: No such file or directory
+../RULES/r-gmake.dep:76: OBJ/<arch-dir>/fgetline.d: No such file or directory
+../RULES/r-gmake.dep:76: OBJ/<arch-dir>/fgetstr.d: No such file or directory
+../RULES/r-gmake.dep:76: OBJ/<arch-dir>/file_raise.d: No such file or directory
+../RULES/r-gmake.dep:76: OBJ/<arch-dir>/fileclose.d: No such file or directory
+....
+
+are caused by a GNU make bug and not by the Schily makefile system.
+
+The related bug has been reported to the GNU make maintainers in 1998 but
+as the bug has not yet been fixed, it seems that GNU make is unmaintained :-(
+A working highly portable make program is at
+
+	https://sourceforge.net/projects/s-make/files/ 
+
+You may switch off this warning by calling "gmake GMAKE_NOWARN=true ..."

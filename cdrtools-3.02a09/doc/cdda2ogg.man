@@ -1,0 +1,132 @@
+
+
+
+User Commands                                         cdda2ogg(1)
+
+
+
+NNAAMMEE
+     cdda2ogg, cdda2mp3 - extract CD audio tracks and encode them
+
+SSYYNNOOPPSSIISS
+     ccddddaa22oogggg [ _o_p_t_i_o_n_s ][ ddeevv==_d_e_v_i_c_e ] [_f_i_l_e _p_r_e_f_i_x] [_o_g_g _o_p_t_s]
+
+     ccddddaa22mmpp33 [ _o_p_t_i_o_n_s ][ ddeevv==_d_e_v_i_c_e ] [_f_i_l_e _p_r_e_f_i_x] [_l_a_m_e _o_p_t_s]
+
+DDEESSCCRRIIPPTTIIOONN
+     ccddddaa22oogggg is a script  that  uses  the  ccddddaa22wwaavv  command  to
+     extract  all  audio  tracks  with  the  ccddddaa22wwaavv command and
+     encode them using the ooggggeenncc(1) OOgggg VVoorrbbiiss encoder.
+
+     ccddddaa22mmpp33 is a script  that  uses  the  ccddddaa22wwaavv  command  to
+     extract  all  audio  tracks  with  the  ccddddaa22wwaavv command and
+     encode them using the llaammee(1) MMPP33 encoder.
+
+     There is no CDDB support yet.
+
+
+OOPPTTIIOONNSS
+     -hheellpp       print a short online usage message and exit.
+
+     ddeevv==_d_e_v_i_c_e  The device to read the data from.  If  there  is
+                 only  one  CD-ROM  drive in the system, the ddeevv==
+                 option may be omitted. For  possible  values  of
+                 the  _d_e_v_i_c_e  parameter,  see the ccddrreeccoorrdd(1) man
+                 page.
+
+     -**          Any other option beginning with a  '-'  sign  is
+                 passed to the ccddddaa22wwaavv program.
+
+     Any other option past the ffiillee pprreeffiixx argument and beginning
+     with a '-' sign is passed to the encoder program.
+
+EENNVVIIRROONNMMEENNTT VVAARRIIAABBLLEESS
+     The following environment variables may be  used  to  change
+     the behavior of the ccddddaa22oogggg and the ccddddaa22mmpp33 command:
+
+     CCDDDDAA22WWAAVV
+          Defines the command to extract WAV data  from  the  CD.
+          The default value is ccddddaa22wwaavv.
+
+     CCDDDDAA22WWAAVV__OOPPTTSS
+          Defines the options passed to the  CDDA  program  while
+          extracting from the CD.  The default value is -HH -qq.
+
+     MMPP__CCOODDEERR
+          The encoder program used to compress  the  audio  data.
+          The  default  value is ooggggeenncc for ccddddaa22oogggg and llaammee for
+          ccddddaa22mmpp33.
+
+
+
+
+SunOS 5.10          Last change: Version 3.0                    1
+
+
+
+
+
+
+User Commands                                         cdda2ogg(1)
+
+
+
+     MMPP__OOPPTTIIOONNSS
+          Options passed to the encoder program.  The default  is
+          empty.
+
+     FFIILLEEPPRREEFFIIXX
+          The base filename part of the  resulting  audio  files.
+          The  default  file  name  is $$TTRRAACCKK--$$FFIILLEEPPRREEFFIIXX..oogggg for
+          ccddddaa22oogggg and $$TTRRAACCKK--$$FFIILLEEPPRREEFFIIXX..mmpp33 for ccddddaa22mmpp33 if  no
+          _f_i_l_e _p_r_e_f_i_x argument was given on the command line.
+
+FFIILLEESS
+     If the following files are present, then the scripts  source
+     them to set up local defaults:
+
+     //oopptt//sscchhiillyy//bbiinn//ccddddaa22oogggg
+          To set up default values for ccddddaa22oogggg.
+
+     //oopptt//sscchhiillyy//bbiinn//ccddddaa22mmpp33
+          To set up default values for ccddddaa22mmpp33.
+
+     The content may be set up to modify environment variables or
+     to set up local defaults.
+
+
+SSEEEE AALLSSOO
+     ccddddaa22wwaavv(1), ccddrreeccoorrdd(1), ooggggeenncc(1), llaammee(1).
+
+NNOOTTEESS
+     If a CD contains a hidden audio track before track 1, a file
+     name with track number 00 is created with the content of the
+     hidden track.
+
+     The program ooggggeenncc(1) is part of  the  vvoorrbbiiss--ttoooollss  project
+     See hhttttpp::////wwwwww..vvoorrbbiiss..ccoomm for more information.
+
+     The program llaammee(1)  is  part  of  the  llaammee  project.   See
+     hhttttpp::////llaammee..ssoouurrcceeffoorrggee..nneett// for more information.
+
+AAUUTTHHOORR
+     The first versions of the scripts have been based on a  news
+     article by Tom Kludy.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SunOS 5.10          Last change: Version 3.0                    2
+
+
+

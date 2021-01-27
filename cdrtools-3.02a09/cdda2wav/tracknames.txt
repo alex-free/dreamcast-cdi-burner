@@ -1,0 +1,34 @@
+Date: Fri, 2 Oct 1998 16:58:15 -0400
+From: Bill O'Donnell <billo@billo.com>
+To: heiko@colossus.escape.de
+Subject: CDDB/cdda2wav quick lookup utility
+
+
+Hello, I just started using cdda2wav to capture CD audio on Linux.
+It's working great on my 2.0.22 kernel with NEC CD-ROM DRIVE:273 (ATAPI).
+
+Anyway, I noticed that you're dumping out cddb query info, but not
+doing the query yet, so I hacked a quick perl program to do it. 
+
+If you run with a default extraction like this:
+
+   cdda2wav -B -D /dev/hda
+
+then run the program included something like this:
+
+   cddbhack.pl ma.us.cddb.com 8880 < audio.cddb
+
+It looks up the names, and creates a file "rename.sh" which can be
+used to rename all the audio_XX.wav files to a nice name.
+
+Anyway, thought you might find it useful, feel free to include in your
+next beta distribution or not.  Sorry if I made any stupid perl
+mistakes, I only just learned it last week.  I would have done it in C
+or python but I need to learn perl for another job...
+
+Cheers,
+
+-billo
+
+Bill O'Donnell                     Independent Software Developer
+billo@billo.com                              http://www.billo.com  

@@ -1,0 +1,89 @@
+CDRTOOLS compiles without changes on any UnixWare 7.0.1 or later installation 
+having the UnixWare/OpenServer DevKit (UODK) or GCC-2.95 and smake-1.2 
+installed.
+
+You can get pre-packaged, pkgadd installable binaries from:
+ 
+   http://www.sco.com/skunkware/cdrtools
+   
+Some general notes on CDRTOOLS are available from:
+
+   http://www.sco.com/skunkware/cdrtools/SCO-NOTES.html
+
+
+Limitations for CDRTOOLS-1.8 on UnixWare:
+
+1) SCO UnixWare 2.1.X and UnixWare 7.0.0 are not supported
+   - UW2.1.X will compile/work with little changes
+   - UW7.0.0 wasn't tested at all 
+
+2) There is only support for SCSI devices
+
+3) UnixWare 7.0.1 requires additional PTF's to enable some
+   host bus adapters to work with a logical block size of more than
+   512 bytes. (Please see the above SCO_NOTES document for details!)
+
+===================================================================
+NOTE: cdrecord now supports the -scanbus option. Therefore the 
+      old addressing methods are NO LONGER AVAILABLE !!!
+      
+      As UnixWare 7.1.1 doesn't allow to open the passthrough
+      interface for disks, this is disabled by default. 
+      cdrecord -scanbus will therefore only list devices other
+      than disks. To enable the scanning of disks, you need to
+      set an environment variable "LIBSCG_SCAN_ALL".
+      
+      Be warned, doing so might lock your disk subsystem!
+===================================================================
+
+The correct dev= syntax on UnixWare 7 is:
+
+    dev=scsibus,target,lun	(and scsibus is scsibus now!!!)
+
+A sample output from cdrecord -scanbus looks like:
+
+#cdrecord -scanbus
+Cdrecord 1.8 (i586-sco-sysv5uw7.0.1) Copyright (C) 1995-2000 Jörg Schilling
+Using libscg version 'schily-0.1'
+scsibus0:
+        0,0,0     0) 'SEAGATE ' 'ST34573LC       ' '5960' Disk
+        0,1,0     1) 'SEAGATE ' 'ST34573LC       ' '5960' Disk
+        0,2,0     2) 'SEAGATE ' 'ST34573LC       ' '5960' Disk
+        0,3,0     3) *
+        0,4,0     4) *
+        0,5,0     5) 'PIONEER ' 'CD-ROM DR-U06S  ' '1.05' Removable CD-ROM
+        0,6,0     6) 'TEAC    ' 'CD-R56S         ' '1.0E' Removable CD-ROM
+        0,7,0     7) *
+
+The first column showing the triple x,y,z tells you the address to use.
+
+As you can see the TEAC CD-R56S CD-Writer does have the following address:
+
+     dev=0,6,0
+     
+===================================================================
+           THE OLD ADDRESSING IS NO LONGER AVAILABLE!
+	    
+         PLEASE ADJUST YOUR /etc/default/cdrecord FILES!
+===================================================================
+
+Running cdrecord with the old address method will result in an error!
+
+#cdrecord dev=/dev/rcdrom/cdrom1:6,0 -inq
+Cdrecord 1.8 (i386-pc-sco3.2v5.0.5) Copyright (C) 1995-2000 Jörg Schilling
+scsidev: '/dev/rcd1:6,0'
+devname: '/dev/rcd1'
+scsibus: 0 target: 6 lun: 0
+cdrecord: Invalid argument. Open by 'devname' no longer supported on this OS. Cannot open SCSI driver.
+cdrecord: For possible targets try 'cdrecord -scanbus'. Make sure you are root.
+
+
+To compile cdrtools, you need 'smake' from:
+
+   ftp://ftp.sco.com/skunkware/uw7/Packages
+
+
+or 'gmake'. Smake is preferred as gmake bugs will cause bogus warnings
+and may confuse about the state of the make run.
+
+

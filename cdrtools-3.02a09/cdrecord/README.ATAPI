@@ -1,0 +1,601 @@
+# @(#)README.ATAPI	1.6 08/10/12 Copyright 1997-2004 J. Schilling
+
+People (with a Linux only background) often ask me why do you depend on 
+"ATAPI-SCSI emulation", why don't you support generic IDE?
+
+First a note: there is no SCSI emulation on Linux, but there has been
+some kind of SCSI integration. To explain the difference between SCSI emulation
+and SCSI integration let us look at an Operating system that implements both,
+Windows NT:
+
+Win NT implements SCSI integration, if you open "\\\\.\\SCSI%d:", BusNo,
+you will be able to send generic SCSI commands to any SCSI speaking drive
+on that bus. ATAPI drives just show up on a specific Busnumber, SCSI drives 
+that use a 50 or 68 pin connector show up on different Bus numbers.
+Note that Microsoft obviously did copy my ideas I did implement in August 1986
+for SunOS-3.0 :-)
+
+Win NT implements SCSI emulation by not only showing drives that natively
+talk SCSI on the ATA/IDE cable, if you send generic SCSI commands via ioctl's
+to "\\\\.\\SCSI%d:", BusNo. Win NT also shows you plain ATA drives that do not
+understand SCSI commands in firmware. Win NT allows you to send SCSI
+commands to the kernel and the kernel translates the SCSI commands to ATA 
+commands with the same meaning, so Win NT emulates SCSI for ATA drives.
+
+Linux does not emulate SCSI command transport for vanilla ATA drives, so there
+is definitely no SCSI emulation in Linux.
+
+
+	You need to believe me: There is no single IDE burner out!
+	Even a CD-ROM cannot be used decently if you use only IDE/ATA commands.
+	Opening/closing the door, playing audio and similar things
+	cannot be done using vanilla IDE commands - you will need SCSI commands
+	to do this. But how do we do this with a drive that uses an IDE
+	interface?
+
+		ATAPI stands for ATA Packet Interface
+
+	The ATAPI standard describes method of sending SCSI commands over IDE
+	transport with some small limitations to the "real" SCSI standard.
+	SCSI commands are send via IDE transport using the 'ATA packet'
+	command. There is no SCSI emulation - ATAPI drives include native
+	SCSI command support. For this reason, sending SCSI commands to ATAPI
+	drives is the native method of supporting ATAPI devices. Just imagine
+	that IDE is one of many SCSI low level transport mechanisms.
+
+	This is a list of some known SCSI transports:
+
+	-	Good old Parallel SCSI 50/68 pin (what most people call SCSI)
+	-	SCSI over fiber optics (e.g. FACL - there are others too)
+	-	SCSI over a copper variant of FCAL (used in modern servers)
+	-	SCSI over IEEE 1394 (Fire Wire)
+	-	SCSI over USB
+	-	SCSI over IDE (ATAPI)
+
+	As you now see, the use of the naming convention "ATAPI-SCSI emulation"
+	is a little bit misleading. It should rather be called:
+		"IDE-SCSI host adapter emulation"
+
+Some naming explanations:
+
+	ATA	Attachment Adapter
+	IDE	Integrated Drive Electronics (A Drive that includes ATA)
+	ATAPI	ATA Packet Interface
+
+When cdrecord has problems with ATAPI drives on Linux this usually is a Linux 
+kernel problem. The Linux kernel maintainers unfortunately refuse to correct
+their current IDE driver system setup which does not support ATAPI by default.
+ATAPI _is_ SCSI over IDE transport. It is hard to understand why Linux still
+uses a default driver setup that is designed for IDE CD-ROM drives made
+before 1994 (using a IDE compat mode that only allows to use the drive
+read-only) and does not handle to send SCSI commands to ATAPI drives by
+default. This makes it hard for people who just started with Linux to do
+CD-writing on Linux if they own an ATAPI drive. Both Linus Torvalds and
+Alan Cox admit that they don't own a CD/DVD writer, how should they know about
+the problems?
+
+There are bugs with the DMA implementation that are known for many years
+but they don't get fixed.
+
+/*--------------------------------------------------------------------------*/
+Which Operating systems support ATAPI
+
+-	AIX: Status unknown! Please report your experience...
+
+-	Apple Mac OS X (Darwin): Supported
+
+-	BeOS (libscg maps ATAPI to SCSI bus # >= 8
+
+-	BSD/OS: Status unknown! Please report your experience...
+
+-	FreeBSD:
+		-	YES for the latest default kernel.
+			It includes finally ATAPI-Cam
+
+		-	NO for the older kernels.
+			Yes, if you install a kernel patch from
+			Thomas Quinot <thomas@cuivre.fr.eu.org>
+			See http://www.cuivre.fr.eu.org/~thomas/atapicam/
+			and README.FreeBSD
+
+-	HP-UX: It looks like ATAPI does not work correctly due to kernel bugs.
+
+	New information:
+	HP supports a HP A7853A B/C class machine (s700_800) with HP-UX-11.x
+	You need to install a patch:
+
+	Patch Name: PHKL_27224 Patch Description: s700_800 11.00 IDE/ATAPI 
+	cumulative patch
+
+
+-	Linux (unfortunately not in the default configuration)
+
+	-	It works more or less if you include ide-scsi
+
+	-	Linux-2.4.xx includes a CDROM Packet interface in the
+		IDE CD driver. For this driver libscg now includes
+		support in pre-alpha status. Use cdrecord dev=ATAPI -scanbus
+		to check for drives and e.g. cdrecord dev=ATAPI:0,0 ....
+		for writing. Note that this interface is not integrated into
+		the standard libscg device naming scheme. Support for
+		this interface has been included because it is the only
+		way to use a PCCARD/PCMCIA writer - trying to use ide-scsi
+		on a PCATA interface will cause a Linux kernel panic
+		or will block all ATAPI drives.
+
+	-	Starting with Linux-2.5.45, there is a new experimental
+		ATAPI interface initiated by Linus Torvalds. Unfortunately,
+		this interface does not fit well into the rest of the Linux
+		SCSI kernel transport naming scheme. Cdrecord allows to
+		use this interface by calling e.g. cdrecord dev=ATA:1,0,0 ...
+
+	All Linux ATAPI transport implementations do not support DMA.
+	Current exceptions are:
+
+	-	ide-scsi with block size 2048 and if DMA has been enabled
+
+	-	The new experimental ATAPI interface starting with Linux-2.5.45
+		allows DMA if DMA has been enabled and the sector size is a
+		multiple of 4. This allows to use DMA for audio CDs and
+		when writing any type of CD in RAW mode.
+
+		Note that is a bad idea to first implement a new kernel
+		interface that also implements the named DMA implementation
+		bugs and later fix the DMA bug _only_ for this new
+		interface. It looks like the Linux kernel folks are not
+		very cooperative :-(
+
+	RAW mode is needed for many new and cheap drives that have bugs when
+	writing in cooked mode. If there is no DMA, you cannot write faster
+	than approx 16x.
+	
+
+-	NetBSD (releases 1.3 and newer)
+
+-	NeXT: Status unknown! Please report your experience...
+
+-	OpenBSD: (release 2.6 and newer)
+
+-	OS/2 (you need to fetch and install ATAPI support first)
+	see: http://www.leo.org/pub/comp/os/os2/leo/drivers/dasd/daniatapi.zip/
+
+-	OSF-1 / True64 Status unknown! Please report your experience...
+
+-	SCO-OpenServer: Supported with 5.0.6 and non-public patch or with
+			5.0.7. I don't know whether you need a patch for 5.0.7
+
+-	SCO-UnixWare: partial support with UnixWare 7.1.3 - some SCSI commands
+			that are needed for cdda2wav and DVD writing are blocked.
+			7.1.4 will have full ATAPI support.
+
+-	SGI/IRIX: Status unknown! Please report your experience...
+
+-	Solaris (you may need to use the USCSI transport interface to address 
+	ATAPI if the IDE hostadapter idriver implementation does not follow 
+	Sun's internal standards).
+
+	ATAPI works fine on Solaris 7 sparc and on Solaris 7/8 intel.
+	
+	On Solaris 8 (intel) and newer, the ATAPI/SCSI subsystem is integrated
+	correctly according to Sun's SCSA white paper, so the 'scg' driver works.
+	This is not true for Solaris on sparc where the ATAPI driver do not conform
+	to Sun's internal structuring rules. You need to use the USCSI interface
+	on for ATAPI drives on Solaris sparc for this reason.
+ 
+	Solaris 8 sparc has a ATA DMA bug that prevents cdrecord from working at all.
+	There is a fix from Sun available: the patch 108974-16 
+	Solaris 9 sparc works again, it has the fix for the ATA DMA bug included.
+
+	Newer versions of Solaris 9 disable DMA for CD-ROM drives on IDE.
+	Read README.solaris-x86-ATAPI-DMA to learn how this may be circumvented.
+
+-	VMS: works on recent versions!
+
+-	Win32 using a recent ASPI Layer supports ATAPI
+	You nay need to exclude mini port drivers (see README.win32).
+
+	Newer cdrecord versions also support the SPTI (SCSI Pass through ioctl).
+	Libscg uses SPTI by default if you are running NT-5.x or newer and are
+	administrator. With NT-4.x it may be possible to run cdrecord dev=SPTI:1,0.0 ...
+	But there are reports for blue screens (kernel crashes).
+
+-	DOS DOS-7 from win98 includes a ATAPI aware aspi
+	For other versions have a look at README.msdos and use e.g. "oakaspi".
+
+/*--------------------------------------------------------------------------*/
+General hints:
+
+***********************
+NOTE: IDE/ATAPI doesn't have disconnect/reconnect! you cannot expect the needed 
+	performance for CD-writing if you connect source and destination drive
+	to the same IDE cable.
+***********************
+
+If you never like to directly write a CD from CD-ROM source, this configuration
+seems to be the best:
+
+IDE 0	MSTR	->	HD1
+IDE 0	SLAV	->	HD2
+
+IDE 1	MSTR	->	CD-writer
+IDE 1	SLAV	->	CD-ROM
+
+If you like to write from both HD source and CD-ROM source, you should have
+the following configuration:
+
+IDE 0	MSTR	->	HD1	(does _not_ hold CD mastering data)
+IDE 0	SLAV	->	CD-Writer
+
+IDE 1	MSTR	->	HD2	(holds CD mastering data)
+IDE 1	SLAV	->	CD-ROM
+
+If cou cannot set up a decent cabling (e.g. because you use a notebook)
+you may try to use cdrecord -immed ...
+It runs slow commands in quick (immediate) return background mode and
+tries to wait between the write commands to allow to free the IDE cable
+so the cdrecord read process may fill the FIFO from the other drive
+on the same IDE cable.
+
+/*--------------------------------------------------------------------------*/
+The rest of this file is only valid for Linux!
+
+This was taken out of mails from From: Dave Cohen <dcohen@richmond.infi.net>
+and From: Gadi Oxman <gadio@netvision.net.il>
+(slightly modified marked ***JS *** except typo corrects)
+
+As all actual Linux versions have ATAPI support for cdrecord,
+I removed the patch section. If you are running a Linux version
+that does not support ATAPI<->SCSI command transport, please upgrade.
+
+The basic driver design in Solaris would also allow to use ATAPI
+drives but unfortunately, Sun made a mistake in the mid-level design.
+If you want to use ATAPI drives with Solaris, ask Sun why they don't
+support SCSI passthrough to IDE although they are using a common driver
+concept.
+
+Please use cdrecord-1.6 final or later (if available), it includes the
+modifications needed for ATAPI drives and is still working with other 
+SCSI drives. Older revisions of cdrecord do not support ATAPI drives.
+
+If you are using Linux Kernel version prior to 2.1.73 or prior to
+2.0.35, please upgrade before you try to compile and use cdrecord.
+
+In any case, you need to configure a kernel with ATAPI/SCSI hostadapter
+emulation. Read carefully the following instructions:
+
+In any case, you need to disable generic IDE/ATAPI CDROM support in 
+order to make ATAPI SCSI emulation working.
+
+Many people ask why I use ATAPI-SCSI emulation.
+
+	The use of the naming convention "ATAPI-SCSI emulation" is a
+	little bit misleading. It should rather be called:
+		"SCSI host adapter emulation"
+
+	The ATAPI standard describes method of sending SCSI commands over IDE
+	with some small limitations to the "real" SCSI standard.
+	For this reason ATAPI-SCSI emulation is the native method of
+	supporting ATAPI devices.
+
+If you have problems to talk to the device when it is jumpered as "slave"
+try to use it  as "master". If you connect a hard disk to the same IDE
+cable as the CD writer or if you try to read/write data from another drive
+that is connected to the same IDE cable as the CD writer you may get
+problems too.
+
+NOTICE:
+
+With the newer 2.1.x or 2.2.x kernels it seems to be possible to run 
+SCSI/ATAPI hostadapter emulation and generic IDE at the same time by 
+selectively telling the kernel what to use for which drive.  However,
+this would not be needed if the Linux SCSI CD-ROM driver would be more 
+up to date and supports standard conforming drives.
+
+Jörg Schilling <joerg.schilling@fokus.fraunhofer.de>
+
+--------------------------------------------------
+Here is a hint from Alan Brown <alanb@manawatu.gen.nz>:
+
+To allow ATAPI cd and ide-scsi support on the same machine, add 
+`hd<x>=ide-scsi` to the lilo.conf append entry, or use 
+`hd<x>=ide-scsi` at the bootup lilo prompt. 
+
+I have my HP-7200 RW drive as the primary drive on the second IDE 
+bus, so the statement used is "hdc=ide-scsi" 
+
+--------------------------------------------------
+
+Hope that the following  is helpful to you.
+
+I recently purchased a HP-7110i CD-RW, which is the U.S. only version of
+what you have. The HP 7100 and 7110  CD rewritables use the ATAPI
+standard. Originally, the drives were not supported under Linux (due to
+some inconsistencies with SCSI translations between the kernel and the
+CD), but that problem has just recently been fixed. There are some kernel
+and cdrecord patches that have been made to support this device that have
+yet to be officially incorporated into cdwrite and the kernel. In order to
+get your drive supported under Linux, you will have to do the following:
+
+1. Get the proper version of cdrecord.
+
+As of this writing, I am just getting ready to test Joerg's new cdrecord.
+I am currently operational on cdrecord-1.5, so I know that works, and I
+have attached patches for that version. 
+ 
+If you are in a hurry, you can download ver. 1.5, apply patches, and
+rock-n-roll. You may want to wait, though.  Up to you ;). The version with
+ATAPI support is cdrecord-1.6alpha5. I'm not sure if the current kernel
+patches are valid for this version, but i'll know soon enough.
+**** They are valid **** JS
+
+BTW, the new version of xcdroast now supports cdrecord - this version
+is in beta testing, too (currently uses cdrecord-1.5 but cdrecord-1.6a5
+should work with the actual xcdroast too).  
+
+2. Upgrade to kernel version 2.0.31
+
+IDE/SCSI translation was first added in this kernel. Because your CD-RW is
+an ATAPI device, it will support SCSI command sets.  The translation
+allows you to map the device as a SCSI generic device. This will allow
+cdrecord to recognize it as a SCSI device.
+**** 2.0.31 still needs patches, get 2.0.35 or later **** JS
+
+3. Get the patches and apply them
+
+Attached find kernel patches for kernel sources ide.h and ide-scsi.c, and
+cdrecord source scsi_cdr.c (version 1.5 only). 
+**** Get cdrecord-1.6 or later **** JS
+
+3. Recompile kernel with SCSI emulation support
+
+If you do a "make menuconfig" or "make xconfig", select SCSI emulation
+under the category "Floppy, IDE, and other block devices".
+
+WARNING:
+Do not install SCSI support as a module - there is a bug in the makefile
+structure that will cause the compile to fail.  Compile directly into the
+kernel.   
+
+4. WARNING: Disable generic IDE/ATAPI CDROM support	*** JS ***
+
+If you don't do this, the SCSI emulation will not work  *** JS ***
+
+5. This is important too:
+You also need to enable SCSI and SCSI generic support   *** JS ***
+
+6. Make sure that /dev/sg* exists.
+If they are missing, create them.
+
+Dave Cohen
+dcohen@richmond.infi.net 
+(Patch instructions below)
+
+-----------------------------------------------------------------
+From: Danilo Fiorenzano <shade@juliet.gppsd.ab.ca>
+
+Anyway, here's what I did, using kernel version 2.0.33  I believe this
+is the proper way to get an HP-7100i to work (and as far as I can tell,
+any other IDE CD-writer unit):
+
+1) patch the kernel as described by README.ATAPI
+
+2) save your current kernel config to an alternate file, then run
+   "make mrproper"
+
+3) run 'make menuconfig' or 'make xconfig', then choose "load config
+   from alternate file" to restore the original configuration
+
+4) In "Floppy, IDE and other block devices", disable "IDE/ATAPI CD-ROM
+   support" and enable instead "scsi emulation"
+
+5) in "SCSI support" enable "SCSI support", "SCSI CD-ROM support" and
+   "SCSI generic support", everything directly in the kernel.
+
+6) compile, install kernel/modules, reboot.  Now, if everything went
+   fine, your CDROM units should show up with a message like:
+ "hdb: HP CD-Writer+ 7100, ATAPI CDROM drive - enabling SCSI emulation"
+
+7) run "cdrecord -scanbus" to make sure cdrecord can see the unit and
+   talk to it.  The end.
+
+Don't forget that now -all- of your CD drives are seen as -SCSI- units
+by all programs (/dev/scd0 etc.), so you might want to relink
+/dev/cdrom to the proper scd<n> in order to get xcdplay or whatever to
+work again.
+
+
+-------------------------------------------------------------------------------
+NOTE: 
+
+1)	Actual cdrecord releases support ATAPI
+
+2)	Linux 2.0.35 or Linux 2.1.73 or later include ATAPI support
+-------------------------------------------------------------------------------
+From whampton@staffnet.com Fri Jan 14 05:21:34 2000
+From: "W. Wade, Hampton IV" <whampton@staffnet.com>
+
+You may wish to include/append these notes to your ATAPI notes....
+
+I have my 4X Acer CD-R/RW ATAPI drive working with Linux.   My platform
+is
+RedHat 6.1 with kernel 2.2.14.  My first ATAPI CD device is a DVD with
+the second
+the CD-R.  I made the following changes:
+
+Steps:
+
+1.  Identify which device is the CD-R -- in my case the fourth ATAPI
+device, /dev/hdd.
+
+2.  Compile the kernel to include ATAPI CDROM and SCSI emulation:
+
+     Under the block devices menu:
+                Y or M     Include IDE/ATAPI CDROM support
+                Y or M     SCSI emulation
+
+3.  Build and install the upgraded kernel.
+
+4.  If you selected modules, add them to the /etc/conf.modules file.
+
+5.  In the /etc/lilo.conf file add an append line for ide-scsi, in my
+case:
+        append = "hdc=ide-scsi hdd=ide-scsi"
+
+6.  Reboot to the new kernel and make sure the ide-scsi module is loaded
+
+        /sbin/lsmod | grep ide-scsi
+
+7.  Make a link from the proper SCSI device to a symbolic, e.g.,
+/dev/cdrom:
+      In my case the DVD is the first CD, hence appears as /dev/scd0 to
+scd7
+      (cat /proc/scsi/scsi to get a full list of devices -- the first
+CD-ROM will
+      appear as scd0, etc.)  With the current ATAPI-SCSI module, each CD
+
+      device appears as 8 SCSI devices (different logical units).  If
+you have
+      two devices, like I do, you may have to make a node for the second
+device.
+      In my case I had to make scd8:
+
+            cd /dev
+            mknod scd8 b 11 8
+
+        Then make links, in my case:
+
+            ln -s scd0 cdrom
+            ln -s scd8 cdr
+
+        Note, many CD-ROM player programs expect the audio CD drive to
+        be located at /dev/cdrom (xplaycd, etc.), hence this link is
+recommended.
+
+        If you try to use /dev/hdc (or wherever your CD or CD-R is)
+after loading
+        the ide-scsi module, you may not be able to mount CD's or play
+audio
+        discs -- you have to use the new SCSI names for the device.
+
+8.  Fix your /etc/fstab file to mount the /dev/cdrom and /dev/cdr
+
+
+/*--------------------------------------------------------------------------*/
+From: Eduard Bloch <edi@gmx.de>
+
+Situation:
+   Linux: Kernel 2.2.15 (Debian package kernel-image-2.2.15)
+   Distribution: Debian Potato (deep freeze), i386
+   Devices: one CDRW-Writer, one CDROM-drive, both ATAPI
+
+1. Become root, try "grep hd.: /var/log/kern.log" to find out where your
+   ATAPI-devices are connected to (hd?-names).
+2. Edit your boot configuration file, eg. /etc/lilo.conf if you use
+   lilo or the batch-file if you boot via loadlin.
+3. Find a line where you can append additional kernel parameters, eg.
+   "append=" in lilo.conf or the loadlin-line in the batch file.
+4. Append sth. like this: "hdb=ide-scsi hdc=ide-scsi max_scsi_luns=1"
+   The hdX-parameters defines devices that should be mapped to SCSI
+   latter. You may do it with non-writers too, since the emulation layer
+   is almost complete, or let them out so the devices will use their
+   native drivers.
+5. Save the file, reinstall the bootloader (ie. running "/sbin/lilo")
+6. Call "modconf", load "sg" and "ide-scsi" from the SCSI-section
+7. Reboot Debian, watch while booting, you should see a line like this
+   "Detected scsi CD-ROM sr0 at scsi0, channel 0, id 0, lun 0".
+   Your old ATAPI devices virtually don't exist any longer, use the
+   SCSI equivalents instead.
+8. Become root, setup devices:
+      cd /dev
+      MAKEDEV sg scd
+      ln -s scd0 cdrom # NOTE: or cdrw, first check which drive is here
+      ln -s scd1 cdrw  # NOTE: see above, maybe cdrom
+   Check the new SCSI settings:
+      cdrecord -scanbus
+   Setup cdrecord's environment - edit /etc/default/cdrecord:
+      CDR_DEVICE=cdrw
+      cdrw=1,0,0        4       8m
+      cdrom=1,2,0       0       0m
+   Input the right values, the fields are described in the manpage
+   of cdrecord. Alternatively, you may use this values as
+   cdrecord-parameter or take a frontend with an own configuration
+   scheme, then you don't need to modify /etc/default/cdrecord.
+9. It's done! Insert a CD and try "cdrecord -v -toc"
+/*--------------------------------------------------------------------------*/
+He had constant buffer underrun problems:
+
+From: "Trenton D. Adams" <trenton.adams@telusplanet.net>
+
+I enabled DMA, and 32-bit mode on the CD-Writer using "hdparm". 
+This fixed the writing problem.
+
+/*--------------------------------------------------------------------------*/
+From: "Mario Moder" <clay-man@freenet.de>
+-----
+TEAC CD-W54E
+
+I recently installed a TEAC CD-W54E (an ATAPI CD-RW-Recorder) and I had
+problems with buffer underruns and other errors when burning a CD (with
+Linux and Windows 2000). My system has an old ASUS P/I-P55T2P4 Pentium
+mainboard with Intel PCI-Bus-Master-IDE (I think the chipset is an Intel
+430HX and the IDE controller is an 82371SB). The harddisk is the master on
+the primary IDE channel, and the CD-Recorder is the master on the secondary
+IDE channel.
+
+After turning off DMA for the CD-Recorder AND the harddisk, the drive had no
+longer problems with burning a CD. You can try the following things to make
+it work, if you have similar problems with a similar hardware configuration:
+
+For Linux (Kernel 2.2.19):
+Turn off "Enable DMA by default" in the kernel (and then compile a new
+kernel), if you had it turned on or use "hdparm" to turn of DMA for both the
+CD-Recorder and the harddisk
+
+For Windows 2000:
+In the Device Manager go to "IDE ATA/ATAPI-Controller" and open the
+properties for the first and second IDE channel. There you change the mode
+of the devices from DMA to PIO.
+-----
+
+/*--------------------------------------------------------------------------*/
+
+Hints for the Linux Packet code in ide-cdrom.c:
+
+	WARNING! It seems that this driver does not allow to send all
+	SCSI commands. A command that definitely fails is READ FULL TOC.
+	For this reason, you cannot read those 'defective' audio CDs
+	with broken TOC when you use this interface.
+
+	Thanks to Alexander Kern <alex.kern@gmx.de> for the idea and first 
+	code fragments for supporting the CDROM_SEND_PACKET ioctl() from 
+	the cdrom.c kernel driver. Please note that this interface in principle 
+	is completely unneeded but the Linux kernel is just a cluster of 
+	code and does not support planned orthogonal interface systems. 
+	For this reason we need CDROM_SEND_PACKET in order to work around a 
+	bug in the linux kernel that prevents to use PCATA drives because 
+	the kernel panics if you try to put ide-scsi on top of the PCATA 
+	driver. 
+
+	The code is currently in "status nascendi" but usable with some trade offs.
+
+	To use: call e.g.
+
+		cdrecord -scanbus dev=ATAPI:
+
+		cdrecord -dao -v speed=24 dev=ATAPI:0,0 ....
+
+	Be careful! This code is only needed in order to be able to use
+	PCATA CD-writers on notebooks because there is a severe kernel bug.
+	Unfortunately, this bug causes the kernel to hang (and force you
+	to reboot) if you try to call:
+
+		cdrecord -scanbus
+
+	without the dev=ATAPI: option. 
+
+	In this case cdrecord will hang infintely and unkillable 
+	in open("/dev/sg1", 2) => you need to reboot :-(
+
+	Repeat by: Insert a PCATA CD-Writer in a Sony VAIO notebook and run
+			cdrecord -scanbus. 
+

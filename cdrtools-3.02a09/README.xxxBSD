@@ -1,0 +1,86 @@
+The current *BSD port will not yet be able to scan the SCSI bus
+for a CD-Recorder as it is on other architectures.
+
+User level SCSI seems not be be well tested on *BSD
+
+It would be nice if the kernel hackers of all *BSD flavors could agree in
+adding decent and useful SCSI user land transport support.
+This would cause the following changes:
+
+	-	Add a driver that is present by default and offeres an
+		easy to address interface to the /dev/ namespace.
+	-	Create device file entries for this driver by default.
+	-	allow to send all commands on this driver even if the main
+		driver entry is in use, At least allow:
+			INQUIRY
+			TEST_UNIT_READY
+			REQUEST_SENSE
+		to be able to scan the SCSI bus for drives.
+
+NOTE: This changed with FreeBSD/cam cdrecord -scanbus works on FreeBSD/cam
+
+Workaround:
+
+If /dev/su0-0-0 ... does not exist on your system, you may try
+to create the devices with the MAKEDEV.su script below.
+
+If /dev/su0-0-0 ... do not work on your system, you may try
+use dev=/dev/rcd0a:@,0 od dev=/dev/rcd0a:@
+If the CD-Recorder is on /dev/cd0a
+
+Read the man page for more information.
+
+There is no way to get the device node entry from the numerical target
+specification on *BSD. You must specify the appropriate device node name:
+e.g. dev=/dev/cd0.ctl:6,0 together with the numerical target specification.
+A short form is:
+
+	dev=/dev/cd0.ctl:@
+
+But this syntax may not work on all *BSD flavours as not all *BSD flavours
+support mapping back the target/lun numbers from a device.
+
+In any case: read the cdrecord man page and try to find the /dev/* entry for
+your CD-recorder that allows to be used with ioctl's.
+
+On FreeBSD/cam, you will be able to access the CD-Recorder as on other
+systems. If your CD-Recorder is on SCSI Bus 0, Target 2, lun 0
+type:
+
+cdrecord dev=0,2,0 .....
+
+Jörg
+
+------------------------- MAKEDEV.su------------------
+#!/bin/sh
+
+#
+# You must check which minor base is really needed for your system
+# The su driver seems not to be well tested on *BSD
+#
+# If nothing else helps, create a link /dev/scgx to the right
+# /dev/ entry (an entry that responds right with /sbin/scsi)
+# for your needed device.
+#
+minorbase="536870912 + 2"
+#minorbase="0"
+#minorbase="0 + 2"
+#minorbase="0 + 3"
+
+mknod /dev/su0-0-0 c 18 `expr $minorbase + 0 '*' 8`
+mknod /dev/su0-1-0 c 18 `expr $minorbase + 1 '*' 8`
+mknod /dev/su0-2-0 c 18 `expr $minorbase + 2 '*' 8`
+mknod /dev/su0-3-0 c 18 `expr $minorbase + 3 '*' 8`
+mknod /dev/su0-4-0 c 18 `expr $minorbase + 4 '*' 8`
+mknod /dev/su0-5-0 c 18 `expr $minorbase + 5 '*' 8`
+mknod /dev/su0-6-0 c 18 `expr $minorbase + 6 '*' 8`
+mknod /dev/su0-7-0 c 18 `expr $minorbase + 7 '*' 8`
+
+mknod /dev/su1-0-0 c 18 `expr $minorbase + 1 '*' 64 + 0 '*' 8`
+mknod /dev/su1-1-0 c 18 `expr $minorbase + 1 '*' 64 + 1 '*' 8`
+mknod /dev/su1-2-0 c 18 `expr $minorbase + 1 '*' 64 + 2 '*' 8`
+mknod /dev/su1-3-0 c 18 `expr $minorbase + 1 '*' 64 + 3 '*' 8`
+mknod /dev/su1-4-0 c 18 `expr $minorbase + 1 '*' 64 + 4 '*' 8`
+mknod /dev/su1-5-0 c 18 `expr $minorbase + 1 '*' 64 + 5 '*' 8`
+mknod /dev/su1-6-0 c 18 `expr $minorbase + 1 '*' 64 + 6 '*' 8`
+mknod /dev/su1-7-0 c 18 `expr $minorbase + 1 '*' 64 + 7 '*' 8`

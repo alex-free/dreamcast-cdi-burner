@@ -1,0 +1,42 @@
+. \"  Manual Seite fuer fileluopen
+. \" @(#)fileluopen.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH FILELUOPEN 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+fileluopen() \- opens a file given a logical unit number
+.SH SYNOPSIS
+.nf
+.B
+FILE *fileluopen(lu, modes)
+.B	int lu;
+.B	char *modes;
+.fi
+.SH DESCRIPTION
+fileluopen() makes an object of type FILE, suitable for use with
+fileread(), putc(), etc.
+.PP
+The lu argument is a logical unit number assigned by the kernel
+when it opens a file. Logical unit numbers are not usually
+visible, although several routines reguire LUs as
+arguments and fdown() may be used to map a FILE object to a
+corresponding LU number.
+.PP
+The modes argument is a string encoding the modes of the file,
+just as for fileopen(), except that the 'c' and 't' options are
+not allowed.
+.SH RETURNS
+Returns the FILE value.
+.SH NOTES
+none

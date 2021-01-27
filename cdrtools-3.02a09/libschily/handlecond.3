@@ -1,0 +1,89 @@
+. \"  Manual Seite fuer handle
+. \" @(#)handle.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH HANDLE 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+handle() \- sets a function to handle a condition
+.SH SYNOPSIS
+.nf
+.B
+#include <sigblk.h> 
+.B
+handle(signame, sp, func, arg1)
+.B	char	*signame;
+.B	SIGBLK	*sp;
+.B	int	(*func)();
+.B	long	arg1;
+.fi
+.SH DESCRIPTION
+handle() sets up a handler for a condition. The user must
+explicitly allocate the condition block and pass it to the
+function.
+.PP
+handle() establishes function func as the condition handler for
+the condition signame. arg1 is passed to func at the time of
+condition signalling. signame "any_other", catches all
+conditions.
+.PP
+The specified function is called with the actual condition being
+signalled, with arguments from the latest handle() call for that
+function in the given frame and from the call to raise(). For
+instance:
+.PP
+.nf
+.B
+int func (signame, arg1, arg2)
+.B
+	char *signame;	/* the actual condition being
+.B
+			/* signalled */
+.B
+	int arg1;	/* arg1 comes from the handle
+.B
+			/* call that set up the handler */
+.B
+	int arg2;	/* arg2 comes from the raise call */
+.fi
+.PP
+If the function returns TRUE (non-zero), it is assumed that the
+condition has been successfully handled; otherwise, the
+condition is signalled farther down the stack.
+.SH RETURNS
+none
+.SH NOTES
+Be careful when declaring args to func if they are not long;
+both args will occupy sizeof(long) bytes in the arglist.
+If FALSE is returned by a condition handler, and there is an
+any_other handler in the same block, the any_other handler will
+be invoked (only once, since it too may return FALSE).
+.PP
+To revert a condition handler simply use NULL as func.
+.PP
+SIGBLK, defined in <sigblk.h>, must be included.
+handle() is frequently used with longjmp() and setjmp().
+.PP
+Eah function which calls
+.I handle()
+must call
+.I unhandle()
+before it returns. Otherwise the return will fail.
+.SH BUGS
+.I Handle()
+makes the framepointer odd, to mark the current stack frame.
+.PP
+This confuses programs like
+.B adb(1)
+and
+.B dbx(1).

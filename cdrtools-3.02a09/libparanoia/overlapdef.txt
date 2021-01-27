@@ -1,0 +1,20 @@
+# @(#)overlapdef.txt	1.1 98/08/19 J. Schilling from Monty (xiphmont@mit.edu)
+
+  0          70    100
+A |----------|-----|
+B      |-----|---------|
+       0     40        100
+
+offset=-30
+begin=30
+end=100
+
+  0          70    100
+A |----------|-----|
+B      |-----|---------|
+       50    90        150
+
+offset=20
+begin=30
+end=100
+

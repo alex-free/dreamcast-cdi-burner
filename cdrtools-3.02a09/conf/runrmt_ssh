@@ -1,0 +1,70 @@
+#!/bin/sh
+# @(#)runrmt_ssh	1.3 11/07/16 Copyright 2011 J. Schilling
+###########################################################################
+# Written 2011 by J. Schilling
+###########################################################################
+# Remotely execute a test from "configure" and copy back "conftestval" as
+# well as the exit code from the program on the remote platform.
+#
+# This is the generic UNIX variant that calls commands via "ssh".
+#
+# Note that the shell variable '$?' needs to be handled with caution in
+# order to prevent early expansion.
+# We use "sh -c" to make sure that this script will work correctly in case
+# the remote user has a strange login shell.
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+
+remote_test=FALSE
+if test "$1" = "-r" ; then
+	remote_test=TRUE
+	shift
+fi
+
+if test $# -lt 1 ; then
+	echo "Usage: runrmt program-to-execute" 1>&2
+	echo "or"
+	echo "       runrmt -r file-to-test" 1>&2
+	exit 255
+fi
+
+if test $remote_test = FALSE -a ! -r $1 ; then
+	echo "$1: not found" 1>&2
+	exit 254
+fi
+
+if test ."$CONFIG_RMTHOST" = . ; then
+	echo 'CONFIG_RMTHOST=host or CONFIG_RMTHOST=user@host required for remote execution' 1>&2
+	exit 253
+fi
+remote="$CONFIG_RMTHOST"
+
+if test ."$CONFIG_RMTDEBUG" != . ; then
+	echo "REMOTE \c" 1>&6	# configure checking messages are on fd 6
+fi
+
+if test $remote_test = TRUE; then
+	ssh $remote sh -c "'cd /tmp/;test -r $1; echo "'$?'" > o.exit'"	2> /dev/null
+	scp -p $remote:/tmp/o.exit .					2> /dev/null
+	ssh $remote "rm -f /tmp/core /tmp/o.exit"			2> /dev/null >/dev/null
+else
+	F=`echo $1 |  sed -e 's,.*/,,'`
+	scp $1 $remote:/tmp/						2> /dev/null
+	ssh $remote sh -c "'cd /tmp/;./$F; echo "'$?'" > o.exit'"
+	scp -p $remote:/tmp/o.exit .					2> /dev/null
+	scp -p $remote:/tmp/conftestval .				2> /dev/null
+	ssh $remote "rm -f /tmp/core /tmp/$F /tmp/o.exit /tmp/conftestval" 2> /dev/null >/dev/null
+fi
+excode=`cat ./o.exit`
+rm -f ./o.exit
+#echo excode: $excode
+exit $excode

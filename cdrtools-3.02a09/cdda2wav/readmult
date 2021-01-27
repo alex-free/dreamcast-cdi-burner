@@ -1,0 +1,31 @@
+#! /bin/sh
+#
+# Script to read more than 1 song with cdda2wav
+# Each file gets an individual name from the command line
+#
+# based on a perl script from Matthias Schniedermeyer
+#
+# usage: readmult <track a> <title a> <track b> <title b> ...
+#
+# example: readmult 1 intro 3 lovesong 5 medley
+# will produce a file named intro.wav for track 1,
+#              a file named lovesong.wav for track 3, and
+#              a file named medley.wav for track 5.
+#
+CDDA2WAV=cdda2wav
+CDDA2WAVOPTS="-P0"
+
+if [ $(( $# % 2 )) -eq 0 ]; then
+  while [ $# -ge 2 ]; do
+    $CDDA2WAV $CDDA2WAVOPTS -Owav -t $1 $PREFIX$2".wav"
+    RES=$?
+    if [ $RES -ne 0 ]; then
+      echo "cdda2wav error, return value "$RES". Aborted." >&2
+      break
+    fi
+    shift 2
+  done
+else
+  echo "usage: $0 [<Tracknr> <Filename>] ..." >&2
+fi
+

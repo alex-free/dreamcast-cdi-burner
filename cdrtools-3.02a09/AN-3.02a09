@@ -1,0 +1,514 @@
+***************** Important news ******************************
+
+For the 'Slottable Source Plugin Module' SSPM Features read README.SSPM
+
+***************** Please Test *********************************
+
+NEW features of cdrtools-3.02a09:
+
+This is the first localization step for cdrtools. All programs now (hopefully)
+call gettext() for all strings that need localization.
+
+-	The next step will include dgettext() calls for the libraries.
+
+-	The following step will include the extracted strings
+
+-	The last step will include German translations and install support
+	for the resulting binary message object files.
+
+----------> Please test and report compilation problems! <---------
+
+***** NOTE: As mentioned since 2004, frontends to cdrtools should *****
+*****		call all programs from cdrtools in the "C" locale *****
+*****		by e.g. calling: LC_ALL=C cdrecord ....		  *****
+*****		unless these frontends support localized strings  *****
+*****		used by the cdrtools with NLS support.		  *****
+
+This version compiles on Win-DOS using the Microsoft compiler cl.exe but
+warning: due to missing POSIX compliance with basic features (e.g. stat()
+does not return inode numbers), there are many problems with the resulting
+code and thus it is recommended to better use a POSIX layer on top of 
+WIN-DOS.
+
+		*** WARNING        ***
+		*** Need new smake ***
+
+	*** Due to the fact that schily-2014-04-03 introduced to use new macro
+	*** expansions and a related bug fix in smake, you need a new smake
+	*** to compile this source. To ensure this, get a recent "schily"
+	*** tarball from http://sourceforge.net/projects/schilytools/files/
+	*** and call:
+
+	cd ./psmake
+	./MAKE-all
+	cd ..
+	psmake/smake
+	psmake/smake install
+
+	The new smake version mentioned above is smake-1.2.4.
+	Note that smake-1.2.5 exists and is preferrable.
+
+	Now you have a new smake that is able to compile this source.
+
+	Note that the major makefile restructuring introduced in
+	schily-2014-04-03 is now more than one month ago and thus seems
+	to work without problems.
+
+	WARNING: the new version of the isoinfo program makes use of the 
+		*at() series of functions that have been introduced by Sun
+		in August 2001 and added to POSIX.1-2008. For older platforms,
+		libschily now includes emulations for these functions but
+		these emulations have not yet been tested thoroughly.
+		Please report problems!
+
+
+All:
+
+-	RULES/cc-*.rul: The compiler files without C++ support no longer 
+	have a tab after $(NUMBER_SIGN) as this prevents the intended use case.
+
+-	RULES/9000-725-hp-ux-gcc.rul and RULES/cc-hp.rul now support creating
+	shared libraries by using "ld -b" instead of using the compiler to
+	link.
+
+-	RULES/*haiku-*.rul The rules for shared libraries now work
+
+	Thanks to a report from Heiko Eiﬂfeldt
+
+-	RULES/cc-*.rul: added a LIB_C=-lc to prepare compilation on Haiku
+
+-	RULES/bepc-haiku-cc.rul and RULES/bepc-haiku-gcc.rul: Added LIB_C=
+	to clean the name of libc on Haiku that does not have libc.
+	We need to link all shared libraries against -lc in case they use
+	system interfaces but are not allowed to do the same on Haiku.
+
+	Thanks to a report from Heiko Eiﬂfeldt
+
+-	Schily Makefilesystem: Use the correct rules to create shared libraries
+	on Cygwin. Before this release, shared libraries with Cygwin have not
+	been tested and the old rules have been guessed.
+
+-	RULES/rules.ins: fixed a typo in the symlink install rule
+
+-	RULES/rules.top: we now clear the macro COMPILE.cc= from SunPro make
+	as well, in order to get our definition from the Schily Makefilesystem.
+	Before, when using SunPro Make, C++ code was compiled without enabling
+	the optimizer, as the SunPro Make default rule definition was used.
+
+-	RULES/: Since SunPro Make from Schilytools now supports multiple
+	includes with a single include directive, we added a new configuration
+	for a SunPro Make that itself identifies now as "sunpro" via MAKE_NAME.
+
+-	DEFAULTS/Defaults.cygwin*: We no longer read the Microsoft configuration
+	for cl.exe except when the makeprogram in use is "smake". This is needed
+	as neither GNU make nor SunPro make support spaces in filenames and
+	SunPro make aborts in case ".NO_WARN: :=" from DEFAULTS/vc7-cygwin-setup
+	is seen.
+
+	Thanks to Heiko Eiﬂfeldt for reporting
+
+-	autoconf: now checks for the existence of "tsort" and "lorder"
+	in order to help to compile on the new platform "aarch64" for Solaris.
+	This platform is currently still missing many of the ELF tools and
+	thus "lorder"
+
+
+-	Schily Makefilesystem: Changed $(MAKE) -> "$(MAKE)"
+
+	Thanks to Heiko Eiﬂfeldt for reporting
+
+-	Schily Makefilesystem: added a new target "uninstall" that removes
+	all non-directory type files that previously may have been installed via
+	the "install" target.
+
+	Thanks to a report from Michael Siegel
+
+-	Schily Makefilesystem: RULES/rules.loc and RULES/rules.man have been
+	made safe against a parallel make program like SunPro Make.
+
+	Thanks to a report from Heiko Eiﬂfeldt
+
+-	The Schily Makefilesystem now uses .PHONY again (and no longer "FRC")
+	unless the make program was identified as an old unfixed "SunPro Make"
+	from Sun or Oracle.
+
+-	README.compile now better explains that CCOM= does not just set the
+	C-compiler but the compiler family that includes a C++ compiler.
+
+-	New include file include/schily/strar.h
+
+-	include/schily/device.h: XDEV_T is now Ullong. This file was forgotten
+	to distribute with schilytools-2017-10-10. The change is however needed
+	for a bugfix in "star".
+
+-	include/schily/archdefs.h: With Sun Studio-12.4 on Oracle Solaris-11.2,
+	we had a problem with __SUNPRO_C and needed to change it to __IS_SUNPRO_C
+
+	Thanks to Jens Elkner for reporting.
+
+-	include/schily/maxpath.h now supports MAXNAMELEN to help with SunPro Make
+
+-	include/schily/unistd.h extern char **environ is now in the
+	cplusplus guard
+
+-	include/schily/libport.h no longer uses a formal parameter named "new" in
+	order to avoid problems with C++
+
+-	configure: Added tests for isblank() and iswblank() that have not
+	been available in historix UNIX.
+
+-	autoconf/config.sub now groks ppc64 on Linux.
+
+-	autoconf: new tests for ar.h and rpc/rpc.h
+
+-	autoconf: new test for semaphore.h
+
+-	autoconf now checks for "libelf" and "libelf.h". This is needed for
+	libmakestate that is part of SunPro Make. Libmakestate is based on the
+	standard libelf that is not part of all platforms.
+
+-	autoconf now first checks whether the pthread*() functions are in libc
+	before checking for -lpthread. This helps to avoid to link against
+	libpthread on Solaris.
+
+-	autoconf/config.sub now knows the architecture "aarch64". This
+	helps to deal with Solaris and Linux on the Raspberry Pi3 and the 
+	Odroid C2.
+
+-	autoconf/config.guess now knows the architecture "aarch64" for Solaris.
+	This helps to deal with Solaris on the Raspberry Pi3 and the Odroid C2.
+
+-	autoconf: now checks for the existence of "tsort" and "lorder"
+	in order to help to compile on the new platform "aarch64" for Solaris.
+	This platform is currently still missing many of the ELF tools and
+	thus "lorder"
+
+-	RULES/MKLINKS: New links for RULES/aarch64-sunos5-gcc*.rul and
+	RULES/aarch64-sunos5-clang*.rul have been added.
+
+-	RULES/rules.ins: before installing symlinks or hardlinks, the
+	directory the links are in is made.
+
+-	RULES: Added a new method that allows to skip building C++ based code
+	in case we are on a platform that does not support a C++ compiler.
+	This is needed for SunPro Make that was written on C++.
+	Note that if you are e.g. on SunOS-4.x where the system does not include
+	a C++ compiler, compiling with CCOM=cc will skip SunPro Make, but
+	using CCOM=gcc on the same platform will compile SunPro Make.
+
+-	DEFAULTS_CSW/Defaults.sunos5 now uses the same enhanced optiomization
+	for C++ as used for C. This helps to compile the new SunPro Make
+	sources.
+
+-	README.compile: The documentation for using the Address Sanitizer was
+	enhanced.
+
+-	README.compile now better explains that CCOM= does not just set the
+	C-compiler but the compiler family that includes a C++ compiler.
+
+-	configure: The tests for -lsocket and for -lnsl/-lnetwork
+	have been better separated to correctly recognize -lnetwork
+	on Haiku.
+
+	Thanks to a report from Heiko Eiﬂfeldt
+
+-	configure: the vfork() test has been enhanced to check whether
+	a modification in the data segment of the child affects the
+	parent as well. This feature is used (needed) by the Bourne Shell 
+	to signal a ENOEXEC case for shell scripts to the parent and in
+	general to report the reason for a failed execve() call back
+	to the parent.
+
+	Note that vfork() in Haiku does not share data and thus canot
+	be used by the Bourne Shell.
+
+-	configure: a new test AC_STAT_FILES has been written to replace
+	AC_CHECK_FILES. AC_CHECK_FILES does not work on Haiku due to
+	a bug in "bash" that makes "test -r /dev/stdin" to report an exit
+	code of 0 even though the file /dev/stdin does not exist.
+
+-	conf/oarch.sh: Fixed a typo that caused oarch to output e.g.
+
+		i686-cygwin_nt-5.1-cc
+
+	instead of
+
+		i686-cygwin32_nt-cc
+
+	Thanks to Heiko Eiﬂfeldt for reporting
+
+-	inc/avoffset.c: added a workaround for a clang bug with FreeBSD on ARM64.
+	clang creates incorrect code for a while loop that results in an endless
+	loop. The last line in that while loop is never executed. It turned
+	out that adding
+			read(-1, "", 0);
+	at the beginning of the while loop works around the clang bug.
+
+	Thanks to Robert Clausecker for reporting.
+
+-	inc/avoffset.c: added a workaround for a problem with clang that causes
+	the function stack_direction() to be inlined even though this was never
+	requested.
+
+
+
+Libschily:
+
+-	libschily::getargs.c: Added a new flag that allows to implement POSIX
+	option rule #5:
+
+		One or more options without option-arguments, followed by
+		at most one option that takes an option-argument, should be
+		accepted when grouped behind one '-' delimiter.
+
+	This new mode is needed to implement spax with a POSIX compliant CLI.
+
+-	libschily: The environment "COMERR_EXCODE" now directs the comerr()
+	group of functions not to map exit codes to -64 in case they are
+	ambiguous to callers of the historic wait() call. 
+
+	If you like to get the unmodified exit code, use the "new" (since 1989)
+	POSIX waitid() call and add the "COMERR_EXCODE" before creating
+	the child process.
+
+-	libschily: Addd a implementation for the functions:
+
+	wctype() and iswctype() to allow porting to older platforms.
+
+-	libschily: New pattern matcher functions
+
+		patmbmatch() and patmblmatch()
+
+	support multi byte strings with a wchar_t * pattern. The pattern is
+	a wide char string for performance reasons.
+
+-	libschily::match.c Added support for '[:alpha:]' and similar.
+	This is needed to make patmatch() POSIX compliant.
+	We still miss support for '[=char=]' and '[.char.]'.
+
+-	libschily: added a missing null-byte to the filename in the
+	opendir() emulation for Win-DOS.
+
+	Thanks to Colin Finck colin@reactos.org for reporting
+
+-	libschily: The movebytes() man page now mentions other *bytes()
+	functions.
+
+-	libschily: cmpbytes() new man page
+
+-	libschily::fnmatch.c The code was rewritten to avoid recursion
+	using the recent code from FreeBSD.
+
+-	libschily::fnmatch.c The behavior with a pattern that ends in
+	a single escape character ('\') was modified to match the
+	current POSIX text and the implementation from Sun/IBM/HP, see
+	http://austingroupbugs.net/view.php?id=806
+
+-	libschily::fnmatch.c Added support for '[:alpha:]' and similar.
+	This is needed to make fnmatch() POSIX compliant.
+	We still miss support for '[=char=]' and '[.char.]'.
+
+-	libschily::fnmatch(): The POSIX specifiers [:upper:] and [:lower:] now
+	work together with FNM_CASEFOLD.
+
+-	libschily::format.c: a former "long" parameter in the format() routine
+	has been changed to be now "void *". This is needed as sizeof(long) 
+	is less than sizeof(void *) on Win-DOS-64. This caused the printf()
+	implementation from libschily to fail on Win64.
+
+	Thanks to Colin Finck from the ReactOS team for reporting.
+
+-	libschily: format() (the printf worker) now supports the floating
+	point formats: 'E', 'F', 'G'.
+
+-	libschily/fstream.c: fsgetc() now allows to return more expeptional
+	return values from the transfer callback function. Before, only
+	0 and EOF have been supported, now other negative values are OK as well.
+
+-	libschily: added a va_end() call after a va_copy()
+	call in getargs.c
+
+	Thanks to Heiko Eiﬂfeldt for reporting
+
+Libcdrdeflt:
+
+Libdeflt:
+
+-	libdefault: Avoid a possible double fclose() call.
+
+	Thanks to Heiko Eiﬂfeldt for reporting
+
+Libedc (Optimized by Jˆrg Schilling, originated by Heiko Eiﬂfeldt heiko@hexco.de):
+
+-	libedc: avoid a free()less malloc()  in the speedtest
+	program.
+
+	Thanks to Heiko Eiﬂfeldt for reporting
+
+Libfile:
+
+-	libfile: better realloc() handling in case of a failure.
+
+	Thanks to Heiko Eiﬂfeldt for reporting
+
+Libfind:
+
+-	libfind: use $(LIB_INTL) to support Cygwin when creating a shared library
+
+-	libfind: As libfind uses fnmatch(), it now supports
+	[[:alpha:]] with "-name" and "-path" in case the schily version of
+	fnmatch() is used.
+
+Libhfs_iso:
+
+-	libhsf: removed a superfluous "*/" in DEBUG code.
+
+	Thanks to a report from Heiko Eiﬂfeldt
+
+Libmdigest:
+
+Libparanoia (Ported/enhanced by Jˆrg Schilling, originated by Monty xiphmont@mit.edu):
+
+Libscg:
+
+-	libscg::scsi-vms.c: abort scg__open() in case that "busno"
+	has an illegal value. This avoids using uninitialized data
+	as index in an array.
+
+	Thanks to Heiko Eiﬂfeldt for reporting
+
+-	libscg: scsi-wnt.c corrected the DMA size for the WIN drive type inquiry.
+
+Libscgcmd:
+
+Libsiconv:
+
+Rscsi:
+
+Cdrecord:
+
+-	cdrecord: man page now mentions the exit code
+
+-	cdrecord: updated the man page to list the names of the drives that support
+	the defpregap= option.
+
+-	cdrecord::subchan.c changed #ifdef sss -> #if 0 to calm down a
+	static code analyzer.
+
+	Thanks to Heiko Eiﬂfeldt for reporting
+
+-	cdrecord: the man page now comes with an enhanced section
+	"EXIT STATUS"
+
+	Thanks to a report from Mathias <dl2gmb@netscape.net>
+
+
+Cdda2wav (Maintained/enhanced by Jˆrg Schilling, originated by Heiko Eiﬂfeldt heiko@hexco.de):
+
+-	cdda2wav: a patch from Heiko Eiﬂfeldt results in only trying
+	to read the ISRC values for the tracks that should be extracted
+	later.
+
+-	cdda2wav man page: The man page now mentions that c2check should always be
+	used with "proof" in case the drive supports it.
+
+-	cdda2wav: The output is now unbuffered in case it has been redirected using
+	the out-fd=# option.
+
+	Thanks to a report from Mathias <dl2gmb@netscape.net>
+
+-	Cdda2wav: changed the variable userverbose from "int" to "long".
+	This is needed as getargs() always uses a long * argument for a
+	function for a callback option. The result of this bug was that
+	"cdda2wav -vall" did set the output fd to 0 and as a result,
+	error messages have been printed to stdin instead of stderr.
+	This of course created problems with GUI frontends if the
+	cdda2wav binary was a 64-bit binary.
+
+	Thanks to a hint from Thomas Niederreiter <tn@xcdroast.org>
+
+-	Cdda2wav: modified the man page to make it obvious that the new cdda2wav
+	auto-detects whether a drive supports to read C2-error lists.
+
+	Thanks to a hint from Thomas Niederreiter <tn@xcdroast.org>
+
+-	Cdda2wav: added a workaround for a problem caused by a Linux stdio bug
+	that causes "stderr" to be buffered even though POSIX requires it
+	to be unbuffered.
+
+	Thanks to a hint from Thomas Niederreiter <tn@xcdroast.org>
+
+Readcd:
+
+-	readcd: man page now mentions the exit code
+
+
+Scgcheck:
+
+Scgskeleton:
+
+Btcflash:
+
+-	btcflash: added a missing (but not really needed) free()
+	and fclose() call.
+
+	Thanks to Heiko Eiﬂfeldt for reporting
+
+Mkisofs (Maintained/enhanced by Jˆrg Schilling since 1997, originated by Eric Youngdale):
+
+-	mkisofs::apple_drive.c added a missing fclose(fp);
+
+	Thanks to Heiko Eiﬂfeldt for reporting
+
+-	mkisofs::vms.c corrected a typo and now call ISO_ROUND_UP(use) instead
+	of ROUND_UP(use)
+
+	Thanks to Heiko Eiﬂfeldt for reporting
+
+-	A better documentation for -D was added to the man page.
+
+
+
+
+
+HELIOS TODO:
+
+	-	Add the HELIOS UNICODE mapping code. This needs to be done 
+		at UCS-2 level for Joliet and UDF (instead of UTF-8) and only
+		for Rock Ridge (in case of a UTF-8 based target locale) using
+		UTF-8 based translations.
+
+	-	Make the Apple extensions work again with "mkisofs -find"
+
+TODO:
+
+	-	read Joliet filenames with multi-session if no TRANS.TBL
+		or RR is present. I am looking for a volunteer for this task!
+
+		Note that this can never be 100% correct as there is no relation
+		between the names on the master (UNIX) filesystem, the ISO-9660
+		names and the Joliet names. Only the Rock Ridge names are
+		untranslated with respect to the original files on the
+		master (UNIX) filesystem.
+
+	-	add libecc/edc for CDI and similar.
+
+
+CYGWIN NT-4.0 NOTES:
+
+To compile on Cygwin32, get Cygwin and install it.
+For more information read README.win32
+
+The files are located on:
+
+http://sourceforge.net/projects/cdrtools/files/alpha/ ...
+
+NOTE:	These tar archives are 100% POSIX compatible. GNU tar may get some
+	minor trouble. If you like a 100% POSIX compliant tar, get star from
+	http://sourceforge.net/projects/s-tar/files/ of from the schily-*
+	tarball at: http://sourceforge.net/projects/schilytools/files/
+
+WARNING: Do not use 'winzip' to extract the tar file!
+	Winzip cannot extract symbolic links correctly.
+
+Joerg

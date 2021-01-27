@@ -1,0 +1,87 @@
+Mini-Howto for verifying a selfmade CD
+
+1) verifying the data layer
+
+	To verify if all data on the disk can be read,
+	use SCSI verify. This can be done with the
+	sformat utility.
+
+	use: sformat -verify [target] [lun] [scsibus]
+
+	If the CD-R device is connected to target 2 on SCSI bus 0
+	sformat -verify 2  0
+
+	sformat can be found on
+
+	https://sourceforge.net/projects/schilytools/files/sformat/
+	or
+	https://sourceforge.net/projects/schilytools/files/schily-*
+
+	NOTE: Not all CD-ROm drives support verifying
+	NOTE: All TAO tracks end in 2 unreadable run-out sectors
+
+2) verifying the filesystem layer
+
+	A quick check is to mount the CD and to use star to read
+	all files on the filesystem.
+
+	mount -r /dev/cdrom /cdrom      (modify for your OS)
+	cd /cdrom
+	star -cPM . >/dev/null
+
+	If no errors can be found, all files are readable.
+
+	star can be found on
+
+	http://sourceforge.net/projects/s-tar/files/
+
+
+	You also may want to compare the filesystem on the CD
+	with the original data. This can be done with star too.
+
+
+	(cd /master_for_cd; star -cPM .)|(cd /cdrom; star -diff -v)
+
+2a) verifying the iso image before creating the CD
+
+	You may check the filesystem image by mounting it with my 
+	"fbk" on Solaris or the loopback driver on Linux.
+
+	On Linux type:
+		mount isoimage.raw -r -t iso9660 -o loop /mnt
+
+	On SunOS type:
+		mount -r -F fbk -o type=hsfs /dev/fbk0:isoimage.raw /mnt
+
+For Solaris 8 and later you may also use the Sun lofi driver (see README.sun-lofi)
+
+	The check the filesystem with:
+
+		(cd /master_for_cd; star -cPM .)|(cd /mnt; star -diff -v)
+
+
+When doing this you have to know about the bugs in Linux/Solaris
+
+Mkisofs before 1.10 and Linux have a bug with timezones.
+If you are using mkisofs-1.10 and newer on Linux, you need to disable
+comparing times:
+
+(cd /master_for_cd; star -cPM .)|(cd /cdrom; star -diff -v diffopts=!times)
+
+The same is needed if you are using mkisofs pre-1.10 on Solaris
+
+Solaris has a bug with hardlinks. It generates different inode numbers
+for the hardlinks to a file. This makes it impossible for star to 
+check hard links. Use
+
+(cd /master_for_cd; star -cPM .)|(cd /cdrom; star -diff -v diffopts=!hardlink)
+
+in this case.
+
+NOTE: Some operating systems have a read ahead bug that causes I/O errors for
+the last file(s) on a CD. This seems at least to be true for all Linux versions
+and for Solaris 7 FCS. For Solaris 7 there is a patch (107465-02) that you should
+install. This I/O error problem does not occur with DAO disks and with TAO disks
+that have been written with cdrecord -pad.
+
+Joerg Schilling

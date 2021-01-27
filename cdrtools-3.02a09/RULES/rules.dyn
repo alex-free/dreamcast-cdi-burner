@@ -1,0 +1,28 @@
+#ident @(#)rules.dyn	1.1 06/07/20 
+###########################################################################
+# Written 2006 by J. Schilling
+###########################################################################
+#
+# Rules for dynamic vs. static linking against internal libs
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+_DEFLNKMODE=	$(_UNIQ)$(DEFLINKMODE)
+__DEFLNKMODE=	$(_DEFLNKMODE:$(_UNIQ)=static)
+DEFLNKMODE=	$(__DEFLNKMODE:$(_UNIQ)%=%)
+_LNKMODE=	$(_UNIQ)$(LINKMODE)
+__LNKMODE=	$(_LNKMODE:$(_UNIQ)=$(DEFLNKMODE))
+LNKMODE=	$(__LNKMODE:$(_UNIQ)%=%)
+###########################################################################
+include		$(SRCROOT)/$(RULESDIR)/$(LNKMODE).lnk

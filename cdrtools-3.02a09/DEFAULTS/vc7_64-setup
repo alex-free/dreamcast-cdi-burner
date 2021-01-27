@@ -1,0 +1,46 @@
+# @(#)vc7_64-setup	1.1 09/05/16 Copyright 2006 J. Schilling
+
+#
+# Keep in sync with vc7_64-cygwin-setup as we cannot rely on hard links
+#
+
+#
+# Disable warnings for nonportable variable assignements.
+# We only use smake MS-WIN, so this is not a problem.
+#
+.NO_WARN: :=
+
+#
+# A German installation on a German Windows (32Bit) host, to be used
+# for cross compiling stuff (no autoconf run)
+#
+#VSINSTALLDIR=C:\Programme\Microsoft Visual Studio 8
+#VSINS=/cygdrive/c/Programme/Microsoft Visual Studio 8
+
+#
+# An English installation on an English Windows XP 64 Bit host
+#
+VSINSTALLDIR=C:\Program Files (x86)\Microsoft Visual Studio 8
+VSINS=/cygdrive/c/Program Files (x86)/Microsoft Visual Studio 8
+
+export	VSINSTALLDIR
+
+VCINSTALLDIR :=${VSINSTALLDIR}\VC
+export	VCINSTALLDIR
+
+PATH :=${VSINS}/VC/BIN/amd64:${VSINS}/Common7/IDE:${PATH}
+export	PATH
+
+INCLUDE :=${VCINSTALLDIR}\INCLUDE;${VCINSTALLDIR}\PlatformSDK\INCLUDE;${INCLUDE}
+export	INCLUDE
+
+LIB :=${VCINSTALLDIR}\LIB\amd64;${VCINSTALLDIR}\PlatformSDK\LIB\amd64;${LIB}
+export	LIB
+
+VC_SETUP=dummy-setup
+export	VC_SETUP
+
+#
+# Re-enable all warnings.
+#
+.NO_WARN:

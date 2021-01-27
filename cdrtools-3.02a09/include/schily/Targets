@@ -1,0 +1,36 @@
+#ident @(#)Targets	1.24 17/02/15 
+
+X_MK_LIST=	\
+		align.mk alloca.mk archdefs.mk assert.mk avoffset.mk \
+		btorder.mk \
+		ccomdefs.mk checkerr.mk ctype.mk \
+		dbgmalloc.mk deflts.mk device.mk dirent.mk dlfcn.mk \
+		err_arch.mk err_bit.mk err_char.mk err_type.mk \
+		errno.mk fcntl.mk \
+		fetchdir.mk find.mk float.mk fnmatch.mk fstream.mk \
+		getargs.mk getcwd.mk grp.mk \
+		hostname.mk \
+		iconv.mk idcache.mk in.mk inet.mk io.mk ioctl.mk ipc.mk \
+		intcvt.mk inttypes.mk \
+		jmpdefs.mk \
+		libgen.mk libport.mk librmt.mk limits.mk locale.mk \
+		math.mk maxpath.mk mconfig.mk \
+		md4.mk md5.mk \
+		mman.mk mtio.mk \
+		netdb.mk nlsdefs.mk \
+		param.mk patmatch.mk poll.mk priv.mk procfs.mk prototyp.mk pwd.mk \
+		regex.mk _regex.mk resource.mk rmd160.mk rmtio.mk \
+		schily.mk schilyp.mk select.mk sem.mk shedit.mk shm.mk \
+		setjmp.mk sha1.mk sha2.mk sha3.mk shcall.mk \
+		siconv.mk shadow.mk \
+		sigblk.mk signal.mk sigset.mk socket.mk standard.mk stat.mk \
+		stdarg.mk stdint.mk stdio.mk \
+		stdlib.mk stkframe.mk strar.mk string.mk \
+		sunos4_proto.mk \
+		sysexits.mk syslog.mk systeminfo.mk \
+		termcap.mk termios.mk time.mk timeb.mk times.mk \
+		types.mk unistd.mk utime.mk utsname.mk utypes.mk \
+		varargs.mk vfork.mk \
+		walk.mk wchar.mk wctype.mk wait.mk \
+		windows.mk \
+		xconfig.mk xmconfig.mk

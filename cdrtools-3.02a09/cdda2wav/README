@@ -1,0 +1,549 @@
+Hi dear cdrom drive users,
+
+This README describes hardware related matters as well as the installation of 
+cdda2wav, the sampling utility.
+
+The last big change was the inclusion in Joerg Schillings cdrecord package
+as you may have noticed :-)
+That means most of the cdrecord interfacing applies for cdda2wav as well.
+
+I decided to retire the standalone version slowly, and to do all new
+development in this bundled variant.
+
+Requirements
+============
+
+For SCSI cdroms and CD-writers, as well as SCSI-emulated ATAPIS and parallel
+    port drives
+1s. kernel support for SCSI, the host adapter, SCSI cdroms and the
+    generic SCSI interface (if under Linux). You need to have the proper device
+    descriptors (get them under Linux with the MAKEDEV script from /dev).
+
+For ATAPI cdroms under Linux
+1a. kernel support for the ATAPI cdrom driver or alternatively ide-scsi
+    emulation. You need to have the proper device descriptors (get them
+    with the MAKEDEV script from /dev).
+
+For parallel port cdroms under Linux
+    With newer kernels cdda2wav uses the same parallel port access
+    as does cdrecord. Please refer additionally to the cdrecord documentation.
+    There are generally two drivers to access the cdrom through the parallel
+    port: the ATAPI cd emulation (called pcd), and the SCSI device emulation
+    (called pg). The pcd driver does NOT support cdda reading (kernel 2.2.12),
+    while the pg driver has no restriction. So you have to use pg for that.
+
+
+For cdrom drives with proprietary busses under Linux
+1p. Please check the CDROM-HOWTO for features of the respective
+    drivers. The sbpcd driver is very demanding due to the lack of
+    interrupts.
+
+optionally currently for Solaris and all platforms running 4fronts
+OpenSoundSystems:
+2. kernel sound card support.
+
+
+Recommendations for higher throughput on Linux SCSI systems
+===========================================================
+
+Higher throughput will give better chances for non-interrupted
+sampling. This should avoid typical interruption errors (cracklings
+at buffer boundaries).
+
+1. Increase SG_BIG_BUFF to (128*1024) in /usr/src/linux/include/scsi/sg.h
+   (and recompile your kernel and boot it :-).
+NOTE: Some kernel configurations will lead to 'out of kernel memory' errors.
+   If you encounter this message regularly, better leave SG_BIG_BUFF at
+   32768.
+
+1a.There is a patch for multiple sg device access under Linux. It uses
+   up to 128 K buffer for each device. See here:
+ftp://ftp.fokus.gmd.de/pub/unix/cdrecord/alpha/sg*
+
+2. Ensure your harddisk has write cache enabled (For SCSI hard disks I
+   switched it on with the scsiinfo program from tsx-11.mit.edu), but
+   enable this only if it is correctly working ;-)
+
+This has boosted the throughput of cdda2wav considerably.
+
+
+Supported interfaces
+====================
+
+Non SCSI drives (Linux only):
+	ATAPI:
+	The greatest group nowadays are ATAPI (EIDE) cdrom drives.
+	Support is only limited by the drive. Kernel and cdda2wav
+	are ready for them (unless the drive uses a very uncommon method).
+
+        Newer kernels can do an scsi emulation for ATAPI devices.
+        This interface is supported.
+
+	Parallel port interface:
+	There is a driver that maps the parallel port driver to an generic
+	scsi like driver. Should work with newer kernels.
+
+	Proprietary interfaces:
+	Older drives with proprietary interfaces are supported only
+	if the kernel driver allows reading cdda audio data via ioctl().
+	Currently only Eberhard Moenkeberg's sbpcd and Corey Minyard's
+	cdu31a driver do allow this. The sbpcd driver of kernels earlier than
+	2.0.30 and 2.1.57 needs a patch before satisfying output can be
+	obtained (see README.sbpcd).
+
+SCSI drives:
+	For these drives the SCSI library from Joerg Schilling is used.
+	Thus we need kernel support (compiled-in or as a module) for it.
+        The generic SCSI interface allows multi sector transfers (max. 128 KB)
+	which lowers cpu load considerably.
+
+	** NEW **
+	I added a script 'scsi_scan.linux' to find the generic devices for all
+	SCSI CDROM- or WORM-type drives.
+
+Configuration
+=============
+
+There are some adjustable parameters in the beginning of the Makefile
+(which is called local.cnf.in) . They describe default settings of cdda2wav:
+
+INTERFACE: 	How the cdrom is accessed. Choose one method for INTERFACE.
+DEVICE:		The default cdrom device is set in DEF_DEVICE.
+
+SOUND FILE FORMAT DEFAULTS:
+The default format can be 'wav', 'sun pcm au', 'aiff', 'aifc', or
+'raw bigendian samples'.
+It is determined by the Makefile variable DEF_TYPE.
+
+AUDIO FILENAME:
+The default filename is given by DEF_FILE. Unless 'cdr' format is being used,
+this name is appended with '.wav', '.au', '.aiff' or '.aifc'.
+
+RATE: the default rate is given by setting DEF_UNDERSAMPLING to the divisor
+for the audio cd sampling frequency (44100 Hz).
+
+	RATE = 44100 Hz / DEF_UNDERSAMPLING
+
+DEF_UNDERSAMPLING can be any multiple of a half greater than one half.
+
+DYNAMIC: The default dynamic range of one sample in one channel is defined in 
+DEF_BITS which can be one of 8, 12 or 16.
+
+CHANNELS: set DEF_CHANNELS to 1 for mono and 2 for stereo.
+
+RECORDING TIME: set DEF_TIME to the amount of seconds to record (or 0 for
+the whole track).
+
+SOUND DEVICE: set SOUND_DEVICE to the device name of your sound card.
+		The line containing HAVESOUND should be 
+		uncommented also, if you want the option to hear
+		what you record.
+
+All of those values can be overridden by command line parameters.
+
+
+Compiling cdda2wav
+==================
+
+Adjust the Makefile (named local.cnf.in) for your cdrom interface and
+device setting first.
+
+Then type
+	make
+and as root
+	make install
+
+This will compile cdda2wav and copy the binary to /usr/local/bin and the
+man page to /usr/local/man/man1 (defaults).
+
+
+Privileges
+==========
+
+You can setgid the binary, if you want to allow access to a CDROM's
+scsi_generic interface for cdda2wav but not for arbitrary programs.
+Giving away permissions to send SCSI commands directly to a device is
+not something you want to do lightly on a multi-user server system.
+The setgid privileges will only be used to access the scsi generic
+interface; for cooked_ioctl, the setgid privileges are not necessary
+and they are simply dropped.
+
+Previous versions of cdda2wav had to be setuid to root.  Such privileges
+are no longer necessary and will be dropped if present.
+
+Select device
+=============
+
+By default cdda2wav uses the generic SCSI interface and a device tripel for
+SCSI bus, id, and lun.
+This setting can be overridden by specifying '-Iinterface' and
+'-D cdromdevice'.
+The following command line example uses the generic_scsi interface and the 
+SCSI device with bus 1, id 2 and lun 3:
+cdda2wav -Igeneric_scsi -D1,2,3
+
+The shell script 'scan_scsi.linux' will report the generic devices for
+all SCSI cdrom drives.
+
+If you need to use another interface, check the device setting also as they
+need to fit together.
+Here is an example for an ATAPI cdrom using the cooked_ioctl interface and
+the cdrom device /dev/hdb:
+cdda2wav -Icooked_ioctl -D/dev/hdb
+
+
+Features
+========
+
+I added an optional on-the-fly correction for pre-emphasized samples
+(available for original CDDA format only).
+If the -T option is given, the samples will be filtered before they
+are written to disk. The samples then have a linear frequency response again.
+
+When recording in mono, both channels are summed with halved amplitude.
+
+Undersampling is done by summing several samples with reduced amplitude to
+prevent overflows. This damps higher freqencies as well. Compared to
+exact resampling cdda2wav does not use a very sophisticated (expensive)
+filter algorithm. It currently uses quadratic interpolation for
+noninteger subsampling factors.
+
+Sampling can be aborted by pressing the Interrupt-Key (eg control-C)
+at anytime. Unless streaming to a pipe, the wav header will be updated
+to contain the actual length of the sample. The same will happen, if
+disk space becomes exhausted.
+
+Fast options
+============
+
+The options can also influence the performance greatly.
+The fastest case is given when the samples don't need to be changed from
+their original form or analysed, that is the output format uses the same
+parameters as the drive: 16-bit samples, stereo at 44100 Hz sample rate
+AND with the same endianess (-Cbig and -Ebig, or -Clittle and -Elittle).
+To be sure all parameters can be given explicitly on the command line.
+This avoids an analysis of cdda2wav.
+
+cdda2wav -P0 -q -S<maximum speed> 
+run as root will read with maximum speed and copy its output into the
+wav file, taking advantage of realtime scheduling as well.
+
+For throughput testing the additional option -N can be used. Write
+operations will be suppressed then.
+
+Options that slow down initially
+================================
+-v<level> needs some time for analysis before the actual sampling starts
+
+Options that slow down during sampling
+======================================
+-P1	causes overlap reading, the slowdown depends on the amount of jitter
+-e	synchronous output to a sound card slows down to onefold speed
+
+Options that need more cpu power
+================================
+-p<rate> resamples the output send to the sound card
+-M<count> calculates checksums
+-T	on-the-fly preemphasis filtering
+-F	checking for extremal samples
+-G	checking for differences in both channels
+-C<endianess>	if a conversion is required (see below)
+-E<endianess>	if a conversion is required (see below)
+-Oaudiotype	if a conversion is required (see below)
+-c 1
+-c s
+-m
+-b 8
+-b 12
+-a <not 1>
+-r <not 44100>
+
+When are one or two endianess (byte order) conversions required?
+================================================================
+There are three stages where the endianess matters:
+1.) on the input side the cd drive can deliver in two flavors (called F1).
+    When the flavor is unknown, cdda2wav needs to find out the endianess.
+    A simple voting method is used. Successive samples are compared in both
+    flavors and the flavor with the statistically smaller changes is taken. 
+    The flavor can be defined with the -C option, avoiding the analysis. 
+2.) For any calculation with samples (and echoing to the sound card),
+    the samples are needed in the byte order of the machine (in this case
+    I set 'need_host_order' to yes). The flavor of the machine endianess
+    is called F2.
+3.) Finally, there are two flavors of output sound formats (called F3):
+    wav uses little endian samples
+    cdr and au use big endian samples
+    If the samples currently in memory have the wrong endianess a
+    (possibly second) conversion is required.
+
+This gives the following table:
+F1	F2	need_host_order	F3	conversions
+little	little	no		little		0
+little	little	yes		little		0
+little	little	no		big		1
+little	little	yes		big		1
+little	big	no		little		0
+little	big	yes		little		2
+little	big	no		big		1
+little	big	yes		big		1
+big	little	no		little		1
+big	little	yes		little		1
+big	little	no		big		0
+big	little	yes		big		2
+big	big	no		little		1
+big	big	yes		little		1
+big	big	no		big		0
+big	big	yes		big		0
+
+
+Known problems
+==============
+
+1. Sound quality
+
+Audible errors caused by hesitations:
+
+When recording the same audio track twice, recordings can slightly differ.
+Furthermore depending on the firmware in the cdrom drive, positioning
+errors can be so severe that they cannot be easily corrected by cdda2wav.
+This will unfortunately lead to audible errors.
+
+In this case some overlap or even underlap between successive portions
+is introduced from the cdrom drive.
+Here is this case demonstrated graphically:
+
+Sec 1    ...       Sec n
+|----------------------|                          first  read delivered
+                       |------------------------| second read wanted
+                     |------------------------|   second read delivered
+                     |-|                          extra bogus bytes
+                                              |-| missing bytes
+
+This is due to synchronisation problems between sectors inside the cdrom 
+drive. When the drive has been forced to wait, these problems arise.
+
+Audio cds are lacking sector headers, so it's a difficult job to do the
+positioning right (in the firmware). The frequency of these errors is
+reduced when the reading process can continue undisturbed for longer periods.
+So, a high throughput is essential.
+
+You may want to fine-tune your update daemon to use shorter intervals
+(see 'man 8 update'). Shorter intervals are better because the update
+interruptions are shorter when not so much write requests can pile up.
+
+The plextor 4plexplus drive (PX-4XCE) and newer models, newer pioneer
+models as well as CD-writers with large buffers don't suffer from this
+errors. Here the default is to switch off overlap reading.
+
+If you cannot get good samples from your drives you might consider an
+alternative program. Monty's cdparanoia program goes to great lengths
+in order to separate the good bits from the bad ones.
+
+2. The index scanner has caused timeouts on my toshiba 3401 due to fast
+   random accesses.
+
+3. Retrieval of media catalog numbers and International Standard Recording
+   Codes may fail due to firmware bugs.
+
+Audio Format Conversion
+=======================
+Currently wav, sun (au-pcm), Apple/SGI aiff/aifc, and raw formats are supported.
+
+I try to write correct wav files (little endian samples), but some
+cd-writers might swap them, which would result in sort of white noise
+instead of the original sounds. Cdda2wav has an endianness detector
+for these cases, but as for all automatics, it might fail on bizarre samples.
+
+Hint: Cdda2wav can be forced to use a given input endianness with the
+-C option (arguments are 'little', 'big' or 'guess').
+
+The sun format is a pcm variant, and uses big endian samples.
+The other more common sun format with logarithmically scaled samples (au)
+is not supported but can be obtained from sox's conversion.
+
+The raw format is like the sun format except it has no header. I
+changed the endianness to big endian samples in order to comply
+with popular cd burning software like the cdrecord program.
+
+The sound converter 'sox' can be used to obtain other sound formats.
+(Note however, that the current sox player and a newer sound driver do not
+harmonize well, use the player from the wavplay package instead (available
+at sunsite)).
+
+
+Feedback
+========
+
+Tested patches, any hardware information regarding drives as well as success/
+failure reports are always welcome at heiko@colossus.escape.de.
+
+
+known cdda capable drives
+=========================
+Check out these web pages for uptodate information:
+
+<http://www.tardis.ed.ac.uk/~psyche/pc/cdrom/CDDA.html>
+
+and
+
+<http://www.anime.net/~goemon/linux-cd/cdda-list.html>
+
+From a news posting from Björn Wiberg
+
+> The following table was generated using the CDROM.CFG file from Nero
+> v3.0.4.2.
+> 
+> It shows different CD-ROM models and what speeds they can do DAE at. I
+> guess the values are "safe ones"; i.e. the speeds at which each drive
+> can perform DAE reliably.
+> 
+> A value of "0x" means the drive doesn't support DAE.
+> 
+> For your convenience, the maximum data transfer speed of the drives
+> (for reading conventional files and data from the CD-ROM) are also
+> included.
+> 
+> Hopefully, this will help some of you who are looking for a good
+> CD-ROM drive to choose a model which seems fast enough both for data
+> and DAE.
+> 
+> The models which support DAE:
+> (Sorted by DAE speed, data speed and model)
+> 
+> CD-ROM model                     DAE     Data   Interface
+> ---------------------------------------------------------
+> PLEXTOR  CD-ROM PX-32TS          16x     16x    SCSI
+> TEAC     CD-524E                 14x     24x    IDE
+> CREATIVE CD620E                  12x     5x     IDE
+> MITSUMI  CD-ROM FX320S !B        12x     32x    IDE
+> TEAC     CD-532E                 12x     32x    IDE
+> HITACHI  CDR-8335                12x     24x    IDE
+> PIONEER  CD-ROM DR-A02S          12x     24x    IDE
+> TEAC     CD-ROM CD-532S          12x     14x    SCSI
+> PIONEER  CD-ROM DR-A12X          12x     12x    IDE
+> PIONEER  CD-ROM DR-U06S          12x     12x    SCSI
+> PLEXTOR  CD-ROM PX-20TS          12x     12x    SCSI
+> MITSUMI  CD-ROM FX120T !B        11x     12x    IDE
+> PIONEER  CD-ROM DR-A04S          11x     32x    IDE
+> PIONEER  CD-ROM DR-U12X          10x     12x    SCSI
+> HITACHI  CDR-8330                9x      24x    IDE
+> SONY     CD-ROM CDU711           9x      14x    IDE
+> MATSHITA CD-ROM CR-584           9x      12x    IDE
+> MATSHITA CD-ROM CR-586           8x      32x    IDE
+> CDM-T531         Ver1.041        8x      18x    IDE
+> TEAC     CD-516E                 8x      16x    IDE
+> TOSHIBA  CD-ROM XM-6201TA        8x      16x    SCSI
+> PLEXTOR  CD-ROM PX-12CS          8x      12x    SCSI
+> PLEXTOR  CD-ROM PX-12TS          8x      12x    SCSI
+> PIONEER  CD-ROM DR-U10X          8x      10x    SCSI
+> SONY     CD-ROM CDU611           8x      10x    IDE
+> FUNAI    E285X                   8x      8x     IDE
+> MITSUMI  CD-ROM FX810T4!B        8x      8x     IDE
+> SONY     CD-ROM CDU511           8x      8x     IDE
+> SONY     CD-ROM CDU571-Q         8x      8x     IDE
+> TEAC     CD-C68E                 8x      8x     IDE
+> MITSUMI  CD-ROM FX400E !B        8x      4x     IDE
+> HITACHI  CDR-8130                7x      16x    IDE
+> MATSHITA CD-ROM CR-585           6x      24x    IDE
+> CREATIVE CD2422E  MC102          6x      12x    IDE
+> MATSHITA CD-ROM CR-508           6x      12x    SCSI
+> IBM      PD-1 LF-1195            6x      6x     IDE
+> PLEXTOR  CD-ROM PX-6XCS          6x      6x     SCSI
+> LITEON   CD-ROM LTN301           5x      32x    IDE
+> LITEON   CD-ROM LTN242F          5x      24x    IDE
+> HITACHI  CDR-7930                5x      8x     IDE
+> ASUS     CD-S340                 4x      34x    IDE
+> E-IDE    CD-ROM 32X/AKU          4x      32x    IDE
+> ATAPI CDROM                      4x      24x    IDE
+> LITEON   CD-ROM LTN244           4x      24x    IDE
+> PHILIPS  PCA248CD                4x      24x    IDE
+> TEAC     CD-524EA                4x      24x    IDE
+> LITEON   CD-ROM LTN202           4x      21x    IDE
+> ATAPI    CD-ROM DRIVE-24X        4x      20x    IDE
+> CREATIVE CD2423E  NC101          4x      20x    IDE
+> SAMSUNG  CD-ROM SCR-2431         4x      20x    IDE
+> TAE IL   CD-ROM CDD-7240J        4x      20x    IDE
+> TEAC     CD-220E                 4x      20x    IDE
+> CREATIVE CD1620E SL970404        4x      16x    IDE
+> LITEON   CD-ROM LTN262           4x      16x    IDE
+> TEAC     CD-ROM CD-516S          4x      16x    SCSI
+> ATAPI    CD-ROM DRIVE            4x      15x    IDE
+> BCD 16XA  CD-ROM                 4x      10x    IDE
+> MATSHITA CD-ROM CR-506           4x      8x     SCSI
+> SONY     CD-ROM CDU311           4x      8x     IDE
+> MATSHITA CD-ROM CR-504-J         4x      4x     SCSI
+> MITSBISH CDRW226                 4x      4x     SCSI
+> SONY     CD-ROM CDU625-S         4x      4x     SCSI
+> SONY     CD-ROM CDU-76S          4x      4x     SCSI
+> SONY     CD-ROM CDU77E           4x      4x     IDE
+> PLEXTOR  CD-ROM PX-4XCE          4x      4x     SCSI
+> SONY     CD-ROM CDU55E           4x      2x     IDE
+> PIONEER  CD-ROM DR-U24X          3x      24x    SCSI
+> LITEON   CD-ROM LTN204           3x      21x    IDE
+> PIONEER  CD-ROM DR-A01S          3x      20x    IDE
+> PIONEER  CD-ROM DR-A24X          3x      20x    IDE
+> FUNAI    E295X                   3x      16x    IDE
+> PIONEER  CD-ROM DR-U03S          3x      12x    SCSI
+> BTC      24X CD-ROM SLL24        3x      10x    IDE
+> PLEXTOR  CD-ROM PX-8XCS          3x      4x     SCSI
+> CyberDrv  CD-ROM TW240S          3x      3x     SCSI
+> COMPAQ   CRD-8320B               2x      32x    IDE
+> LG    CD-ROM CRD-8320B           2x      32x    IDE
+> TOSHIBA  CD-ROM XM-6202B         2x      32x    IDE
+> CREATIVE DVD-ROM DVD2240E        2x      24x    IDE
+> TOSHIBA  CD-ROM XM-6102D         2x      24x    IDE
+> BTC      16X CD-ROM SLL16        1x      10x    IDE
+> NEC      CD-ROM DRIVE:282        2x      8x     IDE
+> HITACHI  GD-2000                 2x      4x     IDE
+> MATSHITA CD-ROM CR-581           2x      4x     IDE
+> NEC      CD-ROM DRIVE:222        2x      4x     SCSI
+> MATSHITA CD-ROM CR-8004          2x      2x     SCSI
+> GoldStar CD-ROM CRD-8240B        1x      24x    IDE
+> TOSHIBA  CD-ROM XM-6102B         1x      24x    IDE
+> CyberDrv  IDE CD-ROM 120D        1x      12x    IDE
+> I DE CD-ROM TW120D               1x      12x    IDE
+> NEC      CD-ROM DRIVE:464        1x      12x    SCSI
+> TORiSAN  CD-ROM CDR_U112         1x      12x    IDE
+> TOSHIBA  CD-ROM XM-5701TA        1x      12x    SCSI
+> TOSHIBA  CD-ROM XM-5702B         1x      12x    IDE
+> CyberDrv SCSI CD-ROM 120S        1x      10x    IDE
+> NEC      CD-ROM DRIVE:463        1x      10x    SCSI
+> COMPAQ   DVD-ROM SD-M1002        1x      8x     IDE
+> MATSHITA CD-ROM CR-583           1x      8x     IDE
+> NEC      CD-ROM DRIVE:462        1x      8x     SCSI
+> TEAC     CD-58E                  1x      8x     IDE
+> OPTICS_S 8622 SCSI               1x      8x     SCSI
+> TOSHIBA  CD-ROM XM-5602B         1x      8x     IDE
+> TOSHIBA  CD-ROM XM-3801TA        1x      7x     SCSI
+> NEC      CD-ROM DRIVE:461        1x      6x     SCSI
+> IBM      CDRM00203               1x      6x     SCSI
+> TEAC     CD-46E                  1x      6x     IDE
+> TEAC     CD-56E                  1x      6x     IDE
+> TEAC     CD-ROM CD-56S           1x      6x     SCSI
+> TOSHIBA  CD-ROM XM-5502TA        1x      6x     IDE
+> TOSHIBA  CD-ROM XM-3701TA        1x      6x     SCSI
+> NEC      CD-ROM DRIVE:502        1x      4x     SCSI
+> TOSHIBA  CD-ROM XM-1502BN        1x      4x     IDE
+> TOSHIBA  CD-ROM XM-5302TA        1x      4x     IDE
+> TOSHIBA  CD-ROM XM-5401TA        1x      4x     SCSI
+> TOSHIBA  CD-ROM XM-5402TA        1x      4x     IDE
+> TOSHIBA  CD-ROM XM-1502B         1x      4x     IDE
+> TOSHIBA  CD-ROM XM-3501TA        1x      4x     SCSI
+> TOSHIBA  CD-ROM XM-5301TA        1x      4x     SCSI
+> TOSHIBA  CD-ROM XM-5201TA        1x      2x     SCSI
+
+known cdda uncapable drives
+===========================
+
+Pioneer		DRM-602X, DRM-604X
+Teac		CD-55A		(panasonic bus)
+Philips		CM206/10	serial RS-422
+		CM207
+		CM226/10	serial RS-422
+		CDD462/01	serial RS-422
+Orchid		CDS3110
+
+Additions to the tables above are welcome.
+
+and now catch your sounds,
+Heiko 		heiko@colossus.escape.de

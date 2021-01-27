@@ -1,0 +1,12 @@
+# /* @(#)libfile-mapvers        1.1 10/10/02 Copyright 2005-2010 J. Schilling */
+
+SCHILY_1.0 {
+global:
+	clean_magic;
+	get_magic_match;
+	init_magic;
+	softmagic;
+
+local:
+	*;
+};

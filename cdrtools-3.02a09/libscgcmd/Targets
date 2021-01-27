@@ -1,0 +1,5 @@
+# @(#)Targets	1.1 08/10/26 Copyright 2008 J. Schilling
+
+CFILES=		buffer.c inquiry.c modes.c modesense.c read.c readcap.c ready.c
+
+HFILES=		libscgcmd.h

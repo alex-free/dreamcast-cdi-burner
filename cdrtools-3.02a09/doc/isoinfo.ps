@@ -1,0 +1,872 @@
+%!PS
+%%Version: 3.15
+%%DocumentFonts: (atend)
+%%Pages: (atend)
+%%EndComments
+%
+% Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
+% Use is subject to license terms.
+%
+% CDDL HEADER START
+%
+% The contents of this file are subject to the terms of the
+% Common Development and Distribution License, Version 1.0 only
+% (the "License").  You may not use this file except in compliance
+% with the License.
+%
+% You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+% or http://www.opensolaris.org/os/licensing.
+% See the License for the specific language governing permissions
+% and limitations under the License.
+%
+% When distributing Covered Code, include this CDDL HEADER in each
+% file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+% If applicable, add the following below this CDDL HEADER, with the
+% fields enclosed by brackets "[]" replaced with your own identifying
+% information: Portions Copyright [yyyy] [name of copyright owner]
+%
+% CDDL HEADER END
+%
+%ident	"%Z%%M%	%I%	%E% SMI"
+%
+% Version 3.16 prologue for troff files.
+%
+
+/#copies 1 store
+/aspectratio 1 def
+/formsperpage 1 def
+/landscape false def
+/linewidth .3 def
+/magnification 1 def
+/margin 0 def
+/orientation 0 def
+/resolution 720 def
+/xoffset 0 def
+/yoffset 0 def
+
+/roundpage true def
+/useclippath true def
+/pagebbox [0 0 612 792] def
+
+/R  /Times-Roman def
+/I  /Times-Italic def
+/B  /Times-Bold def
+/BI /Times-BoldItalic def
+/H  /Helvetica def
+/HI /Helvetica-Oblique def
+/HB /Helvetica-Bold def
+/HX /Helvetica-BoldOblique def
+/CW /Courier def
+/CO /Courier def
+/CI /Courier-Oblique def
+/CB /Courier-Bold def
+/CX /Courier-BoldOblique def
+/PA /Palatino-Roman def
+/PI /Palatino-Italic def
+/PB /Palatino-Bold def
+/PX /Palatino-BoldItalic def
+/Hr /Helvetica-Narrow def
+/Hi /Helvetica-Narrow-Oblique def
+/Hb /Helvetica-Narrow-Bold def
+/Hx /Helvetica-Narrow-BoldOblique def
+/KR /Bookman-Light def
+/KI /Bookman-LightItalic def
+/KB /Bookman-Demi def
+/KX /Bookman-DemiItalic def
+/AR /AvantGarde-Book def
+/AI /AvantGarde-BookOblique def
+/AB /AvantGarde-Demi def
+/AX /AvantGarde-DemiOblique def
+/NR /NewCenturySchlbk-Roman def
+/NI /NewCenturySchlbk-Italic def
+/NB /NewCenturySchlbk-Bold def
+/NX /NewCenturySchlbk-BoldItalic def
+/ZD /ZapfDingbats def
+/ZI /ZapfChancery-MediumItalic def
+/VR /Varitimes#Roman def
+/VI /Varitimes#Italic def
+/VB /Varitimes#Bold def
+/VX /Varitimes#BoldItalic def
+/S  /S def
+/S1 /S1 def
+/GR /Symbol def
+
+/inch {72 mul} bind def
+/min {2 copy gt {exch} if pop} bind def
+
+/setup {
+	counttomark 2 idiv {def} repeat pop
+
+	landscape {/orientation 90 orientation add def} if
+	/scaling 72 resolution div def
+	linewidth setlinewidth
+	1 setlinecap
+
+	pagedimensions
+	xcenter ycenter translate
+	orientation neg rotate
+	width 2 div neg height 2 div translate
+	xoffset inch yoffset inch translate
+	margin 2 div dup neg translate
+	magnification dup aspectratio mul scale
+	scaling scaling scale
+
+	/Symbol /S Sdefs cf
+	/Times-Roman /S1 S1defs cf
+	0 0 moveto
+} def
+
+/pagedimensions {
+	useclippath userdict /gotpagebbox known not and {
+		/pagebbox [clippath pathbbox newpath] def
+		roundpage currentdict /roundpagebbox known and {roundpagebbox} if
+	} if
+	pagebbox aload pop
+	4 -1 roll exch 4 1 roll 4 copy
+	landscape {4 2 roll} if
+	sub /width exch def
+	sub /height exch def
+	add 2 div /xcenter exch def
+	add 2 div /ycenter exch def
+	userdict /gotpagebbox true put
+} def
+
+/pagesetup {
+	/page exch def
+	currentdict /pagedict known currentdict page known and {
+		page load pagedict exch get cvx exec
+	} if
+} def
+
+/decodingdefs [
+	{counttomark 2 idiv {y moveto show} repeat}
+	{neg /y exch def counttomark 2 idiv {y moveto show} repeat}
+	{neg moveto {2 index stringwidth pop sub exch div 0 32 4 -1 roll widthshow} repeat}
+	{neg moveto {spacewidth sub 0.0 32 4 -1 roll widthshow} repeat}
+	{counttomark 2 idiv {y moveto show} repeat}
+	{neg setfunnytext}
+] def
+
+/setdecoding {/t decodingdefs 3 -1 roll get bind def} bind def
+
+/w {neg moveto show} bind def
+/m {neg dup /y exch def moveto} bind def
+/done {/lastpage where {pop lastpage} if} def
+
+/f {
+	dup /font exch def findfont exch
+	dup /ptsize exch def scaling div dup /size exch def scalefont setfont
+	linewidth ptsize mul scaling 10 mul div setlinewidth
+	/spacewidth ( ) stringwidth pop def
+} bind def
+
+/changefont {
+	/fontheight exch def
+	/fontslant exch def
+	currentfont [
+		1 0
+		fontheight ptsize div fontslant sin mul fontslant cos div
+		fontheight ptsize div
+		0 0
+	] makefont setfont
+} bind def
+
+/sf {f} bind def
+
+/cf {
+	dup length 2 idiv
+	/entries exch def
+	/chtab exch def
+	/newfont exch def
+
+	findfont dup length 1 add dict
+	/newdict exch def
+	{1 index /FID ne {newdict 3 1 roll put} {pop pop} ifelse} forall
+
+	newdict /Metrics entries dict put
+	newdict /Metrics get
+	begin
+		chtab aload pop
+		1 1 entries {pop def} for
+		newfont newdict definefont pop
+	end
+} bind def
+
+%
+% A few arrays used to adjust reference points and character widths in some
+% of the printer resident fonts. If square roots are too high try changing
+% the lines describing /radical and /radicalex to,
+%
+%	/radical	[0 -75 550 0]
+%	/radicalex	[-50 -75 500 0]
+%
+
+/Sdefs [
+	/bracketlefttp		[220 500]
+	/bracketleftbt		[220 500]
+	/bracketrighttp		[-70 380]
+	/bracketrightbt		[-70 380]
+	/braceleftbt		[220 490]
+	/bracketrightex		[220 -125 500 0]
+	/radical		[0 0 550 0]
+	% NeWSprint's \(br is too low, compensate
+	statusdict /product get (NeWS Server) eq {
+		/radicalex		[-50 100 500 0]
+		/parenleftex		[-20 100 0 0]
+
+	} {
+		/radicalex		[-50 0 500 0]
+		/parenleftex		[-20 -170 0 0]
+	} ifelse
+	/integral		[100 -50 500 0]
+	/infinity		[10 -75 730 0]
+] def
+
+/S1defs [
+	/underscore		[0 80 500 0]
+	/endash			[7 90 650 0]
+] def
+%%EndProlog
+%%BeginSetup
+mark
+/resolution 720 def
+setup
+2 setdecoding
+%%EndSetup
+%%Page: 1 1
+save
+mark
+1 pagesetup
+10 R f
+( \( 8 \))3 164( ISOINFO)1 3525(Maintenance Procedures)1 991 3 720 480 t
+9 B f
+(NAME)720 960 w
+10 R f
+(devdump, isoinfo, isovfy, isodump)3 1419 1 1080 1080 t
+10 S1 f
+(\261)2532 1080 w
+10 R f
+(Utility programs for dumping and verifying iso9660 images.)7 2477 1 2630 1080 t
+9 B f
+(SYNOPSIS)720 1248 w
+10 B f
+(devdump)1080 1368 w
+10 I f
+(isoimage)1514 1368 w
+10 B f
+(isodump)1080 1536 w
+10 I f
+(isoimage)1481 1536 w
+10 B f
+(isoinfo)1080 1704 w
+10 R f
+([)1401 1704 w
+10 S1 f
+(\261)1471 1704 w
+10 B f
+(d)1536 1704 w
+10 R f
+(] [)1 103 1 1629 1704 t
+10 S1 f
+(\261)1769 1704 w
+10 B f
+(h)1834 1704 w
+10 R f
+(] [)1 103 1 1927 1704 t
+10 S1 f
+(\261)2067 1704 w
+10 B f
+(R)2132 1704 w
+10 R f
+(] [)1 103 1 2241 1704 t
+10 S1 f
+(\261)2381 1704 w
+10 B f
+(J)2446 1704 w
+10 R f
+(] [)1 103 1 2533 1704 t
+10 S1 f
+(\261)2673 1704 w
+10 B f
+(j)2738 1704 w
+10 I f
+(charset)2808 1704 w
+10 R f
+(] [)1 103 1 3139 1704 t
+10 S1 f
+(\261)3279 1704 w
+10 B f
+(f)3344 1704 w
+10 R f
+(] [)1 103 1 3414 1704 t
+10 S1 f
+(\261)3554 1704 w
+10 B f
+(l)3619 1704 w
+10 R f
+(] [)1 103 1 3684 1704 t
+10 S1 f
+(\261)3824 1704 w
+10 B f
+(p)3889 1704 w
+10 R f
+(] [)1 103 1 3982 1704 t
+10 S1 f
+(\261)4122 1704 w
+10 B f
+(T)4187 1704 w
+10 I f
+(sector)4291 1704 w
+10 R f
+(] [)1 103 1 4572 1704 t
+10 S1 f
+(\261)4712 1704 w
+10 B f
+(N)4777 1704 w
+10 I f
+(sector)4886 1704 w
+10 R f
+(] [)1 103 1 5167 1704 t
+10 S1 f
+(\261)5307 1704 w
+10 B f
+(i)5372 1704 w
+10 I f
+(isoimage)1080 1824 w
+10 R f
+(] [)1 99 1 1474 1824 t
+10 S1 f
+(\261)1606 1824 w
+10 B f
+(x)1671 1824 w
+10 I f
+(path)1754 1824 w
+10 R f
+(])1965 1824 w
+10 B f
+(isovfy)1080 1992 w
+10 I f
+(isoimage)1363 1992 w
+9 B f
+(DESCRIPTION)720 2160 w
+10 B f
+(devdump)1080 2280 w
+10 R f
+( ini-)1 174( The)1 223(is a crude utility to interactively display the contents of device or \256lesystem images.)13 3488 3 1515 2280 t
+( commands are the same)4 1029( The)1 225( \256rst 2048 byte sector.)4 939(tial screen is a display of the \256rst 256 bytes of the)11 2127 4 1080 2400 t
+(as with)1 294 1 1080 2520 t
+10 B f
+(isodump)1407 2520 w
+10 R f
+(.)1775 2520 w
+10 B f
+(isodump)1080 2688 w
+10 R f
+( in order to verify)4 800(is a crude utility to interactively display the contents of iso9660 images)11 3104 2 1496 2688 t
+( directory, and the prompt)4 1092( initial screen is a display of the \256rst part of the root)12 2238( The)1 227(directory integrity.)1 763 4 1080 2808 t
+(shows you the extent number and offset in the extent.)9 2208 1 1080 2928 t
+( and forwards within the image. The)6 1516(You can use the 'a' and 'b' commands to move backwards)10 2444 2 1440 3096 t
+( allows you to goto an arbitrary extent, and the 'f' command speci\256es a search)14 3404('g' command)1 556 2 1440 3216 t
+( of the search string,)4 860(string to be used. The '+' command searches forward for the next instance)12 3100 2 1440 3336 t
+(and the 'q' command exits)4 1097 1 1440 3456 t
+10 B f
+(devdump)2570 3456 w
+10 R f
+(or)3004 3456 w
+10 B f
+(isodump)3120 3456 w
+10 R f
+(.)3488 3456 w
+10 B f
+(isoinfo)1080 3624 w
+10 R f
+(is a utility to perform directory like listings of iso9660 images.)10 2588 1 1397 3624 t
+10 B f
+(isovfy)1080 3792 w
+10 R f
+( the integrity of an iso9660 image. Most of the tests in)11 2375(is a utility to verify)4 839 2 1373 3792 t
+10 B f
+(isovfy)4631 3792 w
+10 R f
+(were added)1 475 1 4925 3792 t
+(after bugs were discovered in early versions of)7 1920 1 1080 3912 t
+10 B f
+(mkisofs.)3033 3912 w
+10 R f
+(It isn't all that clear how useful this is anymore,)9 1981 1 3419 3912 t
+(but it doesn't hurt to have this around.)7 1583 1 1080 4032 t
+9 B f
+(OPTIONS)720 4320 w
+10 R f
+(The options common to all programs are)6 1698 1 1080 4440 t
+10 S1 f
+(\261)2815 4440 w
+10 B f
+(help)2880 4440 w
+10 R f
+(,)3064 4440 w
+10 S1 f
+(\261)3089 4440 w
+10 B f
+(h)3154 4440 w
+10 R f
+(,)3210 4440 w
+10 S1 f
+(\261)3235 4440 w
+10 B f
+(version)3300 4440 w
+10 R f
+(,)3611 4440 w
+10 B f
+(i)3673 4440 w
+10 I f
+(=name,)3701 4440 w
+10 B f
+(dev)4018 4440 w
+10 I f
+(=name.)4168 4440 w
+10 R f
+(The)4547 4440 w
+10 B f
+(isoinfo)4740 4440 w
+10 R f
+(program)5062 4440 w
+(has additional command line options. The options are:)7 2227 1 1080 4560 t
+10 S1 f
+(\261)1080 4728 w
+10 B f
+(help)1145 4728 w
+10 S1 f
+(\261)1080 4896 w
+10 B f
+(h)1145 4896 w
+10 R f
+(print a summary of all options.)5 1273 1 1440 4896 t
+10 S1 f
+(\261)1080 5064 w
+10 B f
+(d)1145 5064 w
+10 R f
+( descriptor \(PVD\) of the iso9660 image. This)7 2061(Print information from the primary volume)5 1899 2 1440 5064 t
+( information if)2 651(includes information about Rock Ridge, Joliet extensions and Eltorito boot)9 3309 2 1440 5184 t
+(present.)1440 5304 w
+10 S1 f
+(\261)1080 5472 w
+10 B f
+(f)1145 5472 w
+10 R f
+( had been run on the iso9660 image. You should)9 2036(generate output as if a '\256nd . -print' command)8 1924 2 1440 5472 t
+(not use the)2 449 1 1440 5592 t
+10 B f
+(-l)1922 5592 w
+10 R f
+(image with the)2 610 1 2016 5592 t
+10 B f
+(-f)2659 5592 w
+10 R f
+(option.)2758 5592 w
+10 S1 f
+(\261)1080 5760 w
+10 B f
+(i iso)1 178 1 1145 5760 t
+10 S f
+(_)1323 5760 w
+10 B f
+(image)1373 5760 w
+10 R f
+( options)1 357( The)1 250( we wish to examine.)4 994(Speci\256es the path of the iso9660 image that)7 1998 4 1440 5880 t
+10 S1 f
+(\261)5101 5880 w
+10 B f
+(i)5166 5880 w
+10 R f
+(and)5256 5880 w
+10 B f
+(dev=)1440 6000 w
+10 I f
+(target)1647 6000 w
+10 R f
+(are mutual exclusive.)2 867 1 1919 6000 t
+10 B f
+(dev=)1080 6168 w
+10 I f
+(target)1287 6168 w
+10 R f
+( device speci\256cation is)3 946( typical)1 309( A)1 142(Sets the SCSI target for the drive, see notes above.)9 2130 4 1440 6288 t
+10 B f
+(dev=)5005 6288 w
+10 I f
+(6,0)5212 6288 w
+10 R f
+(.)5375 6288 w
+(If a \256lename must be provided together with the numerical target speci\256cation, the \256lename is)14 3960 1 1440 6408 t
+( be found in the system speci\256c)6 1350( correct \256lename in this case can)6 1386( The)1 227(implementation speci\256c.)1 997 4 1440 6528 t
+( a)1 79( On)1 190(manuals of the target operating system.)5 1620 3 1440 6648 t
+10 I f
+(FreeBSD)3364 6648 w
+10 R f
+(system without)1 619 1 3770 6648 t
+10 I f
+(CAM)4424 6648 w
+10 R f
+(support, you need)2 731 1 4669 6648 t
+(to use the control device \(e.g.)5 1218 1 1440 6768 t
+10 I f
+(/dev/rcd0.ctl)2724 6768 w
+10 R f
+( in this case may be)5 830( correct device speci\256cation)3 1140(\). A)1 196 3 3234 6768 t
+10 B f
+(dev=)1440 6888 w
+10 I f
+(/dev/rcd0.ctl:)1647 6888 w
+10 S1 f
+(@)2182 6888 w
+10 R f
+(.)2307 6888 w
+( Dif-)1 210(On Linux, drives connected to a parallel port adapter are mapped to a virtual SCSI bus.)15 3750 2 1440 7128 t
+(ferent adapters are mapped to different targets on this virtual SCSI bus.)11 2933 1 1440 7248 t
+( 1)1 1888( change: 09/10/11)2 732( Last)1 1586(Version 3.0)1 474 4 720 7728 t
+cleartomark
+showpage
+restore
+%%EndPage: 1 1
+%%Page: 2 2
+save
+mark
+2 pagesetup
+10 R f
+( \( 8 \))3 164( ISOINFO)1 3525(Maintenance Procedures)1 991 3 720 480 t
+(If no)1 212 1 1440 960 t
+10 I f
+(dev)1698 960 w
+10 R f
+( device from the)3 717(option is present, the program will try to get the)9 2099 2 1882 960 t
+10 B f
+(CDR)4745 960 w
+10 S f
+(_)4961 960 w
+10 B f
+(DEVICE)5011 960 w
+10 R f
+(environment.)1440 1080 w
+(If the argument to the)4 905 1 1440 1320 t
+10 B f
+(dev=)2380 1320 w
+10 R f
+(option does not contain the characters ',', '/', ')8 1934 1 2622 1320 t
+10 S1 f
+(@)4556 1320 w
+10 R f
+( it is inter-)3 447(' or ':',)2 305 2 4648 1320 t
+(preted as an label name that may be found in the \256le /etc/default/cdrecord \(see FILES section\).)15 3901 1 1440 1440 t
+(The options)1 483 1 1440 1680 t
+10 S1 f
+(\261)1956 1680 w
+10 B f
+(i)2021 1680 w
+10 R f
+(and)2082 1680 w
+10 B f
+(dev=)2259 1680 w
+10 I f
+(target)2466 1680 w
+10 R f
+(are mutual exclusive.)2 867 1 2738 1680 t
+10 S1 f
+(\261)1080 1848 w
+10 B f
+(debug)1145 1848 w
+10 R f
+( has)1 168(Print additional debug information. This enables e.g. printing of all directory entries if a \256le)14 3792 2 1440 1848 t
+( of more information from the primary volume)7 2077(more than one directory entry and printing)6 1883 2 1440 1968 t
+(descriptor.)1440 2088 w
+(In debug mode, Rock Ridge information is parsed with)8 2265 1 1440 2328 t
+10 S1 f
+(\261)3738 2328 w
+10 B f
+(R)3803 2328 w
+10 R f
+(even if it is not standard compliant.)6 1461 1 3908 2328 t
+10 S1 f
+(\261)1080 2496 w
+10 B f
+(l)1145 2496 w
+10 R f
+( should not)2 473( You)1 244( iso9660 image.)2 664(generate output as if a 'ls -lR' command had been run on the)12 2579 4 1440 2496 t
+(use the)1 288 1 1440 2616 t
+10 B f
+(-f)1761 2616 w
+10 R f
+(image with the)2 610 1 1860 2616 t
+10 B f
+(-l)2503 2616 w
+10 R f
+(option.)2597 2616 w
+10 S1 f
+(\261)1080 2784 w
+10 B f
+(N sector)1 359 1 1145 2784 t
+10 R f
+( help examine single session disc \256les that are to be written to a multi-session)14 3364(Quick hack to)2 596 2 1440 2904 t
+( be)1 135(disc. The sector number speci\256ed is the sector number at which the iso9660 image should)14 3825 2 1440 3024 t
+(written when send to the cd-writer. Not used for the \256rst session on the disc.)14 3158 1 1440 3144 t
+10 S1 f
+(\261)1080 3312 w
+10 B f
+(p)1145 3312 w
+10 R f
+(Print path table information.)3 1157 1 1440 3312 t
+10 S1 f
+(\261)1080 3480 w
+10 B f
+(R)1145 3480 w
+10 R f
+( Ridge extensions \(if present\) for permissions, \256le names and)9 2654(Extract information from Rock)3 1306 2 1440 3480 t
+(ownerships.)1440 3600 w
+10 S1 f
+(\261)1080 3768 w
+10 B f
+(J)1145 3768 w
+10 R f
+(Extract information from Joliet extensions \(if present\) for \256le names.)9 2829 1 1440 3768 t
+10 S1 f
+(\261)1080 3936 w
+10 B f
+(j charset)1 376 1 1145 3936 t
+10 R f
+(Convert Joliet \256le names \(if present\) to the supplied charset. See)10 2657 1 1440 4056 t
+10 B f
+(mkisofs)4130 4056 w
+10 R f
+(\(8\) for details.)2 584 1 4458 4056 t
+10 S1 f
+(\261)1080 4224 w
+10 B f
+(T sector)1 354 1 1145 4224 t
+10 R f
+( a multi-)2 385(Quick hack to help examine multi-session images that have already been burned to)12 3575 2 1440 4344 t
+( number for the start of the session we)8 1661(session disc. The sector number speci\256ed is the sector)8 2299 2 1440 4464 t
+(wish to display.)2 647 1 1440 4584 t
+10 S1 f
+(\261)1080 4752 w
+10 B f
+(x pathname)1 511 1 1145 4752 t
+10 R f
+(Extract speci\256ed \256le to stdout.)4 1251 1 1440 4872 t
+9 B f
+(AUTHOR)720 5040 w
+10 R f
+( 1998\) is Eric Youngdale)4 1148( . .)2 82( original sources \(1993 .)4 1112(The author of the)3 795 4 1080 5160 t
+10 S1 f
+(<)4278 5160 w
+10 R f
+(ericy)4334 5160 w
+10 S1 f
+(@)4533 5160 w
+10 R f
+(gnu.ai.mit.edu)4625 5160 w
+10 S1 f
+(>)5200 5160 w
+10 R f
+(or)5317 5160 w
+10 S1 f
+(<)1080 5280 w
+10 R f
+(eric)1136 5280 w
+10 S1 f
+(@)1285 5280 w
+10 R f
+(andante.jic.com)1377 5280 w
+10 S1 f
+(>)2009 5280 w
+10 R f
+( J)1 118( for these shoddy hacks.)4 1046(is to blame)2 483 3 2112 5280 t
+(. .)1 47 1 3759 5225 t
+(org Schilling wrote the SCSI transport)5 1641 1 3759 5280 t
+( programs and newer parts \(starting from 1999\) of the utilities, this)11 2790(library and its adaptation layer to the)6 1530 2 1080 5400 t
+(makes them Copyright \(C\) 1999-2004 J)5 1701 1 1080 5520 t
+(. .)1 47 1 2781 5465 t
+( to improve general usability would be)6 1669( Patches)1 384(org Schilling.)1 566 3 2781 5520 t
+(gladly accepted.)1 656 1 1080 5640 t
+9 B f
+(BUGS)720 5808 w
+10 R f
+(The user interface really sucks.)4 1275 1 1080 5928 t
+9 B f
+(FUTURE IMPROVEMENTS)1 1170 1 720 6096 t
+10 R f
+( an)1 131(These utilities are really quick hacks, which are very useful for debugging problems in mkisofs or in)16 4189 2 1080 6216 t
+( daemon that would NFS export a iso9660)7 1747(iso9660 \256lesystem. In the long run, it would be nice to have a)12 2573 2 1080 6336 t
+(image.)1080 6456 w
+(The isoinfo program is probably the program that is of the most use to the general user.)16 3615 1 1080 6624 t
+9 B f
+(AVAILABILITY)720 6792 w
+10 R f
+(These utilities come with the)4 1191 1 1080 6912 t
+10 B f
+(cdrtools)2305 6912 w
+10 R f
+( in /pub/cdrecord)2 702(package, and the primary ftp site is ftp.berlios.de)7 2015 2 2683 6912 t
+(and many other mirror sites. Despite the name, the software is not beta.)12 2944 1 1080 7032 t
+( 2)1 1888( change: 09/10/11)2 732( Last)1 1586(Version 3.0)1 474 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 2 2
+%%Page: 3 3
+save
+mark
+3 pagesetup
+10 R f
+( \( 8 \))3 164( ISOINFO)1 3525(Maintenance Procedures)1 991 3 720 480 t
+9 B f
+(ENVIRONMENT)720 960 w
+10 B f
+(CDR)1080 1080 w
+10 S f
+(_)1296 1080 w
+10 B f
+(DEVICE)1346 1080 w
+10 R f
+( call of the SCSI transport)5 1126(This may either hold a device identi\256er that is suitable to the open)12 2834 2 1440 1200 t
+(library or a label in the \256le /etc/default/cdrecord.)7 1996 1 1440 1320 t
+10 B f
+(RSH)1080 1488 w
+10 R f
+(If the)1 227 1 1440 1488 t
+10 B f
+(RSH)1706 1488 w
+10 R f
+(environment is present, the remote connection will not be created via)10 2899 1 1951 1488 t
+10 B f
+(rcmd)4889 1488 w
+10 R f
+(\(3\) but)1 284 1 5116 1488 t
+( by)1 137(by calling the program pointed to)5 1400 2 1440 1608 t
+10 B f
+(RSH)3014 1608 w
+10 R f
+( e.g.)1 181(. Use)1 250 2 3220 1608 t
+10 B f
+(RSH=)3688 1608 w
+10 R f
+(/usr/bin/ssh to create a secure shell)5 1449 1 3951 1608 t
+(connection.)1440 1728 w
+(Note that this forces the program to create a pipe to the)11 2330 1 1440 1968 t
+10 B f
+(rsh\(1\))3807 1968 w
+10 R f
+(program and disallows the pro-)4 1300 1 4100 1968 t
+( makes it impossible to)4 991( This)1 253( socket to the remote server.)5 1210(gram to directly access the network)5 1506 4 1440 2088 t
+( parameters and slows down the connection compared to a)9 2547(set up performance)2 810 2 1440 2208 t
+10 B f
+(root)4846 2208 w
+10 R f
+(initiated)5072 2208 w
+10 B f
+(rcmd\(3\))1440 2328 w
+10 R f
+(connection.)1816 2328 w
+10 B f
+(RSCSI)1080 2496 w
+10 R f
+(If the)1 252 1 1440 2496 t
+10 B f
+(RSCSI)1756 2496 w
+10 R f
+( not be the program)4 942(environment is present, the remote SCSI server will)7 2343 2 2115 2496 t
+10 B f
+(/opt/schily/sbin/rscsi)1440 2616 w
+10 R f
+(but the program pointed to by)5 1251 1 2346 2616 t
+10 B f
+(RSCSI)3633 2616 w
+10 R f
+( that the remote SCSI server)5 1184(. Note)1 288 2 3928 2616 t
+(program name will be ignored if you log in using an account that has been created with a)17 3960 1 1440 2736 t
+(remote SCSI server program as login shell.)6 1771 1 1440 2856 t
+9 B f
+(FILES)720 3144 w
+10 R f
+(/etc/default/cdrecord)1080 3264 w
+(Default values can be set for the following options in /etc/default/cdrecord.)10 3077 1 1440 3384 t
+(CDR)1440 3552 w
+10 S f
+(_)1646 3552 w
+10 R f
+(DEVICE)1696 3552 w
+( is suitable to the open call of the SCSI)9 1729(This may either hold a device identi\256er that)7 1871 2 1800 3672 t
+( identify a)2 455(transport library or a label in the \256le /etc/default/cdrecord that allows to)11 3145 2 1800 3792 t
+(speci\256c drive on the system.)4 1167 1 1800 3912 t
+(Any other label)2 637 1 1440 4080 t
+( contain)1 335( an identi\256er may not)4 915( Such)1 273(is an identi\256er for a speci\256c drive on the system.)9 2077 4 1800 4200 t
+(the characters ',', '/', ')4 925 1 1800 4320 t
+10 S1 f
+(@)2725 4320 w
+10 R f
+(' or ':'.)2 301 1 2817 4320 t
+( four)1 206( Currently,)1 481( contains a TAB separated list of items.)7 1681(Each line that follows a label)5 1232 4 1800 4560 t
+( SCSI ID of the drive, the default speed that should be used)12 2552(items are recognized: the)3 1048 2 1800 4680 t
+( this drive and drive)4 923(for this drive, the default FIFO size that should be used for)11 2677 2 1800 4800 t
+(speci\256c options. The values for)4 1303 1 1800 4920 t
+10 I f
+(speed)3140 4920 w
+10 R f
+(and)3404 4920 w
+10 I f
+(\256fosize)3585 4920 w
+10 R f
+(may be set to -1 to tell the program)8 1500 1 3900 4920 t
+( may be set to)4 619( value for driveropts)3 857( The)1 228(to use the global defaults.)4 1084 4 1800 5040 t
+10 S1 f
+("")4629 5040 w
+10 R f
+(if no driveropts)2 648 1 4752 5040 t
+( typical line may look this way:)6 1309( A)1 138(are used.)1 362 3 1800 5160 t
+( 8m)1 438( 4)1 271(teac1= 0,5,0)1 499 3 1800 5400 t
+10 S1 f
+("")3240 5400 w
+10 R f
+( -1 burnfree)2 974( -1)1 204(yamaha= 1,6,0)1 599 3 1800 5640 t
+(This tells the program that a drive named)7 1792 1 1800 5880 t
+10 I f
+(teac1)3638 5880 w
+10 R f
+( target 5, lun 0 and)5 859(is at scsibus 0,)3 641 2 3900 5880 t
+( second drive may be found)5 1156( A)1 140( MB.)1 216(should be used with speed 4 and a FIFO size of 8)11 2088 4 1800 6000 t
+(at scsibus 1, target 6, lun 0 and uses the default speed and the default FIFO size.)16 3326 1 1800 6120 t
+9 B f
+(SEE ALSO)1 460 1 720 6288 t
+10 B f
+(mkisofs)1080 6408 w
+10 R f
+(\(8\),)1408 6408 w
+10 B f
+(cdrecord)1582 6408 w
+10 R f
+(\(1\),)1964 6408 w
+10 B f
+(readcd)2138 6408 w
+10 R f
+(\(1\),)2432 6408 w
+10 B f
+(scg)2606 6408 w
+10 R f
+(\(7\),)2739 6408 w
+10 B f
+(rcmd)2913 6408 w
+10 R f
+(\(3\),)3140 6408 w
+10 B f
+(ssh)3314 6408 w
+10 R f
+(\(1\).)3448 6408 w
+( 3)1 1888( change: 09/10/11)2 732( Last)1 1586(Version 3.0)1 474 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 3 3
+%%Trailer
+done
+%%DocumentFonts: Times-Roman Times-Bold Times-Italic Symbol
+%%Pages: 3

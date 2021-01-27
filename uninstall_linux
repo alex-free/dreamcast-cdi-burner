@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+version=1.0.5
+
+cd "$(dirname "$0")"
+
+if [[ $EUID -ne 0 ]]; then
+   echo "Execute sudo "$0". The user $USER does not have the privileges necessary to continue." 
+   exit 1
+fi
+
+rm -rf /usr/local/dreamcast-cdi-burner-"$version"-linux /usr/local/bin/cdib
+echo "
+Uninstallation complete!"

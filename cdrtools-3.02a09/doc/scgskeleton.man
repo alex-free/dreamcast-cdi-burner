@@ -1,0 +1,396 @@
+
+
+
+Schily's USER COMMANDS                            SCGSKELETON(1L)
+
+
+
+NNAAMMEE
+     scgskeleton - Skeleton  program  for  SCSI  transport  using
+     libscg
+
+SSYYNNOOPPSSIISS
+     ssccggsskkeelleettoonn ddeevv==_d_e_v_i_c_e [ _o_p_t_i_o_n_s ]
+
+DDEESSCCRRIIPPTTIIOONN
+     SSccggsskkeelleettoonn is s skeleton program to demonstrate the  inter-
+     faces and capabilities of the SCSI transport library lliibbssccgg.
+
+  DDeevviiccee nnaammiinngg
+     For a list of possible device name parameters call ssccggsskkeellee--
+     ttoonn  -ssccaannbbuuss or ssccggsskkeelleettoonn ddeevv==hheellpp and then use the right
+     ddeevv== parameter based on the device listing.
+
+
+OOPPTTIIOONNSS
+     -hheellpp
+          Prints a short summary of the pp options and exists.
+
+     -vveerrssiioonn
+          Print version information and exit.
+
+     ddeevv==_t_a_r_g_e_t
+          Set the SCSI target for the CD/DVD/BluRay-Recorder, see
+          notes  above.  A typical target device specification is
+          ddeevv==_1,_6,_0 .  If a filename must  be  provided  together
+          with  the  numerical target specification, the filename
+          is implementation specific.  The  correct  filename  in
+          this  case  can be found in the system specific manuals
+          of the target operating system.  On  a  _F_r_e_e_B_S_D  system
+          without _C_A_M support, you need to use the control device
+          (e.g.  /_d_e_v/_r_c_d_0._c_t_l).  A correct device  specification
+          in this case may be ddeevv==/_d_e_v/_r_c_d_0._c_t_l:@ .
+
+        GGeenneerraall SSCCSSII aaddddrreessssiinngg
+          The  _t_a_r_g_e_t  _d_e_v_i_c_e  to  the  ddeevv==  option  refers   to
+          _s_c_s_i_b_u_s/_t_a_r_g_e_t/_l_u_n  of the CD/DVD/BluRay-Recorder. Com-
+          munication on _S_u_n_O_S  is  done  with  the  SCSI  general
+          driver ssccgg.. Other operating systems are using a library
+          simulation of this driver.  Possible syntax  is:   ddeevv==
+          _s_c_s_i_b_u_s,_t_a_r_g_e_t,_l_u_n  or  ddeevv== _t_a_r_g_e_t,_l_u_n.  In the latter
+          case, the CD/DVD/BluRay-Recorder has to be connected to
+          the  default  SCSI bus of the machine.  _S_c_s_i_b_u_s, _t_a_r_g_e_t
+          and _l_u_n are integer numbers. Some operating systems  or
+          SCSI transport implementations may require to specify a
+          filename in addition.  In this case the correct  syntax
+          for  the device is:  ddeevv== _d_e_v_i_c_e_n_a_m_e:_s_c_s_i_b_u_s,_t_a_r_g_e_t, or
+          ddeevv== _d_e_v_i_c_e_n_a_m_e:_t_a_r_g_e_t,_l_u_n.  If the name of the  device
+          node that has been specified on such a system refers to
+          exactly one SCSI device, a shorthand in the  form  ddeevv==
+
+
+
+Joerg Schilling      Last change: 2010/05/13                    1
+
+
+
+
+
+
+Schily's USER COMMANDS                            SCGSKELETON(1L)
+
+
+
+          _d_e_v_i_c_e_n_a_m_e:@  or  ddeevv==  _d_e_v_i_c_e_n_a_m_e:@,_l_u_n  may  be  used
+          instead of ddeevv== _d_e_v_i_c_e_n_a_m_e:_s_c_s_i_b_u_s,_t_a_r_g_e_t,
+
+        RReemmoottee SSCCSSII aaddddrreessssiinngg
+          To access remote SCSI devices, you need to prepend  the
+          SCSI  device  name  by  a  remote device indicator. The
+          remote device indicator is either RREEMMOOTTEE::_u_s_e_r@_h_o_s_t:  or
+          RREEMMOOTTEE::_h_o_s_t:   A  valid remote SCSI device name may be:
+          RREEMMOOTTEE::_u_s_e_r@_h_o_s_t:  to allow remote SCSI bus scanning or
+          RREEMMOOTTEE::_u_s_e_r@_h_o_s_t:_1,_0,_0  to  access  the  SCSI device at
+          _h_o_s_t connected to SCSI bus # 1,target  0,  lun  0.   In
+          order  to  allow  remote access to a specific _h_o_s_t, the
+          rrssccssii(1) program needs to be present and configured  on
+          the _h_o_s_t.
+
+        AAlltteerrnnaattee SSCCSSII ttrraannssppoorrttss
+          AATTAAPPII drives are just SSCCSSII drives that  inherently  use
+          the  _A_T_A  _p_a_c_k_e_t  _i_n_t_e_r_f_a_c_e  as  SSCCSSII command transport
+          layer build into the IDE (ATA) transport.  You may need
+          to  specify an alternate transport layer on the command
+          line if your OS does not implement a  fully  integrated
+          kernel driver subsystem that allows to access any drive
+          using SSCCSSII commands via a single unique user interface.
+
+          To access SCSI devices via alternate transport  layers,
+          you need to prepend the SCSI device name by a transport
+          layer indicator.  The transport layer indicator may  be
+          something like UUSSCCSSII:: or AATTAAPPII::.  To get a list of sup-
+          ported transport layers for  your  platform,  use  ddeevv==
+          _H_E_L_P:
+
+        PPoorrttaabbiilliittyy BBaacckkggrroouunndd
+          To make ssccggsskkeelleettoonn portable to all UNIX platforms, the
+          syntax  ddeevv== _d_e_v_i_c_e_n_a_m_e:_s_c_s_i_b_u_s,_t_a_r_g_e_t, is preferred as
+          it hides OS specific knowledge about device names  from
+          the  user.  A specific OS may not necessarily support a
+          way to specify a real device file name  nor  a  way  to
+          specify _s_c_s_i_b_u_s,_t_a_r_g_e_t,_l_u_n.
+
+          _S_c_s_i_b_u_s 0 is the default SCSI bus on the machine. Watch
+          the  boot  messages  for  more information or look into
+          //vvaarr//aaddmm//mmeessssaaggeess for more information about  the  SCSI
+          configuration of your machine.  If you have problems to
+          figure out what values for _s_c_s_i_b_u_s,_t_a_r_g_e_t,_l_u_n should be
+          used,  try the -ssccaannbbuuss option of ssccggsskkeelleettoonn described
+          below.
+
+        UUssiinngg llooggiiccaall nnaammeess ffoorr ddeevviicceess
+          If no _d_e_v option is present, ssccggsskkeelleettoonn  will  try  to
+          get the device from the CCDDRR__DDEEVVIICCEE environment.
+
+          If a file  /etc/default/cdrecord  exists,  and  if  the
+
+
+
+Joerg Schilling      Last change: 2010/05/13                    2
+
+
+
+
+
+
+Schily's USER COMMANDS                            SCGSKELETON(1L)
+
+
+
+          argument  to the ddeevv== option or the CCDDRR__DDEEVVIICCEE environ-
+          ment does not contain the characters ',', '/',  '@'  or
+          ':',  it is interpreted as a device label name that was
+          defined in the file  /etc/default/cdrecord  (see  FILES
+          section).
+
+        AAuuttoottaarrggeett MMooddee
+          If no ddeevv== option  and  no  CCDDRR__DDEEVVIICCEE  environment  is
+          present,  or  if it only contains a transport specifyer
+          but no address notation, ssccggsskkeelleettoonn tries to scan  the
+          SCSI  address  space for CD-ROM drives.  If exactly one
+          is found, this is used by default.
+
+     ttiimmeeoouutt==#
+          Set  the  default  SCSI  command  timeout  value  to  #
+          seconds.   The  default  SCSI  command  timeout  is the
+          minimum timeout used for sending SCSI commands.   If  a
+          SCSI  command  fails  due  to a timeout, you may try to
+          raise  the  default  SCSI  command  timeout  above  the
+          timeout  value  of  the failed command.  If the command
+          runs correctly with a raised  command  timeout,  please
+          report  the  better timeout value and the corresponding
+          command to the author of the program.   If  no  _t_i_m_e_o_u_t
+          option  is  present, a default timeout of 40 seconds is
+          used.
+
+     ddeebbuugg==#, --dd
+          Set the misc debug value to # (with debug=#) or  incre-
+          ment  the  misc  debug  level  by one (with -d). If you
+          specify -_d_d, this equals to ddeebbuugg==_2.  This may help  to
+          find  problems  while  opening a driver for libscg.  as
+          well as with sector  sizes  and  sector  types.   Using
+          -ddeebbuugg slows down the process and may be the reason for
+          a buffer underrun.
+
+     kkddeebbuugg==#, kkdd==#
+          Tell the ssccgg-driver to modify the  kernel  debug  value
+          while SCSI commands are running.
+
+     -ssiilleenntt, -ss
+          Do not print out a status report for failed  SCSI  com-
+          mands.
+
+     -vv   Increment the level of general verbosity by one.   This
+          is used e.g. to display the progress of the process.
+
+     -VV   Increment the verbose level with respect of  SCSI  com-
+          mand  transport  by  one.  This helps to debug problems
+          during the process, that occur in the  CD-Recorder.  If
+          you  get incomprehensible error messages you should use
+          this flag to get more detailed output.  -VVVV  will  show
+          data buffer content in addition.  Using -VV or -VVVV slows
+
+
+
+Joerg Schilling      Last change: 2010/05/13                    3
+
+
+
+
+
+
+Schily's USER COMMANDS                            SCGSKELETON(1L)
+
+
+
+          down the process.  -ssccaannbbuuss Scan all  SCSI  devices  on
+          all  SCSI  busses  and  print the inquiry strings. This
+          option may be used to find SCSI address of the  devices
+          on  a  system.   The  numbers printed out as labels are
+          computed by: bbuuss ** 110000 ++ ttaarrggeett
+
+     ttss==# Set the maximum transfer size for a single SCSI command
+          to #.  The syntax for the ttss== option is the same as for
+          cdrecord fs=# or sdd bs=#.
+
+          If  no  ttss==  option  has  been  specified,  ssccggsskkeelleettoonn
+          defaults  to  a transfer size of 256 kB. If libscg gets
+          lower values from the operating system,  the  value  is
+          reduced  to the maximum value that is possible with the
+          current operating system.  Sometimes, it  may  help  to
+          further  reduce the transfer size or to enhance it, but
+          note that it may take a long  time  to  find  a  better
+          value by experimenting with the ttss== option.
+
+
+
+EEXXAAMMPPLLEESS
+EENNVVIIRROONNMMEENNTT
+     RRSSHH  If the RRSSHH environment is present, the  remote  connec-
+          tion will not be created via rrccmmdd(3) but by calling the
+          program pointed to by RRSSHH.  Use  e.g.  RRSSHH==/usr/bin/ssh
+          to create a secure shell connection.
+
+          Note that this forces ccddrreeccoorrdd to create a pipe to  the
+          rrsshh((11))  program  and  disallows  ccddrreeccoorrdd  to  directly
+          access the network socket to the remote  server.   This
+          makes  it  impossible  to set up performance parameters
+          and slows down the connection compared to a  rroooott  ini-
+          tiated rrccmmdd((33)) connection.
+
+     RRSSCCSSII
+          If the RRSSCCSSII environment is present,  the  remote  SCSI
+          server  will  not be the program //oopptt//sscchhiillyy//ssbbiinn//rrssccssii
+          but the program pointed to by  RRSSCCSSII.   Note  that  the
+          remote  SCSI server program name will be ignored if you
+          log in using an account that has been  created  with  a
+          remote SCSI server program as login shell.
+
+SSEEEE AALLSSOO
+     ccddrreeccoorrdd(1), ssccgg(7), rrccmmdd(3), sssshh(1).
+
+NNOOTTEESS
+DDIIAAGGNNOOSSTTIICCSS
+     A typical error message for a SCSI command looks like:
+
+          scgskeleton: I/O error. test unit ready: scsi sendcmd: no error
+          CDB:  00 20 00 00 00 00
+
+
+
+Joerg Schilling      Last change: 2010/05/13                    4
+
+
+
+
+
+
+Schily's USER COMMANDS                            SCGSKELETON(1L)
+
+
+
+          status: 0x2 (CHECK CONDITION)
+          Sense Bytes: 70 00 05 00 00 00 00 0A 00 00 00 00 25 00 00 00 00 00
+          Sense Key: 0x5 Illegal Request, Segment 0
+          Sense Code: 0x25 Qual 0x00 (logical unit not supported) Fru 0x0
+          Sense flags: Blk 0 (not valid)
+          cmd finished after 0.002s timeout 40s
+
+     The first line gives information about the transport of  the
+     command.   The  text  after  the first colon gives the error
+     text for the system call from the view  of  the  kernel.  It
+     usually  is:   II//OO  eerrrroorr  unless other problems happen. The
+     next words contain a short description for the SCSI  command
+     that fails. The rest of the line tells you if there were any
+     problems for the transport of the command over the SCSI bus.
+     ffaattaall  eerrrroorr means that it was not possible to transport the
+     command (i.e.  no  device  present  at  the  requested  SCSI
+     address).
+
+     The second line prints the SCSI command descriptor block for
+     the failed command.
+
+     The third line gives information on  the  SCSI  status  code
+     returned  by  the  command,  if the transport of the command
+     succeeds. This is error information from the SCSI device.
+
+     The fourth line is a hex dump  of  the  auto  request  sense
+     information for the command.
+
+     The fifth line is the error text for the sense key if avail-
+     able,  followed  by the segment number that is only valid if
+     the command was a _c_o_p_y command. If the error message is  not
+     directly  related  to the current command, the text _d_e_f_e_r_r_e_d
+     _e_r_r_o_r is appended.
+
+     The sixth line is the error text for the sense code and  the
+     sense  qualifier if available.  If the type of the device is
+     known, the sense data is decoded from tables in _s_c_s_i_e_r_r_s._c .
+     The text is followed by the error value for a field replace-
+     able unit.
+
+     The seventh line prints the block number that is related  to
+     the  failed  command  and  text for several error flags. The
+     block number may not be valid.
+
+     The eight line reports the timeout set up for  this  command
+     and the time that the command really needed to complete.
+
+
+BBUUGGSS
+AAUUTTHHOORR
+     Joerg Schilling
+     Seestr. 110
+
+
+
+Joerg Schilling      Last change: 2010/05/13                    5
+
+
+
+
+
+
+Schily's USER COMMANDS                            SCGSKELETON(1L)
+
+
+
+     D-13353 Berlin
+     Germany
+
+     Additional information can be found on:
+     http://cdrecord.berlios.de/private/cdrecord.html
+
+     If you have support questions, send them to:
+
+     ccddrreeccoorrdd--ssuuppppoorrtt@@bbeerrlliiooss..ddee
+
+     If you have definitely found a bug, send a mail to:
+
+     ccddrreeccoorrdd--ddeevveellooppeerrss@@bbeerrlliiooss..ddee
+     or jjooeerrgg..sscchhiilllliinngg@@ffookkuuss..ffrraauunnhhooffeerr..ddee
+
+     To subscribe, use:
+
+     hhttttpp::////lliissttss..bbeerrlliiooss..ddee//mmaaiillmmaann//lliissttiinnffoo//ccddrreeccoorrdd--ddeevveellooppeerrss
+     or hhttttpp::////lliissttss..bbeerrlliiooss..ddee//mmaaiillmmaann//lliissttiinnffoo//ccddrreeccoorrdd--ssuuppppoorrtt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Joerg Schilling      Last change: 2010/05/13                    6
+
+
+

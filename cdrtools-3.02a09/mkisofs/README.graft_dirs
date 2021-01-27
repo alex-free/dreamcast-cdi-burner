@@ -1,0 +1,149 @@
+# @(#)README.graft_dirs	1.1 00/01/12 joerg
+#
+This is from "Eduardo M. A. M. Mendes" <mendes@mgconecta.com.br>
+
+Creating multi-session CD's with dir=/ feature Micro Howto
+
+This mini-howto was written as guide to help me to create multi-session CD's
+with the possibility of determining the location of files. I hope
+that this guide helps you too.
+
+In order to use cdrecord it is first necessary to define to which scsi bus
+the cd-writer is connected. In my case the setup is dev=0,3,0. It is also
+interesting to have a separate directory in which all image files can
+be dumped: /home/cdsource is the directory I chose for dumping the images.
+
+The best way to understand how to create multi-session cds is to read
+README.multi. Most of what is going to be said here is based on that
+README file and on the help of several cdrecord users. 
+
+This Micro Howto is divided into two parts as follows:
+
+Example a) A dir/=/dir1/dir2 example
+
+Example b) A dir1/dir2/=/dir3/dir4 and dir1/dir2a=/dir5/dir6 example
+
+
+We are now ready to start.
+
+Example a) An dir/=/dir1/dir2 example
+
+A simple example will demonstrate that we can create multi-session cds 
+with the dir_feature of the type dir/=/dir1/dir2
+
+Objetive: Saving root directories of Redhat 6.1 and Col 2.3 on a single CD.
+
+Observation: Redhat installation is mounted on COL 2.3 at /mnt/redhat
+
+First image - RedHat 6.1 - /mnt/redhat/root
+
+mkisofs -D -l -r -f -m core -L -o image1.raw redhat/=/mnt/redhat/root
+
+This will create a redhat directory on the cd. The option -D should be
+used with care. The other options used in the above command are just 
+to demonstrate the use of mkisofs.  Please
+refer to man mkisofs if you want to know more.
+
+
+To see if the image is created as expected, we need to mount image1.raw using
+the option -o loop (Linux only! for information on Solaris read README.verify)
+as follows:
+
+mount -t iso9660 image1.raw /mnt/image -o loop
+
+To see the contents type:
+
+ls -l /mnt/image/redhat
+
+Does it look ok?  Great! Unmount /mnt/image. Now the burning process itself:
+
+cdrecord -v -dev=0,3,0 -multi -eject image1.raw 
+
+To check the burned image we need to mount the cd; something like
+
+mount -t iso9660 /dev/scd0 /mnt/cdroms
+
+/mnt/cdroms is the device file for the cdrom I use.
+
+
+Second image - Caldera 2.3 - /root
+
+
+To create the second image on our cd, we need get information
+about sectors related to the first track. To do that, issue the command
+
+cdrecord -v -dev=0,3,0 -msinfo 
+
+Cdrecord returns the following number
+
+0,135563
+
+This number is the format XX,YY discussed on README.multi.  XX would be used
+for testing the images as well as burning the new track.
+
+mkisofs -D -l -r -f -m core -L -C 0,135563 -M /dev/scd0 -o image2.raw  caldera/=/root
+
+Now we need to check of image2.raw is ok. The following command creates exactly what we 
+need.  Plese note that -C option. Only the first number changes in this case. The second one
+is always zero.  In our case the first number is zero due to cdrecord -msinfo.  When 
+more tracks are added to the cd this number will change.
+
+mkisofs -D -l -r -f -m core -L -C 0,0 -M /dev/scd0 -o image2_test.raw  caldera/=/root
+
+mount -t iso9660 image2_test.raw /mnt/image -o loop
+
+ls -l /mnt/image shows that there are two directories: redhat and caldera, just the way
+we wanted.
+
+Now let us burn image2.raw (not image2_test.raw)
+
+cdrecord -v -dev=0,3,0 -multi -eject image2.raw
+
+We can mount the CD again to see that the two directories are there.  We can carry on
+doing this until we decide to close the CD. If this is the case, don't use -multi when
+burning the last session.
+
+b) A dir1/dir2/=/dir3/dir4 and dir1/dir2a=/dir5/dir6 example
+
+The above example seems a bit silly, one could argue. Why did I create a single directory
+called root and within two sub-directories: redhat and caldera?  
+
+Using the procedure described above we would do as follows:
+
+mkisofs -D -l -r -f -m core -L -o image1.raw etc/redhat/=/mnt/redhat/etc
+
+cdrecord -v -dev=0,3,0 -multi -eject image1.raw 
+
+To check the burned image we need to mount the cd; something like
+
+mount -t iso9660 /dev/scd0 /mnt/cdroms
+
+cdrecord -v -dev0,3,0 -msinfo 
+
+Cdrecord returns the following number
+
+0,14391
+
+The second image can be created using
+
+mkisofs -l -r -f -m core -L -C 0,14391 -M /dev/scd0 -o image2.raw  etc/caldera/=/etc  
+
+Creating a test image2
+
+mkisofs -l -r -f -m core -L -C 0,0 -M /dev/scd0 -o image2_test.raw etc/caldera/=/etc 
+
+mount -t iso9660 image2_test.raw /mnt/image1 -o loop
+
+It works!!   That is great!!!
+
+Now the burning process itself.
+
+cdrecord -v -dev=0,3,0 -multi -eject image2.raw
+
+and we're done !!!!
+
+To add more tracks just do as indicated above.
+
+Good luxk!!!
+
+Eduardo Mendes - 11/23/99

@@ -1,0 +1,103 @@
+#!/bin/bash
+
+version=1.0.5
+set -e
+cd "$(dirname "$0")"
+
+if [[ $EUID -ne 0 ]]; then
+   echo "Execute sudo "$0". The user $USER does not have the privileges necessary to continue." 
+   exit 1
+fi
+
+os=$(uname)
+cpu=$(uname -p)
+
+if [ "$os" = "Linux" ]; then
+    echo "Linux detected"
+        if [ "$cpu" = "powerpc" ] || [ "$cpu" = "ppc" ] || [ "$cpu" = "ppc64" ]; then
+# 0.6.3 removed Big Endian Support
+            cdi=cdirip-0.6.2
+        else
+# Assume Little Endian (if your CPU is big endian and not being detected above add it to the big endian check...)
+    cdi=cdirip-0.6.3
+        fi
+    app=/usr/local/dreamcast-cdi-burner-"$version"-linux
+    release_name=linux
+elif [ "$os" = "Darwin" ]; then
+    echo "Mac Build"
+    release_name=mac
+    appd=DCDIB.app
+    app=/Applications/$appd
+        if [ "$cpu" = "powerpc" ]; then
+# 0.6.3 removed Big Endian Support
+            cdi=cdirip-0.6.2
+        else
+# Assume Little Endian
+            cdi=cdirip-0.6.3
+        fi
+    release_name=mac
+else
+    echo "Hmm, this is appears to be neither Linux or Mac OS X. Can not continue."
+exit 1
+fi
+
+cdr=cdrtools-3.02a09
+
+rm -rf build
+mkdir build
+rm -rf $app
+if [ "$os" = "Linux" ]; then
+    rm -f /usr/local/bin/dcdib
+fi
+mkdir -p $app/bin
+
+if [ "$os" = "Darwin" ]; then
+    echo "Checking for $appd..."
+	if [ ! -d "$appd/Contents/Resources" ]; then
+	    echo "Could not find $appd. First compile the DCIB.scpt file to an Apple Script Application Bundle with the startup screen option disabled. To do so, open the DCIB file in the Apple Script Editor and save it as an Application bundle in this directory as $appd. After doing so, run sudo "$0" mac again."
+	    exit 1
+	else
+	    echo "Found $appd"
+	    cp -rv $appd /Applications
+	    cp -v applet.icns $app/Contents/Resources/applet.icns
+        build_select_1.0.1/install
+        bselect 4.0 10.4u ppc 10.3
+	fi
+fi
+
+cp -rv $cdi build
+cd build/$cdi
+if [ "$os" = "Darwin" ]; then
+# -lm is not in default link on Mac for some reason...
+    bselect 4.0 10.4u ppc 10.3 "-lm"
+    make -f Makefile.linux
+    bselect 4.0 10.4u ppc 10.3
+elif [ "$os" = "Linux" ]; then
+    make -f Makefile.linux
+fi
+cp -v cdirip $app/bin/
+cd ../../
+rm -rf build/$cdi
+
+cp -rv $cdr build
+cd build/$cdr
+make INS_BASE=$app install
+cd ../../
+rm -rf build/$cdr
+
+if [ "$os" = "Darwin" ]; then
+    cp -v cdib $app/bin/
+fi
+
+rm -rf build/dreamcast_cdi_burner_"$version"_"$release_name"_"$cpu"
+mkdir build/dreamcast_cdi_burner_"$version"_"$release_name"_"$cpu"
+cp -rv $app build/dreamcast_cdi_burner_"$version"_"$release_name"_"$cpu"
+
+if [ "$os" = "Linux" ]; then
+    cp -v cdib install_linux uninstall_linux build/dreamcast_cdi_burner_"$version"_"$release_name"_"$cpu"
+    mv build/dreamcast_cdi_burner_"$version"_"$release_name"_"$cpu"/install_linux build/dreamcast_cdi_burner_"$version"_"$release_name"_"$cpu"/install
+    mv build/dreamcast_cdi_burner_"$version"_"$release_name"_"$cpu"/uninstall_linux build/dreamcast_cdi_burner_"$version"_"$release_name"_"$cpu"/uninstall
+fi
+
+cp -rv licenses readme.html build/dreamcast_cdi_burner_"$version"_"$release_name"_"$cpu"
+chmod -R 777 build

@@ -1,0 +1,218 @@
+***************** Important news ****************************
+
+For the 'Slottable Source Plugin Module' SSPM Features read README.SSPM
+
+***************** Please Test *********************************
+
+NEW features of cdrtools-3.02a01:
+
+This is the first localization step for cdrtools. All programs now (hopefully)
+call gettext() for all strings that need localization.
+
+-	The next step will include dgettext() calls for the libraries.
+
+-	The following step will include the extracted strings
+
+-	The last step will include German translations and install support
+	for the resulting binary message object files.
+
+----------> Please test and report compilation problems! <---------
+
+***** NOTE: As mentioned since 2004, frontends to cdrtools should *****
+*****		call all programs from cdrtools in the "C" locale *****
+*****		by e.g. calling: LC_ALL=C cdrecord ....		  *****
+*****		unless these frontends support localized strings  *****
+*****		used by the cdrtools with NLS support.		  *****
+
+This version compiles on Win-DOS using the Microsoft compiler cl.exe but
+warning: due to missing POSIX compliance with basic features (e.g. stat()
+does not return inode numbers), there are many problems with the resulting
+code and thus it is recommended to better use a POSIX layer on top of 
+WIN-DOS.
+
+		*** WARNING        ***
+		*** Need new smake ***
+
+	*** Due to the fact that schily-2014-04-03 introduced to use new macro
+	*** expansions and a related bug fix in smake, you need a new smake
+	*** to compile this source. To ensure this, get a recent "schily"
+	*** tarball from http://sourceforge.net/projects/schilytools/files/
+	*** and call:
+
+	cd ./psmake
+	./MAKE-all
+	cd ..
+	psmake/smake
+	psmake/smake install
+
+	The new smake version mentioned above is smake-1.2.4.
+	Note that smake-1.2.5 exists and is preferrable.
+
+	Now you have a new smake that is able to compile this source.
+
+	Note that the major makefile restructuring introduced in
+	schily-2014-04-03 is now more than one month ago and thus seems
+	to work without problems.
+
+	WARNING: the new version of the isoinfo program makes use of the 
+		*at() series of functions that have been introduced by Sun
+		in August 2001 and added to POSIX.1-2008. For older platforms,
+		libschily now includes emulations for these functions but
+		these emulations have not yet been tested thoroughly.
+		Please report problems!
+
+
+All:
+
+-	As the defective typedef for idtype_t is already in NetBSD-5,
+	we added a workaround based on a new related autoconf test.
+	Thanks to Heiko Eißfeldt for reporting.
+
+-	Added support to compile on "Bitrig", an OpenBSD fork for non
+	automake aware make implementations like gmake.
+	Thanks to Heiko Eißfeldt for reporting.
+
+-	Added an autoconf test for tcgetsid()
+
+Libschily:
+
+Libcdrdeflt:
+
+Libdeflt:
+
+Libedc (Optimized by Jörg Schilling, originated by Heiko Eißfeldt heiko@hexco.de):
+
+Libfile:
+
+Libfind:
+
+-	libfind: a final workaround for the problems with vfork() in the linux
+	system include files has been introduced and a variable has been declared
+	volatile.
+
+-	libfind no longer uses gettext() but dgettext() and thus no longer
+	destroys the message binding from the Bourne Shell
+
+-	libfind: find -mtime +2s -mtime +20s now works, as file timestamps
+	are now compared to the current time. Before, the current time +60s
+	was used - a timestamp that is needed for switching between both 
+	time stamp variants for -ls.
+
+Libhfs_iso:
+
+Libmdigest:
+
+Libparanoia (Ported/enhanced by Jörg Schilling, originated by Monty xiphmont@mit.edu):
+
+-	libparanoia: Make abs() a self defined macro as ISO-C defines abs()
+	to be a function with int parameter.
+	Thanks to Heiko Eißfeldt for reporting.
+
+-	libparanoia: work around a bug that resulted from uninitalized 
+	statistics data for C2 checks in case that C2 checking was disabled.
+	Thanks to Heiko Eißfeldt for reporting.
+
+Libscg:
+
+-	libscg: added a new error code to make search for the right
+	device node work again with newer OpenBSD versions.
+	Thanks to Heiko Eißfeldt.
+
+Libscgcmd:
+
+Libsiconv:
+
+Rscsi:
+
+Cdrecord:
+
+-	The man page now mentions that root-less operation is possible with
+	Solaris fine grained privileges or Linux capabilties.
+
+-	The man page now mentions the SCSI CAM standard for dev=
+
+Cdda2wav (Maintained/enhanced by Jörg Schilling, originated by Heiko Eißfeldt heiko@hexco.de):
+
+-	cdda2wav: Comparison of function name with NULL replaced with
+	comparison of function pointer with NULL.
+	Thanks to Heiko Eißfeldt for reporting.
+
+-	cdda2wav: Do no longer initialize the sound card from the main process
+	as pulseaudio does not follow UNIX rules for forked processes.
+	Thanks to Heiko Eißfeldt.
+
+-	cdda2wav: Fixed a bug in the DMA residual computation for the C2 read
+	functions where a wrong divisor (2353 instead of 2646) was used.
+	Thanks to Heiko Eißfeldt for reporting.
+
+-	cdda2wav: Heiko make the audio output work on OpenBSD
+
+-	cdda2wav: Heiko added code for pulseaudio support in Linux
+
+-	cdda2wav: Fixed a typo ("KHz" -> "kHz")
+
+-	cdda2wav: fixed a problem related to position differences between
+	the CD extract part and the filesystemwrite part.
+
+-	cdda2wav: We now include "c2check" in the paranoia mode "proof"
+	again and fallback to a non-C2 mode in case the drive does not
+	support C2checks.
+
+-	The man page now mentions the SCSI CAM standard for dev=
+
+Readcd:
+
+-	The man page now mentions the SCSI CAM standard for dev=
+
+Scgcheck:
+
+Scgskeleton:
+
+Btcflash:
+
+Mkisofs (Maintained/enhanced by Jörg Schilling since 1997, originated by Eric Youngdale):
+
+-	mkisofs: HFS creation: fixed comparison of array with 0 to become
+	comparison of array value with 0.
+
+HELIOS TODO:
+
+	-	Add the HELIOS UNICODE mapping code. This needs to be done 
+		at UCS-2 level for Joliet and UDF (instead of UTF-8) and only
+		for Rock Ridge (in case of a UTF-8 based target locale) using
+		UTF-8 based translations.
+
+	-	Make the Apple extensions work again with "mkisofs -find"
+
+TODO:
+
+	-	read Joliet filenames with multi-session if no TRANS.TBL
+		or RR is present. I am looking for a volunteer for this task!
+
+		Note that this can never be 100% correct as there is no relation
+		between the names on the master (UNIX) filesystem, the ISO-9660
+		names and the Joliet names. Only the Rock Ridge names are
+		untranslated with respect to the original files on the
+		master (UNIX) filesystem.
+
+	-	add libecc/edc for CDI and similar.
+
+
+CYGWIN NT-4.0 NOTES:
+
+To compile on Cygwin32, get Cygwin and install it.
+For more information read README.win32
+
+The files are located on:
+
+http://sourceforge.net/projects/cdrtools/files/alpha/ ...
+
+NOTE:	These tar archives are 100% POSIX compatible. GNU tar may get some
+	minor trouble. If you like a 100% POSIX compliant tar, get star from
+	http://sourceforge.net/projects/s-tar/files/ of from the schily-*
+	tarball at: http://sourceforge.net/projects/schilytools/files/
+
+WARNING: Do not use 'winzip' to extract the tar file!
+	Winzip cannot extract symbolic links correctly.
+
+Joerg

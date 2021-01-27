@@ -1,0 +1,3708 @@
+'\" t
+.\" To print, first run through tbl
+.\" -*- nroff -*-
+.\" @(#)mkisofs.8	1.160 17/12/10 Copyright 1997-2015 J. Schilling
+.\"@@C@@
+.\"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.75n'U
+.if t .ds s \\(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH MKISOFS 8 "2017/12/10" "Version 3.02"
+.SH NAME
+mkisofs \- create an hybrid ISO-9660/JOLIET/HFS/UDF filesystem-image with optional Rock Ridge attributes.
+.SH SYNOPSIS
+.B mkisofs
+[
+.I options
+]
+[
+.B \-o
+.I filename
+]
+.I pathspec [pathspec ...]
+.br
+.B mkisofs
+[
+.I options
+]
+[
+.B \-o
+.I filename
+]
+.B \-find
+.I [find expression]
+.br
+.SH DESCRIPTION
+.B mkisofs
+is effectively a pre-mastering program to generate an ISO-9660/JOLIET/HFS/UDF hybrid
+filesystem.
+.PP
+ISO-9660/JOLIET/UDF filesystems are limited to a maximum size of 8\ TB.
+The maximum size of a single file is 8\ TB (single files in UDF are currently 
+limited to aprox. 200\ GB).
+If you like to have files
+larger than 2 \GB, you need to specify 
+.B \-iso\-level 3
+or above.
+If a HFS hybrid is created, the maximum
+file size for files in the HFS hybrid is 2\ GB in any case.
+.SS "Hybrid filesystem support
+.PP
+.B mkisofs
+is capable of generating the 
+.B "System Use Sharing Protocol records (SUSP)
+specified
+by the 
+.B "Rock Ridge Interchange Protocol.
+This is used to further describe the
+files in the ISO-9660 filesystem to a UNIX host, and provides information such
+as longer filenames, uid/gid, posix permissions, symbolic links, hard links,
+block and character devices.
+.PP
+If Joliet, HFS or UDF hybrid command line options are specified, 
+.B mkisofs
+will create additional separate filesystem meta data for Joliet, HFS or UDF.
+The file content in this case refers to the same data blocks on the media.
+It
+will generate a pure ISO-9660 filesystem unless the Joliet, HFS or UDF hybrid command
+line options are given.
+.PP
+.B mkisofs
+can generate a 
+.I true
+(or
+.IR shared )
+HFS hybrid filesystem. The same files are seen as HFS files when
+accessed from a Macintosh and as ISO-9660 files when accessed from other 
+machines. HFS stands for
+.I Hierarchical File System
+and is the native file system used on Macintosh computers up to Mac\ OS\ 9.
+.PP
+As an alternative,
+.B mkisofs
+can generate the
+.I "Apple Extensions to ISO-9660
+or
+.I UDF
+for each file. These extensions provide each file with CREATOR, TYPE and
+certain Finder Flags when accessed from a Macintosh. See the
+.B HFS MACINTOSH FILE FORMATS
+section below.
+.SS "Functional description
+.PP
+.B mkisofs
+takes a snapshot of a given directory tree, and generates a
+binary image which will correspond to an ISO-9660 or Joliet/HFS/UDF filesystem when
+written to a block device.
+.PP
+Each file written to the ISO-9660 filesystem must have a filename in the 8.3
+format (8 characters, period, 3 characters, all upper case), even if Rock Ridge
+attributes are in use.  This filename is used on systems that are not able to make use of
+the Rock Ridge extensions (such as MS-DOS), and each filename in each directory
+must be different from the other filenames in the same directory.
+.B mkisofs
+generally tries to form correct names by forcing the UNIX filename to upper
+case and truncating as required, but often times this yields unsatisfactory
+results when there are cases where the
+truncated names are not all unique.
+.B mkisofs
+assigns weightings to each filename, and if two names that are otherwise the
+same are found the name with the lower priority is renamed to have a 3 digit
+number as an extension (where the number is guaranteed to be unique).  An
+example of this would be the files foo.bar and
+foo.bar.~1~ - the file foo.bar.~1~ would be written as FOO000.BAR;1 and the file
+foo.bar would be written as FOO.BAR;1
+.PP
+When used with various HFS or UDF options,
+.B mkisofs
+will attempt to recognise files stored in a number of Apple/Unix file formats
+and will copy the data and resource forks as well as any
+relevant finder information. See the
+.B HFS MACINTOSH FILE FORMATS
+section below for more about formats
+.B mkisofs
+supports.
+.PP
+Note that
+.B mkisofs
+is not designed to communicate with writers for optical media directly.
+Most writers
+have proprietary command sets which vary from one manufacturer to
+another, and you need a specialized tool like
+.B cdrecord
+to actually burn the disk.
+.PP
+The
+.B cdrecord
+utility is a utility capable of burning an actual disc.  The latest version
+of
+.B cdrecord
+is available from
+.B https://sourceforge.net/projects/cdrtools/files/
+or
+.B https://sourceforge.net/projects/cdrtools/files/alpha/
+.PP
+Also you should know that most CD writers are very particular about timing.
+Once you start to burn a disc, you cannot let their buffer empty before you
+are done, or you will end up with a corrupt disc.  Thus it is critical
+that you be able to maintain an uninterrupted data stream to the writer
+for the entire time that the disc is being written.
+.SS "Dealing with path names
+.PP
+.B pathspec
+is the path of the directory tree to be copied into the ISO-9660 filesystem.
+Multiple paths can be specified, and
+.B
+mkisofs
+will merge the files found in all of the specified path components to form the cdrom
+image.
+.PP
+If the option
+.B \-graft\-points
+has been specified, 
+it is possible to graft the paths at points other than the root
+directory, and it is possible to graft files or directories onto the
+cdrom image with names different than what they have in the source filesystem.  This is
+easiest to illustrate with a couple of examples.   Let's start by assuming that a local
+file ../old.lis exists, and you wish to include it in the cdrom image.
+
+
+	foo/bar/=../old.lis
+
+will include the file old.lis in the cdrom image at /foo/bar/old.lis, while
+
+	foo/bar/xxx=../old.lis
+
+will include the file old.lis in the cdrom image at /foo/bar/xxx.  The
+same sort of syntax can be used with directories as well.
+.B mkisofs
+will create any directories required such that the graft
+points exist on the cdrom image - the directories do not need to
+appear in one of the paths.  By default, any directories that are created on 
+the fly like this will have permissions 0555 and appear to be owned by the
+person running mkisofs.  If you wish other permissions or owners of
+the intermediate directories, see 
+.BR \-uid , 
+.BR \-gid ,
+.BR \-dir\-mode ,
+.BR \-file\-mode " and
+.BR \-new\-dir\-mode .
+.PP
+.B mkisofs
+will also run on Win9\fIx\fP/NT\fIx\fP machines when compiled with Cygnus' cygwin
+(available from http://sourceware.cygnus.com/cygwin/). Therefore most
+references in this man page to
+.I Unix
+also apply to
+.I Win32
+or
+.IR Win64 .
+
+.SH OPTIONS
+.TP
+.BI \-abstract " FILE
+Specifies the abstract file name in the primary volume descriptor.
+There is space on the disc for 37 characters of information.
+The related Joliet entry is limited to 18 characters.
+This parameter can also be set in the file
+.B \&.m\&kisofsrc
+with ABST=filename.
+If specified in both places, the command line version is used.
+.sp
+It is up to the user of 
+.B mkisofs
+to include a file with the apropriate name in the created filesystem tree.
+.TP
+.BI \-A " application_id
+.TP
+.BI \-appid " application_id
+Specifies a text string that will be written into the volume header.
+This should describe the application that will be on the disc.  There
+is space on the disc for 128 characters of information.
+The related Joliet entry is limited to 64 characters.
+This parameter can
+also be set in the file
+.B \&.m\&kisofsrc
+with APPI=id.
+If specified in both places, the command line version is used.
+.TP
+.B \-allow\-leading\-dots
+.TP
+.B \-ldots
+Allow ISO-9660 filenames to begin with a period.  Usually, a leading dot is
+replaced with an underscore in order to maintain MS-DOS compatibility.
+.br
+This violates the ISO-9660 standard, but it happens to work on many systems.
+Use with caution.
+.TP
+.B \-allow\-lowercase
+This options allows lower case characters to appear in ISO-9660 filenames.
+.br
+This violates the ISO-9660 standard, but it happens to work on some systems.
+Use with caution.
+.TP
+.B \-no\-allow\-lowercase
+This resets the effect of
+.B \-allow\-lowercase
+and even works when 
+.BR \-U ,
+.B \-untranslated\-filenames
+or
+.B \-iso\-level 4
+have been used to allow lowercase filenames.
+.TP
+.B \-allow\-multidot
+This options allows more than one dot to appear in ISO-9660 filenames.
+A leading dot is not affected by this option, it
+may be allowed separately using the
+.B \-allow\-leading\-dots
+option.
+.br
+This violates the ISO-9660 standard, but it happens to work on many systems.
+Use with caution.
+.TP
+.BI \-biblio " FILE
+Specifies the bibliographic file name in the primary volume descriptor.
+There is space on the disc for 37 characters of information.
+The related Joliet entry is limited to 18 characters.
+This parameter can also be set in the file
+.B \&.m\&kisofsrc
+with BIBLO=filename.
+If specified in both places, the command line version is used.
+.sp
+It is up to the user of 
+.B mkisofs
+to include a file with the apropriate name in the created filesystem tree.
+.TP
+.B \-cache\-inodes
+Cache inode and device numbers to find hard links to files.
+If
+.B mkisofs
+finds a hard link (a file with multiple names), then the file will only
+appear once on the CD. This helps to save space on the CD.
+The option
+.B \-cache\-inodes
+is default on UNIX like operating systems.
+Be careful when using this option on a filesystem without unique
+inode numbers as it may result in files containing the wrong content on CD.
+.sp
+See the option
+.B \-duplicates\-once
+for a method that works on filesystems without unique inode numbers.
+.sp
+If inodes are not cached,
+.B mkisofs
+will revert to the old Rrip Version-1.10 (see
+.BR \-rrip110 )
+and
+.B mkisofs
+will not be able to create
+.B "correct inode numbers
+for zero sized files.
+.TP
+.B \-no\-cache\-inodes
+Do not cache inode and device numbers.
+This option is needed whenever a filesystem does not have unique
+inode numbers. It is the default on old
+.B Cygwin 
+versions.
+As the Microsoft operating system that runs below
+.B Cygwin
+uses 64 bit inode numbers for NTFS, it does not have unique inode numbers
+in the 32 bit range.
+Old Cygwin versions create fake 32-bit inode numbers from a hash algorithm 
+and thus create non-unique numbers.
+If
+.B mkisofs
+would cache inodes on old Cygwin versions, it would believe that some files are
+identical although they are not. The result in this case are files
+that contain the wrong content if a significant amount of different
+files (> ~5000) is in inside the tree that is to be archived.
+This does not happen when the
+.B \-no\-cache\-inodes
+is used, but the disadvantage is that
+.B mkisofs
+cannot detect hardlinks anymore and the resulting CD image may be larger
+than expected.
+.sp
+If inodes are not cached,
+.B mkisofs
+will revert to the old Rrip Version-1.10 (see
+.BR \-rrip110 )
+and
+.B mkisofs
+will not be able to create
+.B "correct inode numbers
+for zero sized files.
+.TP
+.B \-duplicates\-once
+Tells
+.B mkisofs
+to use a message digest checksum to identify identical files as
+apparently hard linked files.
+This allows 
+.B mkisofs
+to archive inode numbers and hard links even when it is run on
+non-POSIX platforms like
+.BR DOS .
+.TP
+.BI \-b " eltorito_boot_image
+.TP
+.BI \-eltorito\-boot " eltorito_boot_image
+Specifies the path and filename of the boot image to be used when making
+an "El Torito" bootable CD. The pathname must be relative to the source
+path and inside the source tree specified to
+.B mkisofs.
+This option is required to make an "El Torito" bootable CD.
+The boot image must be exactly the size of either a 1200, 1440, or a 2880
+kB floppy, and
+.B mkisofs
+will use this size when creating the output ISO-9660
+filesystem. It is assumed that the first 512 byte sector should be read
+from the boot image (it is essentially emulating a normal floppy drive).
+This will work, for example, if the boot image is a boot floppy.
+.sp
+If the boot image is not an image of a floppy, you need to add one of the
+options:
+.BR \-hard\-disk\-boot " or " \-no\-emul\-boot .
+If the system should not boot off the emulated disk, use
+.BR \-no\-boot .
+.sp
+More than one boot entry may be specified, see
+.B \-eltorito\-platform
+and
+.B \-eltorito\-alt\-boot
+on how to specify more boot entries.
+The first boot entry is the
+.BR "default boot entry" .
+Additional boot entries are members for a multi boot configuration.
+.sp
+If the
+.B \-sort
+option has not been specified, the boot images are sorted
+with low priority (+2) to the beginning of the medium.
+If you don't like this, you need to specify a sort weight of 0 for the boot images.
+.TP
+.B \-eltorito\-alt\-boot
+Start with a new set of "El Torito" boot parameters.
+This allows to have more than one El Torito boot entry on a CD.
+A maximum of 63 El Torito boot entries may be put on a single CD.
+.sp
+The
+.B \-eltorito\-alt\-boot
+option starts a new boot entry with the same
+.I platform id
+but no new boot section except when it appears
+past the first boot entry which is the default boot entry.
+.TP
+.BI \-eltorito\-platform " id
+Set the "El Torito" platform id for a boot record or a section of boot records.
+The.
+.I id
+parameter may be either:
+.RS
+.TP
+.B x86
+This is the default 
+.I platform id
+value and specifies entries for the PC platform.
+If no
+.B \-eltorito\-platform
+option appears before the first
+.B \-eltorito\-boot
+option, the default boot entry becomes an entry for the x86 PC platform.
+.TP
+.B PPC
+Boot entries for the Power PC platform.
+.TP
+.B Mac
+Boot entries for the Apple Mac platform.
+.TP
+.B efi
+Boot entries for EFI based PCs.
+.TP
+.B #
+A numeric value specifying any platform id.
+.LP
+If the option
+.B \-eltorito\-platform
+appears before the first
+.B \-eltorito\-boot
+option, it sets the
+.I platform id
+for the default boot entry.
+.LP
+If the option
+.B \-eltorito\-platform
+appears after an
+.B \-eltorito\-boot
+option and sets the
+.I platform id
+to a value different from the previous value,
+it starts a new set of boot entries.
+.LP
+The second boot entry and any new
+.I platform id
+creates a new section header and reduces the number of boot
+entries per CD by one.
+
+.RE
+.TP
+.BI errctl= " name
+.TP
+.BI errctl= " error control spec
+Add the content from file
+.I name
+to the error control definitions or add
+.I error control spec
+to the error control definitions.
+More than one error control file and more than one
+.I error control spec
+as well as a mixture of both forms is possible. 
+.sp
+The reason for using error control is to make
+.B mkisofs
+quiet about error conditions that are known to be irrelevant on the quality 
+of the created filesystem or to tell 
+.B mkisofs
+to abort on certain error conditions instead of trying to continue
+with the filesystem.
+.sp
+.ne 6
+A typical reason to use error control is to
+suppress warnings about growing log files while doing a backup on a
+live file system.
+Another typical reason to use error control is to tell
+.B mkisofs
+to abort if e.g. a file could not be archived instead of continuing
+to archive other files from a list.
+.sp
+The error control file contains a set of lines, each starting with a list
+of error conditions to be ignored followed by white space followed by a
+file name pattern (see 
+.BR match (1)
+or
+.BR patmatch (3)
+for more information).
+The
+.I error control spec
+uses the same syntax as a single line from the error control file.
+If the file name pattern needs to start with white space, use a backslash
+to escape the start of the file name. It is not possible to have new line
+characters in the file name pattern.
+Whenever an error situation is encountered, 
+.B mkisofs
+checks the lines in the error control file starting from the top.
+If the current error condition is listed on a line in the error control file,
+then
+.B mkisofs
+checks whether the pattern on the rest of the line matches the current file name.
+If this is the case, 
+.B mkisofs
+uses the current error control specification to
+control the current error condition.
+.sp
+The list of error conditions to be handled may use one or more (in this case
+separated by a '|' character) identifiers from the list below:
+.RS
+.TP 12
+.B ABORT
+If this meta condition is included in an error condition,
+.B mkisofs
+aborts (exits) as soon as possible after this error condition has been
+seen instead of making
+.B mkisofs
+quiet about the condition.
+This error condition flag may only be used together with at another 
+error condition or a list of error conditions
+(separated by a '|' character).
+.TP 12
+.B WARN
+If this meta condition is included in an error condition,
+.B mkisofs
+prints the warning about the error condition but the error condition
+does not affect the exit code of
+.B mkisofs
+and the error statistics (which is printed to the end) does not
+include the related errors.
+This error condition flag may only be used together with at another 
+error condition or a list of error conditions
+(separated by a '|' character).
+The
+.B WARN
+meta condition has a lower precedence than
+.BR ABORT .
+.TP 12
+.B ALL
+This is a shortcut for all error conditions below.
+.TP 12
+.B STAT
+Suppress warnings that 
+.B mkisofs
+could not 
+.BR stat (2)
+a file.
+.TP
+.B GETACL
+Suppress warnings about files on which
+.B mkisofs
+had problems to retrieve the ACL information.
+.TP
+.B OPEN
+Suppress warnings about files that could not be opened.
+.TP
+.B READ
+Suppress warnings read errors on files.
+.TP
+.B WRITE
+Suppress warnings write errors on files.
+.TP
+.B READLINK
+Suppress warnings 
+.BR readlink (2)
+errors on symbolic links.
+.TP
+.B GROW
+Suppress warnings about files that did grow while they have been
+archived.
+.TP
+.B SHRINK
+Suppress warnings about files that did shrink while they have been
+archived.
+.TP
+.B MISSLINK
+Suppress warnings about files for which 
+.B mkisofs
+was unable to archive all hard links.
+.TP
+.B NAMETOOLONG
+Suppress warnings about files that could not be archived because the name of
+the file is too long for the archive format.
+.TP
+.B FILETOOBIG
+Suppress warnings about files that could not be archived because the size of
+the file is too big for the archive format.
+.TP
+.B SPECIALFILE
+Suppress warnings about files that could not be archived because the file type
+is not supported by the archive format.
+.TP
+.B GETXATTR
+Suppress warnings about files on that
+.B mkisofs
+could not retrieve the extended file attribute information.
+.TP
+.B SETTIME
+Suppress warnings about files on that
+.B mkisofs
+could not set the time information during extraction.
+.TP
+.B SETMODE
+Suppress warnings about files on that
+.B mkisofs
+could not set the access modes during extraction.
+.TP
+.B SECURITY
+Suppress warnings about files that
+have been skipped on extraction because they have been considered to be a
+security risk.
+This currently applies to all files that have a '/../' sequence inside
+when
+.B \-..
+has not been specified.
+.TP
+.B LSECURITY
+Suppress warnings about links that
+have been skipped on extraction because they have been considered to be a 
+security risk.
+This currently applies to all link names that start with '/' or
+have a '/../' sequence inside when 
+.B \-secure\-links
+has been specified.
+In this case, 
+.B mkisofs 
+tries to match the link name against the pattern in the error control file.
+.TP
+.B SAMEFILE
+Suppress warnings about links that
+have been skipped on extraction because source and target of the link
+are pointing to the same file.
+If 
+.B mkisofs
+would not skip these files, it would end up with removing the file completely.
+In this case, 
+.B mkisofs 
+tries to match the link name against the pattern in the error control file.
+.TP
+.B BADACL
+Suppress warnings access control list conversion problems.
+.TP
+.B SETACL
+Suppress warnings about files on that
+.B mkisofs
+could not set the ACL information during extraction.
+.TP
+.B SETXATTR
+Suppress warnings about files on that
+.B mkisofs
+could not set the extended file attribute information during extraction.
+.RE
+.sp
+If a specific error condition is ignored, then the error condition is not
+only handled in a silent way but also excluded from the error statistics
+that are printed at the end of the
+.B mkisofs
+run.
+.sp
+Be very careful when using error control as you may ignore any error condition.
+If you ignore the wrong error conditions, you may not be able to see real
+problems anymore.
+.sp
+Note that currently only the tags
+.BR OPEN ,
+.BR READ ,
+.BR GROW ,
+.BR SHRINK ,
+are checked from
+.BR mkisofs .
+
+.TP
+.BI \-B " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e
+.TP
+.BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e
+Specifies a comma separated list of boot images that are needed to make
+a bootable CD for sparc systems.
+Partition 0 is used for the ISO-9660 image, the first image file is mapped
+to partition 1.
+There may be empty fields in the comma separated list.
+The maximum number of possible partitions is 8 so it is impossible to specify
+more than 7 partition images.
+This option is required to make a bootable CD for Sun sparc systems.
+If the
+.B \-B
+or
+.B \-sparc\-boot
+option has been specified, the first sector of the resulting image will
+contain a Sun disk label. This disk label specifies slice 0 for the
+ISO-9660 image and slice 1 .\|.\|. slice 7 for the boot images that
+have been specified with this option. Byte offset 512 .\|.\|. 8191
+within each of the additional boot images must contain a primary boot
+that works for the appropriate sparc architecture. The rest of each
+of the images usually contains an ufs filesystem that is used primary
+kernel boot stage.
+.sp
+The implemented boot method is the boot method found with SunOS 4.x and SunOS 5.x.
+However, it does not depend on SunOS internals but only on properties of
+the Open Boot prom. For this reason, it should be usable for any OS
+that boots off a sparc system.
+.sp
+For more information also see the 
+.B NOTES
+section below.
+.sp
+If the special filename
+.B "..."
+is used, the actual and all following boot partitions are mapped to the
+previous partition. If
+.B mkisofs
+is called with
+.BI "\-G " image " \-B " ...
+all boot partitions are mapped to the partition that contains the ISO-9660
+filesystem image and the generic boot image that is located in the first
+16 sectors of the disk is used for all architectures.
+.TP
+.BI \-G " generic_boot_image
+Specifies the path and filename of the generic boot image to be used when making
+a generic bootable CD.
+The
+.B generic_boot_image
+will be placed on the first 16 sectors of the CD. The first 16 sectors
+are the sectors that are located before the ISO-9660 primary volume descriptor.
+If this option is used together with the
+.B \-sparc\-boot
+option, the Sun disk label will overlay the first 512 bytes of the generic
+boot image.
+.TP
+.BI \-hard\-disk\-boot
+Specifies that the boot image used to create "El Torito" bootable CDs is
+a hard disk image. The hard disk image must begin with a master boot
+record that contains a single partition.
+.TP
+.BI \-ignore\-error
+Ignore errors.
+.B mkisofs
+by default aborts on several errors, such as read errors. With this option in effect,
+.B mkisofs
+tries to continue.
+Use with care.
+.TP
+.BI \-no\-emul\-boot
+Specifies that the boot image used to create "El Torito" bootable CDs is
+a 'no emulation' image. The system will load and execute this image without
+performing any disk emulation.
+.TP
+.BI \-no\-boot
+Specifies that the created "El Torito" CD should be marked as not bootable. The
+system will provide an emulated drive for the image, but will boot off
+a standard boot device.
+.TP
+.BI \-boot\-load\-seg " segment_address
+Specifies the load segment address of the boot image for no-emulation
+"El Torito" CDs.
+.TP
+.BI \-boot\-load\-size " load_sectors
+Specifies the number of "virtual" (512-byte) sectors to load in
+no-emulation mode.  The default is to load the entire boot file.  Some
+BIOSes may have problems if this is not a multiple of 4.
+.TP
+.BI \-boot\-info\-table
+Specifies that a 56-byte table with information of the CD-ROM layout
+will be patched in at offset 8 in the boot file.  If this option is
+given, the boot file is modified in the source filesystem, so make
+sure to make a copy if this file cannot be easily regenerated!  See
+the
+.B "EL TORITO BOOT INFO TABLE
+section for a description of this table.
+.TP
+.BI \-C " last_sess_start,next_sess_start
+.TP
+.BI \-cdrecord\-params " last_sess_start,next_sess_start
+This option is needed when
+.B mkisofs
+is used to create a CDextra or the image of a second session or a 
+higher level session for a multi session disk.
+The option
+.B \-C
+takes a pair of two numbers separated by a comma. The first number is the
+sector number of the first sector in the last session of the disk
+that should be appended to.
+The second number is the starting sector number of the new session.
+The expected pair of numbers may be retrieved by calling
+.B "cdrecord \-msinfo ...
+If the
+.B \-C
+option is used in conjunction with the
+.B \-M
+option,
+.B mkisofs
+will create a filesystem image that is intended to be a continuation
+of the previous session.
+If the
+.B \-C
+option is used without the
+.B \-M
+option,
+.B mkisofs
+will create a filesystem image that is intended to be used for a second
+session on a CDextra. This is a multi session CD that holds audio data
+in the first session and a ISO-9660 filesystem in the second session.
+.TP
+.BI \-c " boot_catalog
+.TP
+.BI \-eltorito\-catalog " boot_catalog
+Specifies the path and filename of the boot catalog to be used when making
+an "El Torito" bootable CD. The pathname must be relative to the source
+path specified to
+.B mkisofs.
+This option is required to make a bootable CD.
+This file will be inserted into the output tree and not created
+in the source filesystem, so be
+sure the specified filename does not conflict with an existing file, as
+it will be excluded. Usually a name like "boot.catalog" is
+chosen.
+.sp
+If the
+.B \-sort
+option has not been specified, the boot catalog sorted
+with low priority (+1) to the beginning of the medium.
+If you don't like this, you need to specify a sort weight of 0 for the boot catalog.
+.TP
+.B \-check\-oldnames
+Check all filenames imported from old session for compliance with
+actual 
+.B mkisofs 
+ISO-9660 file naming rules.
+It his option is not present, only names with a length > 31 are checked
+as these files are a hard violation of the ISO-9660 standard.
+.TP
+.BI \-check\-session " FILE
+Check all old sessions for compliance with
+actual 
+.B mkisofs 
+ISO-9660 file naming rules.
+This is a high level option that is a combination of the options:
+.BI \-M " FILE " "\-C 0,0 \-check\-oldnames
+For the parameter 
+.I FILE
+see description of
+.B \-M
+option.
+.TP
+.BI \-copyright " FILE
+Specifies the Copyright file name in the primary volume descriptor.
+There is space on the disc for 37 characters of information.
+The related Joliet entry is limited to 18 characters.
+This parameter can also be set in the file
+.B \&.m\&kisofsrc
+with COPY=filename.
+If specified in both places, the command line version is used.
+.sp
+It is up to the user of 
+.B mkisofs
+to include a file with the apropriate name in the created filesystem tree.
+.TP
+.B \-d
+.TP
+.B \-omit\-period
+Omit trailing period from files that do not have a period.
+.br
+This violates the ISO-9660 standard, but it happens to work on many systems.
+Use with caution.
+.TP
+.B \-D
+.TP
+.B \-disable\-deep\-relocation
+Do not use
+.B Rock Ridge
+deep directory relocation, and instead just pack directories in the
+way they are in the master directory tree.
+.sp
+This option was needed with old
+.B mkisofs
+versions to avoid a visible directory
+.BR rr_moved .
+Since August 2006,
+.B mkisofs
+correctly hides the
+.B rr_moved
+directory from the
+.B Rock Ridge
+filesystem.
+.sp
+If ISO-9660:1999 has not been selected,
+this violates the ISO-9660 standard, but it happens to work on many systems.
+Use with caution.
+.TP
+.B \-data\-change\-warn
+If the size of a file changes while the file is being archived, treat this
+condition as a warning only that does not cause
+.B mkisofs
+to abort.
+A warning message is still written if the condition is not otherwise
+ignored by another rule from an
+.B errctl=
+option.
+The
+.B \-data\-change\-warn
+option works as if the last error control option was
+.sp
+	\fBerrctl=\fP\fI"WARN|GROW|SHRINK	*"\fP
+.sp
+.TP
+.B \-debug
+Increment debug value by one.
+.TP
+.BI \-dir\-mode " mode
+Overrides the mode of directories used to create the image to
+.IR mode .
+See
+.B \-new\-dir\-mode
+on how to specify a different
+.I mode
+that is used for directories that do not exist
+in the tree specified by the source-path.
+Specifying the
+.B \-dir\-mode
+option automatically enables Rock Ridge extensions.
+.br
+.ne 4
+.TP
+.B \-dvd\-audio
+Generate DVD-Audio compliant UDF file system. This is done by sorting the
+order of the content of the appropriate files.
+.\" Audio is currently not sorted
+.\" and by adding padding between the files if needed.
+Sorting only works if the DVD-Audio filenames include upper case
+characters only.
+.sp
+Note that in order to get a DVD-Audio compliant filesystem image, you need
+to prepare a DVD-Audio compliant directory tree. This means you need to
+have a directory AUDIO_TS (all caps) in the root directory of the resulting DVD
+and you should have a directory VIDEO_TS. The directory AUDIO_TS needs to
+include all needed files (file names must be all caps) for a compliant DVD-Audio
+filesystem.
+.TP
+.B \-dvd\-hybrid
+Equivalent to selecting both -dvd-audio and -dvd-video
+.TP
+.B \-dvd\-video
+Generate DVD-Video compliant UDF file system. This is done by sorting the
+order of the content of the appropriate files and by adding padding 
+between the files if needed.
+Sorting only works if the DVD-Video filenames include upper case
+characters only.
+.sp
+Note that in order to get a DVD-Video compliant filesystem image, you need
+to prepare a DVD-Video compliant directory tree. This means you need to
+have a directory VIDEO_TS (all caps) in the root directory of the resulting DVD
+and you should have a directory AUDIO_TS. The directory VIDEO_TS needs to
+include all needed files (file names must be all caps) for a compliant DVD-Video
+filesystem.
+.TP
+.B \-f
+.TP
+.B \-follow\-links
+Follow all symbolic links when generating the filesystem.  When this option is not
+in use, symbolic links will be entered using Rock Ridge if enabled, otherwise
+the file will be ignored.
+.sp
+See also
+.B \-posix\-L
+option.
+.TP
+.BI \-file\-mode " mode
+Overrides the mode of regular files used to create the image to
+.IR mode .
+Specifying this option automatically enables Rock Ridge extensions.
+.TP
+.B \-find
+This option acts a separator.
+If it is used, all 
+.B mkisofs
+options must be to the left of the
+.B \-find
+option. To the right of the
+.B \-find
+option,
+.B mkisofs
+accepts the
+.B find
+command line syntax only.
+.sp
+The
+.B find
+expression acts as a filter between the source of file names and the
+consumer, which is archiving engine.
+If the
+.B find
+expression evaluated as TRUE, then the related file is selected for
+processing, otherwise it is omited.
+.sp
+In order to make the evaluation of the
+.B find
+expression more convenient, 
+.B mkisofs
+implements additional
+.B "find primaries
+that have side effects on the file meta data.
+.B Mkisofs
+implements the following additional
+.B find
+primaries:
+.RS
+.TP
+.B \-help
+Lists the available
+.BR find (1)
+syntax.
+.TP
+.BI \-chgrp " gname
+The primary always evaluates as true;
+it sets the group of the file to
+.IR gname .
+.TP
+.BI \-chmod " mode
+The primary always evaluates as true;
+it sets the permissions of the file to
+.IR mode .
+Octal and symbolic permissions are accepted for
+.I mode
+as with
+.BR chmod (1).
+.TP
+.BI \-chown " uname
+The primary always evaluates as true;
+it sets the owner of the file to
+.IR uname .
+.TP
+.B \-false
+The primary always evaluates as false;
+it allows to make the result of the full expression different from
+the result of a part of the expression.
+.TP
+.B \-true
+The primary always evaluates as true;
+it allows to make the result of the full expression different from
+the result of a part of the expression.
+.PP
+The command line:
+.PP
+.B "mkisofs -o o.iso -find . ( -type d -ls -o false ) -o ! -type d
+.PP
+lists all directories and puts all non-directories to the image
+.BR o.iso .
+.PP
+The command line:
+.PP
+.B "mkisofs -o o.iso -find . ( -type d -chown root -o true )
+.PP
+archives all directories so they appear to be owned by root in the archive,
+all non-directories are archived as they are in the file system.
+.PP
+Note that the
+.BR \-ls ,
+.B \-exec 
+and the
+.B \-ok
+primary cannot be used if 
+.B stdin 
+or
+stdout
+has not been redirected.
+.RE
+.TP
+.BI \-gid " gid
+Overrides the gid read from the source files to the value of
+.IR gid . 
+Specifying this option automatically enables Rock Ridge extensions.
+.TP
+.B \-gui
+Switch the behaviour for a GUI. This currently makes the output more verbose
+but may have other effects in future.
+.TP
+.B \-graft\-points
+Allow to use graft points for filenames. If this option is used, all filenames
+are checked for graft points. The filename is divided at the first unescaped
+equal sign. All occurrences of '\e\e' and '=' characters must be escaped with '\e\e'
+if 
+.I \-graft\-points
+has been specified.
+.TP
+.BI \-hide " glob
+Hide
+.I glob
+from being seen on the ISO-9660 or Rock Ridge directory.
+.I glob
+is a shell wild-card-style pattern that must match any part of the filename 
+or path.
+Multiple globs may be hidden.
+If
+.I glob
+matches a directory, then the contents of that directory will be hidden.
+In order to match a directory name, make sure the pathname does not include
+a trailing '/' character.
+All the hidden files will still be written to the output CD image file.
+Should be used with the
+.B \-hide\-joliet
+option. See README.hide for more details.
+.TP
+.BI \-hide\-list " file
+A file containing a list of
+.I globs
+to be hidden as above.
+.TP
+.BI \-hidden " glob
+Add the hidden (existence) ISO-9660 directory attribute for
+.IR glob .
+This attribute will prevent 
+.I glob
+from being listed on DOS based systems if the /A flag is not used for the listing.
+.I glob
+is a shell wild-card-style pattern that must match any part of the filename 
+or path.
+In order to match a directory name, make sure the pathname does not include
+a trailing '/' character.
+Multiple globs may be hidden.
+.TP
+.BI \-hidden\-list " file
+A file containing a list of
+.I globs
+to get the hidden attribute as above.
+.TP
+.BI \-hide\-joliet " glob
+Hide
+.I glob
+from being seen on the Joliet directory.
+.I glob
+is a shell wild-card-style pattern that must match any part of the filename 
+or path.
+Multiple globs may be hidden.
+If
+.I glob
+matches a directory, then the contents of that directory will be hidden.
+In order to match a directory name, make sure the pathname does not include
+a trailing '/' character.
+All the hidden files will still be written to the output CD image file.
+Should be used with the
+.B \-hide
+option. See README.hide for more details.
+.TP
+.BI \-hide\-joliet\-list " file
+A file containing a list of
+.I globs
+to be hidden as above.
+.TP
+.B \-hide\-joliet\-trans\-tbl
+Hide the
+.B TRANS.TBL
+files from the Joliet tree.
+These files usually don't make sense in the Joliet World as they list
+the real name and the ISO-9660 name which may both be different from the
+Joliet name.
+.TP
+.B \-hide\-rr\-moved
+Rename the directory
+.B RR_MOVED
+to
+.B .rr_moved
+in the Rock Ridge tree.
+This option has been introduced when 
+.B mkisofs 
+was not able to hide the directory in the Rock Ridge tree.
+This version of 
+.B mkisofs
+always automatically hides the
+.B RR_MOVED
+directory in the Rock Ridge tree.
+If you need to have no
+.B RR_MOVED
+directory at all (even in the ISO-9660 tree), you should use the
+.B \-D
+option. Note that in case that the
+.B \-D
+option has been specified, the resulting filesystem is not ISO-9660
+level-1 compliant and will not be readable on MS-DOS.
+See also 
+.B NOTES
+section for more information on the 
+.B RR_MOVED
+directory.
+
+.TP
+.BI \-hide\-udf " glob
+Hide
+.I glob
+from being seen on the UDF directory.
+.I glob
+is a shell wild-card-style pattern that must match any part of the filename 
+or path.
+Multiple globs may be hidden.
+If
+.I glob
+matches a directory, then the contents of that directory will be hidden.
+In order to match a directory name, make sure the pathname does not include
+a trailing '/' character.
+All the hidden files will still be written to the output CD image file.
+Should be used with the
+.B \-hide
+option. See README.hide for more details.
+.TP
+.BI \-hide\-udf\-list " file
+A file containing a list of
+.I globs
+to be hidden as above.
+
+.PD 0
+.TP
+.B \-hide\-ignorecase
+.TP
+.B \-exclude\-ignorecase
+.PD
+Ignore the case of the filenames with the
+.B \-hide*
+options
+and with the
+.B \-exclude\-list
+option.
+
+.TP
+.BI \-input\-charset " charset
+Set up the input charset that defines the characters used in local file names.
+To get a list of valid charset names, call
+.B "mkisofs \-input\-charset help.
+To get a 1:1 mapping, you may use
+.B default
+as charset name. If the input charset has not been set up from the
+locale in the environment, the default initial values are
+.I cp437
+on DOS based systems and
+.I iso8859-1
+on all other systems.
+See 
+.B "CHARACTER SETS
+section below for more details.
+.sp
+If
+.B \-input\-charset
+has not been specified, it will be set up from the locale in the
+environment. If you like to disable this automatic setup, use
+the empty string as locale name.
+.TP
+.BI \-output\-charset " charset
+Set up the output charset that defines the characters that will be used in Rock Ridge
+file names. Defaults to the input charset. See
+.B "CHARACTER SETS
+section below for more details.
+.TP
+.BI \-iso\-level " level
+Set the ISO-9660 conformance level. Valid numbers are 1..3 and 4.
+.sp
+With level 1, files may only consist of one section and filenames are
+restricted to 8.3 characters.
+.sp
+With level 2, files may only consist of one section.
+.sp
+With level 3, no restrictions (other than ISO-9660:1988) do apply.
+Starting with this level, mkisofs also allows files to be larger than 4 GB
+by implementing ISO-9660 multi-extent files.
+.sp
+With all ISO-9660 levels from 1..3, all filenames are restricted to upper
+case letters, numbers and the underscore (_). The maximum filename
+length is restricted to 31 characters, the directory nesting level
+is restricted to 8 and the maximum path length is limited to 255 characters.
+.sp
+Level 4 officially does not exists but 
+.B mkisofs
+maps it to ISO-9660:1999 which is ISO-9660 version 2.
+.sp
+With level 4, an enhanced volume descriptor with version number
+and file structure version number set to 2 is emitted.
+There may be more than 8 levels of directory nesting,
+there is no need for a file to contain a dot and the dot has no
+more special meaning,
+file names do not have version numbers,
+.\" (f XXX ??? The character used for filling byte positions which are
+.\"     specified to be characters is subject to agreement between the
+.\"     originator and the recipient of the volume),
+the maximum length for files and directory is raised to 207.
+If Rock Ridge is used, the maximum ISO-9660 name length is reduced to 197.
+.sp
+When creating Version 2 images,
+.B mkisofs
+emits an enhanced volume descriptor which looks similar to a primary volume
+descriptor but is slightly different. Be careful not to use broken software
+to make ISO-9660 images bootable by assuming a second PVD copy and patching 
+this putative PVD copy into an El Torito VD.
+.TP
+.B \-J
+Generate Joliet directory records in addition to regular ISO-9660 file
+names.  This is primarily useful when the discs are to be used on Windows-NT
+or Windows-95 machines.  The Joliet filenames are specified in Unicode and
+each path component can be up to 64 Unicode characters long.
+Note that Joliet is no standard - CD's that use only Joliet extensions but no
+standard Rock Ridge extensions may usually only be used on Microsoft Win32
+systems. Furthermore, the fact that the filenames are limited to 64 characters
+and the fact that Joliet uses the UTF-16 coding for Unicode characters causes
+interoperability problems.
+.TP
+.B \-joliet\-long
+Allow Joliet filenames to be up to 103 Unicode characters. This breaks the
+Joliet specification - but appears to work. Use with caution. The number
+103 is derived from: the maximum Directory Record Length (254), minus the
+length of Directory Record (33), minus CD-ROM XA System Use Extension
+Information (14), divided by the UTF-16 character size (2).
+.TP
+.BI \-jcharset " charset
+Same as using
+.B \-input\-charset
+.I charset
+and
+.B \-J
+options. See
+.B "CHARACTER SETS
+section below for more details.
+.TP
+.B \-l
+.TP
+.B \-full\-iso9660\-filenames
+Allow full 31 character filenames.  Normally the ISO-9660 filename will be in an
+8.3 format which is compatible with MS-DOS, even though the ISO-9660 standard
+allows filenames of up to 31 characters.  If you use this option, the disc may
+be difficult to use on a MS-DOS system, but this comes in handy on some other
+systems (such as the Amiga).
+Use with caution.
+.TP
+.B \-L
+Outdated option reserved by POSIX.1-2001, use
+.B \-allow\-leading\-dots
+instead.
+This option will get POSIX.1-2001 semantics with mkisofs-3.02.
+.TP
+.BI \-log\-file " log_file
+Redirect all error, warning and informational messages to
+.I log_file
+instead of the standard error.
+.TP
+.B \-long\-rr\-time
+Use the long ISO-9660 time format for the file time stamps used in Rock Ridge.
+This time format allows to represent year 0 .. year 9999 with a granularity of 10ms.
+.sp
+The short ISO-9660 time format only allows to represent year 1900 .. year 2155
+with a granularity of 1s. 
+.TP
+.BI \-m " glob
+Exclude
+.I glob
+from being written to CDROM.
+.I glob
+is a shell wild-card-style pattern that must match part of the filename (not 
+the path as with option
+.BR \-x ).
+Technically
+.I glob
+is matched against the
+.I d->d_name
+part of the directory entry.
+Multiple globs may be excluded.
+Example:
+
+mkisofs \-o rom \-m '*.o' \-m core \-m foobar
+
+would exclude all files ending in ".o", called "core" or "foobar" to be
+copied to CDROM. Note that if you had a directory called "foobar" it too (and
+of course all its descendants) would be excluded.
+.sp
+NOTE: The
+.B \-m
+and
+.B \-x
+option description should both be updated, they are wrong.
+Both now work identical and use filename globbing. A file is excluded if either
+the last component matches or the whole path matches.
+.TP
+.BI \-exclude\-list " file
+A file containing a list of
+.I globs
+to be excluded as above.
+.TP
+.B \-max\-iso9660\-filenames
+Allow 37 chars in ISO-9660 filenames.
+This option forces the
+.B \-N
+option as the extra name space is taken from the space reserved for
+ISO-9660 version numbers.
+.br
+This violates the ISO-9660 standard, but it happens to work on many systems.
+Although a conforming application needs to provide a buffer space of at
+least 37 characters, disks created with this option may cause a buffer
+overflow in the reading operating system. Use with extreme care.
+.TP
+.BI \-M " path
+or
+.TP
+.BI \-M " device
+or
+.TP
+.BI \-dev " device
+Specifies path to existing ISO-9660 image to be merged. The alternate form
+takes a SCSI device specifier that uses the same syntax as the
+.B "dev=
+parameter of
+.B cdrecord.
+The output of 
+.B mkisofs
+will be a new session which should get written to the end of the
+image specified in \-M.  Typically this requires multi-session capability
+for the recorder and cdrom drive that you are attempting to write this
+image to.
+This option may only be used in conjunction with the
+.B \-C
+option.
+.TP
+.BI \-modification\-date " date-spec
+Set the
+.B modification date
+in the primary volume descriptor (PVD) to a value different from the current
+time.
+This allows e.g. to set up an intentional UUID for
+.BR grub .
+.sp
+.ne 3
+The format of
+.I date-spec
+is:
+.sp
+.nf
+	\fIyyyy\fR[\fImm\fR[\fIdd\fR[\fIhh\fR[\fImm\fR[\fIss\fR]\|]\|]\|]\|][.\fIhh\fR][+-\fIghgm\fR]
+.fi
+.sp
+The fields are
+.BR year ,
+.BR month ,
+.BR "day of month" ,
+.BR hour ,
+.BR minute ,
+.BR second ,
+.BR "hundreds of a second" ,
+.BR "GMT offset in hours and minutes" .
+The time is interpreted as local time.
+.sp
+Year and the GMT offset are four digit fields, all other fields take two digits.
+The GMT offset may be between -12 and +13 hours in 15 minute steps. Locations 
+east to Greenwich have positive values. The value is the sum of the time zone offset
+and the effects from daylight saving time.
+Omited values are replaced by the minimal possible values.
+If the GMT offset is omited, it is computed from the local time value that has been
+supplied.
+.sp
+Between year and month as well as between month and day of month, a separator chosen
+from '/' and '-' may appear. In this case, the year may be a two digit number with
+values 69..99 representing 1969..1999 and values 00..68 representing 2000..2068.
+Between date and time spec, an optional space is permitted. Between hours and minutes
+as well as between minutes and seconds, an optional ':' separator is permitted.
+This allows
+.B mkisofs
+to parse the popular POSIX date format created by:
+.sp
+.nf
+	\fBdate "+%Y-%m-%d %H:%M:%S %z"\fR
+.fi
+.sp
+Note that the possible range for
+.I date-spec
+for 32 bit programs is limited to values up to 2038 Jan 19 04:14:07 GMT.
+.TP
+.B \-N
+.TP
+.B \-omit\-version\-number
+Omit version numbers from ISO-9660 file names.
+.br
+This violates the ISO-9660 standard, but no one really uses the
+version numbers anyway.
+Use with caution.
+.TP
+.BI \-new\-dir\-mode " mode
+Mode to use when creating new directories in the iso fs image.  The default
+mode in the absence of a
+.B \-dir\-mode
+option is 0555.
+.TP
+.B \-nobak
+.TP
+.B \-no\-bak
+Do not include backup files files on the ISO-9660 filesystem.
+If the
+.B \-no\-bak
+option is specified, files that contain the characters '~' or '#'
+or end in '.bak' will not be included (these are typically backup files
+for editors under UNIX).
+.TP
+.B \-no\-limit\-pathtables
+A ISO-9660 filesystem contains path tables that contain a list of directories.
+This list may contain many directories but only 65535 of them may be parent
+directories.
+When
+.B \-no\-limit\-pathtables 
+is in use, further parent directories will be folded to the root directory
+and the resulting filesystem will no longer be usable on
+.BR DOS .
+.TP
+.B \-no\-long\-rr\-time
+Use the short ISO-9660 time format for the file time stamps used in Rock Ridge.
+This time format allows to represent year 1990 .. year 2155 with a granularity of one second.
+.TP
+.B \-force\-rr
+Do not use the automatic Rock Ridge attributes recognition for previous sessions.
+This helps to show rotten ISO-9660 extension records as e.g. created by NERO burning ROM.
+.TP
+.B \-no\-rr
+Do not use the Rock Ridge attributes from previous sessions.
+This may help to avoid getting into trouble when
+.B mkisofs
+finds illegal Rock Ridge signatures on an old session.
+.TP
+.B \-no\-split\-symlink\-components
+Don't split the SL components, but begin a new Continuation Area (CE)
+instead. This may waste some space, but the SunOS 4.1.4 cdrom driver
+has a bug in reading split SL components (link_size = component_size 
+instead of link_size += component_size).
+.sp
+Note that this option has been introduced by Eric Youngdale in 1997.
+It is questionable whether it makes sense at all.
+When it has been introduced,
+.B mkisofs 
+did have a serious bug that did create defective CE signatures if
+a symlink contained `/../'.
+This CE signature bug in
+.B mkisofs
+has been fixed in May 2003.
+.TP
+.B \-no\-split\-symlink\-fields
+Don't split the SL fields, but begin a new Continuation Area (CE)
+instead. This may waste some space, but the SunOS 4.1.4 and
+Solaris 2.5.1 cdrom driver have a bug in reading split SL fields
+(a `/' can be dropped).
+.sp
+Note that this option has been introduced by Eric Youngdale in 1997.
+It is questionable whether it makes sense at all.
+When it has been introduced,
+.B mkisofs 
+did have a serious bug that did create defective CE signatures if
+a symlink contained `/../'.
+This CE signature bug in
+.B mkisofs
+has been fixed in May 2003.
+.TP
+.BI \-o " filename
+is the name of the file to which the ISO-9660 filesystem image should be
+written.  This can be a disk file, a tape drive, or it can correspond directly
+to the device name of the optical disc writer.  If not specified, stdout is
+used.  Note that the output can also be a block special device for a regular
+disk drive, in which case the disk partition can be mounted and examined to
+ensure that the premastering was done correctly.
+.TP
+.B \-pad
+Pad the end of the whole image by 150 sectors (300 kB).
+If the option
+.B \-B
+is used, then there is a padding at the end of the ISO-9660 partition 
+and before the beginning of the boot partitions.
+The size of this padding is chosen to make the first boot partition start
+on a sector number that is a multiple of 16.
+.sp
+The padding is needed as many operating systems (e.g. Linux)
+implement read ahead bugs in their filesystem I/O. These bugs result in read
+errors on one or more files that are located at the end of a track. They are
+usually present when the CD is written in Track at Once mode or when
+the disk is written as mixed mode CD where an audio track follows the
+data track.
+.sp
+To avoid problems with I/O error on the last file on the filesystem,
+the 
+.B \-pad
+option has been made the default.
+.TP
+.B \-no\-pad
+Do not Pad the end by 150 sectors (300 kB) and do not make the the boot partitions
+start on a multiple of 16 sectors.
+.TP
+.BI \-path\-list " file
+A file containing a list of
+.I pathspec
+directories and filenames to be added to the ISO-9660 filesystem. This list
+of pathspecs are processed after any that appear on the command line. If the
+argument is
+.IR \- ,
+then the list is read from the standard input.
+.TP
+.B \-P
+Outdated option reserved by POSIX.1-2001, use
+.B \-publisher
+instead.
+This option will get POSIX.1-2001 semantics with mkisofs-3.02.
+.TP
+.BI \-publisher " publisher_id
+Specifies a text string that will be written into the volume header.
+This should describe the publisher of the CDROM, usually with a
+mailing address and phone number.  There is space on the disc for 128
+characters of information.
+The related Joliet entry is limited to 64 characters.
+This parameter can also be set in the file
+.B \&.m\&kisofsrc
+with PUBL=.
+If specified in both places, the command line version is used.
+.TP
+.BI \-p " preparer_id
+.TP
+.BI \-preparer " preparer_id
+Specifies a text string that will be written into the volume header.
+This should describe the preparer of the CDROM, usually with a mailing
+address and phone number.  There is space on the disc for 128
+characters of information.
+The related Joliet entry is limited to 64 characters.
+This parameter can also be set in the file
+.B \&.m\&kisofsrc
+with PREP=.
+If specified in both places, the command line version is used.
+.TP
+.B \-posix\-H
+Follow all symbolic links encountered on command line when generating the filesystem.
+.TP
+.B \-posix\-L
+Follow all symbolic links when generating the filesystem.
+When this option is not in use, symbolic links will be entered using
+Rock Ridge if enabled, otherwise the file will be ignored.
+.TP
+.B \-posix\-P
+Do not follow symbolic links when generating the filesystem (this is the default).
+If
+.B \-posix\-P
+is specified after
+.B \-posix\-H
+or
+.BR \-posix\-L ,
+the effect of these options will be reset. 
+.TP
+.B \-print\-size
+Print estimated filesystem size in multiples of the sector size (2048 bytes)
+and exit. This option is needed for
+Disk At Once mode and with some CD-R drives when piping directly into
+.B cdrecord.
+In this case it is needed to know the size of the filesystem before the
+actual CD-creation is done.
+The option \-print\-size allows to get this size from a "dry-run" before
+the CD is actually written.
+Old versions of
+.B mkisofs
+did write this information (among other information) to 
+.IR stderr .
+As this turns out to be hard to parse, the number without any other information
+is now printed on 
+.B stdout
+too.
+If you like to write a simple shell script, redirect
+.B stderr
+and catch the number from
+.BR stdout .
+This may be done with:
+.sp
+.B "cdblocks=` mkisofs \-print\-size \-quiet .\|.\|. `
+.sp
+.B "mkisofs .\|.\|. | cdrecord .\|.\|. tsize=${cdblocks}s -"
+.TP
+.B \-quiet
+This makes
+.B mkisofs
+even less verbose.  No progress output will be provided.
+.TP
+.B \-R
+.TP
+.B \-rock
+Generate SUSP and RR records using the Rock Ridge protocol to further describe
+the files on the ISO-9660 filesystem.
+The Rock Ridge protocol is needed in order to add POSIX like file meta data
+like permissions, extended time stamps, user/group is'd, link counts, inode numbers
+and symbolic links. The Rock Ridge protocol allows to archive hierarchy trees
+with unlimited depth.
+.TP
+.B \-r
+.TP
+.B \-rational\-rock
+This is like the \-R option, but file ownership and modes are set to
+more useful values.  The uid and gid are set to zero, because they are
+usually only useful on the author's system, and not useful to the
+client.  All the file read bits are set true, so that files and
+directories are globally readable on the client.  If any execute bit is
+set for a file, set all of the execute bits, so that executables are
+globally executable on the client.  If any search bit is set for a
+directory, set all of the search bits, so that directories are globally
+searchable on the client.  All write bits are cleared, because the
+CD-Rom will be mounted read-only in any case.  If any of the special
+mode bits are set, clear them, because file locks are not useful on a
+read-only file system, and set-id bits are not desirable for uid 0 or
+gid 0.
+When used on Win32, the execute bit is set on
+.I all
+files. This is a result of the lack of file permissions on Win32 and the
+Cygwin POSIX emulation layer.  See also \-uid \-gid, \-dir\-mode, \-file\-mode
+and \-new\-dir\-mode.
+.TP
+.B \-relaxed\-filenames
+The option
+.B \-relaxed\-filenames
+allows ISO-9660 filenames to include digits, upper case characters
+and all other 7 bit ASCII characters (resp. anything except lowercase
+characters).
+.br
+This violates the ISO-9660 standard, but it happens to work on many systems.
+Use with caution.
+.TP
+.BI \-root " dir
+Moves all files and directories into
+.I dir
+in the image. This is essentially the
+same as using 
+.B -graft-points
+and adding
+.I dir
+in front of every pathspec, but is easier to use.
+
+.I dir
+may actually be several levels deep. It is
+created with the same permissions as other graft points.
+.TP
+.B \-rrip110
+Create ISO-9660 file system images that follow the old Rrip Version-1.10 standard
+from 1993. This option may be needed if you know of systems that do not implement
+the Rrip protocol correctly and like the file system to be read by such a system.
+Currently no such system is known.
+.sp
+If a file system has been created with
+.BR \-rrip110 ,
+the Rock Ridge attributes do not include inode number information.
+.TP
+.B \-rrip112
+Create ISO-9660 file system images that follow the new Rrip Version-1.12 standard
+from 1994, this is the default.
+.TP
+.BI \-old-root " dir
+This option is necessary when writing a multisession
+image and the previous (or even older) session was written with
+.BI -root " dir.
+Using a directory name not found in the previous session
+causes
+.B mkisofs
+to abort with an error.
+
+Without this option,
+.B mkisofs
+would not be able to find unmodified files and would
+be forced to write their data into the image once more.
+
+.B \-root
+and
+.B \-old-root
+are meant to be used together to do incremental backups.
+The initial session would e.g. use:
+.BI "mkisofs \-root backup_1 " dirs\f0.
+The next incremental backup with
+.BI "mkisofs \-root backup_2 \-old-root backup_1 " dirs\f0.
+would take another snapshot of these directories. The first
+snapshot would be found in
+.BR backup_1 ,
+the second one in
+.BR backup_2 ,
+but only modified or new files need to be written
+into the second session.
+
+Without these options, new files would be added and old ones would be
+preserved. But old ones would be overwritten if the file was
+modified. Recovering the files by copying the whole directory back
+from CD would also restore files that were deleted
+intentionally. Accessing several older versions of a file requires
+support by the operating system to choose which sessions are to be
+mounted.
+.br
+.ne 8
+.TP
+.B \-short\-rr\-time
+Use the short ISO-9660 time format for the file time stamps used in Rock Ridge.
+This time format allows to represent year 1990 .. year 2155 with a granularity of one second.
+.TP
+.BI \-s " sector type
+.TP
+.BI \-sectype " sector type
+Set the 
+.I sector type 
+to be used for the output file with the ISO-9660 filesystem.
+The 
+.I sector type
+may be one of:
+.RS
+.TP
+.B data
+This is the default. It results in standard CD-ROM data sectors with 
+2048 bytes per sector.
+.TP
+.B xa1
+This sets the sector type to CD-ROM XA mode 1 with 2056 bytes per sector.
+This sector type is the official sector type for multi-session CDs, it
+should be used together with the 
+.B \-XA
+option of mkisofs.
+It is required to write Kodak Photo CDs and Kodak Picture CDs.
+Use the
+.B \-xa1 
+option from 
+.B cdrecord
+to tell 
+.B cdrecord
+to write CD-ROM XA mode 1 sectors.
+Do not use for DVD or BluRay media.
+.br
+.ne 6
+.TP
+.B raw
+This sets the sector type to raw audio sectors with 2352 bytes per sector.
+This is reserved for future enhancements.
+Do not use for DVD or BluRay media.
+.RE
+.TP
+.BI \-sort " sort file
+Sort file locations on the media. Sorting is controlled by a file that
+contains pairs of filenames and sorting offset weighting.
+If the weighting is higher, the file will be located closer to the
+beginning of the media, if the weighting is lower, the file will be located
+closer to the end of the media. There must be only one space or tabs
+character between the filename and the
+weight and the weight must be the last characters on a line. The filename
+is taken to include all the characters up to, but not including the last
+space or tab character on a line. This is to allow for space characters to
+be in, or at the end of a filename.
+This option does
+.B not
+sort the order of the file names that appear
+in the ISO-9660 directory. It sorts the order in which the file data is
+written to the CD image - which may be useful in order to optimize the
+data layout on a CD. See README.sort for more details.
+.TP
+.BI \-isort " sort file
+Similiar to
+.B \-sort
+but the case if the filenames in the
+.B sort file
+is ignored.
+.TP
+.BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e
+See
+.B \-B
+option above.
+.TP
+.BI \-sparc\-label " label
+Set the Sun disk label name for the Sun disk label that is created with the
+.B \-sparc-boot
+option.
+.TP
+.B \-split\-output
+Split the output image into several files of approximately 1 GB.
+This helps to create DVD sized ISO-9660 images on operating systems without
+large file support.
+Cdrecord will concatenate more than one file into a single track if writing
+to a DVD.
+To make
+.B \-split\-output
+work, the 
+.BI \-o " filename"
+option must be specified. The resulting output images will be named:
+.IR filename_00 , filename_01, filename_02 ...
+.TP
+.BI \-stream\-media\-size " #
+Select streaming operation and set the media size to # sectors.
+This allows you to pipe the output of the tar program into mkisofs
+and to create a ISO-9660 filesystem without the need of an intermediate
+tar archive file. 
+If this option has been specified,
+.B mkisofs
+reads from 
+.B stdin 
+and creates a file with the name
+.BR STREAM.IMG .
+The maximum size of the file (with padding) is 200 sectors less than the 
+specified media size. If 
+.B \-no\-pad
+has been specified, the file size is 50 sectors less than the specified media size.
+If the file is smaller, then mkisofs will write padding. This may take a while.
+.sp
+The option 
+.B \-stream\-media\-size
+creates simple ISO-9660 filesystems only and may not used together with multi-session
+or hybrid filesystem options.
+.TP
+.BI \-stream\-file\-name " name
+Set the file name used with 
+.BI \-stream\-media\-size " #
+to a value different from
+.BR STREAM.IMG .
+If this option is used, the filesystem is created as if 
+.BR \-iso\-level " 4
+has been specified.
+.TP
+.BI \-sunx86\-boot " UFS-img,,,AUX1-img
+Specifies a comma separated list of filesystem images that are needed to make
+a bootable CD for Solaris x86 systems.
+.sp
+Note that partition 1 is used for the ISO-9660 image and that partition 2 is
+the whole disk, so partition 1 and 2 may not be used by external partition data.
+The first image file is mapped to partition 0.
+There may be empty fields in the comma separated list,
+and list entries for partition 1 and 2 must be empty.
+The maximum number of supported partitions is 8 (although the Solaris x86
+partition table could support up to 16 partitions), so it is impossible
+to specify more than 6 partition images.
+This option is required to make a bootable CD for Solaris x86 systems.
+.sp
+If the
+.B \-sunx86\-boot
+option has been specified, the first sector of the resulting image will
+contain a PC fdisk label with a Solaris type 0x82 fdisk partition that
+starts at offset 512 and spans the whole CD.
+In addition, for the Solaris type 0x82 fdisk partition, there is a
+SVr4 disk label at offset 1024 in the first sector of the CD.
+This disk label specifies slice 0 for the first (usually UFS type)
+filesystem image that is used to boot the PC and slice 1 for
+the ISO-9660 image.
+Slice 2 spans the whole CD slice 3 .\|.\|. slice 7 may be used for additional
+filesystem images that have been specified with this option.
+.sp
+A Solaris x86 boot CD uses a 1024 byte sized primary boot that uses the
+.B "El-Torito no-emulation 
+boot mode and a secondary generic boot that is in CD sectors 1\|.\|.15.
+For this reason, both
+.BI "-b " bootimage " -no\-emul\-boot
+and
+.BI \-G " genboot
+must be specified.
+.TP
+.BI \-sunx86\-label " label
+Set the SVr4 disk label name for the SVr4 disk label that is created with the
+.B \-sunx86-boot
+option.
+.TP
+.BI \-sysid " ID
+Specifies the system ID.
+There is space on the disc for 32 characters of information.
+This parameter can also be set in the file
+.B \&.m\&kisofsrc
+with SYSI=system_id.
+If specified in both places, the command line version is used.
+.TP
+.B \-T
+.TP
+.B \-translation\-table
+Generate a file TRANS.TBL in each directory on the CDROM, which can be used
+on non-Rock Ridge capable systems to help establish the correct file names.
+There is also information present in the file that indicates the major and
+minor numbers for block and character devices, and each symlink has the name of
+the link file given.
+.TP
+.BI \-table\-name " TABLE_NAME
+Alternative translation table file name (see above). Implies the
+.B \-T
+option.
+If you are creating a multi-session image you must use the same name
+as in the previous session.
+.TP
+.BI \-ucs\-level " level
+Set Unicode conformance level in the Joliet SVD. The default level is 3.
+It may be set to 1..3 using this option.
+.TP
+.B \-UDF
+Include a
+.B UDF
+hybrid in the generated filesystem image.
+As
+.B mkisofs
+always creates a ISO-9660 filesystem,
+it is not possible to create UDF only images. 
+Note that 
+.B UDF
+wastes the space from sector ~20 to sector 256 at the beginning of the disk
+in addition to the space needed for real 
+.B UDF 
+data structures.
+.TP
+.B \-udf
+Rationalized UDF with user and group set to 0 and with simplified permissions.
+See
+.B \-r
+option for more information.
+.TP
+.B \-udf\-symlinks
+Support symlinks in 
+.B UDF
+filesystems. This is the default.
+.TP
+.B \-no\-udf\-symlinks
+Do not support symlinks in
+.B UDF
+filesystems.
+.TP
+.BI \-uid " uid
+Overrides the uid read from the source files to the value of
+.IR uid . 
+Specifying this option automatically enables Rock Ridge extensions.
+.TP
+.B \-use\-fileversion
+The option 
+.B \-use\-fileversion
+allows mkisofs to use file version numbers from the filesystem.
+If the option is not specified, 
+.B mkisofs
+creates a version number of 1 for all files.
+File versions are strings in the range 
+.I ";1"
+to
+.I ";32767"
+This option is the default on VMS. 
+.TP
+.B \-U
+.TP
+.B \-untranslated\-filenames
+Allows "Untranslated" filenames, completely violating the ISO-9660 standards
+described above. Forces on the \-d, \-l, \-N, \-allow\-leading\-dots,
+\-relaxed\-filenames,
+\-allow\-lowercase, \-allow\-multidot and \-no\-iso\-translate
+flags. It allows more
+than one '.' character in the filename, as well as mixed case filenames.
+This is useful on HP-UX system, where the built-in CDFS filesystem does
+not recognize ANY extensions. Use with extreme caution.
+.TP
+.B \-no\-iso\-translate
+Do not translate the characters '#' and '~' which are invalid for ISO-9660 filenames.
+These characters are though invalid often used by Microsoft systems.
+.br
+This violates the ISO-9660 standard, but it happens to work on many systems.
+Use with caution.
+.TP
+.BI \-V " volid
+Specifies the volume ID (volume name or label) to be written into the
+master block. 
+There is space on the disc for 32 characters of information.
+This parameter can also be set in the file
+.B \&.m\&kisofsrc
+with VOLI=id.
+If specified in both places, the command line version is used.  Note that
+if you assign a volume ID, this is the name that will be used as the mount
+point used by the Solaris volume management system and the name that is
+assigned to the disc on a Microsoft Win32 or Apple Mac platform.
+.TP
+.BI \-volset " ID
+Specifies the volset ID.
+There is space on the disc for 128 characters of information.
+The related Joliet entry is limited to 64 characters.
+This parameter can also be set in the file
+.B \&.m\&kisofsrc
+with VOLS=volset_id.
+If specified in both places, the command line version is used.
+.TP
+.BI \-volset\-size " #
+Sets the volume set size to #.
+The volume set size is the number of CD's that are in a CD volume set.
+A volume set is a collection of one or more volumes, on which a set of
+files is recorded.
+.sp
+Volume Sets are not intended to be used to create a set numbered CD's
+that are part of e.g. a Operation System installation set of CD's.
+Volume Sets are rather used to record a big directory tree that would not
+fit on a single volume.
+Each volume of a Volume Set contains a description of all the directories
+and files that are recorded on the volumes where the sequence numbers
+are less than, or equal to, the assigned Volume Set Size of the current
+volume.
+.sp
+.B Mkisofs
+currently does not support a
+.B \-volset\-size
+that is larger than 1.
+.sp
+The option
+.B \-volset\-size
+must be specified before
+.B \-volset\-seqno
+on each command line.
+.TP
+.BI \-volset\-seqno " #
+Sets the volume set sequence number to #.
+The volume set sequence number is the index number of the current
+CD in a CD set.
+The option
+.B \-volset\-size
+must be specified before
+.B \-volset\-seqno
+on each command line.
+.TP
+.B \-v
+.TP
+.B \-verbose
+Verbose execution. If given twice on the command line, extra debug information
+will be printed.
+.TP
+.BI \-x " path
+Exclude
+.I path
+from being written to CDROM.
+.I path
+must be the complete pathname that results from concatenating the pathname
+given as command line argument and the path relative to this directory.
+Multiple paths may be excluded.
+Example: 
+
+mkisofs \-o cd \-x /local/dir1 \-x /local/dir2 /local
+.sp
+NOTE: The
+.B \-m
+and
+.B \-x
+option description should both be updated, they are wrong.
+Both now work identical and use filename globbing. A file is excluded if either
+the last component matches or the whole path matches.
+.TP
+.B \-XA
+Generate XA iso-directory attributes with original owner and mode information.
+This option is required to create conforming multi session CDs as used by the
+Kodak Photo CD and the Kodak Picture CD.
+A conforming XA CD uses CD-ROM XA mode 1 sectors, see the
+.BI \-sector " xa2
+option for more information.
+.TP
+.B \-xa
+Generate XA iso-directory attributes with rationalized owner and mode information.
+User ID and group ID are set to 0.
+See
+.B \-XA
+for more information.
+.TP
+.B \-z
+Generate special RRIP records for transparently compressed files.
+This is only of use and interest for hosts that support transparent
+decompression, such as Linux 2.4.14 or later.  You must specify the
+.B \-R
+or
+.B \-r
+options to enable RockRidge, and generate compressed files using the
+.B mkzftree
+utility before running
+.BR mkisofs .
+Note that transparent compression is a nonstandard Rock Ridge extension.
+The resulting disks are only transparently readable if used on Linux.
+On other operating systems you will need to call
+.B mkzftree
+by hand to decompress the files.
+
+.SH "HFS OPTIONS
+.TP
+.B \-hfs
+Create an ISO-9660/HFS hybrid CD. This option should be used in conjunction
+with the
+.BR \-map ,
+.B \-magic
+and/or the various
+.I double dash
+options given below.
+.TP
+.B \-no\-hfs
+Do not create an ISO-9660/HFS hybrid CD even though other options may imply to do so. 
+.TP
+.B \-apple
+Create an ISO-9660 CD with Apple's extensions. Similar to the
+.B \-hfs
+option, except that the Apple Extensions to ISO-9660 are added instead of
+creating an HFS hybrid volume.
+Former 
+.B mkisofs
+versions did include Rock Ridge attributes by default if 
+.B \-apple
+was specified. This versions of
+.B mkisofs
+does not do this anymore. If you like to have Rock Ridge attributes,
+you need to specify this separately.
+.TP
+.BI \-map " mapping_file
+Use the
+.I mapping_file
+to set the CREATOR and TYPE information for a file based on the
+filename's extension. A filename is 
+mapped only if it is not one of the know Apple/Unix file formats. See the
+.B "HFS CREATOR/TYPE
+section below.
+.TP
+.BI \-magic " magic_file
+The CREATOR and TYPE information is set by using a file's
+.I magic number
+(usually the first few bytes of a file). The
+.I magic_file
+is only used if a file is not one of the known Apple/Unix file formats, or
+the filename extension has not been mapped using the
+.B \-map
+option. See the 
+.B "HFS CREATOR/TYPE
+section below for more details.
+.TP
+.BI \-hfs\-creator " CREATOR
+Set the default CREATOR for all files. Must be exactly 4 characters. See the
+.B "HFS CREATOR/TYPE
+section below for more details.
+.TP
+.BI \-hfs\-type " TYPE
+Set the default TYPE for all files. Must be exactly 4 characters. See the
+.B "HFS CREATOR/TYPE
+section below for more details.
+.TP
+.B \-probe
+Search the contents of files for all the known Apple/Unix file formats.
+See the
+.B HFS MACINTOSH FILE FORMATS
+section below for more about these formats.
+However, the only way to check for
+.I MacBinary
+and
+.I AppleSingle
+files is to open and read them. Therefore this option
+.I may
+increase processing time. It is better to use one or more
+.I double dash
+options given below if the Apple/Unix formats in use are known.
+.TP
+.B \-no\-desktop
+Do not create (empty) Desktop files. New HFS Desktop files will be created
+when the CD is used on a Macintosh (and stored in the System Folder).
+By default, empty Desktop files are added to the HFS volume.
+.TP
+.B \-mac\-name
+Use the HFS filename as the starting point for the ISO-9660, Joliet and
+Rock Ridge file names. See the
+.B HFS MACINTOSH FILE NAMES
+section below for more information.
+.TP
+.BI \-boot\-hfs\-file " driver_file
+Installs the
+.I driver_file
+that
+.I may
+make the CD bootable on a Macintosh. See the
+.B HFS BOOT DRIVER
+section below. (Alpha).
+.TP
+.B \-part
+Generate an HFS partition table. By default, no partition table is generated,
+but some older Macintosh CDROM drivers need an HFS partition table on the
+CDROM to be able to recognize a hybrid CDROM.
+.TP
+.BI \-auto " AutoStart_file
+Make the HFS CD use the QuickTime 2.0 Autostart feature to launch an
+application or document. The given filename must be the name of a document or
+application located at the top level of the CD. The filename must be less
+than 12 characters. (Alpha).
+.TP
+.BI \-cluster\-size " size
+Set the size in bytes of the cluster or allocation units of PC Exchange
+files. Implies the
+.B \-\-exchange
+option. See the
+.B HFS MACINTOSH FILE FORMATS
+section below.
+.TP
+.BI \-hide\-hfs " glob
+Hide
+.I glob
+from the HFS volume. The file or directory will still exist in the
+ISO-9660 and/or Joliet directory.
+.I glob
+is a shell wild-card-style pattern that must match any part of the filename
+Multiple globs may be excluded.
+Example:
+
+mkisofs \-o rom \-hfs \-hide\-hfs '*.o' \-hide\-hfs foobar
+
+would exclude all files ending in ".o" or called "foobar" 
+from the HFS volume. Note that if you had a directory called
+"foobar" it too (and of course all its descendants) would be excluded.
+The
+.I glob
+can also be a path name relative to the source directories given on the
+command line. Example:
+
+mkisofs \-o rom \-hfs \-hide\-hfs src/html src
+
+would exclude just the file or directory called "html" from the "src"
+directory. Any other file or directory called "html" in the tree will
+not be excluded.
+Should be used with the
+.B \-hide
+and/or
+.B \-hide\-joliet
+options.
+In order to match a directory name, make sure the pathname does not include
+a trailing '/' character. See README.hide for more details.
+.TP
+.BI \-hide\-hfs\-list " file
+A file containing a list of
+.I globs
+to be hidden as above.
+.TP
+.BI \-hfs\-volid " hfs_volid
+Volume name for the HFS partition. This is the name that is
+assigned to the disc on a Macintosh and replaces the
+.I volid
+used with the 
+.B \-V
+option
+.TP
+.B \-icon\-position
+Use the icon position information, if it exists, from the Apple/Unix file.
+The icons will appear in the same position as they would on a Macintosh
+desktop. Folder location and size on screen, its scroll positions, folder
+View (view as Icons, Small Icons, etc.) are also preserved.
+This option may become set by default in the future.
+(Alpha).
+.TP
+.BI \-root\-info " file
+Set the location, size on screen, scroll positions, folder View etc. for the
+root folder of an HFS volume. See README.rootinfo for more information.
+(Alpha)
+.TP
+.BI \-prep\-boot " FILE
+PReP boot image file. Up to 4 are allowed. See README.prep_boot (Alpha)
+.TP
+.B \-chrp-\boot
+Create a CHRP boot in boot partition 1.
+See
+.B \-prep\-boot
+for further information.
+.TP
+.BI \-input\-hfs\-charset " charset
+Input charset that defines the characters used in HFS file names when
+used with the
+.I \-mac\-name
+option.
+The default charset is cp10000 (Mac Roman)
+.I cp10000
+(Mac Roman)
+See
+.B "CHARACTER SETS
+and
+.B "HFS MACINTOSH FILE NAMES
+sections below for more details.
+.TP
+.BI \-output\-hfs\-charset " charset
+Output charset that defines the characters that will be used in the HFS
+file names. Defaults to the input charset. See
+.B "CHARACTER SETS
+section below for more details.
+.TP
+.B \-hfs\-unlock
+By default,
+.B mkisofs
+will create an HFS volume that is
+.IR locked .
+This option leaves the volume unlocked so that other applications (e.g.
+hfsutils) can modify the volume. See the
+.B "HFS PROBLEMS/LIMITATIONS
+section below for warnings about using this option.
+.TP
+.BI \-hfs\-bless " folder_name
+"Bless" the given directory (folder). This is usually the 
+.B System Folder
+and is used in creating HFS bootable CDs. The name of the directory must
+be the whole path name as
+.B mkisofs
+sees it. e.g. if the given pathspec is ./cddata and the required folder is
+called System Folder, then the whole path name is "./cddata/System Folder"
+(remember to use quotes if the name contains spaces).
+.TP
+.BI \-hfs\-parms " PARAMETERS
+Override certain parameters used to create the HFS file system. Unlikely to
+be used in normal circumstances. See the libhfs_iso/hybrid.h source file for
+details.
+.TP
+.B \-\-cap
+Look for AUFS CAP Macintosh files. Search for CAP Apple/Unix file formats
+only. Searching for the other possible Apple/Unix file formats is disabled,
+unless other
+.I double dash
+options are given.
+.TP
+.B \-\-netatalk
+Look for NETATALK Macintosh files
+.TP
+.B \-\-double
+Look for AppleDouble Macintosh files
+.TP
+.B \-\-ethershare
+Look for Helios EtherShare Macintosh files
+.TP
+.B \-\-ushare
+Look for IPT UShare Macintosh files
+.TP
+.B \-\-exchange
+Look for PC Exchange Macintosh files
+.TP
+.B \-\-sgi
+Look for SGI Macintosh files
+.TP
+.B \-\-xinet
+Look for XINET Macintosh files
+.TP
+.B \-\-macbin
+Look for MacBinary Macintosh files
+.TP
+.B \-\-single
+Look for AppleSingle Macintosh files
+.TP
+.B \-\-dave
+Look for Thursby Software Systems DAVE Macintosh files
+.TP
+.B \-\-sfm
+Look for Microsoft's Services for Macintosh files (NT only) (Alpha)
+.TP
+.B \-\-osx\-double
+Look for MacOS X AppleDouble Macintosh files
+.TP
+.B \-\-osx\-hfs
+Look for MacOS X HFS Macintosh files
+
+.SH "CHARACTER SETS
+.B mkisofs
+processes file names in a POSIX compliant way as strings of 8-bit characters.
+To represent all codings for all languages, 8-bit characters are not
+sufficient. Unicode or
+.B ISO-10646
+define character codings that need at least 21 bits to represent all
+known languages. They may be represented with
+.BR UTF-32 ", " UTF-16 " or " UTF-8
+coding.
+.B UTF-32
+uses a plain 32-bit coding but seems to be uncommon. 
+.B UCS-2
+is used by Microsoft with Win32.
+This coding is similar to 
+.B UTF-16
+with the disadvantage that it only supports
+a 16 bit subset (except when surrogates are used) of all codes
+and that 16-bit characters are not compliant with
+the POSIX filesystem interface.
+.PP
+Modern UNIX operating systems may use
+.B UTF-8
+coding for filenames. This coding allows to use the complete Unicode code set.
+Each 32-bit character is represented by one or more 8-bit characters.
+If a character is coded in
+.B ISO-8859-1
+(used in Central Europe and North America) it maps 1:1 to a 
+.BR UTF-32 " or " UTF-16 "
+coded Unicode character.
+If a character is coded in
+.B "7-Bit ASCII
+(used in USA and other countries with limited character set)
+it maps 1:1 to a 
+.BR UTF-32 ", " UTF-16 " or " UTF-8
+coded Unicode character.
+Character codes that cannot be represented as a single byte in UTF-8
+(typically if the value is > 0x7F) use escape sequences that map to more than
+one 8-bit character.
+.PP
+If all operating systems would use 
+.B UTF-8
+coding,
+.B mkisofs
+would not need to recode characters in file names.
+Unfortunately, Apple uses completely nonstandard codings and Microsoft
+uses a Unicode coding that is not compatible with the POSIX filename
+interface.
+.PP
+For all non
+.B UTF-8
+coded operating systems, the actual character
+that each byte represents, depends on the
+.I character set
+or
+.I codepage
+(which is the name used by Microsoft)
+used by the local operating system in use - the characters in a character
+set will reflect the region or natural language used by the user.
+.PP
+Usually character codes 0x00-0x1f are control characters, codes 0x20-0x7f
+are the 7 bit ASCII characters and (on PC's and Mac's) 0x80-0xff are used
+for other characters.
+Unfortunately even this does not follow ISO standards that reserve the
+range 0x80-0x9f for control characters and only allow 0xa0-0xff for other
+characters.
+.PP
+As there is a lot more than 256 characters/symbols in use, only a small
+subset are represented in a character set. Therefore the same character code
+may represent a different character in different character sets. So a file name
+generated, say in central Europe, may not display the same character
+when viewed on a machine in, say eastern Europe.
+.PP
+To make matters more complicated, different operating systems use
+different character sets for the region or language. For example the character
+code for "small e with acute accent" may be character code 0x82 on a PC, 
+code 0x8e on a Macintosh and code 0xe9 on a UNIX system.
+Note while the codings used on a PC or Mac are nonstandard,
+Unicode codes this character as 0x00000000e9 which is basically the
+same value as the value used by most UNIX systems.
+.PP
+As long as not all operating systems and applications will use the Unicode
+character set as the basis for file names in a unique way, it may be
+necessary to specify which character set your file names use in and which
+character set the file names should appear on the CD.
+.PP
+There are four options to specify the character sets you want to use:
+.IP \-input\-charset
+Defines the local character set you are using on your host machine.
+Any character set conversions that take place will use this character
+set as the staring point. The default input character sets are
+.I cp437
+on DOS based systems and
+.I iso8859-1
+on all other systems.
+
+If the
+.I \-J
+option is given, then the Unicode equivalents of the input character set
+will be used in the Joliet directory. Using the 
+.I \-jcharset
+option is the same as using the
+.I \-input\-charset
+and
+.I \-J
+options.
+.IP \-output\-charset
+Defines the character set that will be used with for the Rock Ridge names
+on the CD. Defaults to the input character set. Only likely to be useful
+if used on a non-Unix platform. e.g. using
+.B mkisofs
+on a Microsoft Win32 machine to create Rock Ridge CDs. If you are using
+.B mkisofs
+on a Unix machine, it is likely that the output character set
+will be the same as the input character set.
+.IP \-input\-hfs\-charset
+Defines the HFS character set used for HFS file names decoded from
+any of the various Apple/Unix file formats. Only useful when used with
+.I \-mac\-name
+option. See the
+.B HFS MACINTOSH FILE NAMES
+for more information. Defaults to
+.I cp10000
+(Mac Roman).
+.IP \-output\-hfs\-charset
+Defines the HFS character set used to create HFS file names from the input
+character set in use. In most cases this will be from the character set
+given with the
+.I \-input\-charset
+option. Defaults to the input HFS character set.
+.PP
+The
+.B default
+character set is built into
+.BR mkisofs .
+A number of further character sets are read in from the filesystem by
+.I mkisofs
+from a directory relatively to the install path.
+To get a listing, use
+.B "mkisofs \-input\-charset help.
+.PP
+Additional character sets from
+.BR iconv (1)
+may be used on systems, that support
+.BR iconv (1).
+In this case, call
+.B "iconv \-l
+to get a list of valid character sets from this coding method.
+To force an 
+.BR iconv (1)
+based coding, use
+.BI iconv: name
+instead of 
+.I name
+for the character set.
+.PP
+If using non
+.BR iconv (1)
+based character sets,
+additional character sets can be read from file for any of the character
+set options by giving a filename as the argument to the options. A given
+character set will be read from a file whenever the supplied name contains
+a '/'.
+.PP
+The format of the character set files is the same as the mapping files
+available from http://www.unicode.org/Public/MAPPINGS The format of these
+files is:
+
+	Column #1 is the input byte code (in hex as 0xXX)
+.br
+	Column #2 is the Unicode (in hex as 0xXXXX)
+.br
+	Rest of the line is ignored.
+
+Any blank line, line without two (or more) columns in the above format
+or comments lines (starting with the # character) are ignored without any
+warnings. Any missing input code is mapped to Unicode character 0x0000.
+.PP
+Note that there is no support for 16 bit UNICODE (UTF-16) or 32 bit UNICODE
+(UTF-32) coding because this coding is not POSIX compliant. There should 
+be support for UTF-8 UNICODE coding which is compatible to POSIX filenames
+and supported by moder UNIX implementations such as Solaris.
+.PP
+A 1:1 character set mapping can be defined by using the keyword
+.I default
+as the argument to any of the character set options. This is the behaviour
+of older (v1.12) versions of
+.BR mkisofs .
+.PP
+The ISO-9660 file names generated from the input filenames are not converted
+from the input character set. The ISO-9660 character set is a very limited
+subset of the ASCII characters, so any conversion would be pointless.
+.PP
+Any character that
+.B mkisofs
+can not convert will be replaced with a '_' character.
+.PP
+.SH "HFS CREATOR/TYPE
+A Macintosh file has two properties associated with it which define
+which application created the file, the
+.I CREATOR
+and what data the file contains, the
+.IR TYPE .
+Both are (exactly) 4 letter strings. Usually this
+allows a Macintosh user to double-click on a file and launch the correct
+application etc. The CREATOR and TYPE of a particular file can be found by
+using something like ResEdit (or similar) on a Macintosh.
+.LP
+The CREATOR and TYPE information is stored in all the various Apple/Unix
+encoded files.
+For other files it is possible to base the CREATOR and TYPE on the
+filename's extension using a
+.I mapping
+file (the
+.B \-map
+option) and/or using the
+.I magic number
+(usually a
+.I signature
+in the first few bytes)
+of a file (the
+.B \-magic
+option). If both these options are given, then their order on the command
+line is important. If the
+.B \-map
+option is given first, then a filename extension match is attempted
+before a magic number match. However, if the
+.B \-magic
+option is given first, then a magic number match is attempted before a
+filename extension match.
+.PP
+If a mapping or magic file is not used, or no match is found then the default
+CREATOR and TYPE for all regular files can be set by using entries in the 
+.B \&.m\&kisofsrc
+file or using the 
+.B \-hfs\-creator
+and/or
+.B \-hfs\-type
+options, otherwise the default CREATOR and TYPE are 'unix' and 'TEXT'.
+.PP
+The format of the
+.I mapping
+file is the same
+.I afpfile
+format as used by
+.IR aufs .
+This file has five columns for the
+.IR extension ,
+.I file
+.IR translation ,
+.IR CREATOR ,
+.I TYPE
+and
+.IR Comment .
+Lines starting with the '#' character are
+comment lines and are ignored. An example file would be like:
+.LP
+.TS
+tab (/);
+l s s s s
+l s s s s
+l l l l l .
+# Example filename mapping file
+#
+# EXTN/XLate/CREATOR/TYPE/Comment
+\&.tif/Raw/'8BIM'/'TIFF'/"Photoshop TIFF image"
+\&.hqx/Ascii/'BnHq'/'TEXT'/"BinHex file"
+\&.doc/Raw/'MSWD'/'WDBN'/"Word file"
+\&.mov/Raw/'TVOD'/'MooV'/"QuickTime Movie"
+*/Ascii/'ttxt'/'TEXT'/"Text file"
+.TE
+.LP
+Where:
+.IP
+The first column
+.I EXTN
+defines the Unix filename extension to be
+mapped. The default mapping for any filename extension that doesn't
+match is defined with the "*" character.
+.IP
+The
+.I Xlate
+column defines the type of text translation between the Unix and
+Macintosh file it is ignored by
+.BR mkisofs ,
+but is kept to be compatible with
+.BR aufs (1).
+Although 
+.B mkisofs
+does not alter the contents of a file, if a binary file has its TYPE
+set as 'TEXT', it
+.I may
+be read incorrectly on a Macintosh. Therefore a better choice for the
+default TYPE may be '????'
+.IP
+The
+.I CREATOR
+and
+.I TYPE
+keywords must be 4 characters long and enclosed in single quotes.
+.IP
+The comment field is enclosed in double quotes - it is ignored by
+.BR mkisofs ,
+but is kept to be compatible with 
+.BR aufs .
+.PP
+The format of the
+.I magic
+file is almost identical to the
+.BR magic (4)
+file used by the Linux
+.BR file (1)
+command - the routines for reading and decoding the
+.I magic
+file are based on the Linux
+.BR file (1)
+command.
+.PP
+This file has four tab separated columns for the 
+.I byte
+.IR offset ,
+.IR type ,
+.I test
+and
+.IR message .
+Lines starting with the '#' character are
+comment lines and are ignored. An example file would be like:
+.LP
+.TS
+tab (/);
+l s s s
+l s s s
+l l l l .
+# Example magic file
+#
+# off/type/test/message
+0/string/GIF8/8BIM GIFf  GIF image
+0/beshort/0xffd8/8BIM JPEG  image data
+0/string/SIT!/SIT! SIT!  StuffIt Archive
+0/string/\e037\e235/LZIV ZIVU  standard unix compress
+0/string/\e037\e213/GNUz ZIVU  gzip compressed data
+0/string/%!/ASPS TEXT  Postscript
+0/string/\e004%!/ASPS TEXT  PC Postscript with a ^D to start
+4/string/moov/txtt MooV  QuickTime movie file (moov)
+4/string/mdat/txtt MooV  QuickTime movie file (mdat)
+.TE
+.PP
+The format of the file is described in the
+.BR magic (4)
+man page. The only difference here is that for each entry in the magic file, the
+.I message
+for the initial offset
+.B must
+be 4 characters for the CREATOR followed by 4 characters for the TYPE -
+white space is
+optional between them. Any other characters on this line are ignored.
+Continuation lines (starting with a '>') are also ignored i.e. only the initial
+offset lines are used.
+.PP
+Using the
+.B \-magic
+option may significantly increase processing time as each file has to opened
+and read to find its magic number.
+.PP
+In summary, for all files, the default CREATOR is 'unix' and the default
+TYPE is 'TEXT'.  These can be changed by using entries in the 
+.I \&.m\&kisofsrc 
+file or by using the
+.B \-hfs\-creator
+and/or
+.B \-hfs\-type
+options. 
+.PP
+If the a file is in one of the known Apple/Unix formats (and the format
+has been selected), then the CREATOR and TYPE are taken from the values
+stored in the Apple/Unix file.
+.PP
+Other files can have their CREATOR and TYPE set from their file name
+extension (the
+.B \-map
+option), or their magic number (the
+.B \-magic
+option). If the default match is used in the
+.I mapping
+file, then these values override the default CREATOR and TYPE.
+.PP
+A full CREATOR/TYPE database can be found at 
+http://www.angelfire.com/il/szekely/index.html
+
+.SH "HFS MACINTOSH FILE FORMATS
+Macintosh files have two parts called the
+.I Data
+and
+.I Resource
+fork. Either may be empty. Unix (and many other OSs) can only
+cope with files having one part (or fork). To add to this, Macintosh files
+have a number of attributes associated with them - probably the most
+important are the TYPE and CREATOR. Again Unix has no concept of these
+types of attributes.
+.PP
+e.g. a Macintosh file may be a JPEG image where the image is stored in the
+Data fork and a desktop thumbnail stored in the Resource fork. It is usually
+the information in the data fork that is useful across platforms.
+.PP
+Therefore to store a Macintosh file on a Unix filesystem, a way has to be
+found to cope with the two forks and the extra attributes (which are
+referred to as the
+.I finder
+.IR info ).
+Unfortunately, it seems that every software package that stores Macintosh
+files on Unix has chosen a completely different storage method.
+.PP
+The Apple/Unix formats that
+.I mkisofs
+(partially) supports are:
+.IP "CAP AUFS format"
+Data fork stored in a file. Resource fork in subdirectory .resource
+with same filename as data fork. Finder info
+in .finderinfo subdirectory with same filename.
+.IP "AppleDouble/Netatalk"
+Data fork stored in a file. Resource fork stored in a file with
+same name prefixed with "%". Finder info also stored in same
+"%" file. Netatalk uses the same format, but the resource
+fork/finderinfo stored in subdirectory .AppleDouble with same
+name as data fork.
+.IP AppleSingle
+Data structures similar to above, except both forks and finder
+info are stored in one file.
+.IP "Helios EtherShare"
+Data fork stored in a file. Resource fork and finder info together in
+subdirectory .rsrc with same filename as data fork.
+.IP "IPT UShare"
+Very similar to the EtherShare format, but the finder info
+is stored slightly differently.
+.IP MacBinary
+Both forks and finder info stored in one file.
+.IP "Apple PC Exchange"
+Used by Macintoshes to store Apple files on DOS (FAT) disks.
+Data fork stored in a file. Resource fork in subdirectory
+resource.frk (or RESOURCE.FRK). Finder info as one record
+in file finder.dat (or FINDER.DAT). Separate finder.dat for
+each data fork directory.
+.IP
+Note: 
+.I mkisofs
+needs to know the native FAT cluster size of the disk that the PC Exchange
+files are on (or have been copied from). This size is given by the
+.B \-cluster\-size
+option.
+The cluster or allocation size can be found by using the DOS utility
+.BR CHKDSK .
+.IP
+May not work with PC Exchange v2.2 or higher files (available with MacOS 8.1).
+DOS media containing PC Exchange files should be mounted as type
+.B msdos
+(not
+.BR vfat )
+when using Linux.
+.IP "SGI/XINET"
+Used by SGI machines when they mount HFS disks. Data fork stored
+in a file. Resource fork in subdirectory .HSResource with same
+name. Finder info as one record in file .HSancillary. Separate .HSancillary
+for each data fork directory.
+.IP "Thursby Software Systems DAVE"
+Allows Macintoshes to store Apple files on SMB servers.
+Data fork stored in a file. Resource fork in subdirectory
+resource.frk. Uses the AppleDouble format to store resource fork.
+.IP "Services for Macintosh"
+Format of files stored by NT Servers on NTFS filesystems. Data fork is
+stored as "filename". Resource fork stored as a NTFS
+.I stream
+called "filename:AFP_Resource". The finder info is stored as a NTFS
+.I stream
+called "filename:Afp_AfpInfo". These streams are normally invisible to the
+user.
+.IP
+Warning: mkisofs only partially supports the SFM format. If an HFS file
+or folder stored on the NT server contains an
+.I illegal
+NT character in its name, then NT converts these characters to
+.I Private Use Unicode
+characters. The characters are: " * / < > ? \ | also a space or
+period if it is the last character of the file name, character codes 0x01
+to 0x1f (control characters) and Apple' apple logo.
+.IP
+Unfortunately, these private Unicode characters are not
+readable by the mkisofs NT executable. Therefore any file or directory
+name containing these characters will be ignored - including the contents of
+any such directory.
+.IP "MacOS X AppleDouble"
+When HFS/HFS+ files are copied or saved by MacOS X on to a non-HFS file
+system (e.g. UFS, NFS etc.), the files are stored in AppleDouble format.
+Data fork stored in a file. Resource fork stored in a file with
+same name prefixed with "._". Finder info also stored in same "._" file.
+.IP "MacOS X HFS (Alpha)"
+Not really an Apple/Unix encoding, but actual HFS/HFS+ files on a MacOS X
+system. Data fork stored in a file. Resource fork stored in a pseudo file
+with the same name with the suffix '/rsrc'. The finderinfo is only
+available via a MacOS X library call.
+.IP
+Notes: (also see README.macosx)
+.IP
+Only works when used on MacOS X.
+.IP
+If a file is found with a zero
+length resource fork and empty finderinfo, it is assumed not to have
+any Apple/Unix encoding - therefore a TYPE and CREATOR can be set using
+other methods.
+.LP
+.I mkisofs
+will attempt to set the CREATOR, TYPE, date and possibly other flags from
+the finder info. Additionally, if it exists, the Macintosh filename is set
+from the finder info, otherwise the Macintosh name is based on the Unix
+filename - see the
+.B "HFS MACINTOSH FILE NAMES
+section below.
+.PP
+When using the
+.B \-apple
+option, the TYPE and CREATOR are stored in the optional System Use or SUSP field
+in the ISO-9660 Directory Record - in much the same way as the Rock Ridge
+attributes are. In fact to make life easy, the Apple extensions are added
+at the beginning of the existing Rock Ridge attributes (i.e. to get the Apple
+extensions you get the Rock Ridge extensions as well).
+.PP
+The Apple extensions require the resource fork to be stored as an ISO-9660
+.I associated
+file. This is just like any normal file stored in the ISO-9660 filesystem
+except that the associated file flag is set in the Directory Record (bit
+2). This file has the same name as the data fork (the file seen by
+non-Apple machines). Associated files are normally ignored by other OSs
+.PP
+When using the
+.B \-hfs
+option, the TYPE and CREATOR plus other finder info, are stored in a separate
+HFS directory, not visible on the ISO-9660 volume. The HFS directory references
+the same data and resource fork files described above.
+.PP
+In most cases, it is better to use the
+.B \-hfs
+option instead of the
+.B \-apple
+option, as the latter imposes the limited ISO-9660 characters allowed in
+filenames. However, the Apple extensions do give the advantage that the
+files are packed on the disk more efficiently and it may be possible to fit 
+more files on a CD - important when the total size of the source files is
+approaching 650MB.
+
+.SH "HFS MACINTOSH FILE NAMES
+Where possible, the HFS filename that is stored with an Apple/Unix file
+is used for the HFS part of the CD. However, not all the Apple/Unix
+encodings store the HFS filename with the finderinfo. In these cases,
+the Unix filename is used - with escaped special characters. Special
+characters include '/' and characters with codes over 127.
+.PP
+Aufs escapes these characters by using ":" followed by the character code
+as two hex digits. Netatalk and EtherShare have a similar scheme, but uses
+"%" instead of a ":".
+.PP
+If mkisofs can't find an HFS filename, then it uses the Unix name, with
+any %xx or :xx characters (xx == two hex digits) converted to a single
+character code. If "xx" are not hex digits ([0-9a-fA-F]), then they are
+left alone - although any remaining ":" is converted to "%" as colon
+is the HFS directory separator. Care must be taken, as an ordinary Unix
+file with %xx or :xx will also be converted. e.g.
+.PP
+.TS
+l l 
+l s
+l l
+l s
+l l .
+This:2fFile	converted to This/File
+	
+This:File	converted to This%File
+	
+This:t7File	converted to This%t7File
+.TE
+.PP
+Although HFS filenames appear to support upper and lower case letters,
+the filesystem is case insensitive. i.e. the filenames "aBc" and "AbC"
+are the same. If a file is found in a directory with the same HFS name,
+then
+.I mkisofs
+will attempt, where possible, to make a unique name by adding '_' characters
+to one of the filenames. 
+.PP
+If an HFS filename exists for a file, then mkisofs can use this name as
+the starting point for the ISO-9660, Joliet and Rock Ridge filenames using
+the
+.B \-mac\-name
+option. Normal Unix files without an HFS name will still use their Unix name.
+e.g.
+.PP
+If a
+.I MacBinary
+(or
+.I PC
+.IR Exchange )
+file is stored as 
+.I someimage.gif.bin
+on the Unix filesystem, but contains a HFS file called
+.IR someimage.gif ,
+then this is the name that would appear on the HFS part of the CD. However, as
+mkisofs uses the Unix name as the starting point for the other names, then
+the ISO-9660 name generated will probably be 
+.I SOMEIMAG.BIN
+and the Joliet/Rock Ridge would be
+.IR someimage.gif.bin .
+Although the actual data (in this case) is a GIF image. This option will use
+the HFS filename as the starting point and the ISO-9660 name will probably be
+.I SOMEIMAG.GIF
+and the Joliet/Rock Ridge would be
+.IR someimage.gif .
+.PP
+Using the
+.B \-mac\-name
+option will not currently work with the
+.B \-T
+option - the Unix
+name will be used in the TRANS.TBL file, not the Macintosh name.
+.PP
+The character set used to convert any HFS file name to a Joliet/Rock Ridge
+file name defaults to
+.I cp10000
+(Mac Roman).
+The character set used can be specified using the
+.I \-input\-hfs\-charset
+option. Other built in HFS character sets are: cp10006 (MacGreek),
+cp10007 (MacCyrillic), cp10029 (MacLatin2), cp10079 (MacIcelandic) and
+cp10081 (MacTurkish).
+.PP
+Note: the character codes used by HFS file names taken from the various
+Apple/Unix formats will not be converted as they are assumed to be in the
+correct Apple character set. Only the Joliet/Rock Ridge names derived from
+the HFS file names will be converted.
+.PP
+The existing mkisofs code will filter out any illegal characters for the
+ISO-9660 and Joliet filenames, but as mkisofs expects to be dealing
+directly with Unix names, it leaves the Rock Ridge names as is.
+But as '/' is a legal HFS filename character, the
+.B \-mac\-name
+option converts '/' to a '_' in Rock Ridge filenames.
+.PP
+If the Apple extensions are used, then only the ISO-9660 filenames will
+appear on the Macintosh. However, as the Macintosh ISO-9660 drivers can use
+.I Level 2
+filenames, then you can use options like
+.B \-allow\-multidot
+without problems on
+a Macintosh - still take care over the names, for example
+.I this.file.name
+will be converted to
+.I THIS.FILE
+i.e. only have one '.', also filename
+.I abcdefgh
+will be seen as
+.I ABCDEFGH
+but
+.I abcdefghi
+will be seen as
+.I ABCDEFGHI.
+i.e. with a '.' at the end - don't know if this is a Macintosh
+problem or m\&kisofs/mkhybrid problem. All filenames will be in upper case
+when viewed on a Macintosh. Of course, DOS/Win3.X machines will not be able
+to see Level 2 filenames...
+
+.SH "HFS CUSTOM VOLUME/FOLDER ICONS
+To give a HFS CD a custom icon, make sure the root (top level) folder includes
+a standard Macintosh volume icon file. To give a volume a custom icon on
+a Macintosh, an icon has to be pasted over the volume's icon in the "Get Info"
+box of the volume. This creates an invisible file called 'Icon\er' ('\er' is
+the 'carriage return' character) in the root folder.
+.P
+A custom folder icon is very similar - an invisible file called 'Icon\er'
+exits in the folder itself.
+.P
+Probably the easiest way to create a custom icon that mkisofs can use, is to
+format a blank HFS floppy disk on a Mac, paste an icon to its "Get Info"
+box. If using Linux with the HFS module installed, mount the floppy using
+something like:
+
+	mount \-t hfs /dev/fd0 /mnt/floppy
+
+The floppy will be mounted as a CAP file system by default. Then run mkisofs
+using something like:
+
+	mkisofs \-\-cap \-o output source_dir /mnt/floppy
+
+If you are not using Linux, then you can use the hfsutils to copy the icon
+file from the floppy. However, care has to be taken, as the icon file
+contains a control character. e.g.
+
+	hmount /dev/fd0
+.br
+	hdir \-a
+.br
+	hcopy \-m Icon^V^M icon_dir/icon
+
+Where '^V^M' is control\-V followed by control\-M. Then run 
+.B mkisofs
+by using something like:
+
+	mkisofs \-\-macbin \-o output source_dir icon_dir
+.PP
+The procedure for creating/using custom folder icons is very similar - paste
+an icon to folder's "Get Info" box and transfer the resulting 'Icon\er'
+file to the relevant directory in the mkisofs source tree.
+.PP
+You may want to hide the icon files from the ISO-9660 and Joliet trees.
+.PP
+To give a custom icon to a Joliet CD, follow the instructions found at:
+http://www.fadden.com/cdrfaq/faq03.html#[3-21]
+
+.SH "HFS BOOT DRIVER
+It 
+.I may
+be possible to make the hybrid CD bootable on a Macintosh.
+.PP
+A bootable HFS CD requires an Apple CD-ROM (or compatible) driver, a bootable
+HFS partition and the necessary System, Finder, etc. files.
+.PP
+A driver can be obtained from any other Macintosh bootable CD-ROM using the
+.I apple_driver
+utility. This file can then be used with the
+.B \-boot\-hfs\-file
+option.
+.PP
+The HFS partition (i.e. the hybrid disk in our case) must contain a
+suitable System Folder, again from another CD-ROM or disk.
+.PP
+For a partition to be bootable, it must have its 
+.I boot block
+set. The boot
+block is in the first two blocks of a partition. For a non-bootable partition
+the boot block is full of zeros. Normally, when a System file is copied to
+partition on a Macintosh disk, the boot block is filled with a number of
+required settings - unfortunately I don't know the full spec for the boot
+block, so I'm guessing that the following will work OK.
+.PP
+Therefore, the utility
+.I apple_driver
+also extracts the boot block from the
+first HFS partition it finds on the given CD-ROM and this is used for the
+HFS partition created by
+.BR mkisofs .
+.IP "PLEASE NOTE"
+By using a driver from an Apple CD and copying Apple software to your CD,
+you become liable to obey Apple Computer, Inc. Software License Agreements.
+.SH "EL TORITO BOOT INFORMATION TABLE
+When the
+.B \-boot\-info\-table
+option is given,
+.B mkisofs
+will modify the boot file specified by the
+.B \-b
+option by inserting a 56-byte "boot information table" at offset 8 in
+the file.  This modification is done in the source filesystem, so make
+sure you use a copy if this file is not easily recreated!  This file
+contains pointers which may not be easily or reliably obtained at boot
+time.
+.PP
+The format of this table is as follows; all integers are in
+section 7.3.1 ("little endian") format.
+.sp
+.RS +.2i
+.ta 1.0i 2.5i 3.5i
+.nf
+Offset	Name	Size	Meaning
+ 8	bi_pvd	4 bytes	LBA of primary volume descriptor
+12	bi_file	4 bytes	LBA of boot file
+16	bi_length	4 bytes	Boot file length in bytes
+20	bi_csum	4 bytes	32-bit checksum
+24	bi_reserved	40 bytes	Reserved
+.fi
+.RE
+.sp
+The 32-bit checksum is the sum of all the 32-bit words in the boot
+file starting at byte offset 64.  All linear block addresses (LBAs)
+are given in CD sectors (normally 2048 bytes).
+.SH CONFIGURATION
+.B mkisofs
+looks for the
+.B \&.m\&kisofsrc
+file,
+first in the current working directory,
+then in the user's home directory,
+and then in the directory in which the
+.B mkisofs
+binary is stored.  This file is assumed to contain a series of lines
+of the form
+.BI TAG= value
+, and in this way you can specify certain options.
+The case of the tag is not significant.
+Some fields in the volume header
+are not settable on the command line, but can be altered through this
+facility.
+Comments may be placed in this file,
+using lines which start with a hash (#) character.
+.TP
+.B APPI
+The application identifier
+should describe the application that will be on the disc.
+There is space on the disc for 128 characters of information.
+The related Joliet entry is limited to 64 characters.
+May be overridden using the
+.B \-A
+command line option.
+.TP
+.B COPY
+The copyright information,
+often the name of a file on the disc containing the copyright notice.
+There is space in the disc for 37 characters of information.
+The related Joliet entry is limited to 18 characters.
+May be overridden using the
+.B \-copyright
+command line option.
+.TP
+.B ABST
+The abstract information,
+often the name of a file on the disc containing an abstract.
+There is space in the disc for 37 characters of information.
+The related Joliet entry is limited to 18 characters.
+May be overridden using the
+.B \-abstract
+command line option.
+.TP
+.B BIBL
+The bibliographic information,
+often the name of a file on the disc containing a bibliography.
+There is space in the disc for 37 characters of information.
+The related Joliet entry is limited to 18 characters.
+May be overridden using the
+.B \-bilio
+command line option.
+.TP
+.B PREP
+This should describe the preparer of the CDROM,
+usually with a mailing address and phone number.
+There is space on the disc for 128 characters of information.
+The related Joliet entry is limited to 64 characters.
+May be overridden using the
+.B \-p
+command line option.
+.TP
+.B PUBL
+This should describe the publisher of the CDROM,
+usually with a mailing address and phone number.
+There is space on the disc for 128 characters of information.
+The related Joliet entry is limited to 64 characters.
+May be overridden using the
+.B \-publisher
+command line option.
+.TP
+.B SYSI
+The System Identifier.
+There is space on the disc for 32 characters of information.
+May be overridden using the
+.B \-sysid
+command line option.
+.TP
+.B VOLI
+The Volume Identifier.
+There is space on the disc for 32 characters of information.
+May be overridden using the
+.B \-V
+command line option.
+.TP
+.B VOLS
+The Volume Set Name.
+There is space on the disc for 128 characters of information.
+The related Joliet entry is limited to 64 characters.
+May be overridden using the
+.B \-volset
+command line option.
+.TP
+.B HFS_TYPE
+The default TYPE for Macintosh files. Must be exactly 4 characters.
+May be overridden using the
+.B \-hfs\-type
+command line option.
+.TP
+.B HFS_CREATOR
+The default CREATOR for Macintosh files. Must be exactly 4 characters.
+May be overridden using the
+.B \-hfs\-creator
+command line option.
+.PP
+.B mkisofs
+can also be configured at compile time with defaults for many of these fields.
+See the file defaults.h.
+
+.SH EXAMPLES
+.PP
+To create a vanilla ISO-9660 filesystem image in the file 
+.IR cd.iso ,
+where the directory
+.I cd_dir
+will become the root directory of the CD ISO image, call:
+.PP
+% mkisofs \-o cd.iso cd_dir
+.PP
+To create a CD with Rock Ridge extensions of
+the source directory
+.IR cd_dir :
+.PP
+% mkisofs \-o cd.iso \-R cd_dir
+.PP
+To create a CD with Rock Ridge extensions of
+the source directory
+.I cd_dir
+where all files have at least read permission and all files
+are owned by
+.IR root ,
+call:
+.PP
+% mkisofs \-o cd.iso \-r cd_dir
+.PP
+To write a tar archive directly to a CD that will later contain a simple
+ISO-9660 filesystem with the tar archive call:
+.PP
+% star \-c . | mkisofs \-stream\-media\-size 333000 | \e
+.br
+        cdrecord dev=b,t,l \-dao tsize=333000s \-
+.PP
+To create a HFS hybrid CD with the Joliet and Rock Ridge extensions of
+the source directory
+.IR cd_dir :
+.PP
+% mkisofs \-o cd.iso \-R \-J \-hfs cd_dir
+.PP
+To create a HFS hybrid CD from the source directory 
+.I cd_dir
+that contains
+Netatalk Apple/Unix files:
+.PP
+% mkisofs \-o cd.iso \-\-netatalk cd_dir
+.PP
+To create a HFS hybrid CD from the source directory
+.IR cd_dir ,
+giving all files
+CREATOR and TYPES based on just their filename extensions listed in the file 
+"mapping".:
+.PP
+% mkisofs \-o cd.iso \-map mapping cd_dir
+.PP
+To create a CD with the 'Apple Extensions to ISO-9660', from the source
+directories
+.I cd_dir
+and
+.IR another_dir.
+Files in all the known Apple/Unix format
+are decoded and any other files are given CREATOR and TYPE based on their
+magic number given in the file "magic":
+.PP
+% mkisofs \-o cd.iso \-apple \-magic magic \-probe \e
+.br
+        cd_dir another_dir
+.PP
+The following example puts different files on the CD that all have
+the name README, but have different contents when seen as a
+ISO-9660/RockRidge, Joliet or HFS CD.
+.PP
+Current directory contains:
+.PP
+% ls \-F
+.br
+README.hfs     README.joliet  README.unix    cd_dir/
+.PP
+The following command puts the contents of the directory
+.I cd_dir
+on the
+CD along with the three README files - but only one will be seen from
+each of the three filesystems:
+.PP
+% mkisofs \-o cd.iso \-hfs \-J \-r \-graft\-points \e
+.br
+        \-hide README.hfs \-hide README.joliet \e
+.br
+        \-hide\-joliet README.hfs \-hide\-joliet README.unix \e
+.br
+        \-hide\-hfs README.joliet \-hide\-hfs README.unix \e
+.br
+        README=README.hfs README=README.joliet \e
+.br
+        README=README.unix cd_dir
+.PP
+i.e. the file README.hfs will be seen as README on the HFS CD and the
+other two README files will be hidden. Similarly for the Joliet and
+ISO-9660/RockRidge CD.
+.PP
+There are probably all sorts of strange results possible with
+combinations of the hide options ...
+.PP
+To create a DVD-Audio of the DVD-Audio compliant source directory
+.IR DVD :
+.PP
+% mkisofs \-o dvda.iso \-dvd\-audio DVD
+
+.SH AUTHOR
+.br
+Eric Youngdale <ericy@gnu.ai.mit.edu> or <eric@andante.org> wrote the
+first versions (1993 .\|.\|. 1998) of the m\&kisofs utility.
+The copyright for old versions of the m\&kisofs utility is held by
+Yggdrasil Computing, Incorporated.
+J\*org Schilling wrote the SCSI transport library and its adaptation layer to
+.B mkisofs
+and newer parts (starting from 1997) of the utility.
+J\*org Schilling is the primary maintainer since 1999, this makes
+.B mkisofs
+Copyright (C) 1997-2014 J\*org Schilling.
+.PP
+HFS hybrid code Copyright (C) James Pearson 1997 .\|.\|. 2001.
+.sp
+libhfs code Copyright (C) 1996, 1997 Robert Leslie.
+.sp
+libfile code Copyright (C) Ian F. Darwin 1986, 1987, 1989, 1990, 1991,
+1992, 1994, 1995.
+.SH NOTES
+.PP
+.B Mkisofs
+may safely be installed suid root. This may be needed to allow
+.B mkisofs
+to read the previous session when creating a multi session image.
+.PP
+.B m\&kisofs
+is not based on the standard mk*fs tools for unix, because we must generate
+a complete copy of an existing filesystem on a disk in the  ISO-9660
+filesystem.  The name m\&kisofs is probably a bit of a misnomer, since it
+not only creates the filesystem, but it also populates it as well.
+However, the appropriate tool name for a UNIX tool that creates populated
+filesystems - 
+.B mkproto
+- is not well known.
+.PP
+If 
+.B mkisofs 
+is creating a filesystem image with Rock Ridge attributes and the
+directory nesting level of the source directory tree is too much
+for ISO-9660, 
+.B mkisofs 
+will do deep directory relocation.
+This results in a directory called
+.B RR_MOVED
+in the root directory of the CD. You cannot avoid this directory in the 
+directory tree that is visible with ISO-9660 but it it automatically hidden
+in the
+.B Rock Ridge
+tree.
+.PP
+The sparc boot support that is implemented with the
+.B \-sparc\-boot
+options completely follows the official Sparc CD boot requirements from
+the Boot prom in Sun Sparc systems. Some Linux distributions for Sparc
+systems use a boot loader called
+.B SILO
+that unfortunately is not Sparc CD boot compliant.
+It is annoyingly to see that the Authors of SILO don't fix SILO but instead
+provide a completely unneeded "patch" to mkisofs that incorporates far
+more source than the fix for SILO would need.
+.SH BUGS
+.TP
+\(bu
+Does not properly read relocated directories in multi-session
+mode when adding data.
+.sp
+Any relocated deep directory is lost if the new session does not
+include the deep directory.
+.sp
+Repeat by: create first session with deep directory relocation
+then add new session with a single dir that differs from the
+old deep path.
+.TP
+\(bu
+Does not re-use RR_MOVED when doing multi-session from TRANS.TBL
+.PP
+There may be some other ones.  Please, report them to the author.
+
+.SH "HFS PROBLEMS/LIMITATIONS
+I have had to make several assumptions on how I expect the modified
+libhfs routines to work, however there may be situations that either
+I haven't thought of, or come across when these assumptions fail.
+Therefore I can't guarantee that mkisofs will work as expected
+(although I haven't had a major problem yet). Most of the HFS features work
+fine, however, some are not fully tested. These are marked as
+.I Alpha
+above.
+.PP
+Although HFS filenames appear to support upper and lower case letters,
+the filesystem is case insensitive. i.e. the filenames "aBc" and "AbC"
+are the same. If a file is found in a directory with the same HFS name, then
+.I mkisofs
+will attempt, where possible, to make a unique name by adding '_' characters
+to one of the filenames.
+.PP
+HFS file/directory names that share the first 31 characters have
+_N' (N == decimal number) substituted for the last few characters
+to generate unique names.
+.PP
+Care must be taken when "grafting" Apple/Unix files or directories (see
+above for the method and syntax involved). It is not possible to use a
+new name for an Apple/Unix encoded file/directory. e.g. If a Apple/Unix
+encoded file called "oldname" is to added to the CD, then you can not use
+the command line:
+.IP
+mkisofs \-o output.raw \-hfs \-graft\-points newname=oldname cd_dir
+.LP
+mkisofs will be unable to decode "oldname". However, you can graft
+Apple/Unix encoded files or directories as long as you do not attempt to
+give them new names as above.
+.PP
+When creating an HFS volume with the multisession options,
+.B \-M
+and
+.BR \-C ,
+only files in the last session will be in the HFS volume. i.e. mkisofs can
+not
+.I add
+existing files from previous sessions to the HFS volume.
+.PP
+However, if each session is created with the
+.B \-part
+option, then each session will appear as 
+separate volumes when mounted on a Mac. In this case, it is worth using the 
+.B \-V
+or
+.B \-hfs\-volid
+option to give each session a unique volume name,
+otherwise each "volume" will appear on the Desktop with the same name.
+.PP
+Symbolic links (as with all other non-regular files) are not added to
+the HFS directory.
+.PP
+Hybrid volumes may be larger than pure ISO-9660 volumes
+containing the same data. In some cases (e.g. DVD sized volumes) the hybrid
+volume may be significantly larger. As an HFS volume gets bigger, so does the
+allocation block size (the smallest amount of space a file can occupy).
+For a 650Mb CD, the allocation block is 10Kb, for a 4.7Gb DVD it will be
+about 70Kb.
+.PP
+The maximum number of files in an HFS volume is about 65500 - although
+the real limit will be somewhat less than this.
+.PP
+The resulting hybrid volume can be accessed on a Unix machine by using
+the hfsutils routines. However, no changes can be made to the volume as it
+is set as
+.B locked.
+The option
+.B \-hfs\-unlock
+will create an output image that is unlocked - however no changes should be
+made to the contents of the volume (unless you really know what you are
+doing) as it's not a "real" HFS volume.
+.PP
+Using the
+.B \-mac\-name
+option will not currently work with the
+.B \-T
+option - the Unix
+name will be used in the TRANS.TBL file, not the Macintosh name.
+.PP
+Although 
+.B mkisofs
+does not alter the contents of a file, if a binary file has its TYPE
+set as 'TEXT', it
+.I may
+be read incorrectly on a Macintosh. Therefore a better choice for the
+default TYPE may be '????'
+.PP
+The
+.B \-mac\-boot\-file
+option may not work at all...
+.PP
+May not work with PC Exchange v2.2 or higher files (available with MacOS 8.1).
+DOS media containing PC Exchange files should be mounted as type
+.B msdos
+(not
+.BR vfat )
+when using Linux.
+.PP
+The SFM format is only partially supported - see
+.B HFS MACINTOSH FILE FORMATS
+section above.
+.PP
+It is not possible to use the the
+.B \-sparc\-boot
+or
+.B \-generic\-boot
+options with the 
+.B \-boot\-hfs\-file
+the
+.B \-prep\-boot
+or
+.B \-chrp\-boot
+options.
+.PP
+.B mkisofs
+should be able to create HFS hybrid images over 4Gb, although this has not
+been fully tested.
+
+.SH "SEE ALSO
+.BR cdrecord (1),
+.BR mkzftree (1),
+.BR sfind (1),
+.BR magic (5),
+.BR apple_driver (8).
+
+.SH "FUTURE IMPROVEMENTS
+Some sort of gui interface.
+.SH AVAILABILITY
+.B m\&kisofs
+is available as part of the cdrecord package from
+https://sourceforge.net/projects/cdrtools/files/
+
+.B hfsutils
+from ftp://ftp.mars.org/pub/hfs
+
+.B mkzftree
+is available as part of the zisofs-tools package
+from ftp://ftp.kernel.org/pub/linux/utils/fs/zisofs/
+.SH "MAILING LISTS
+If you want to actively take part on the development of mkisofs,
+you may join the developer mailing list via this URL:
+.sp
+.B
+https://lists.sourceforge.net/lists/listinfo/cdrtools-developers
+
+.SH MAINTAINER
+.nf
+J\*org Schilling
+Seestr. 110
+D-13353 Berlin
+Germany
+.fi
+.SH "HFS MKHYBRID MAINTAINER
+James Pearson
+.PP
+j.pearson@ge.ucl.ac.uk
+
+.PP
+If you have support questions, send them to:
+.PP
+.B
+cdrtools-support@lists.sourceforge.net
+.PP
+If you definitely found a bug, send a mail to:
+.PP
+.B
+cdrtools-developers@lists.sourceforge.net
+.br
+or
+.B
+joerg.schilling@fokus.fraunhofer.de
+.PP
+To subscribe, use:
+.PP
+.B
+https://lists.sourceforge.net/lists/listinfo/cdrtools-developers
+.br
+or
+.B
+https://lists.sourceforge.net/lists/listinfo/cdrtools-support
+.br
+.ne 7
+.SH "INTERFACE STABILITY
+The interfaces provided by 
+.B mkisofs
+are designed for long term stability.
+As
+.B mkisofs
+depends on interfaces provided by the underlying operating system,
+the stability of the interfaces offered by
+.B mkisofs
+depends on the interface stability of the OS interfaces. 
+Modified interfaces in the OS may enforce modified interfaces
+in 
+.BR mkisofs .

@@ -1,0 +1,32 @@
+#if 0
+/* @(#)lconfig.h.in	1.12 15/12/14 Copyright 1998-2003,2015 Heiko Eissfeldt, Copyright 2006-2009 J. Schilling */
+#endif
+#undef HAVE_SYS_CDIO_H		/* if we should use sys/cdio.h */
+
+#undef HAVE_SYS_CDRIO_H		/* if we should use sys/cdrio.h */
+
+#undef HAVE_SUNDEV_SRREG_H	/* if we should use sundev/srreg.h */
+
+#undef HAVE_SYS_AUDIOIO_H	/* if we should use sys/audioio.h */
+
+#undef HAVE_SUN_AUDIOIO_H	/* if we should use sun/audioio.h */
+
+#undef HAVE_SOUNDCARD_H		/* if we should use soundcard.h */
+
+#undef HAVE_SYS_SOUNDCARD_H	/* if we should use sys/soundcard.h */
+
+#undef HAVE_LINUX_SOUNDCARD_H	/* if we should use linux/soundcard.h */
+
+#undef HAVE_MACHINE_SOUNDCARD_H	/* if we should use machine/soundcard.h */
+
+#undef HAVE_SNDIO_H	/* if we should use sndio.h */
+
+#undef HAVE_ALSA_ASOUNDLIB_H	/* if we should use alsa/asoundlib.h */
+
+#undef HAVE_SYS_ASOUNDLIB_H	/* if we should use sys/asoundlib.h */
+
+#undef HAVE_MMSYSTEM_H		/* if we should use mmsystem.h */
+
+#undef HAVE_PULSE_PULSEAUDIO_H	/* if we should use pulse/pulseaudio.h */
+
+#undef HAVE_PULSE_SIMPLE_H	/* if we should use pulse/simple.h */

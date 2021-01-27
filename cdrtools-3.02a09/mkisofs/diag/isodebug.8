@@ -1,0 +1,107 @@
+.\" @(#)isodebug.8	1.6 15/11/02 Copyr 2006-2015 J. Schilling
+.\" Manual page for isodebug
+.\"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.75n'U
+.if t .ds s \\(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH ISODEBUG 1L "Version 3.02 2015/11/02" "J\*org Schilling" "Schily\'s USER COMMANDS"
+.SH NAME
+isodebug \- print mkisofs debug info from ISO-9660 image
+.SH SYNOPSIS
+.B
+isodebug
+[
+.I options
+]
+[
+.I file
+]
+.SH DESCRIPTION
+.B Isodebug
+reads the debug info written by 
+.BR mkisofs (8)
+from within a ISO-9660 file system image and prints them.
+. \" .SH RETURNS
+. \" .SH ERRORS
+.SH OPTIONS
+.TP
+.B \-help
+Prints a short summary of the 
+.B isodebug
+options and exists.
+.TP
+.B \-version
+Prints the 
+.B isodebug
+version number string and exists.
+.TP
+.BI \-i " filename
+Filename to read ISO-9660 image from.
+.TP
+.BI \-ignore\-error
+Ignore errors.
+.B isodebug
+by default aborts on several errors, such as read errors. With this option in effect,
+.B isodebug
+tries to continue.
+Use with care.
+.TP
+.BI dev= target
+SCSI target to use as CD/DVD-Recorder.
+See
+.BR cdrecord (1)
+for more information on now to use this option.
+.SH EXAMPLES
+.SH ENVIRONMENT
+.SH FILES
+.SH "SEE ALSO"
+.BR cdrecord (1),
+.BR scg (7),
+.BR mkisofs (8).
+.SH DIAGNOSTICS
+.SH NOTES
+.SH BUGS
+.SH AUTHOR
+.nf
+J\*org Schilling
+Seestr. 110
+D-13353 Berlin
+Germany
+.fi
+.PP
+Additional information can be found on:
+.br
+http://cdrecord.org/private/cdrecord.html
+.PP
+If you have support questions, send them to:
+.PP
+.B
+cdrtools-support@lists.sourceforge.net
+
+.PP
+If you have definitely found a bug, send a mail to:
+.PP
+.B
+cdrtools-developers@lists.sourceforge.net
+.br
+or
+.B
+joerg.schilling@fokus.fraunhofer.de
+.PP
+To subscribe, use:
+.PP
+.B
+https://lists.sourceforge.net/lists/listinfo/cdrtools-developers
+.br
+or
+.B
+https://lists.sourceforge.net/lists/listinfo/cdrtools-support

@@ -1,0 +1,47 @@
+. \"  Manual Seite fuer fileread
+. \" @(#)fileread.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH FILEREAD 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+fileread() \- reads file into buffer
+.SH SYNOPSIS
+.nf
+.B
+int fileread(f,buf,size)
+.B	FILE *f;
+.B	char *buf;
+.B	int size;
+.fi
+.SH DESCRIPTION
+fileread() reads up to size bytes from the file into buf. The
+number actually read may be smaller if end-of-file is reached.
+The file pointer (implied) is left pointing to one past the last
+character read.
+.SH RETURNS
+.TP
+.B > 0
+the number of bytes actually read.
+.TP
+.B = 0
+file was at end-of-file.
+.TP
+.B < 0
+error code.
+.PP
+It returns the number of bytes actually read or an error
+code.
+.SH NOTES
+The buffer must be at least size long. If reading from a "raw"
+device, size must be a multiple of 512.

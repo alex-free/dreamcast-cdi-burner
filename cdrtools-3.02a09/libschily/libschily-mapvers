@@ -1,0 +1,519 @@
+# /* @(#)libschily-mapvers	1.52 17/07/02 Copyright 2005-2015 J. Schilling */
+#include <schily/mconfig.h>
+
+SCHILY_1.8 {
+global:
+	astoul;
+	astoulb;
+	js_dprintf;
+	movecbytes;
+	patmbmatch;
+	patmblmatch;
+} SCHILY_1.7;
+
+SCHILY_1.7 {
+global:
+#ifndef	HAVE_GETDELIM
+	getdelim;
+#endif
+	js_fjmexval;
+	js_jmexval;
+	js_mexval;
+	strlcatl;
+	wcslcatl;
+} SCHILY_1.6;
+
+SCHILY_1.6 {
+global:
+	absfpath;
+	resolvefpath;
+	closewd;
+	fdsetname;
+	fdclosename;
+	lxchdir;
+	qftoes;
+	qftofs;
+	restorewd;
+	savewd;
+#ifndef	HAVE_FACCESSAT
+	faccessat;
+#endif
+#ifndef	HAVE_LCHMOD
+	lchmod;
+#endif
+#ifndef	HAVE_FCHDIR
+	fchdir;
+#endif
+#ifndef	HAVE_FCHMODAT
+	fchmodat;
+#endif
+#ifndef	HAVE_FCHOWNAT
+	fchownat;
+#endif
+#ifndef	HAVE_FDOPENDIR
+	fdopendir;
+#endif
+#ifndef	HAVE_FSTATAT
+	fstatat;
+#endif
+#ifndef	HAVE_FUTIMENS
+	futimens;
+#endif
+#ifndef	HAVE_FUTIMESAT
+	futimesat;
+#endif
+#ifndef	HAVE_LUTIMENS
+	lutimens;
+#endif
+#ifndef	HAVE_LINKAT
+	linkat;
+#endif
+#ifndef	HAVE_MKDIRAT
+	mkdirat;
+#endif
+#ifndef	HAVE_MKFIFO
+	mkfifo;
+#endif
+#ifndef	HAVE_MKFIFOAT
+	mkfifoat;
+#endif
+#ifndef	HAVE_MKNODAT
+	mknodat;
+#endif
+#ifndef	HAVE_READLINKAT
+	readlinkat;
+#endif
+#ifndef	HAVE_RENAMEAT
+	renameat;
+#endif
+#ifndef	HAVE_SYMLINKAT
+	symlinkat;
+#endif
+#ifndef	HAVE_UNLINKAT
+	unlinkat;
+#endif
+#ifndef	HAVE_UTIMENS
+	utimens;
+#endif
+#ifndef	HAVE_UTIMENSAT
+	utimensat;
+#endif
+	fxcomerr;
+	fxcomerrno;
+	xcomerr;
+	xcomerrno;
+	fprformat;
+
+	fspush;
+	fspop;
+	fspushed;
+
+#ifndef	HAVE_DLOPEN
+	dlopen;
+	dlclose;
+	dlsym;
+	dlerror;
+#endif
+} SCHILY_1.5;
+
+SCHILY_1.5 {
+global:
+	getnstimeofday;
+	setnstimeofday;
+
+#ifndef	HAVE_GETUID
+	getuid;
+#endif
+#ifndef	HAVE_GETEUID
+	geteuid;
+#endif
+#ifndef	HAVE_SETUID
+	setuid;
+#endif
+#ifndef	HAVE_SETEUID
+	seteuid;
+#endif
+
+#ifndef	HAVE_GETGID
+	getgid;
+#endif
+#ifndef	HAVE_GETEGID
+	getegid;
+#endif
+#ifndef	HAVE_SETGID
+	setgid;
+#endif
+#ifndef	HAVE_SETEGID
+	setegid;
+#endif
+#if !defined(HAVE_GETGRNAM) && !defined(HAVE_GETGRENT) && \
+	!defined(HAVE_GETGRGID) && !defined(HAVE_SETGRENT) && \
+	!defined(HAVE_ENDGRENT)
+	getgrent;
+	setgrent;
+	endgrent;
+	getgrnam;
+	getgrgid;
+#endif
+#if !defined(HAVE_GETPWNAM) && !defined(HAVE_GETPWENT) && \
+	!defined(HAVE_GETPWUID) && !defined(HAVE_SETPWENT) && \
+	!defined(HAVE_ENDPWENT)
+	getpwent;
+	setpwent;
+	endpwent;
+	getpwnam;
+	getpwuid;
+#endif
+	get_progpath;
+	getexecpath;
+
+	diropen;
+	dirrdopen;
+	dirclose;
+
+	fgetaline;
+	getaline;
+
+	js_fgetline;
+	js_getline;
+
+	js_fexecl;
+	js_fexecle;
+	js_fexecv;
+	js_fexecve;
+
+	js_fspawnv;
+	js_fspawnl;
+	js_fspawnv_nowait;
+
+	_getarginit;
+
+	getlallargs;
+	getlargs;
+	getlfiles;
+
+	mkgmtime;
+	mklgmtime;
+	mkdirs;
+	makedirs;
+	abspath;
+	absnpath;
+#ifndef	HAVE_RESOLVEPATH
+	resolvepath;
+#endif
+	resolvenpath;
+
+#if	!defined(HAVE_FNMATCH)
+	fnmatch;
+#endif
+	js_fnmatch;
+
+	findinpath;
+	permtostr;
+	searchfileinpath;
+
+#ifndef	HAVE_TIMEGM
+	timegm;
+#endif
+	cmpmbytes;
+	zerobytes;
+
+#ifndef	HAVE_STRCASECMP
+	strcasecmp;
+#endif
+#ifndef	HAVE_STRNCASECMP
+	strncasecmp;
+#endif
+
+} SCHILY_1.4;
+
+SCHILY_1.4 {
+global:
+	patwcompile;
+	patwmatch;
+	patwlmatch;
+
+#ifndef	HAVE_STRNDUP
+	strndup;
+#endif
+#ifndef	HAVE_WCSCAT
+	wcscat;
+#endif
+
+	wcscatl;
+
+#ifndef	HAVE_WCSCHR
+	wcschr;
+#endif
+#ifndef	HAVE_WCSCMP
+	wcscmp;
+#endif
+#ifndef	HAVE_WCSCPY
+	wcscpy;
+#endif
+#ifndef	HAVE_WCSDUP
+	wcsdup;
+#endif
+
+	wcseql;
+
+#ifndef	HAVE_WCSLCAT
+	wcslcat;
+#endif
+#ifndef	HAVE_WCSLCPY
+	wcslcpy;
+#endif
+#ifndef	HAVE_WCSLEN
+	wcslen;
+#endif
+#ifndef	HAVE_WCSNCAT
+	wcsncat;
+#endif
+#ifndef	HAVE_WCSNCMP
+	wcsncmp;
+#endif
+#ifndef	HAVE_WCSNCPY
+	wcsncpy;
+#endif
+#ifndef	HAVE_WCSNDUP
+	wcsndup;
+#endif
+#ifndef	HAVE_WCSNLEN
+	wcsnlen;
+#endif
+#ifndef	HAVE_WCSRCHR
+	wcsrchr;
+#endif
+} SCHILY_1.3;
+
+SCHILY_1.3 {
+global:
+#ifndef	HAVE_EACCESS
+	eaccess;
+#endif
+
+	errabort;	# Non stable
+	errconfig;	# Non stable
+	errhidden;	# Non stable
+	errwarnonly;	# Non stable
+
+	getperm;
+
+	mkfstream;
+	fsclose;
+	fsgetc;
+	fspushcha;
+	fspushstr;
+	fssetfile;
+
+} SCHILY_1.2;
+
+SCHILY_1.2 {
+global:
+	getnum;
+	getllnum;
+	getxnum;
+	getllxnum;
+	gettnum;
+	getlltnum;
+	getxtnum;
+	getllxtnum;
+	getvargs;
+	getvallargs;
+	getvfiles;
+	getargerror;
+
+#ifndef	HAVE_STRLCPY
+	strlcpy;
+#endif
+#ifndef	HAVE_STRNCPY
+	strncpy;
+#endif
+
+	js_malloc;
+	js_realloc;
+	js_savestr;
+	js_jmalloc;
+	js_jrealloc;
+	js_jsavestr;
+	js_fjmalloc;
+	js_fjrealloc;
+	js_fjsavestr;
+
+	fcomerr;
+	fcomerrno;
+	ferrmsg;
+	ferrmsgno;
+	_comerr;
+
+	file_getraise;
+} SCHILY_1.1;
+
+SCHILY_1.1 {
+global:
+	astoull;
+	astoullb;
+} SCHILY_1.0;
+
+SCHILY_1.0 {
+global:
+	_cvmod;
+	_fcons;
+	_fcons64;
+	_getargs;
+	_niread;
+	_niwrite;
+	_nixread;
+	_nixwrite;
+	_openfd;
+	_openfd64;
+	astoi;
+	astol;
+	astolb;
+	astoll;
+	astollb;
+	breakline;
+	cmpbytes;
+	cmpnullbytes;
+	comerr;
+	comerrno;
+	comexit;
+	errmsg;
+	errmsgno;
+	errmsgstr;
+	error;
+	fdown;
+	fdup;
+	fdup64;
+#ifndef	NO_FEXEC_COMPAT
+	fexecl;
+	fexecle;
+	fexecv;
+	fexecve;
+#endif
+	ffileread;
+	ffilewrite;
+#ifndef	NO_GETLINE_COMPAT
+	fgetline;
+#endif
+	fgetstr;
+	file_raise;
+	fileclose;
+	fileluopen;
+	fileluopen64;
+	filemopen;
+	filemopen64;
+	fileopen;
+	fileopen64;
+	filepos;
+	filepos64;
+	fileread;
+	filereopen;
+	filereopen64;
+	fileseek;
+	fileseek64;
+	filesize;
+	filesize64;
+	filestat;
+	filestat64;
+	filewrite;
+	fillbytes;
+	findbytes;
+	findline;
+	flush;
+	format;
+	fpipe;
+#ifndef	NO_FSPAWN_COMPAT
+	fspawnl;
+	fspawnv;
+	fspawnv_nowait;
+#endif
+	ftoes;
+	ftofs;
+	get_progname;
+	getallargs;
+	getargs;
+	getav0;
+	getavp;
+	getbroken;
+	getdomainname;
+	geterrno;
+	getfiles;
+	getfp;
+#ifndef	NO_GETLINE_COMPAT
+	getline;
+#endif
+	getmainfp;
+	getstr;
+	handlecond;
+	js_fprintf;
+	js_printf;
+	js_snprintf;
+	js_sprintf;
+	movebytes;
+	ofindline;
+	on_comerr;
+	opatlmatch;
+	opatmatch;
+	patcompile;
+	patlmatch;
+	patmatch;
+	peekc;
+	raisecond;
+	save_args;
+	saved_ac;
+	saved_av;
+	saved_av0;
+	serrmsg;
+	serrmsgno;
+	set_progname;
+	seterrno;
+	setfp;
+	starthandlecond;
+#ifndef	HAVE_STRCAT
+	strcat;
+#endif
+
+	strcatl;
+
+#ifndef	HAVE_STRCHR
+	strchr;
+#endif
+#ifndef	HAVE_STRCMP
+	strcmp;
+#endif
+#ifndef	HAVE_STRCPY
+	strcpy;
+#endif
+#ifndef	HAVE_STRDUP
+	strdup;
+#endif
+
+	streql;
+
+#ifndef	HAVE_STRLEN
+	strlen;
+#endif
+#ifndef	HAVE_STRNCAT
+	strncat;
+#endif
+#ifndef	HAVE_STRNCMP
+	strncmp;
+#endif
+#ifndef	HAVE_STRRCHR
+	strrchr;
+#endif
+	swabbytes;
+	unhandlecond;
+	wait_chld;
+
+#ifdef	_should_we_
+	fprintf;
+	printf;
+	snprintf;
+	sprintf;
+#endif
+
+local:
+	*;
+};

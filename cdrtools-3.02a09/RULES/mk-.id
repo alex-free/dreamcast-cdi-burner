@@ -1,0 +1,68 @@
+#ident "@(#)mk-.id	1.18 12/12/29 "
+###########################################################################
+# Written 1996 by J. Schilling
+###########################################################################
+#
+# Name of make program (make/gmake/smake)
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+
+MAKEPROG=	make		# Sun make
+WAIT=		.WAIT		# Sun make notation to wait for parallel targets
+
+SPACE=		$(_UNIQ:$(_UNIQ)%= )
+PRE_NUMBER=	pre\#
+NUMBER_SIGN=	$(PRE_NUMBER:pre\%=%)
+
+###########################################################################
+#
+# standard (automatic) machine identification
+#
+###########################################################################
+#
+# XP_ARCH = uname -p	= mach	  # Processor (sparc/mc68020)
+# XK_ARCH = uname -m	= arch -k # Kernel (sun3/sun4c/sun4m)
+# XM_ARCH = arch	~ arch -k # Machine (sun3/sun4)
+#
+###########################################################################
+#
+# Due to a bug in /usr/xpg*/bin/tr on Solaris, we cannot directly translit
+# many different chars to '-' using e.g. tr ', /\\()"' ',------'
+#
+# This is why we use sed 'y%ABC\\%abc-%'. Note that this will not work on *BSD
+#
+###########################################################################
+
+XP_ARCH:sh=	(mach || uname -p || true)2>/dev/null      | sed 'y%ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"%abcdefghijklmnopqrstuvwxyz,------%'
+XK_ARCH:sh=	uname -m                                   | sed 'y%ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"%abcdefghijklmnopqrstuvwxyz,------%'
+XM_ARCH:sh=	(arch || /usr/ucb/arch || true)2>/dev/null | sed 'y%ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"%abcdefghijklmnopqrstuvwxyz,------%'
+
+P_ARCH=		$(XP_ARCH)
+K_ARCH=		$(XK_ARCH)
+M_ARCH=		$(XM_ARCH)
+
+_XP_ARCH=	$(XP_ARCH:unknown=$(K_ARCH))
+
+_P_ARCH=	$(_UNIQ)$(_XP_ARCH)
+__P_ARCH=	$(_P_ARCH:$(_UNIQ)=$(K_ARCH))
+P_ARCH=		$(__P_ARCH:$(_UNIQ)%=%)
+
+_M_ARCH=	$(_UNIQ)$(XM_ARCH)
+__M_ARCH=	$(_M_ARCH:$(_UNIQ)=$(K_ARCH))
+M_ARCH=		$(__M_ARCH:$(_UNIQ)%=%)
+
+OSNAME:sh=	uname -s | sed 'y%ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"%abcdefghijklmnopqrstuvwxyz,------%'
+OSREL:sh=	uname -r | sed 'y%ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"%abcdefghijklmnopqrstuvwxyz,------%'
+OSVERSION:sh=	uname -v | sed 'y%ABCDEFGHIJKLMNOPQRSTUVWXYZ, /\\()"%abcdefghijklmnopqrstuvwxyz,------%'

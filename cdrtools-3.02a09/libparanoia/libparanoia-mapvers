@@ -1,0 +1,25 @@
+# /* @(#)libparanoia-mapvers        1.2 13/12/22 Copyright 2005-2010 J. Schilling */
+
+SCHILY_1.1 {
+global:
+	paranoia_modeget;
+	paranoia_set_readahead;
+	paranoia_get_readahead;
+} SCHILY_1.0;
+
+SCHILY_1.0 {
+global:
+	paranoia_dynoverlapset;
+	paranoia_free;
+	paranoia_init;
+	paranoia_modeset;
+	paranoia_overlapset;
+	paranoia_read;
+	paranoia_read_limited;
+	paranoia_resetall;
+	paranoia_resetcache;
+	paranoia_seek;
+
+local:
+	*;
+};

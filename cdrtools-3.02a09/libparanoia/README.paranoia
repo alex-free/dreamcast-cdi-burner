@@ -1,0 +1,83 @@
+# @(#)README.paranoia	1.1 97/04/04 J. Schilling from Monty (xiphmont@mit.edu)
+README.paranoia
+
+Paranoia II:
+(c) Monty
+xiphmont@mit.edu
+
+Hi there.
+
+All CDROM drives are not created equal.  You're probably using this
+patch because yours is a little less equal than others-- or maybe you
+just keep your CD collection in a box of full of gravel.  Jewel cases
+are for wimps; you know what I'm talking about.
+
+This patch adds extra-robust interframe syncronization, code to detect
+scratches (and hold sync across the scratch) and finally routines to
+filter out scratches as best possible.  These are all handled
+automatically by fairly modular code.
+
+1) extra interframe syncronization -------------------------------------
+
+Some CD drives can read audio data from an exact starting point to an
+exact ending point flawlessly; these are rare.  A larger number of
+drives read from only an approximately correct starting point, but do
+manage to get all the data in-tact from wherever they manage to begin
+the read.  Stock cdda2wav is coded with this in mind.
+
+More drives, especially IDE-like and recent ATAPI drives, suffer from
+framing misalignments within atomic multi-sector read operations.
+Cdda2wav is also set, by default, to read 75 sectors at a time from
+ATAPI drives, which Linux's IDE driver breaks into multiple 8 sector
+reads to conserve kernel memory.  Both of these things will break
+cdda2wav; the symptoms include cracks or pops within the read sample.
+
+The "Paranoia" patch will verify the alignment of *every* byte read by
+cdda2wav.  The goal is data integrity, not performance: a minimum 50%
+speed hit will result from the patch, likely more if your CDROM
+suffers from the framing bugs the patch corrects.  
+
+2) scratch detection and tolerance ------------------------------------
+
+Because overlap syncronization requires matching exact, perfect sample
+sections, scratched CDs typically cause normal cdda2wav to bail when
+overlap syncronization is turned on.  The second part of the
+"Paranoia" patch ignores scratches in the read bitstream and
+syncronizes using the data that can still be "trusted".  This step
+also collects first-pass scratch detection information used by the
+third section of the patch.
+
+Expect performance to drop through the floor on a badly scratched CD;
+the code can no longer use a simple case of exact matching for speedy
+correlation.  Maintaining solid sync across a scratch is processor
+bound; later I'll add speedier algorithms for correlation than the
+brute force method currently used.  Scratch detection imposes little
+additional overhead on a non-scratched CD.
+
+3) scratch repair -----------------------------------------------------
+
+Scratches are an irrevocable loss of data.  Still, it's usually
+possible to reconstruct a sample closer to the original data than the
+raw hissing, fluttering and crackling that severe scratches in the CD
+surface produce.
+
+Scratch filtering is the 'hard part' of this patch.  It needs to do
+two things; first, find the 'pops' that escaped detection in section 2
+of the patch and secondly fill in the gaps.  Both are acheived using
+delta (slew) averaging and forward and backward linear predictive
+interpolation (with IIR filters) to fill in known gaps as well as look
+for 'problem values' in stretches of sample known to be scratched.
+
+THE SCRATCH DETECTION IS NOT PERFECT.  Nor is the repair perfect,
+although it is easier than detecting scratches reliably.  Both are
+cases of coming arbitrarily close to perfection; Paranoia is designed
+with light to moderate damage in mind, but will still recover a
+listenable sample from heavy damage.  
+
+Paranoia still has quite a bit of room for improvement in the scratch
+repair code... If cdda2wav + Paranoia is not doing an acceptable job
+on CDs that you just gotta have, drop me a line; I didn't want to sink
+months into a project I wasn't certain anyone would ever use :-)
+
+Monty
+

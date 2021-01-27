@@ -1,0 +1,144 @@
+Porting FAQ for SING (Schily Is Not Gnu) utilities.
+
+-	The base for porting is the makefile system.
+	Always look into:
+
+		https://sourceforge.net/projects/schilytools/files/makefiles/
+
+	for a version that might be newer than the one used
+	inside the program that should be ported.
+
+	If you want to know more about the makefile system,
+	read the man pages makefiles4 and makerules.4,
+	they are located in man/man4/*
+
+		to convert a manpage troff->postscript use:
+			gtroff -man file.tr | grops > file.ps
+
+		to convert a manpage troff->Terminal use:
+			nroff -man file.tr | more -s
+
+
+-	To be able to use the makefile system, you need a
+	make program that meets the minimum requirements 
+	for a make program (see makerules(4) man page)
+	Currently, the following make programs meet this
+	minimum requirements: Smake (my program), SunPro Make and Gmake
+
+	A good idea is to first compile 'smake' if you don't
+	have it already.
+
+	The smake source can be found on:
+
+		https://sourceforge.net/projects/s-make/files/
+	or
+		https://sourceforge.net/projects/s-make/files/alpha/
+
+	for the most recent version.
+
+-	To be able to use the makefile system with gmake,
+	the operating system must have a command named 'uname'.
+	If not, you have to provide it as a shell script.
+
+
+1)	If you are using smake release 1.1 or newer and 
+	a recent makefile system, the next step should be done
+	automagically (smake-1.1 or newer implement a -version
+	option to retrieve the version number).
+
+	If you are using gmake, you need to do this by hand.
+
+	First step for adding a new architecture is creating
+	the appropriate rule files in the RULES directory:
+
+		RULES/os-{newos}.id	For OS identification
+		RULES/os-{newos}.def	For OS definition (man style)
+		RULES/{newarch}-{newos}-cc.rul
+		RULES/{newarch}-{newos}-gcc.rul
+
+	And create a file:
+
+		DEFAULTS/Defaults.{newos}
+
+	Have a look in similar files for a template.
+
+	If the files hae been generated automagically by smake,
+	please check the content and mail me a working set for your OS.
+
+2)	All C-porting control is located in include/mconfig.h
+	and in the file incs/{newarch}-{newos}-{cc!gcc}/xconfig.h
+	The later file is created automatically using GNU 
+	configure. The File conf/xconfig.h.in contains all
+	templates and comments for the various things that are tested.
+
+	In any case, it is recommended to carefully watch the
+	outout from the 'configure' run (which is automatically
+	started from within 'make'). You may also wish to check all
+	files that are created in the directory 
+	incs/{newarch}-{newos}-{cc!gcc}/
+
+3)	Everything should compile now.
+	If not, try to hack the files and mail me your problems.
+
+	You should have a closer look at the sources as it may be that
+	the first attempt to port a utility will not support
+	all possible features of the new OS.
+	If your OS supportes these features in a non standard way,
+	you need to hack conf/configure.in and the source and add 
+	support for the non standard behaviour of your OS.
+
+	This is definitely recommended if you want to port programs 
+	like 'cdrecord' 'star' and similar which need fork(2) and
+	mmap(2) or setprioriry(2) or if you check programs on
+	non POSIX operating systems like W95/W98/WNT OS/2 and
+	similar.
+
+
+Notice for porting tools, that use the SCSI library libscg:
+
+I)	Cdrecord should compile at this moment if you are using
+	a new architecture. The SCSI transport however will not work.
+	Check this!
+
+	All files that contain low level code for SCSI transport are 
+	located in the directory libscg/
+
+II)	Implementing a SCSI Transport Layer for your architecture:
+
+	You need to add a new block into scsihack.c that will add
+	support for your OS. Copy the block:
+
+	#ifdef  __NEW_ARCHITECTURE
+	#define SCSI_IMPL               /* We have a SCSI implementation for XXX */
+	/*
+	 * Add new hacks here
+	 */
+	#include "scsi-new-arch.c"
+	#endif
+
+	and rename __NEW_ARCHITECTURE to reflect your new architecture.
+
+	Add a new file that will be called scsi-{newarch}.c
+	Have a look into scsi-linux-sg.c for a template how to do this.
+
+	More hints for writing the needed SCSI low level transport functions
+	is in:
+
+	  http://sourceforge.net/projects/cdrtools/files/READMEs/README.scsi-IF
+
+4)	Test your ported program.
+
+5)	You may check other programs from me to see if everything compiles
+	and works.
+
+6)	Send me your changes
+
+Joerg Schilling
+
+joerg.schilling@fokus.fraunhofer.de
+joerg@schily.isdn.cs.tu-berlin.de
+js@cs.tu-berlin.de
+
+
+
+

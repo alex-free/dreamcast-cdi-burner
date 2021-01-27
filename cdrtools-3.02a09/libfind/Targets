@@ -1,0 +1,4 @@
+# @(#)Targets	1.6 10/04/04 Copyright 2005-2010 J. Schilling
+
+CFILES=		find.c walk.c fetchdir.c cmpdir.c find_misc.c find_list.c find_main.c idcache.c
+HFILES=		find_misc.h find_list.h find_tok.h

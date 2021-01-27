@@ -1,0 +1,42 @@
+. \"  Manual Seite fuer errmsgno
+. \" @(#)errmsgno.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH ERRMSGNO 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+errmsgno() \- prints error message, given error code
+.SH SYNOPSIS
+.nf
+.B
+errmsgno (errcode, format, arg1\|.\|.\|.argn)
+.B	int errcode;
+.B	char *format;
+.fi
+.SH DESCRIPTION
+errmsgno() prints an error output message corresponding to
+errcode, which is a standard system error.
+errmsgno() begins its output with the current program name (as
+passed to it by exec ). The message can be expanded with
+additional arguments in the same form printf() would.
+.SH RETURNS
+none
+.SH "SEE ALSO"
+comerr(3), comerrno(3), error(3), errmsg(3), error(3) geterrno(3),
+printf(3), format(3)
+.SH NOTES
+errmsgno() is identical to comerrno() except instead of exiting,
+it prints the error message and returns to the caller.
+If the errcode argument is positive, errmsgno() ignores it and
+just prints the program name and the result of expanding
+format().

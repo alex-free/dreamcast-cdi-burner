@@ -1,0 +1,140 @@
+This README was written by Dr. Eberhard Heuser-Hofmann
+	vaxinf@chclu.chemie.uni-konstanz.de
+
+If you are looking for a *.zip file instead of the tar archive,
+check this address:
+
+ftp://v36.chemie.uni-konstanz.de/cdrecord_vms/
+ 
+/*--------------------------------------------------------------------------*/
+Hi,
+
+this is the OpenVMS Version of J.Schilling's cdrecord-program.
+
+There is a command-procedure called build_all.com in the [.cdrecord] subdir,
+that compiles and links the code. The cdrecord-program is been produced in
+[.cdrecord.vms] subdirectory.
+
+Define this program as a symbol via
+
+$ cdrecord:==$disk:[dir]cdrecord.exe
+
+$ cdrecord -help gives an idea about the options, that are possible:
+
+cdrecord -help
+Usage: cdrecord.exe [options] track1...trackn
+Options:
+        -version        print version information and exit
+        dev=target      SCSI target to use as CD/DVD-Recorder
+        gracetime=#     set the grace time before starting to write to #.
+        timeout=#       set the default SCSI command timeout to #.
+        debug=#,-d      Set to # or increment misc debug level
+        kdebug=#,kd=#   do Kernel debugging
+        -verbose,-v     increment general verbose level by one
+        -Verbose,-V     increment SCSI command transport verbose level by one
+        -silent,-s      do not print status of failed SCSI commands
+        driver=name     user supplied driver name, use with extreme care
+        driveropts=opt  a comma separated list of driver specific options
+        -checkdrive     check if a driver for the drive is present
+        -prcap          print drive capabilities for MMC compliant drives
+        -inq            do an inquiry for the drive and exit
+        -scanbus        scan the SCSI bus and exit
+        -reset          reset the SCSI bus with the cdrecorder (if possible)
+        -overburn       allow to write more than the official size of a medium
+        -ignsize        ignore the known size of a medium (may cause problems)
+        -useinfo        use *.inf files to overwrite audio options.
+        speed=#         set speed of drive
+        blank=type      blank a CD-RW disc (see blank=help)
+        -load           load the disk and exit (works only with tray loader)
+        -eject          eject the disk after doing the work
+        -dummy          do everything with laser turned off
+        -msinfo         retrieve multi-session info for mkisofs >= 1.10
+        -toc            retrieve and print TOC/PMA data
+        -atip           retrieve and print ATIP data
+        -multi          generate a TOC that allows multi session
+                        In this case default track type is CD-ROM XA2
+        -fix            fixate a corrupt or unfixated disk (generate a TOC)
+        -nofix          do not fixate disk after writing tracks
+        -waiti          wait until input is available before opening SCSI
+        -immed          Try to use the SCSI IMMED flag with certain long lasting commands
+        -force          force to continue on some errors to allow blanking bad disks
+        -dao            Write disk in SAO mode. This option will be replaced in the future.
+        -raw            Write disk in RAW mode. This option will be replaced in the future.
+        -raw96r         Write disk in RAW/RAW96R mode. This option will be replaced in the future.
+        -raw96p         Write disk in RAW/RAW96P mode. This option will be replaced in the future.
+        -raw16          Write disk in RAW/RAW16 mode. This option will be replaced in the future.
+        tsize=#         Length of valid data in next track
+        padsize=#       Amount of padding for next track
+        pregap=#        Amount of pre-gap sectors before next track
+        defpregap=#     Amount of pre-gap sectors for all but track #1
+        mcn=text        Set the media catalog number for this CD to 'text'
+        isrc=text       Set the ISRC number for the next track to 'text'
+        index=list      Set the index list for the next track to 'list'
+        -text           Write CD-Text from information from *.inf files
+        textfile=name   Set the file with CD-Text data to 'name'
+        -audio          Subsequent tracks are CD-DA audio tracks
+        -data           Subsequent tracks are CD-ROM data mode 1 (default)
+        -mode2          Subsequent tracks are CD-ROM data mode 2
+        -xa1            Subsequent tracks are CD-ROM XA mode 1
+        -xa2            Subsequent tracks are CD-ROM XA mode 2
+        -cdi            Subsequent tracks are CDI tracks
+        -isosize        Use iso9660 file system size for next data track
+        -preemp         Audio tracks are mastered with 50/15 µs preemphasis
+        -nopreemp       Audio tracks are mastered with no preemphasis (default)
+        -copy           Audio tracks have unlimited copy permission
+        -nocopy         Audio tracks may only be copied once for personal use (default)
+        -scms           Audio tracks will not have any copy permission at all
+        -pad            Pad data tracks with 15 zeroed sectors
+                        Pad audio tracks to a multiple of 2352 bytes
+        -nopad          Do not pad data tracks (default)
+        -shorttrack     Subsequent tracks may be non Red Book < 4 seconds if in SAO or RAW mode
+        -noshorttrack   Subsequent tracks must be >= 4 seconds
+        -swab           Audio data source is byte-swapped (little-endian/Intel)
+The type of the first track is used for the toc type.
+Currently only form 1 tracks are supported.
+
+One important point is how the CDR-device is being selected:
+
+dev=i,j,k
+
+where:
+i: 0   1   2   3   4   5   6   7   8   9    ...  32  33
+   dka dkb dkc dkd gka gkb gkc gkd dqa dqb  ...  dqy dqz
+
+j: scsi-id
+k: sub-lun (usually 0)
+
+As an example:
+
+dev=1,5,2 selects dkb502:
+
+An typical example how to put virtual disk data onto a cd-rom is given here:
+
+$ cdrecord -speed 2 dev=0,4,0 dka200:[000000]vda0.dsk
+
+Additional hints:
+
+1. Due to timeout problems use -immed switch for IDE-burners under OpenVMS 7.3
+   or modify the timeout value in the dqdriver source.
+
+2. HP has written a command procedure, that calls cdrecord. You should
+   modify this com-file to activate the cdrecord burnproof option:
+   "driveropts=burnproof".
+
+Be aware that cdrecord has copyright on it.
+
+Eberhard
+
+===============================================================================
+
+Dr. Eberhard Heuser-Hofmann
+Univ. Konstanz
+Fakultaet fuer Chemie
+Universitaets-Strasse 10
+D-78464 Konstanz
+Germany
+Phone: +49-7531-88-2026, FAX: +49-7531-88-3139
+email: vaxinf@chclu.chemie.uni-konstanz.de
+
+===============================================================================
+

@@ -1,0 +1,47 @@
+On OpenBSD releases between December 11th and December 30th 2002
+there is a bug in /usr/include/ctype.h, it #defines EOF ignoring
+POSIX rules. As the schily make environment relies on EOF as an
+indicator to check whether stdio.h has been included, there may 
+be problems to compile things. If you find compile problems,
+you may try to include 
+
+#undef EOF 
+
+directly after #include <ctype.h>
+
+Cdrecord has been tested and known to work on OpenBSD, however,
+the current OpenBSD port will not be able to scan the SCSI bus
+for a CD-Recorder as it does on other operating systems.
+
+In other words, 'cdrecord -scanbus' most likely will not work.
+
+Both regular SCSI and ATAPI devices are supported. For ATAPI support
+you need OpenBSD-2.6 or newer.
+
+Libscg sends Generic scsi commands that are only supported for the
+"whole disk" partition.  For example, 'cdrecord dev=/dev/rcd0c -checkdrive'.
+See the cd(4), atapiscsi(4), and cdrecord(1) manpages for more details.
+
+There are at least two ways to figure out what SCSI CD devices are
+on the machine:
+
+  From /var/run/dmesg.boot:
+  $ egrep "^cd.+ at scsibus" /var/run/dmesg.boot
+  cd0 at scsibus0 targ 0 lun 0: <SONY, CD-RW CRX175E2, S002> SCSI0 5/cdrom removable
+  cd1 at scsibus1 targ 0 lun 0: <ATAPI, CD-ROM MARY500, 1.21> SCSI0 5/cdrom removable
+
+  From sysctl:
+  $ sysctl hw.disknames
+  hw.disknames = wd0,cd0,cd1,fd0
+
+In these examples, 'cd0' and 'cd1' are the SCSI CD devices on the
+system, and they should be accessed by '/dev/rcd0c' and '/dev/rcd1c',
+respectively.
+
+In December 2002 there have been reports that the atapiscsi(4) driver has
+some bugs that may cause cdrecord to hang for a while.  While this is
+annoying, it is harmless. The command will eventually timeout (the default
+timeout is 40 seconds, but can be changed with timeout=%d).  Trying to kill
+the "hung" process may leave the device unusable until the system is rebooted
+(which would be another bug of the atapiscsi(4) driver as killing a process
+should do all necessary housekeeping for the dead process), so just be patient.

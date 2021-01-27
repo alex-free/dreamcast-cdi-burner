@@ -1,0 +1,38 @@
+This package contains the following software:
+
+-	cdda2wav (an digital CD audio extraction program)
+	By Heiko Eißfeldt <heiko@hexco.de> and
+	by Jörg Schilling joerg.schilling@fokus.fraunhofer.de
+
+-	cdrecord (a CD recording program)
+	By Jörg Schilling <joerg.schilling@fokus.fraunhofer.de>
+
+-	mkisofs (an ISO-9660 filesystem image creator)
+	By Jörg Schilling joerg.schilling@fokus.fraunhofer.de and
+	by James Pearson <jcpearso@ge.ucl.ac.uk>
+
+-	mkhybrid (an ISO-9660/HFS filesystem image creator)
+	Link to mkisofs
+
+-	several diagnostic programs for ISO-9660
+
+	-	devdump dump a device or file in hex
+
+	-	isodump dump a device or file based on ISO-9660
+
+	-	isoinfo analyze or list an ISO-9660 image
+
+	-	isovfy verify an ISO-9660 image
+
+-	readcd (a stripped down version of scgskeleton)
+	may be used to read data CD's, to write to DVD-RAM
+	and to copy Solaris boot CD's
+	By Jörg Schilling joerg.schilling@fokus.fraunhofer.de
+
+-	scgcheck (a program to validate the correct behavior
+	of the low level libscg code and the SCSI transport
+	code of the underlying OS).
+	By Jörg Schilling joerg.schilling@fokus.fraunhofer.de
+
+-	libscg (a highly portable SCSI transport library)
+	By Jörg Schilling joerg.schilling@fokus.fraunhofer.de

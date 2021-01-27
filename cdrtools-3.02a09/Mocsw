@@ -1,0 +1,21 @@
+#ident "@(#)Mocsw	1.4 13/06/19 "
+###########################################################################
+deftgt:
+SRCROOT=	.
+DIRNAME=	SRCROOT
+RULESDIR=	RULES
+include		$(SRCROOT)/$(RULESDIR)/rules.top
+###########################################################################
+
+USER_NAME	:sh=	/usr/ucb/whoami || whoami
+HOST_NAME	:sh=	uname -n
+DATE		:sh=	date '+%Y%m%d%H%M%S'
+
+
+deftgt $(ALLTARGETS):
+	$(MAKE) -f Mcsw DEFAULTSDIR=DEFAULTS_CSW EMAIL=joerg@opencsw.org \
+			HOTLINE=http://www.opencsw.org/bugtrack/ 	\
+			PKG_TYPE=OCSW \
+			PKGOPTX=PSTAMP=$(USER_NAME)@$(HOST_NAME)-$(DATE) \
+			LDOPTX=-Bdirect \
+			$@

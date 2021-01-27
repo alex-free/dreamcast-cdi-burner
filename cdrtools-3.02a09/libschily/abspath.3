@@ -1,0 +1,97 @@
+. \"  Manual Seite fuer abspath
+. \" @(#)abspath.3	1.1 15/04/27 Copyright 2015 J. Schilling
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH ABSPATH 3 "%e%" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+abspath(), absnpath(), absfpath() \- Expands a relative pathname to a full (absolute) pathname
+.SH SYNOPSIS
+.nf
+#include <schily/schily.h>
+.sp
+.B char *
+.B abspath(relp, absp, asize)
+.B "                const   char    *relp;
+.B "                        char    *absp;
+.B "                        size_t  asize;
+.sp
+.B char *
+.B absnpath(relp, absp, asize)
+.B "                const   char    *relp;
+.B "                        char    *absp;
+.B "                        size_t  asize;
+.sp
+.B char *
+.B absfpath(relp, absp, asize, flags)
+.B "                const   char    *relp;
+.B "                        char    *absp;
+.B "                        size_t  asize;
+.B "                        int     flags;
+.fi
+.SH DESCRIPTION
+.LP
+.BR abspath ()
+takes a relative path name and converts it into an absolute path name.
+.I relp
+is relative path name that is used as the input.
+.I absp
+is the buffer used for the result of the conversion.
+.I asize
+is the size of the result buffer.
+.LP
+.BR absnpath ()
+behaves like
+.BR abspath ()
+exept that the file does not need to exist.
+.LP
+.BR absfpath ()
+takes an additional
+.I flags
+parameter from the set of flags from
+.BR resolvefpath ()
+to control the behavior.
+
+.SH RETURN VALUE
+.LP
+On successful completion,
+.BR abspath(),
+.BR absnpath()
+and
+.BR absfpath()
+return a pointer to the resolved name
+.BR absp .
+Otherwise, a null pointer is returned and errno is set to indicate
+the error, and the contents of the buffer pointed to by
+.B absp
+is left in an indeterminate state.
+.SH ERRORS
+.LP
+.TP 10
+.B ERANGE
+The path does not fit into the suplied buffer.
+.TP
+.B EFAULT
+A null pointer was suplied as pathname.
+.TP
+.B EINVAL
+An empty relative path was supplied.
+.SH EXAMPLES
+.LP
+.SH "SEE ALSO"
+.LP
+.BR resolvepath (3),
+.BR resolvenpath (3),
+.BR resolvefpath (3)
+.SH NOTES
+none

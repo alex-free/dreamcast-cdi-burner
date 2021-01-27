@@ -1,0 +1,43 @@
+. \"  Manual Seite fuer fexecl
+. \" @(#)fexecl.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH FEXECL 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+fexecl() \- executes a program
+.SH SYNOPSIS
+.nf
+.B
+fexecl(name, in, out, err, arg0, arg1, \|.\|.\|. argn, NULL)
+.B	char *name;
+.B	FILE *in, *out, *err;
+.B	char *arg0\|.\|.\|.*argn;
+.fi
+.SH DESCRIPTION
+fexecl() is a variation of fexecve(). The description of
+fexecve() applies to fexecl(), with two exceptions.
+First, fexecl() does not permit the environment list to be
+specified; it causes the new program to have the same
+environment as the current program, using the global environment
+pointer environ.
+Second, the argument list for the new program is constructed as
+part of the call to fexecl(). This is a lot easier to write
+than the code to construct a vector of strings, but is limited
+to cases with a fixed number of arguments. The argument list
+will consist of the strings a0, a1, and so on. By convention,
+a0 is the name of the new program.
+.SH RETURNS
+Returns system error code; doesn't return if successful.
+.SH NOTES
+none

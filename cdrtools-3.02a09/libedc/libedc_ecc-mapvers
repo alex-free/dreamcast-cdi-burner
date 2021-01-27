@@ -1,0 +1,26 @@
+# /* @(#)libedc_ecc-mapvers        1.3 10/10/02 Copyright 2005-2010 J. Schilling */
+
+SCHILY_1.1 {
+global:
+	encode_L2_P;
+	encode_L2_Q;
+} SCHILY_1.0;
+
+SCHILY_1.0 {
+global:
+	build_edc;
+	decode_L2_P;
+	decode_L2_Q;
+	decode_LSUB_P;
+	decode_LSUB_Q;
+	do_decode_sub;
+	do_encode_L1;
+	do_encode_L2;
+	do_encode_sub;
+	get_sector_type;
+	scramble_L2;
+	set_sector_type;
+
+local:
+	*;
+};

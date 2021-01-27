@@ -1,0 +1,44 @@
+# @(#)vc6-cygwin-setup	1.4 09/05/16 Copyright 2006 J. Schilling
+
+#
+# Keep in sync with vc6-setup as we cannot rely on hard links
+#
+
+#
+# Disable warnings for nonportable variable assignements.
+# We only use smake MS-WIN, so this is not a problem.
+#
+.NO_WARN: :=
+
+VSCommonDir=C:\Programme\Microsoft Visual Studio\Common
+VSCommonPath=/cygdrive/c/Programme/Microsoft Visual Studio/Common
+export	VSCommonDir
+
+MSDevDir=C:\Programme\Microsoft Visual Studio\Common\msdev98
+MSDevPath=/cygdrive/c/Programme/Microsoft Visual Studio/Common/msdev98
+export	MSDevDir
+
+MSVCDir=C:\Programme\Microsoft Visual Studio\VC98
+MSVCPath=/cygdrive/c/Programme/Microsoft Visual Studio/VC98
+export	MSVCDir
+
+VcOsDir=WIN95
+VcOsDir=WINNT
+export	VcOsDir
+
+PATH	:=${MSDevPath}\BIN:${MSVCPath}\BIN:${VSCommonPath}\TOOLS\${VcOsDir}:${VSCommonPath}\TOOLS:${PATH}
+export	PATH
+
+INCLUDE	:=${MSVCDir}\ATL\INCLUDE;${MSVCDir}\INCLUDE;${MSVCDir}\\MFC\INCLUDE;${INCLUDE}
+export	INCLUDE
+
+LIB	:=${MSVCDir}\LIB;${MSVCDir}\MFC\LIB;${LIB}
+export	LIB
+
+VC_SETUP=dummy-setup
+export	VC_SETUP
+
+#
+# Re-enable all warnings.
+#
+.NO_WARN:

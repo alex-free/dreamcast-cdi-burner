@@ -1,0 +1,37 @@
+. \"  Manual Seite fuer geterrno
+. \" @(#)geterrno.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH GETERRNO 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+geterrno() \- gets system error number
+.SH SYNOPSIS
+.B
+int geterrno()
+.SH DESCRIPTION
+geterrno() enables the programmer to find out exactly what the
+last failure was. This is often necessary since some
+subroutines just indicate success or failure, rather than
+directly return definitive error codes.
+.PP
+For example, comerr() uses geterrno() to learn the error so that
+an appropriate message can be printed.
+.SH RETURNS
+Returns the error code for the last system error that occurred
+in the current process, e.g., after a call to fileopen() failed.
+.SH "SEE ALSO"
+comerr(3), comerrno(3), error(3), errmsg(3)
+.SH NOTES
+The value returned by geterrno() is only valid after the
+immediately preceding system call failed.

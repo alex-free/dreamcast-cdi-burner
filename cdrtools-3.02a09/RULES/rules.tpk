@@ -1,0 +1,70 @@
+#ident "@(#)rules.tpk	1.8 17/08/04 "
+###########################################################################
+# Written 2005 by J. Schilling
+###########################################################################
+#
+# Rules for creating binary tar packages
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+# A copy of the CDDL is also available via the Internet at
+# http://www.opensource.org/licenses/cddl1.txt
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+
+###########################################################################
+# If we are included before rules.dir, this will stop to propagate
+# the targets tarpkg1 & tarpkg to sub makes but handle packaging at this
+# directory bundling level.
+###########################################################################
+PKGTARGETS=
+
+OTARSDIR=	$(SRCROOTSL)tars/$(OARCH)
+$(OTARSDIR):
+		$(MKDIR) -p $@
+
+
+_TARGETAR=	$(TARGET_AR:%=$(OTARSDIR)/%)
+__TARGETAR=	$(_UNIQ)$(_TARGETAR)
+___TARGETAR=	$(__TARGETAR:$(_UNIQ)=tarpkg)
+TARGETAR=	$(___TARGETAR:$(_UNIQ)%=%)
+
+_MCS_PROJECT=	$(_UNIQ)$(PROJECTNAME)
+__MCS_PROJECT=	$(_MCS_PROJECT:$(_UNIQ)=SPS-Generic)
+MCS_PROJECTNAME= $(__MCS_PROJECT:$(_UNIQ)%=%)
+
+ta:
+	echo "'$(TARGETAR)'"
+	echo "'$(TARGETAR).tar'"
+
+tarpkg: $(OTARSDIR) tarpkg0 tarpkg1 tarpkg2
+
+tarpkg0:
+	rm -rf tarpkg
+
+tarpkg1:
+	mkdir -p tarpkg tarpkg/$(INSBASE)/bin tarpkg/$(INSBASE)/sbin tarpkg/$(INSBASE)/etc \
+		tarpkg/$(INSBASE)/lib tarpkg/$(INSBASE)/share/man
+	ln -s share/man tarpkg/$(INSBASE)/man
+	if [ ."$(PRE_INST_CMDS)" != . ]; then cd tarpkg && eval "$(PRE_INST_CMDS)" ; fi
+	"$(MAKE)" $(MAKE_FILE) $(MAKEMACS) DESTDIR=`pwd`/tarpkg install
+	if [ ."$(POST_INST_CMDS)" != . ]; then cd tarpkg && eval "$(POST_INST_CMDS)" ; fi
+	-if [ ."$(STRIPLIST)" != . ];  then chmod u+w $(STRIPLIST:%=tarpkg/%); strip $(STRIPLIST:%=tarpkg/%); fi
+	-if [ ."$(STRIPXLIST)" != . ]; then chmod u+w $(STRIPXLIST:%=tarpkg/%); strip -x $(STRIPXLIST:%=tarpkg/%); fi
+	-if [ ."$(MCSLIST)" != . ];    then chmod u+w $(MCSLIST:%=tarpkg/%); mcs -d -a "$(MCS_PROJECTNAME)" $(MCSLIST:%=tarpkg/%); fi
+	if [ ."$(POST_STRIP_CMDS)" != . ]; then cd tarpkg && eval "$(POST_STRIP_CMDS)" ; fi
+	find tarpkg -print | sort > /tmp/so.$$$$; diff filelist /tmp/so.$$$$; rm -f /tmp/so.$$$$
+
+tarpkg2:
+	star -C tarpkg/ pkglist=pkglist -cP > $(TARGETAR).tar
+	bzip2 -9f $(TARGETAR).tar
+	rm -rf tarpkg

@@ -1,0 +1,10 @@
+ARCH=i386
+PKG=CSWcdrtools
+#PKG=XXXcdrtools
+NAME=cdrtools - Tools for ripping from and recording to CDs and DVDs
+VERSION=2.01.01a39,REV=2006.7.20
+CATEGORY=application
+VENDOR=http://cdrecord.org/private/cdrecord.html  packaged for CSW by Jörg Schilling
+HOTLINE=http://www.blastwave.org/bugtrack/
+EMAIL=joerg@blastwave.org
+BASEDIR=/opt/csw

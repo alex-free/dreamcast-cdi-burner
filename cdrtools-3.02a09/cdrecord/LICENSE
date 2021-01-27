@@ -1,0 +1,57 @@
+# @(#)LIMITATIONS	1.3 09/04/10 Copyright 2002-2007 J. Schilling
+
+This software is under CDDL but you should read the following clarifications:
+
+
+-	You may not modify certain copyright messages in cdrecord.c
+
+	See cdrecord.c for further information.
+
+
+-	You may (with a few exceptions) not modify the location of the
+	configuration file /etc/default/cdrecord.
+
+	See defaults.c for further information.
+
+The Author does encourage you to make changes in consent with him.
+Since this if free software, you are of course free to make any
+modifications you seem fit. However, if you choose to do this,
+the restrictions (see below) apply.
+
+Note that the fact that the Author is disallowing you to change things that
+affect global compatibility and the fact that you are required to warn people
+in case you did use an unapproved build system is not in violation with
+
+	http://www.opensource.org/docs/definition.php
+or
+	http://www.debian.org/social_contract
+
+as you are still allowed to make any changes you like in case you:
+
+-	clearly document that you don't care about compatibility (e.g. identical
+	behavior on all supported platforms) or quality (in case you use an
+	unaproved build system)
+
+-	clearly document that you did create a globally incompatible version
+
+-	clearly document that you document your reasons and the background for
+	the modifications you did make
+
+-	clearly also inform all users about the official behavior of the
+	original version of the program and avoid to confuse users with
+	spreading usage information that does not add a hint that this
+	information does not apply to the original version.
+
+In case that you create a variant of cdrecord that is too different from the
+original, you should think about using a different name. Note that as e.g.
+many people use the name "dvdrecord" when talking about the DVD-enabled 
+origional version of cdrecord. For this reason, I believe that "dvdrecord"
+is a too similar name.
+
+In case that you change the behavior of the dev= option on a platform that
+is already supported by the files in the original source distribution,
+this is considered to be a significant deviation. You need to change the name
+for such a variant.
+
+Note that you need to distribute this file together with the sources
+in case you publish the original version or modified variants.

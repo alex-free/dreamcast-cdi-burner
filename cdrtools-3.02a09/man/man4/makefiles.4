@@ -1,0 +1,1975 @@
+. \" @(#)makefiles.4	1.7 09/04/11 Copyr 1996 J. Schilling
+. \" User Manual page for makefile system
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.\".TH makefiles 4L "14. February 1997" "J\*org Schilling" "Schily\'s FILE FORMATS"
+.TH makefiles 4L "14. February 1997" "J\*org Schilling" "GMD FOKUS FILE FORMATS"
+.SH NAME
+makefiles \- users guide for compiling projects on different platforms
+.SH SYNOPSIS
+.B "make [target]
+.br
+.B "gmake [target]
+.br
+.B "smake [target]
+.br
+.PP
+Target may be one of:
+.TP 10
+\&.help
+to get a list of possible targets and a short description.
+.TP
+all
+to make the default targets
+.TP
+install
+to make and install the default targets
+(see 
+.IR INS_BASE " and " INS_KBASE
+to learn how to modify the installation path).
+.TP
+ibins
+to make and install a target in 
+.I SRCROOT/bins
+.TP
+depend
+to re-make dependency rules for all default targets.
+Note: All dependency files will automatically remade 
+on the next run of make before they are included.
+.TP
+clean
+to remove 
+.I core 
+files and all intermediate object files.
+.TP
+clobber
+to remove the targets from
+.IR clean ,
+all dependency files and all final targets
+.TP
+distclean
+to remove the targets from
+.IR clean " and " clobber 
+and all made files for all architectures.
+.TP
+tags
+to make 
+.IR vi (1)
+compatible tags
+.TP
+TAGS
+to make 
+.IR emacs (1)
+compatible tags
+.TP
+config
+reserved for future use.
+.TP
+rmtarget
+to remove the default target
+.TP
+relink
+to remove the default target and remake it immediately. This can be
+used to change .e.g LD_RUN_PATH in the executable.
+
+.SH DESCRIPTION
+Makefiles is a set of rules that allows compiling of structured
+projects with small and uniformly structured makefiles.
+All rules are located in a central directory.
+Compiling the projects on different platforms can be done
+simultaneously without
+the need to modify any of the makefiles that are located
+in the projects directories.
+.PP
+Makefiles is a set of high level portability tools superior to
+.B autoconf
+and easier to use.
+.PP
+Three make programs are supported:
+.IR "Sunpro make" , 
+.I "GNU make"
+and
+.IR smake .
+.PP
+.I BSDmake
+could be supported if it supports pattern matching rules correctly.
+.PP
+The main design goal was to have a set of small and easy to read
+makefiles, each located in the project's leaf directory and therefore 
+called
+.IR leaf -makefile.
+.PP
+Each of these 
+.IR leaf -makefiles,
+in fact contains no rule at all. It simply defines some macros
+for the 
+.IR make -program
+and includes two files from a central make rule depository.
+The included files and the files that are recursively included 
+define the rules that are needed to compile the project.
+.PP
+Each 
+.IR leaf -makefile
+is formed in a really simple way:
+.TP
+\(bu
+It first defines two macros that define the relative location
+of the project's root directory and the name of the directory
+that contains the complete set of of rules and then includes
+the rule file 
+.I rules.top
+from the directory that forms the central rule depository.
+You only have to edit the macro
+.I SRCROOT
+to reflect the relative location of the project's root directory.
+.TP
+\(bu
+The next part of a 
+.IR leaf -makefile
+defines macros that describe the target and the source.
+You can only have one target per 
+.IR leaf -makefile.
+Of course, there may be many source files, that are needed to create
+that target.
+If you want to make more than one target in a specific directory,
+you have to put more than one makefile into that directory.
+This is the part of a makefile that describes a unique target.
+Edit this part to contain all source files, all local include files
+and all non global compile time flags that are needed for your target.
+For a typical target this is as simple as filling in a form.
+.TP
+\(bu
+Each
+.IR leaf -makefile
+finally includes a file from the rules directory that contains
+rules for the appropriate type of target that is to be made
+from this 
+.IR leaf -makefile.
+.PP
+The makefile in each directory has to be called
+.IR Makefile .
+If you want to have more than one makefile in a specific directory,
+you have to choose different names for the other makefiles.
+.PP
+There are rules for the following type of targets:
+.TP 20
+commands
+The make rules for user level commands like
+.IR cat ", " ls 
+etc. are located in the file 
+.I rules.cmd
+.TP
+drivers
+The make rules for device drivers
+are located in the file 
+.I rules.drv
+.TP
+libraries
+The make rules for non shared libraries
+are located in the file 
+.I rules.lib
+.TP
+shared libraries
+The make rules for shared libraries
+are located in the file 
+.I rules.shl
+.TP
+localized files
+The make rules for localized files
+are located in the file 
+.I rules.loc
+.TP
+nonlocalized files
+The make rules for non localized files
+are located in the file 
+.I rules.aux
+.TP
+shell scripts
+The make rules for shell scripts (a variant of localized files)
+are located in the file 
+.I rules.scr
+.TP
+manual pages
+The make rules for manual pages (a variant of localized files)
+are located in the file 
+.I rules.man
+.TP
+diverted makefiles
+The make rules for projects that need to have more than
+one makefile in a specific directory
+are located in the file 
+.I rules.mks
+It contains a rule that diverts to the listed sub makefiles.
+Each sub makefile may be of any type.
+.TP
+directories
+The make rules for sub directories
+are located in the file 
+.I rules.dir
+
+.SH "Macros/Variables Used In Rules
+.PP
+The following is a description of the most important macros
+used within the make rules.
+.I NOTE: 
+not all of them might be changed in a specific makefile.
+Carefully read the description and change only those macros
+that are intended to be used to change the behavior of
+the compilation.
+
+.TP 13
+ARCHDIR
+contains the location where object files and make targets will be placed.
+A typical name would be:
+.I "OBJ/sparc\-sunos5\-cc
+.br
+Do not change this macro.
+.
+.TP
+ASFLAGS
+The flags that are used with the assembler.
+.br
+Do not change this macro.
+.
+.TP
+ASMFILES
+a list of assembler source files, to be specified in a
+leaf makefile.
+.
+.TP
+ASOPTS
+The internal macro that contains the flags for the assembler.
+Change this macro if you want to change the behavior.
+Use: 
+.B "ASOPTS= value"
+If you want to override the default value. If you want to
+override the default assembler flags from the command line
+call:
+.B "make 'ASOPTS=value'"
+Use: 
+.B "ASOPTS += value"
+If you want to add flags to the default value from within a makefile.
+.
+.TP
+ASOPTX
+may be used if you want to add flags to the assembler flags from the
+command line. Use:
+.B "make 'ASOPTX=value'
+.
+.TP
+C_ARCH
+this macro contains the c-compiler architecture name.
+.br
+Do not change this macro.
+.
+.TP
+CCOM
+This macro may be used from the command line to use a different
+c-compiler than the default.
+Use:
+.B "make 'CCOM=gcc'
+to use 
+.I gcc
+for the next run.
+Note: The value of 
+.I CCOM
+must not necessarily be identical to the real name of the c-compiler.
+It refers to a filename which contains the definition for that
+c-compiler. This hint applies as well to all other macros that deal with
+the name of the c-compiler.
+The only macro, that contains the real invocation name of the c-compiler,
+is 
+.IR CC .
+.I CC
+is set inside the machine dependent configuration file in the central
+rules depository and must not be changed elsewhere.
+.
+.TP
+CFILES
+a list of C source files, to be specified in a
+leaf makefile.
+.
+.TP
+CFLAGS
+The flags that are used with the c-compiler.
+Do not use flags that belong to the c-preprocessor in the 
+.IR COPTOPT ", " COPTS " and " COPTX
+macros.
+.br
+Do not change this macro.
+.
+.TP
+CLEAN_FILES
+A list of files ( besides the object files ) that will be
+removed with
+.IR "make clean" .
+.br
+Do not change this macro.
+.
+.TP
+CLEAN_FILEX
+this macro may be used to define additional files that should
+be removed with
+.IR "make clean" .
+.
+.TP
+CLOBBER_FILEX
+this macro may be used to define additional files that should
+be removed with
+.IR "make clobber" .
+.
+.TP
+COPTOPT
+The c-compiler optimization flag. This flag is intended to 
+be overridden either from a makefile or from command line.
+.
+.TP
+COPTS
+The internal macro that contains the flags for the c-compiler.
+Change this macro if you want to change the behavior.
+Use: 
+.B "COPTS= value"
+If you want to override the default value. If you want to
+override the default c-compiler flags from the command line
+call:
+.B "make 'COPTS=value'"
+Use: 
+.B "COPTS += value"
+If you want to add flags to the default value from within a makefile.
+.
+.TP
+COPTX
+may be used if you want to add flags to the c-compiler flags from the
+command line. Use:
+.B "make 'COPTX=value'
+.
+.TP
+CPPFLAGS
+The flags that are used with the c-preprocessor.
+This macro as well as:
+.IR CPPOPTS " and " CPPOPTX
+are also used when compiling c-programs.
+They should contain only the following flags:
+.IR "\-Dname=value ", " \-Uname " , " 
+.IR \-Idirectory " and " \-Ydirectory .
+.br
+Do not change this macro.
+.
+.TP
+CPPOPTS
+The internal macro that contains the flags for the c-preprocessor.
+Change this macro if you want to change the behavior.
+Use: 
+.B "CPPOPTS= value"
+If you want to override the default value. If you want to
+override the default c-preprocessor flags from the command line
+call:
+.B "make 'CPPOPTS=value'"
+Use: 
+.B "CPPOPTS += value"
+If you want to add flags to the default value from within a makefile.
+.
+.TP
+CPPOPTX
+may be used if you want to add flags to the c-preprocessor flags from the
+command line. Use:
+.B "make 'CPPOPTX=value'
+.
+.TP
+CURDIR
+This macro contains the name of the sub directory that is currently processed.
+.br
+Do not change this macro.
+.
+.TP
+CWARNOPTS
+This macro may be set in
+.I $(DEFLTSROOT)/$(DEFLTSDIR)/Defaults
+or 
+.I $(DEFLTSROOT)/$(DEFLTSDIR)/Defaults.$(O_ARCH)
+to overwrite the default c-compiler warn options.
+.
+.TP
+CWOPTS
+This macro is set inside the machine dependent configuration file in the central
+rules depository and must not be changed elsewhere.
+It contains the flags that set the default warning level for the c-compiler.
+.
+.TP
+DEFINSGRP
+this macro may be set in the projects defaults file to set up the
+default group id for installation 
+.TP
+DEFINSMODE
+this macro may be set in the projects defaults file to set up the
+default file permission for installation 
+.TP
+DEFINSUSR
+this macro may be set in the projects defaults file to set up the
+default user id for installation 
+.TP
+DEFUMASK
+this macro may be set in the projects defaults file to set up the
+default 
+.I umask
+value for creating sub directories
+.
+.TP
+DEFAULTSDIR
+this macro may be set from command line or from the shell environment
+if the user wants to use a different set of 
+.I Defaults
+files that is not located in the directory
+.B DEFAULTS
+in the source root directory.
+This may be used to hold two or more set of defaults that differ e.g. in the
+installation path or the C-compiler.
+.
+.TP
+DEFAULTSROOT
+this macro may be set in a leaf makefile, if that makefile wants to use
+a 
+.I Defaults
+file that is not located in 
+.I $(DEFAULTSDIR)
+in the source root.
+This may be used, if a sub tree in a big project needs a different setup.
+.
+.TP
+DEFLTSDIR
+This is an internally used macro that is set from 
+.I $(DEFAULTSDIR) 
+or from the internal defaults.
+.br
+Do not change this macro.
+.
+.TP
+DEFLTSROOT
+This is an internally used macro that is set from 
+.I $(DEFAULTSROOT) 
+or from the internal defaults.
+.br
+Do not change this macro.
+.
+.TP
+DEFCCOM
+the default name of the c-compiler. This is usually set in the file
+.I $(DEFLTSROOT)/$(DEFLTSDIR)/Defaults
+or 
+.IR $(DEFLTSROOT)/$(DEFLTSDIR)/Defaults.$(O_ARCH) .
+.
+.TP
+DEFINCDIRS
+a list of directories that are searched by default in addition to 
+the system include directories. If this macro is not set, 
+.I $(SRCROOT)/include
+is used.
+.
+.TP
+DIRNAME
+this macro needs to be set in the makefile that is located in
+the 
+.I "$(SRCROOT)
+directory.
+The value should be either set to the name of the directory
+where the makefile is located or to 
+.BR SRCROOT .
+The value of this macro is updated automatically 
+to follow the directory hierarchy.
+Do not change this macro in a make file other than the make file
+in the source root.
+.
+.TP
+DIRS
+this macro needs to be set in a makefile that is located in
+a directory that contains diversion directories.
+It must contain a list of directory names where the diversions
+go to e.g.
+.BR "DIRS= libfoo libbar libgarbage" .
+.
+.TP
+HFILES
+for normal operation, 
+.I makefiles 
+will automatically find which include files are needed
+for compilation.
+However, if you want to create a tag file that includes
+tags for definitions that occur within include files, 
+you should set 
+.I HFILES
+to be a list of include files containing such definitions.
+.
+.TP
+INCDIRS
+this macro will normally be a copy from 
+.IR DEFINCDIRS .
+You may however specify a different value in a leaf makefile
+or from command line. This will overwrite the defaults value.
+.
+.TP
+INS_BASE
+this macro has to be specified in the file
+.I $(DEFLTSROOT)/$(DEFLTSDIR)/Defaults
+or 
+.IR $(DEFLTSROOT)/$(DEFLTSDIR)/Defaults.$(O_ARCH) .
+It must contain the path name of the root for installing 
+general targets of the project.
+See
+.IR INSDIR . 
+.
+.TP
+INS_KBASE
+this macro has to be specified in the file
+.I $(DEFLTSROOT)/$(DEFLTSDIR)/Defaults
+or 
+.IR $(DEFLTSROOT)/$(DEFLTSDIR)/Defaults.$(O_ARCH) .
+It must contain the path name of the root for installing 
+kernel modules from the project.
+See
+.IR INSDIR .
+.
+.TP
+INSDIR
+this macro has to be specified in the leaf makefile.
+It must contain the path name of a directory relative to
+.IR INS_BASE " or " INS_KBASE .
+The target will be installed into
+.I "$(INS_BASE)/$(INSDIR)" .
+.
+.TP
+INSGRP
+this macro may be set in a leaf makefile to set up the
+group id for installation 
+.TP
+INSMODE
+this macro may be set in a leaf makefile to set up the
+file permission for installation 
+.TP
+INSUSR
+this macro may be set in a leaf makefile to set up the
+user id for installation 
+.
+.TP
+K_ARCH
+this macro contains the kernel/machine architecture for the
+target machine (e.g.
+.IR "sun3 sun4c sun4m sun4u 9000\-725 aviion" ).
+It is set to the output of
+.I "uname \-m
+converted to lower case.
+.br
+Do not change this macro.
+.
+.TP
+KARCH
+this macro contains the kernel/machine architecture for the
+target machine (e.g.
+.IR "sun3 sun4c sun4m sun4u 9000\-725 aviion" ).
+It is set to the output of
+.I "uname \-m
+converted to lower case.
+.br
+Do not change this macro unless you want to do a cross compilation.
+.
+.TP
+LDFLAGS
+The flags that are used with the linker.
+.br
+Do not change this macro.
+.
+.TP
+LDLIBS
+The internal macro that holds the 
+libraries that are used while linking the target.
+.br
+Do not change this macro.
+.
+.TP
+LDOPTS
+The internal macro that contains the flags for the linker.
+Change this macro if you want to change the behavior.
+Use: 
+.B "LDOPTS= value"
+If you want to override the default value. If you want to
+override the default linker flags from the command line
+call:
+.B "make 'LDOPTS=value'"
+Use: 
+.B "LDOPTS += value"
+If you want to add flags to the default value from within a makefile.
+.
+.TP
+LDOPTX
+may be used if you want to add flags to the linker flags from the
+command line. Use:
+.B "make 'LDOPTX=value'
+.
+.TP
+LDPATH
+the default library search path for the linker. 
+This is usually set in the file
+.I $(DEFLTSROOT)/$(DEFLTSDIR)/Defaults
+or 
+.IR $(DEFLTSROOT)/$(DEFLTSDIR)/Defaults.$(O_ARCH) .
+.
+.TP
+LIB_KVM
+a predefined macro that contains the operating system dependent
+name of a library
+that is needed by programs that read/write kernel virtual memory.
+Add 
+.I "$(LIB_KVM)
+to your list of libraries (e.g.
+.BR "LIBS= \-lintl $(LIB_KVM)" ),
+if your target uses kvm.
+.
+.TP
+LIB_MATH
+a predefined macro that contains the operating system dependent
+name of a library
+that is needed by programs that use routines of the math library.
+Add 
+.I "$(LIB_MATH)
+to your list of libraries (e.g.
+.BR "LIBS= \-lintl $(LIB_MATH)" ),
+if your target uses math subroutines.
+.
+.TP
+LIB_SOCKET
+a predefined macro that contains the operating system dependent
+name of a library
+that is needed by programs that use socket calls.
+Add 
+.I "$(LIB_SOCKET)
+to your list of libraries (e.g.
+.BR "LIBS= \-lintl $(LIB_SOCKET)" ),
+if your target uses sockets. Note: this should (for portability reasons)
+even be done on systems that don't require a socket library because 
+they have the socket interface inside libc.
+.
+.TP
+LIBS_PATH
+this macro contains the path to a directory where those
+libraries are located, that have been build during
+a make run inside the current project.
+.br
+Do not change this macro.
+.
+.TP
+M_ARCH
+this macro contains the machine architecture for the
+target machine (e.g.
+.IR "sun3 sun4 ip22 i86pc i586 9000\-725 aviion" ).
+It is set to the output of
+.I "arch
+converted to lower case.
+On systems, where 
+.I M_ARCH
+is not available, it is set to the content of 
+.IR K_ARCH .
+.br
+Do not change this macro.
+.
+.TP
+MK_FILES
+makefiles that divert into sub makes within the same directory
+must set 
+.I MK_FILES
+to be a list of makefile names for the sub makes.
+Makefile names for sub makes should have a name that is build
+by adding 
+.I .mk
+to the base name of the target that is defined inside the
+specific makefile.
+.
+.TP
+MAKEPROG
+Set this macro to the name of your make program if it does
+not support the macro
+.IR MAKE_NAME .
+The make program 
+.I smake
+is able to identify itself.
+If you want to use a make program that is not able
+to identify itself
+and it's name is not
+.IR make ,
+set 
+.I MAKEPROG
+to the name of the make program.
+Currently only 
+.I gmake
+is supported as alternate value for 
+.IR MAKEPROG .
+If you want to use an unsupported make program
+you have to check if it supports the needed features
+for
+.IR makefiles .
+You must write your own rule files for that make program.
+If you want to use 
+.IR gmake ,
+you should do
+.B "setenv MAKEPROG gmake
+before you start
+.I gmake
+or use a shell script that does this job for you.
+.
+.TP
+MAKE
+This macro is set up by the 
+.I make 
+program.
+It contains a path name that is sufficient to recursively
+call the same 
+.I make
+program again (either that last path component or the full path
+name of the make program).
+.br
+Do not change this macro.
+.
+.TP
+MAKEFLAGS
+This macro is set up by the 
+.I make 
+program.
+It contains the command line flags,
+.I make
+is called with.
+.br
+Do not change this macro.
+.
+.TP
+MAKE_ARCH
+This macro is currently set up by 
+.B smake 
+only.
+It contains the processor architecture of the target machine
+(e.g. mc68020, sparc, pentium).
+.br
+Do not change this macro.
+.
+.TP
+MAKE_BRAND
+This macro is currently set up by 
+.B smake 
+only.
+It contains the brand of the target machine
+(e.g. Sun_Microsystems(e.g. ).
+.br
+Do not change this macro.
+.
+.TP
+MAKE_HOST
+This macro is currently set up by 
+.B smake 
+only.
+It contains the host name of the target machine
+(e.g. duffy, sherwood, ghost).
+.br
+Do not change this macro.
+.
+.TP
+MAKE_MACH
+This macro is currently set up by 
+.B smake 
+only.
+It contains the kernel architecture of the target machine
+(e.g. sun3, sun4c, sun4m, sun4u).
+.br
+Do not change this macro.
+.
+.TP
+MAKE_MODEL
+This macro is currently set up by 
+.B smake 
+only.
+It contains the model name of the target machine
+(e.g. SUNW,SPARCstation-20).
+.br
+Do not change this macro.
+.
+.TP
+MAKE_M_ARCH
+This macro is currently set up by 
+.B smake 
+only.
+It contains the machine architecture of the target machine
+(e.g. sun3, sun4).
+.br
+Do not change this macro.
+.
+.TP
+MAKE_NAME
+This macro is currently set up by 
+.B smake 
+only.
+It contains the official name of the
+make program
+(e.g. make, smake, gmake).
+.br
+Do not change this macro.
+.
+.TP
+MAKE_OS
+This macro is currently set up by 
+.B smake 
+only.
+It contains the operating system name of the target machine
+(e.g. sunos, linux, dgux).
+.br
+Do not change this macro.
+.
+.TP
+MAKE_OSDEFS
+This macro is currently set up by 
+.B smake 
+only.
+It contains operating system specific defines for the compiler
+(e.g. \-D__SVR4).
+.br
+Do not change this macro.
+.
+.TP
+MAKE_OSREL
+This macro is currently set up by 
+.B smake 
+only.
+It contains the operating system release name of the target machine
+(e.g. 5.5, 4.1.1).
+.br
+Do not change this macro.
+.
+.TP
+MAKE_OSVERSION
+This macro is currently set up by 
+.B smake 
+only.
+It contains the operating system version of the target machine
+(e.g. generic).
+.br
+Do not change this macro.
+.
+.TP
+MAKE_SERIAL
+This macro is currently set up by 
+.B smake 
+only.
+It contains the serial number of the target machine
+(e.g. 1920098175).
+.br
+Do not change this macro.
+.
+.TP
+MANDIR
+all makefiles for manual pages must set this macro to the
+path name relative to 
+.I INS_BASE
+where the manual page root dir for the project should be.
+Possible values for english manual pages are
+.IR man " or " share/man ,
+possible values for german manual pages are
+.IR man/de " or " share/man/de .
+.
+.TP
+MANFILE
+makefiles for manual pages set this macro to the name of the 
+troff source file for the manual page
+.
+.TP
+MANSECT
+makefiles for manual pages set this macro to the macro name that
+contains the real section name for this manual page. This is 
+necessary because bsd based system have different naming conventions than
+system V based systems. See below for a valid list of manual section
+macros.
+.TP
+MANSECT_ADMIN
+This macro contains the name of the sub directory for administrative
+commands and maintenance procedures.
+.br
+Do not change this macro.
+.TP
+MANSECT_CMD
+This macro contains the name of the sub directory for general 
+user commands.
+.br
+Do not change this macro.
+.TP
+MANSECT_DEMOS
+This macro contains the name of the sub directory for demo
+commands.
+.br
+Do not change this macro.
+.TP
+MANSECT_DEVICE
+This macro contains the name of the sub directory for 
+user level device interfaces.
+.br
+Do not change this macro.
+.TP
+MANSECT_DRIVER
+This macro contains the name of the sub directory for 
+kernel level device driver interfaces.
+.br
+Do not change this macro.
+.TP
+MANSECT_FILEFORM
+This macro contains the name of the sub directory for 
+file formats.
+.br
+Do not change this macro.
+.TP
+MANSECT_GAMES
+This macro contains the name of the sub directory for 
+games.
+.br
+Do not change this macro.
+.TP
+MANSECT_HDR
+This macro contains the name of the sub directory for 
+header files.
+.br
+Do not change this macro.
+.TP
+MANSECT_LIB
+This macro contains the name of the sub directory for 
+library function interfaces.
+.br
+Do not change this macro.
+.TP
+MANSECT_MACROS
+This macro contains the name of the sub directory for 
+troff macros.
+.br
+Do not change this macro.
+.TP
+MANSECT_NETWORK
+This macro contains the name of the sub directory for 
+user level network interfaces.
+.br
+Do not change this macro.
+.TP
+MANSECT_SYSCALL
+This macro contains the name of the sub directory for 
+system call interfaces.
+Do not change this macro.
+.TP
+MANSECT_TABLES
+This macro contains the name of the sub directory for 
+tables.
+Do not change this macro.
+.TP
+MANSTYLE
+This macro contains the name that is used to find the right
+ordering conventions for manual pages.
+Do not change this macro.
+.TP
+MANSUFFIX
+makefiles for manual pages set this macro to the macro name that
+contains the real suffix for this manual page. This is 
+necessary because bsd based system have different naming conventions than
+system V based systems. See below for a valid list of manual suffix
+macros.
+.TP
+MANSUFF_ADMIN
+This macro contains the name of the file suffix for administrative
+commands and maintenance procedures.
+.br
+Do not change this macro.
+.TP
+MANSUFF_CMD
+This macro contains the name of the file suffix for general 
+user commands.
+.br
+Do not change this macro.
+.TP
+MANSUFF_DEMOS
+This macro contains the name of the file suffix for demo
+commands.
+.br
+Do not change this macro.
+.TP
+MANSUFF_DEVICE
+This macro contains the name of the file suffix for 
+user level device interfaces.
+.br
+Do not change this macro.
+.TP
+MANSUFF_DRIVER
+This macro contains the name of the file suffix for 
+kernel level device driver interfaces.
+.br
+Do not change this macro.
+.TP
+MANSUFF_FILEFORM
+This macro contains the name of the file suffix for 
+file formats.
+.br
+Do not change this macro.
+.TP
+MANSUFF_GAMES
+This macro contains the name of the file suffix for 
+games.
+.br
+Do not change this macro.
+.TP
+MANSUFF_HDR
+This macro contains the name of the file suffix for 
+header files.
+.br
+Do not change this macro.
+.TP
+MANSUFF_LIB
+This macro contains the name of the file suffix for 
+library function interfaces.
+.br
+Do not change this macro.
+.TP
+MANSUFF_MACROS
+This macro contains the name of the file suffix for 
+troff macros.
+.br
+Do not change this macro.
+.TP
+MANSUFF_NETWORK
+This macro contains the name of the file suffix for 
+user level network interfaces.
+.br
+Do not change this macro.
+.TP
+MANSUFF_SYSCALL
+This macro contains the name of the file suffix for 
+system call interfaces.
+Do not change this macro.
+.TP
+MANSUFF_TABLES
+This macro contains the name of the file suffix for 
+tables.
+Do not change this macro.
+.TP
+MARCH
+this macro contains the machine architecture for the
+target machine (e.g.
+.IR "sun3 sun4 ip22 i86pc i586 9000\-725 aviion" ).
+It is set to the output of
+.I "arch
+converted to lower case.
+On systems, where 
+.I M_ARCH
+is not available, it is set to the content of 
+.IR K_ARCH .
+.br
+Do not change this macro unless you want to do a cross compilation.
+.
+.TP
+O_ARCH
+this macro contains the name of the operating system
+converted to lower case.
+It is usually the output of:
+.IR "uname \-s" .
+It may contain a modified name if the compilation rules
+for different version of the operating system differ (e.g.
+on
+.IR SunOS " and " Solaris ,
+the official operation system name in both cases is
+.IR SunOS ).
+.br
+Do not change this macro.
+.
+.TP
+OARCH
+this macro contains the object architecture that is used
+for architecture dependent sub directories.
+It is set to:
+.IR "$(PARCH)\-$(O_ARCH)\-$(C_ARCH)" .
+.br
+Do not change this macro.
+.
+.TP
+OARCHDIR
+this macro contains the concatenation of 
+.I OBJ/
+and 
+.IR "$(OARCH)" .
+.br
+Do not change this macro.
+.
+.TP
+OFILES
+this macro contains the list of objects that are the
+the dependency list for the target.
+It is constructed from the list of
+assembler source files,
+c source files,
+lex source files and
+yacc source files.
+.br
+Do not change this macro.
+.
+.TP
+OINCSDIR
+this macro contains the concatenation of 
+.I $(SRCROOT)/incs/
+and 
+.IR "$(OARCH)" .
+It is the location where include files that are made within a make run
+and subject to global use will be placed.
+.br
+Do not change this macro.
+.TP
+OLIBSDIR
+this macro contains the concatenation of 
+.I $(SRCROOT)/libs/
+and 
+.IR "$(OARCH)" .
+It is the location where libraries that are made within a make run
+will be placed.
+.br
+Do not change this macro.
+.
+.TP
+OSDEFS
+this macro contains operating system specific c-preprocessor
+definitions.
+.br
+Do not change this macro.
+.
+.TP
+OSNAME
+the unmodified name of the operating system converted to lower case.
+See
+.IR O_ARCH .
+.br
+Do not change this macro.
+.
+.TP
+OSREL
+the release of the operating system.
+.br
+Do not change this macro.
+.
+.TP
+P_ARCH
+this macro contains the processor architecture for the
+target machine (e.g.
+.IR "mc68020 mc88200 sparc pentium" ).
+It is set to the output of
+.I "uname \-p
+converted to lower case.
+On systems, where 
+.I P_ARCH
+is not available, it is set to the content of 
+.IR K_ARCH .
+.br
+Do not change this macro.
+.
+.TP
+PARCH
+this macro contains the processor architecture for the
+target machine (e.g.
+.IR "mc68020 mc88200 sparc pentium" ).
+It is set to the output of
+.I "uname \-p
+converted to lower case.
+On systems, where 
+.I P_ARCH
+is not available, it is set to the content of 
+.IR K_ARCH .
+.br
+Do not change this macro unless you want to do a cross compilation.
+.
+.TP
+RULESDIR
+the value of this macro must be set before
+the rules file
+.I "$(SRCROOT)/$(RULESDIR/rules.top
+is included.
+If you want to test the behavior of a modified version
+of the
+.I makefiles
+in 
+.IR RULESDIR ,
+put a copy into an alternate directory, modify one or more
+files in it and then use make with a different value of
+.IR RULESDIR ,
+that points to the alternate directory.
+.
+.TP
+RUNPATH
+is evaluated on systems, where 
+.I LD_RUN_PATH
+is supported.
+It contains the default library search path for dynamic linked targets
+on runtime. 
+This search path will be stored inside the target.
+This is usually set in the file
+.I $(DEFLTSROOT)/$(DEFLTSDIR)/Defaults
+or 
+.IR $(DEFLTSROOT)/$(DEFLTSDIR)/Defaults.$(O_ARCH) .
+Note that older systems will use 
+.I LD_LIBRARY_PATH
+for this purpose too.
+.
+.TP
+SCRFILE
+this macro must be set in a leaf makefile for shell scripts to define
+the source for that script file.
+.
+.TP
+SRCFILE
+this macro must be set in a leaf makefile for localized files to define
+the source for that file.
+.
+.TP
+SRCROOT
+this macro contains the relative position to the project's
+source root directory.
+The value of this macro must be set before
+the rules file
+.I "$(SRCROOT)/$(RULESDIR/rules.top
+is included.
+.I SRCROOT
+should be set to
+.I ../..
+if the appropriate leaf makefile is located two directory
+levels below the source route.
+.
+.TP
+SUBARCHDIR
+may be set to put the object files and the target into
+a different directory than usual.
+.I SUBARCHDIR
+will modify the value of 
+.IR ARCHDIR .
+If you want to make a target that is compiled for 
+.I dbx
+you may use:
+.IR "make COPTX=\-g SUBARCHDIR=\-dbx" .
+.
+.TP
+TARGET
+all makefiles, that are not referring to library targets or
+sub makes / sub dir makes,
+must define
+.I TARGET
+to be the output file name of the final link operation.
+.
+.TP
+TARGETLIB
+all makefiles that are used to make libraries
+must define
+.I TARGETLIB
+to be the central part of the target library.
+If you want to make e.g.
+.I libfoo
+define
+.IR "TARGETLIB= foo" .
+This is needed to allow operating systems to have different naming 
+conventions for libraries.
+If you are making a non shared library, the example above
+would result in a filename:
+.I libfoo.a
+for the real target.
+.
+.TP
+TARGETMAN
+this macro must be set in a leaf makefile for manual pages to define
+the base name for that manual page (not including the suffix).
+.
+.TP
+XMK_FILE
+makefiles that want to install manual pages should set 
+.I XMK_FILE
+to 
+.B Makefile.man
+to avoid having to install a diversion make file. 
+The make file found in
+.I XMK_FILE
+will be processed only if 
+.I make
+is called with the target 
+.IR install .
+
+.SH "GETTING STARTED
+.PP
+To set up a new project, first copy the 
+.IR RULES " and " TEMPLATES
+directories and all its content into the project's root directory.
+.PP
+Then copy a top level makefile, a 
+.I Defaults
+file and a 
+.I Targetdirs.archname
+file into the project's root directory.
+.PP
+Then create the following directories:
+.IR cmd ", " lib ", " include .
+.PP
+Now start creating target directories e.g below
+.IR cmd " and " lib .
+Don't forget to create a makefile and an appropriate
+.I Targetdirs.archname 
+file on each node directory.
+
+.SH EXAMPLES
+.PP
+If you want to set up a private copy of parts of a project,
+you should choose a directory inside your directory tree that will become
+the shadow projects source root directory.
+Then create symbolic links named 
+.IR RULES " and " TEMPLATES
+to the real source root.
+If you don't want to modify the global include files,
+create a symbolic link to the
+.I include
+directory too, else copy the include directory and its content.
+copy the top level makefile, the 
+.I Defaults
+file and the
+.I Targetdirs.archname 
+file.
+.PP
+Finally copy the desired sub tree together with all
+makefiles and the 
+.I Targetdirs.archname 
+files that are located in the directories above
+your part of the project that you want to have separately.
+
+.SH FILES
+\&.\|.\|./RULES/*
+.br
+\&.\|.\|./DEFAULTS/*
+.br
+\&.\|.\|./TARGETS/*
+.br
+\&.\|.\|./TEMPLATES/*
+
+.SH "SEE ALSO"
+.BR makerules (4),
+.BR make (1),
+.BR gmake (1),
+.BR smake (1).
+.PP
+If you want to know, how to add new rules or how to add support
+for new operating systems or compilers look into 
+.BR makerules (4).
+
+.SH DIAGNOSTICS
+Diagnostic messages depend on the make program.
+Have a look at the appropriate man page.
+
+.SH NOTES
+The scope of this manual is only the usage of 
+.BR "leaf makefiles" .
+If you want to make changes to the 
+.B make rules
+have a look at
+.BR makerules (4).
+.PP
+.I makefiles
+can be used with 
+.IR "Sunpro make" ", " "Gnu make"
+and 
+.IR smake .
+Although Gnu make runs on many platforms, it has no useful debug
+output.
+.PP
+Use
+.IR "Sunpro make" " or " "smake"
+if you have problems with a makefile.
+.IR "Sunpro make" " and " "smake" ,
+both have a \-D flag, that allows you to watch the makefiles
+after the first expansion. Use this option, if you are in doubt
+if your makefile gets expanded the right way and if the right
+rules are included.
+There is also a \-d option that gives debugging output while 
+make is running. If you want more output, use \-dd, \-ddd and so on.
+.PP
+.I Smake
+has an option \-xM that shows you the include dependency for
+make rules.
+
+.PP
+.ne 20
+The following is a list of all macros that are used in 
+.IR makefiles .
+Do not use them unless their meaning has been explained
+before.
+.PP
+
+.BR \-O_ARCH ,
+.BR .OBJDIR ,
+.BR .SEARCHLIST ,
+.BR ALLTARGETS ,
+.BR AR ,
+.BR ARCH ,
+.BR ARCHDIR ,
+.BR ARCHDIRX ,
+.BR ARCH_DONE ,
+.BR ARFLAGS ,
+.BR AS ,
+.BR ASFLAGS ,
+.BR ASMFILES ,
+.BR ASOPTS ,
+.BR ASOPTX ,
+.BR CC ,
+.BR CCOM ,
+.BR CCOM_DEF ,
+.BR CFILES ,
+.BR CFLAGS ,
+.BR CHGRP ,
+.BR CHMOD ,
+.BR CHOWN ,
+.BR CLEAN_FILES ,
+.BR CLEAN_FILEX ,
+.BR CLOBBER_FILEX ,
+.BR COPTDYN ,
+.BR COPTGPROF ,
+.BR COPTOPT ,
+.BR COPTS ,
+.BR COPTX ,
+.BR CPP ,
+.BR CPPFLAGS ,
+.BR CPPOPTS ,
+.BR CPPOPTX ,
+.BR CTAGS ,
+.BR CURDIR ,
+.BR CWARNOPTS ,
+.BR CWOPTS ,
+.BR C_ARCH ,
+.BR DEFAULTSDIR ,
+.BR DEFAULTSROOT ,
+.BR DEFCCOM ,
+.BR DEFCCOM_DEF ,
+.BR DEFINCDIRS ,
+.BR DEFINCDIRS_DEF ,
+.BR DEFINSGRP ,
+.BR DEFINSMODE ,
+.BR DEFINSUSR ,
+.BR DEFUMASK ,
+.BR DEF_ROOT ,
+.BR DEP_DEP ,
+.BR DEP_FILE ,
+.BR DEP_SUFFIX ,
+.BR DIRNAME ,
+.BR DIRS ,
+.BR DYNLD ,
+.BR ETAGS ,
+.BR FLOAT_OPTIONS ,
+.BR HFILES ,
+.BR HOSTNAME ,
+.BR INCDIRS ,
+.BR INSDIR ,
+.BR INSGRP ,
+.BR INSGRP_DEF ,
+.BR INSMODE ,
+.BR INSMODE_DEF ,
+.BR INSTALL ,
+.BR INSUSR ,
+.BR INSUSR_DEF ,
+.BR INS_BASE ,
+.BR INS_KBASE ,
+.BR KARCH ,
+.BR KARCH_DEF ,
+.BR KDEFINES ,
+.BR K_ARCH ,
+.BR LD ,
+.BR LDCC ,
+.BR LDFLAGS ,
+.BR LDLIBS ,
+.BR LDOPTDYN ,
+.BR LDOPTS ,
+.BR LDOPTX ,
+.BR LDPATH ,
+.BR LIBS ,
+.BR LIBS_PATH ,
+.BR LIBX ,
+.BR LIB_KVM ,
+.BR LIB_MATH ,
+.BR LIB_PREFIX ,
+.BR LIB_SOCKET ,
+.BR LIB_SUFFIX ,
+.BR LN ,
+.BR LNDYNLIB ,
+.BR LOCALIZE ,
+.BR LORDER ,
+.BR MAKE ,
+.BR MK_FILES ,
+.BR MAKEPROG ,
+.BR MAKE_ARCH ,
+.BR MAKE_HOST ,
+.BR MAKE_MACH ,
+.BR MAKE_M_ARCH ,
+.BR MAKE_NAME ,
+.BR MAKE_OS ,
+.BR MAKE_OSDEFS ,
+.BR MAKE_OSREL ,
+.BR MANDIR ,
+.BR MANFILE ,
+.BR MANSECT ,
+.BR MANSECT_ADMIN ,
+.BR MANSECT_CMD ,
+.BR MANSECT_DEMOS ,
+.BR MANSECT_DEVICE ,
+.BR MANSECT_DRIVER ,
+.BR MANSECT_FILEFORM ,
+.BR MANSECT_GAMES ,
+.BR MANSECT_HDR ,
+.BR MANSECT_LIB ,
+.BR MANSECT_MACROS ,
+.BR MANSECT_NETWORK ,
+.BR MANSECT_SYSCALL ,
+.BR MANSECT_TABLES ,
+.BR MANSTYLE ,
+.BR MANSUFFIX ,
+.BR MANSUFF_ADMIN ,
+.BR MANSUFF_CMD ,
+.BR MANSUFF_DEMOS ,
+.BR MANSUFF_DEVICE ,
+.BR MANSUFF_DRIVER ,
+.BR MANSUFF_FILEFORM ,
+.BR MANSUFF_GAMES ,
+.BR MANSUFF_HDR ,
+.BR MANSUFF_LIB ,
+.BR MANSUFF_MACROS ,
+.BR MANSUFF_NETWORK ,
+.BR MANSUFF_SYSCALL ,
+.BR MANSUFF_TABLES ,
+.BR MARCH ,
+.BR MARCH_DEF ,
+.BR MKDEP ,
+.BR MKDEP_OUT ,
+.BR MKDIR ,
+.BR MV ,
+.BR M_ARCH ,
+.BR OARCH ,
+.BR OARCHDIR ,
+.BR OFILES ,
+.BR OINCSDIR ,
+.BR OLIBSDIR ,
+.BR OSDEFS ,
+.BR OSNAME ,
+.BR OSREL ,
+.BR O_ARCH ,
+.BR PALLDEP_FILE ,
+.BR PARCH ,
+.BR PARCH_DEF ,
+.BR PASMFILES ,
+.BR PDEP_FILE ,
+.BR PLOFILES ,
+.BR POFILES ,
+.BR PTARGET ,
+.BR PTARGET_BASE ,
+.BR PYOFILES ,
+.BR P_ARCH ,
+.BR RANLIB ,
+.BR RM ,
+.BR RMDEP ,
+.BR RMTARGET ,
+.BR RM_FORCE ,
+.BR RM_RECURS ,
+.BR RM_RF ,
+.BR RULESDIR ,
+.BR RUNPATH ,
+.BR SCRFILE ,
+.BR SHELL ,
+.BR SHL_SUFFIX ,
+.BR SRCFILE ,
+.BR SRCLIBS ,
+.BR SRCROOT ,
+.BR SUBARCH ,
+.BR SUBARCHDIR ,
+.BR SYMLINK ,
+.BR TAGS ,
+.BR TARGET ,
+.BR TARGETLIB ,
+.BR TARGETMAN ,
+.BR TARGET_BASE ,
+.BR TARGET_PATH ,
+.BR TSORT ,
+.BR UMASK ,
+.BR UMASK_DEF ,
+.BR UMASK_VAL ,
+.BR XARCH ,
+.BR XK_ARCH ,
+.BR XMK_FILE ,
+.BR XMAKEPROG ,
+.BR XM_ARCH ,
+.BR XP_ARCH ,
+.BR _CCOM ,
+.BR _DEFAULTSDIR ,
+.BR _DEFCCOM ,
+.BR _DEFINSGRP ,
+.BR _DEFINSMODE ,
+.BR _DEFINSUSR ,
+.BR _DEFUMASK ,
+.BR _DIRNAME ,
+.BR _INCDIRS ,
+.BR _MAKEPROG ,
+.BR _MARCH ,
+.BR _M_ARCH ,
+.BR _O_ARCH ,
+.BR _PARCH ,
+.BR _P_ARCH ,
+.BR _UNIQ ,
+.BR __CCOM ,
+.BR __DEFAULTSDIR ,
+.BR __DEFCCOM ,
+.BR __DEFINSGRP ,
+.BR __DEFINSMODE ,
+.BR __DEFINSUSR ,
+.BR __DEFUMASK ,
+.BR __DIRNAME ,
+.BR __INCDIRS ,
+.BR __MAKEPROG ,
+.BR __MARCH ,
+.BR __M_ARCH ,
+.BR __PARCH ,
+.BR __P_ARCH ,
+
+.SH BUGS
+
+.SH "Source Tree Hierarchy
+.LP
+The following outline gives a quick tour through a typical
+source hierarchy:
+.LP
+.na
+.nh
+.PD 0
+.TP
+.B .../
+root directory of the source tree
+.
+.RS
+.TP
+.B Makefile
+the top Makefile
+.TP
+.B Targetdirs
+a file containing a list of directories that are needed
+for that project.
+If the system needs different target lists depending
+on the target system architecture , use target specific files in
+.B .../TARGETS/
+.TP
+\&.\|.\|.
+.RE
+.
+.TP
+.B .../RULES/
+the location of makefiles (included rules)
+.
+.RS
+.TP
+.B rules.top
+the mandatory include rules (needed to setup basic rules)
+.TP
+.B rules.aux
+rules needed to install a non localized auxiliary file
+.TP
+.B rules.cmd
+rules needed to make an ordinary command (like /bin/sh)
+.TP
+.B rules.drv
+rules needed to make a device driver
+.TP
+.B rules.lib
+rules needed to make a standard (nonshared) library
+.TP
+.B rules.loc
+rules needed to install a localized auxiliary file
+.TP
+.B rules.man
+rules needed to install a localized manual page
+.TP
+.B rules.scr
+rules needed to install a localized shell script
+.TP
+.B rules.shl
+rules needed to make a shared library
+.TP
+.B rules.mks
+rules needed to make more than one target in a specific directory
+.TP
+.B rules.dir
+rules needed to make targets that are located in sub directories
+to the current directory
+.TP
+\&.\|.\|.
+.RE
+.
+.TP
+.B .../DEFAULTS/
+default definitions for various target architectures are
+located in this directory. Templates for some architectures can
+be found in the
+.I .../TEMPLATES/
+directory.
+.RS
+.TP
+.B Defaults
+default definitions for that source tree. System dependent
+definitions are in 
+.B .../DEFAULTS/Defaults.*
+.RE
+.TP
+.B .../TARGETS/
+target list definitions for various target architectures are
+located in this directory.
+.TP
+.B .../TEMPLATES/
+templates that should be used inside the project
+(rename to Makefile, if it is the only makefile in that directory, 
+rename to
+.I target.mk,
+if there is more than one target in that directory)
+.
+.RS
+.TP
+.B Defaults
+Defaults file for the source root directory
+.TP
+.B Defaults.linux
+Defaults file for 
+.IR linux .
+This should be installed in the 
+.B .../DEFAULTS/
+directory.
+.TP
+.B Makefile.root
+Makefile for the source root directory
+.TP
+.B Makefile.aux
+Makefile for a non localized auxiliary file
+.TP
+.B Makefile.cmd
+Makefile for an ordinary command (like /bin/sh)
+.TP
+.B Makefile.lib
+Makefile for a standard (nonshared) library
+.TP
+.B Makefile.loc
+Makefile for a localized auxiliary file
+.TP
+.B Makefile.man
+Makefile for a localized manual page
+.TP
+.B Makefile_de.man
+Makefile for a localized manual page in the german locale
+.TP
+.B Makefile.scr
+Makefile for a localized shell script
+.TP
+.B Makefile.shl
+Makefile for a shared library
+.TP
+.B Makefile.drv
+Makefile for a device driver
+.TP
+.B Makefile.mks
+Makefile for more than one target in a specific directory
+.TP
+.B Makefile.dir
+Makefile for targets that are located in sub directories
+to the current directory
+.TP
+\&.\|.\|.
+.RE
+.
+.TP
+.B .../cmd/
+source tree for normal commands
+.
+.RS
+.TP
+.B Makefile
+the makefile for the 
+.I cmd 
+sub directory
+.TP
+.B Targetdirs.sun4m
+a file containing a list of directories like 
+.I myprog 
+(see below) that are needed
+for that specific architecture.
+.TP
+.B myprog/
+directory where the sources for a specific command are located
+.
+.RS
+.TP
+Makefile
+makefile for
+.I myprog
+.TP
+Makefile.man
+makefile for the manual page of
+.I myprog
+.TP
+mprog.c
+source for myprog
+.TP
+mprog.tr
+troff source for the manual page of myprog
+.TP
+.B OBJ/
+directory where system specific sub directories are located
+.
+.RS
+.TP
+.B sparc\-sunos5\-cc/
+directory for binaries that belong to a specific system
+.TP
+\&.\|.\|.
+.RE
+.TP
+\&.\|.\|.
+.RE
+.br
+.TP
+\&.\|.\|.
+.RE
+.br
+.ne 5
+.TP
+.B .../lib/
+directory where the sources for a libraries are located
+.
+.RS
+.TP
+.B Makefile
+the makefile for the 
+.I lib 
+sub directory
+.TP
+.B Targetdirs.sun4m
+a file containing a list of directories like 
+.I libfoo
+(see below) that are needed
+for that specific architecture.
+.TP
+.B libfoo/
+directory where all source files for libfoo are located
+.TP
+\&.\|.\|.
+.RE
+.
+.TP
+.B .../kernel
+directory for kernel modules
+.
+.RS
+.TP
+.B Makefile
+the makefile for the 
+.I kernel
+sub directory
+.TP
+.B Targetdirs.sun4m
+a file containing a list of directories like 
+.I drv 
+(see below) that are needed
+for that specific architecture.
+.TP
+.B drv/
+directory where drivers are located
+.
+.RS
+.TP
+.B Makefile
+the makefile for the 
+.I drv
+sub directory
+.TP
+.B Targetdirs.sun4m
+a file containing a list of directories like 
+.I mydrv
+(see below) that are needed
+for that specific architecture.
+.TP
+.B mydrv/
+source for a specific driver
+.TP
+\&.\|.\|.
+.RE
+.
+.TP
+\&.\|.\|.
+.RE
+.
+.TP
+.B .../include
+directory for global include files that are used in that project
+.
+.TP
+.B .../bins
+directory for binary programs that are created/needed while compiling
+the project
+.RS
+.TP
+.B sparc\-sunos5\-cc/
+directory for binaries that belong to a specific system
+.TP
+\&.\|.\|.
+.RE
+.
+.TP
+.B .../libs
+directory for libraries that are created/needed while compiling
+the project
+.RS
+.TP
+.B sparc\-sunos5\-cc/
+directory for libraries that belong to a specific system
+.TP
+\&.\|.\|.
+.RE
+.
+.TP
+.B .../incs
+directory for include files that are created/needed while compiling
+the project
+.RS
+.TP
+.B sparc\-sunos5\-cc/
+directory for include files that belong to a specific system
+.TP
+\&.\|.\|.
+.RE
+.TP
+\&.\|.\|.
+.RE
+.
+.ad
+.PD
+
+.SH AUTHOR
+.nf
+J\*org Schilling
+Seestr. 110
+D-13353 Berlin
+Germany
+.fi
+.PP
+Mail bugs and suggestions to:
+.PP
+.B
+joerg@schily.isdn.cs.tu-berlin.de
+or
+.B
+js@cs.tu-berlin.de
+or
+.B
+jes@fokus.gmd.de

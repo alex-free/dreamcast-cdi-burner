@@ -1,0 +1,34 @@
+. \"  Manual Seite fuer printf
+. \" @(#)printf.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH PRINTF 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+printf() \- formats and prints to standard output
+.SH SYNOPSIS
+.nf
+.B
+printf(format, arg1, \|.\|.\|., argn)
+.B	char *format;
+.fi
+.SH DESCRIPTION
+printf() formats its arguments using the routine format().
+See format() for information about the options for formatting.
+.SH RETURNS
+none
+.SH "SEE ALSO"
+format(3), fprintf(3)
+.SH NOTES
+printf() buffers its output internally until it is finished then
+the buffer is flushed.

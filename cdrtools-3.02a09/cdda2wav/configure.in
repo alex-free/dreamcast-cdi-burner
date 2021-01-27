@@ -1,0 +1,151 @@
+dnl @(#)configure.in	1.13 15/12/14	Copyright 1998-2003,2015 Heiko Eiﬂfeldt
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(cdda2wav.c)
+AC_CONFIG_HEADER(lconfig.h)
+
+dnl get canonical host
+AC_CANONICAL_HOST
+
+dnl extract cdrtools version from the cdrecord.c file
+dnl CDRTOOLS_VERSION=`sed -n -f ../../version.sed <../../../cdrecord/cdrecord.c`
+dnl AC_SUBST(CDRTOOLS_VERSION)
+
+dnl set object extension needed for AC_CHECK_HEADERS by autoconf 2.57
+dnl _AC_COMPILER_OBJEXT
+
+dnl check for posix4 library on Solaris or SunOS
+case "$host_os" in
+   solaris*|sunos*)
+AC_CHECK_LIB(posix4, sched_get_priority_max)
+;;
+esac
+AC_CHECK_LIB(ossaudio, _oss_ioctl)
+AC_CHECK_LIB(asound, snd_pcm_open)
+AC_CHECK_LIB(sndio, sio_open)
+AC_CHECK_LIB(pulse, pa_strerror)
+AC_CHECK_LIB(pulse-simple, pa_simple_new)
+
+
+EXTRALIBS="$LIBS"
+
+AC_SUBST(EXTRALIBS)
+
+dnl check header files
+AC_CHECK_HEADERS(sys/cdio.h sys/cdrio.h sundev/srreg.h sys/audioio.h sun/audioio.h)
+AC_CHECK_HEADERS(soundcard.h sys/soundcard.h linux/soundcard.h machine/soundcard.h)
+case "${ac_cv_lib_asound_snd_pcm_open}" in
+   *yes*)
+   AC_CHECK_HEADERS(alsa/asoundlib.h sys/asoundlib.h)
+;;
+esac
+case "${ac_cv_lib_sndio_sio_open}" in
+   *yes*)
+   AC_CHECK_HEADERS(sndio.h)
+;;
+esac
+case "${ac_cv_lib_pulse_simple_pa_simple_new}""${ac_cv_lib_pulse_pa_strerror}" in
+   *yesyes*)
+   AC_CHECK_HEADERS(pulse/pulseaudio.h pulse/simple.h)
+;;
+esac
+dnl We no longer include HAVE_WINDOWS_H in lconfig.h but we need the test
+dnl result together with the test for mmsystem.h
+AC_CHECK_HEADERS(windows.h mmsystem.h)
+
+case "${ac_cv_header_sndio_h}""${ac_cv_lib_sndio_sio_open}" in
+   *yes*)
+HAVE_SNDIO=1
+;;
+   *)
+HAVE_SNDIO=
+;;
+esac
+AC_SUBST(HAVE_SNDIO)
+
+case "${ac_cv_header_sys_cdio_h}""${ac_cv_header_sundev_srreg_h}" in
+   *yes*)
+HAVE_SUN_IOCTL=1
+;;
+   *)
+HAVE_SUN_IOCTL=
+;;
+esac
+AC_SUBST(HAVE_SUN_IOCTL)
+
+case "${ac_cv_header_sys_audioio_h}""${ac_cv_header_sun_audioio_h}" in
+   *yes*)
+HAVE_SUNSOUND=1
+;;
+   *)
+HAVE_SUNSOUND=
+;;
+esac
+AC_SUBST(HAVE_SUNSOUND)
+
+case "${ac_cv_header_machine_soundcard_h}""${ac_cv_header_sys_soundcard_h}""${ac_cv_header_linux_soundcard_h}" in
+   *yes*)
+HAVE_OSS=1
+;;
+   *)
+HAVE_OSS=
+;;
+esac
+AC_SUBST(HAVE_OSS)
+
+case "${ac_cv_header_alsa_asoundlib_h}""${ac_cv_header_sys_asoundlib_h}" in
+   *yes*)
+HAVE_ALSA=1
+;;
+   *)
+HAVE_ALSA=
+;;
+esac
+case "${HAVE_ALSA}""${ac_cv_lib_asound_snd_pcm_open}" in
+   1*yes*)
+HAVE_ALSA=1
+;;
+   *)
+HAVE_ALSA=
+HAVE_SYS_ASOUNDLIB_H=
+HAVE_ALSA_ASOUNDLIB_H=
+;;
+esac
+AC_SUBST(HAVE_ALSA)
+
+AC_SUBST(HAVE_SYS_ASOUNDLIB_H)
+AC_SUBST(HAVE_ALSA_ASOUNDLIB_H)
+
+case "${ac_cv_header_windows_h}""${ac_cv_header_mmsystem_h}" in
+   *yesyes*)
+HAVE_WINSOUND=1
+;;
+   *)
+HAVE_WINSOUND=
+;;
+esac
+AC_SUBST(HAVE_WINSOUND)
+
+case "${ac_cv_header_os2_h}""${ac_cv_header_os2me_h}" in
+   *yesyes*)
+HAVE_OS2SOUND=1
+;;
+   *)
+HAVE_OS2SOUND=
+;;
+esac
+AC_SUBST(HAVE_OS2SOUND)
+
+case "${ac_cv_header_pulse_pulseaudio_h}""${ac_cv_lib_pulse_simple_pa_simple_new}""${ac_cv_lib_pulse_pa_strerror}" in
+   *yesyesyes*)
+HAVE_PULSE_SIMPLE_H=1
+;;
+   *)
+HAVE_PULSE_SIMPLE_H=
+HAVE_PULSE_PULSEAUDIO_H=
+;;
+esac
+AC_SUBST(HAVE_PULSE_SIMPLE_H)
+
+dnl Checks for library functions.
+
+AC_OUTPUT(local.cnf)

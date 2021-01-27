@@ -1,0 +1,39 @@
+. \"  Manual Seite fuer filereopen
+. \" @(#)filereopen.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH FILEREOPEN 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+filereopen() \- opens a new file on an open stream
+.SH SYNOPSIS
+.nf
+.B
+FILE *filereopen(filename,modes,f)
+.B	char *name;
+.B	char *modes;
+.B	FILE *f;
+.fi
+.SH DESCRIPTION
+filereopen() opens the file filename with modes modes on stream
+f. modes has the same format as for fileopen(). The stream f
+must be open.
+.SH RETURNS
+.TP
+.B NULL
+reopen failed.
+.TP
+.B other
+old stream.
+.SH NOTES
+none

@@ -1,0 +1,55 @@
+This file is intended to help with ATAPI <-> Parallel Port devices on Linux
+
+Before you start, read 
+
+	http://www.torque.net/parport/paride.html
+
+Make sure that your parallel port device is set up to EPP mode
+from within the BIOS. In many cases it is best to set the PP delay to 0.
+
+Here is a short explanation how to make the FreeCom Traveller work
+in 4x speed on a notebook:
+
+1.) Set BIOS for parallel port to 'EPP'.
+
+2.) Load drivers in default mode:
+
+   # modprobe paride
+   # modprobe <driver for parallel port adaptor>
+   # modprobe pg
+
+in case of a FreeCom Traveller this is:
+
+   # modprobe paride
+   # modprobe friq
+   # modprobe pg
+
+3.) Check kernel log for paride messages:
+
+   # dmesg
+   ...
+   paride: version 1.04 installed
+   paride: friq registered as protocol 0
+   ...
+   parport0: PC-style at 0x378 [SPP,PS2,EPP]
+   parport0: no IEEE-1284 device present.
+   ...
+   pg: pg version 1.02, major 97
+   pg0: Sharing parport0 at 0x378
+   pg0: friq 1.01, Freecom IQ ASIC-2 adapter at 0x378, mode 4 (EPP-32), delay 1
+   pg0:  CD-R/RW RW8040A, master
+   ...
+
+4.) load module again but use different parameters:
+	'drive0=IO-Port,Protocol,Unit,Mode,Master/Slave,Delay drive1=...'
+	if you have only one drive at the parallel port
+	'drive0=IO-Port,0,0,-1,-1,Delay' e.g. for Delay = 0:
+
+   # modprobe -r pg
+   # modprobe pg drive0=0x378,0,0,-1,-1,0
+
+5.) Check for optimum delay using for maximum speed using cdrecord -dummy 
+
+6.) Use the file rc.pp and modify for your needs
+
+7.) Your CD drive now appears as /dev/pcd?

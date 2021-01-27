@@ -1,0 +1,64 @@
+. \" @(#)patcompile.3	1.3 16/01/27 Copyright 1985,1995-2016 J. Schilling
+. \"  Manual Seite fuer patcompile
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds A Ae
+.if n .ds O Oe
+.if n .ds U Ue
+.if n .ds s sz
+.TH PATCOMPILE 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+patcompile() \- compiles a matching pattern
+.SH SYNOPSIS
+.nf
+.B
+int patcompile(pattern, length, aux)
+.B	char *pattern;
+.B	int length;
+.B	int aux[];
+.fi
+.SH DESCRIPTION
+.B patcompile()
+compiles a pattern into an internal form which
+.BR patmatch (3)
+can use.
+.PP
+The string at
+.I pattern
+with size 
+.I length
+is scanned. The array
+.B aux
+is filled in with state information for
+.BR patmatch (3).
+.B aux
+should have at least
+.I length
+elements.
+.SH RETURNS
+Returns 0 if the pattern contains an error.
+.PP
+Other values should be passed to
+.BR patmatch (3)
+as the
+.B alt
+argument.
+.SH "SEE ALSO
+.BR match (1)
+.PP
+For a description ot the regular expressions.
+.SH NOTES
+The pattern matching functions are based on ones presented by
+Martin Richards in "A Compact Function for Regular Expression
+Pattern Matching", Software-Practice and Experience vol 9,
+527-534 (1979).

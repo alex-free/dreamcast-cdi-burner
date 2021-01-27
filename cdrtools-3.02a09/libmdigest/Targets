@@ -1,0 +1,3 @@
+CFILES=		md4.c md5.c rmd160.c sha1.c sha2.c sha3.c byte_order.c
+
+CPPOPTS +=	-DSHA2_UNROLL_TRANSFORM

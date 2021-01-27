@@ -1,0 +1,258 @@
+***************** Important news ******************************
+
+For the 'Slottable Source Plugin Module' SSPM Features read README.SSPM
+
+***************** Please Test *********************************
+
+NEW features of cdrtools-3.02a07:
+
+This is the first localization step for cdrtools. All programs now (hopefully)
+call gettext() for all strings that need localization.
+
+-	The next step will include dgettext() calls for the libraries.
+
+-	The following step will include the extracted strings
+
+-	The last step will include German translations and install support
+	for the resulting binary message object files.
+
+----------> Please test and report compilation problems! <---------
+
+***** NOTE: As mentioned since 2004, frontends to cdrtools should *****
+*****		call all programs from cdrtools in the "C" locale *****
+*****		by e.g. calling: LC_ALL=C cdrecord ....		  *****
+*****		unless these frontends support localized strings  *****
+*****		used by the cdrtools with NLS support.		  *****
+
+This version compiles on Win-DOS using the Microsoft compiler cl.exe but
+warning: due to missing POSIX compliance with basic features (e.g. stat()
+does not return inode numbers), there are many problems with the resulting
+code and thus it is recommended to better use a POSIX layer on top of 
+WIN-DOS.
+
+		*** WARNING        ***
+		*** Need new smake ***
+
+	*** Due to the fact that schily-2014-04-03 introduced to use new macro
+	*** expansions and a related bug fix in smake, you need a new smake
+	*** to compile this source. To ensure this, get a recent "schily"
+	*** tarball from http://sourceforge.net/projects/schilytools/files/
+	*** and call:
+
+	cd ./psmake
+	./MAKE-all
+	cd ..
+	psmake/smake
+	psmake/smake install
+
+	The new smake version mentioned above is smake-1.2.4.
+	Note that smake-1.2.5 exists and is preferrable.
+
+	Now you have a new smake that is able to compile this source.
+
+	Note that the major makefile restructuring introduced in
+	schily-2014-04-03 is now more than one month ago and thus seems
+	to work without problems.
+
+	WARNING: the new version of the isoinfo program makes use of the 
+		*at() series of functions that have been introduced by Sun
+		in August 2001 and added to POSIX.1-2008. For older platforms,
+		libschily now includes emulations for these functions but
+		these emulations have not yet been tested thoroughly.
+		Please report problems!
+
+
+All:
+
+-	REAME.compile: added documentation on how to compile with clang
+
+-	README.SCCS has been enhanced and now documents compile time and
+	installation options.
+
+-	"cstyle", "installman" and other new targets have been added to the makefile
+	system
+
+-	Rules for the automated testing "make tests" added to the makefile system
+
+-	include/schily/wait.h reworked
+
+-	include/schily/stdio.h enhanced to include speed up code got getc() with
+	Solaris 64 bit compilations.
+
+-	New autoconf test for haiku posix/malloc.h
+
+-	New autoconf test for arpa/aixrcmds.h
+
+-	New autoconf test for tcgetsid()
+
+-	New autoconf test whether waitpid() supports NOWAIT
+
+-	New autoconf test whether we have d_type in struct dirent
+
+Libschily:
+
+-	libschily/jsdprintf.c added
+
+-	libschily/movecbytes.c added
+
+-	libschily/astoi.c and libschily/astoll.c now check for overflows
+	and report ERANGE
+
+-	libschily/*printf.c now support a locale dependent decimal separator
+
+-	libschily/format.c (the printf worker code) has been enhanced to
+	be faster with STDIO on most platforms.
+
+-	libschily: getargs, getallargs and getfiles man pages have been reworked
+
+-	libschily/getargs.c: combined single char boolean flags now work
+	with callback type formats.
+
+-	libschily/searchinpath.c added a new flag SIP_NO_STRIPBIN
+
+-	libschily/stdio/fgetline.c now includes a speedup for AT&T stdio using
+	the new movecbytes()
+
+-	libschily/stdio/fgetstr.c now includes a speedup for AT&T stdio using
+	the new movecbytes()
+
+-	libschily/stdio/getdelim.c now includes a speedup for AT&T stdio using
+	the new movecbytes()
+
+Libcdrdeflt:
+
+Libdeflt:
+
+Libedc (Optimized by Jörg Schilling, originated by Heiko Eißfeldt heiko@hexco.de):
+
+-	libedc_ecc_dec: Avoid an array out of bound subscription. Thanks to
+	Heiko Eißfeldt for cheking the code after a compiler warning.
+
+Libfile:
+
+Libfind:
+
+-	libfind: the code now supports the *BSD enhancement "d_ino" in struct dirent.
+	This speeds up stat()less jobs.
+
+Libhfs_iso:
+
+Libmdigest:
+
+Libparanoia (Ported/enhanced by Jörg Schilling, originated by Monty xiphmont@mit.edu):
+
+Libscg:
+
+Libscgcmd:
+
+Libsiconv:
+
+Rscsi:
+
+Cdrecord:
+
+Cdda2wav (Maintained/enhanced by Jörg Schilling, originated by Heiko Eißfeldt heiko@hexco.de):
+
+-	cdda2wav: Many small rewrites from Heiko Eißfeldt, mainly to reduce the
+	scope of variables and to correctly use the "%u" printf format for
+	unsigned variables.
+
+Readcd:
+
+Scgcheck:
+
+Scgskeleton:
+
+Btcflash:
+
+Mkisofs (Maintained/enhanced by Jörg Schilling since 1997, originated by Eric Youngdale):
+
+-	mkisofs/mac_label.c: fixed a file descriptor leak
+	Thanks to heiko Eißfeldt for reporting.
+
+-	mkisofs: Allow to compile the code again when USE_FIND APPLE_HFS_HYB
+	APPLE_HYB UDF DVD_AUD_VID are not #define'd Thanks to a hint from
+	Colin Finck <colin@reactos.org>
+
+-	mkisofs: mkisofs -version now mentions James Pearson and HELIOS GMBH
+
+-	mkisofs: the getvargs() call now honors the parameter order change in
+	libschily::getvargs().
+
+-	mkisofs: when stripping off "./" and "//" from graft points, mkisofs
+	now uses ovstrcpy() that supports to copy overlapping strings as Mac OS
+	has a strlcpy() that fails with overlapping strings.
+	Thanks to a hint from Colin Finck <colin@reactos.org>
+
+-	mkisofs: the function prototype readsecs() is now available even when
+	USE_SCG is not defined.
+	Thanks to a hint from Colin Finck <colin@reactos.org>
+
+-	mkisofs: The option -no-cache-inodes is available again in all compile
+	versions.
+
+-	mkisofs: Some unused variables have been removed.
+
+-	mkisofs: New option -isort behaves like -sort but ignores the case of
+	filenames in the sort file.
+
+-	mkisofs: new option -hide-ignorecase allows to ignore case with the 
+	-hide* options and with -exclude-list
+
+-	mkisofs: New option -no-allow-lowercase allows to revert the effect to
+	-allow-lowercase from macro options like -untranslated-filenames or
+	-iso-level 4
+
+-	mkisofs: New option -duplicates-once to hard link identical files even
+	on non POSIX platforms.
+	The code was modeled similar to the code from
+	Alex Kopylov cdrtools@bootcd.ru but better fits into the idea of 
+	current versions of mkisofs
+
+-	mkisofs: defaults.h no longer sets the system to "UNIX" if it was
+	compiles by MSVC.
+	Thanks to Collin Finck colin@reactos.org for reporting
+
+
+
+HELIOS TODO:
+
+	-	Add the HELIOS UNICODE mapping code. This needs to be done 
+		at UCS-2 level for Joliet and UDF (instead of UTF-8) and only
+		for Rock Ridge (in case of a UTF-8 based target locale) using
+		UTF-8 based translations.
+
+	-	Make the Apple extensions work again with "mkisofs -find"
+
+TODO:
+
+	-	read Joliet filenames with multi-session if no TRANS.TBL
+		or RR is present. I am looking for a volunteer for this task!
+
+		Note that this can never be 100% correct as there is no relation
+		between the names on the master (UNIX) filesystem, the ISO-9660
+		names and the Joliet names. Only the Rock Ridge names are
+		untranslated with respect to the original files on the
+		master (UNIX) filesystem.
+
+	-	add libecc/edc for CDI and similar.
+
+
+CYGWIN NT-4.0 NOTES:
+
+To compile on Cygwin32, get Cygwin and install it.
+For more information read README.win32
+
+The files are located on:
+
+http://sourceforge.net/projects/cdrtools/files/alpha/ ...
+
+NOTE:	These tar archives are 100% POSIX compatible. GNU tar may get some
+	minor trouble. If you like a 100% POSIX compliant tar, get star from
+	http://sourceforge.net/projects/s-tar/files/ of from the schily-*
+	tarball at: http://sourceforge.net/projects/schilytools/files/
+
+WARNING: Do not use 'winzip' to extract the tar file!
+	Winzip cannot extract symbolic links correctly.
+
+Joerg

@@ -1,0 +1,10 @@
+!                                               9 March 2005.  SMS.
+!
+!    Link options file for old VAX situations where the compiler could
+!    not set the proper attributes for the LIB$INITIALIZE PSECT,
+!    resulting in this complaint:
+!
+!    %LINK-W-MULPSC, conflicting attributes for psect LIB$INITIALIZE
+!         in module LIB$INITIALIZE file SYS$COMMON:[SYSLIB]STARLET.OLB;
+!
+PSECT_ATTR=LIB$INITIALIZE,NOPIC

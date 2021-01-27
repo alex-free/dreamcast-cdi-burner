@@ -1,0 +1,49 @@
+. \"  Manual Seite fuer raise
+. \" @(#)raise.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH RAISE 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+raise() \- raises a condition
+.SH SYNOPSIS
+.nf
+.B
+raise(signame, arg2)
+.B	char	*signame;
+.B	long	arg2;
+.fi
+.SH DESCRIPTION
+raise causes the condition signame to be signalled on the stack,
+in each frame in order from the most recent (top of stack) to
+the oldest. Each frame is checked for a condition handler for
+signame or, if one is not found in the frame, for any_other. If
+a handler is found, it is called with signame and with arg1,
+established in the call to handle(), and arg2, from this call.
+If a handler is not found, the process is repeated in the next
+older stack frame. If raise() reaches the end of the stack
+without finding a handler, it prints "Condition not caught:
+condition_name" on stderr and the process is suspended via
+abort().
+.PP
+If the handler returns TRUE, raise() returns. Otherwise it
+continues just as if it had not found the handler.
+.SH RETURNS
+none
+.SH NOTES
+handle() and raise() are frequently used with the subroutines
+longjmp() and setjmp().
+.PP
+Routines that call raise() can choose to ignore the result;
+however, they should anticipate the condition in order to ensure
+a reasonable outcome to the program.

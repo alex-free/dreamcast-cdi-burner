@@ -1,0 +1,3726 @@
+%!PS
+%%Version: 3.15
+%%DocumentFonts: (atend)
+%%Pages: (atend)
+%%EndComments
+%
+% Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
+% Use is subject to license terms.
+%
+% CDDL HEADER START
+%
+% The contents of this file are subject to the terms of the
+% Common Development and Distribution License, Version 1.0 only
+% (the "License").  You may not use this file except in compliance
+% with the License.
+%
+% You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+% or http://www.opensolaris.org/os/licensing.
+% See the License for the specific language governing permissions
+% and limitations under the License.
+%
+% When distributing Covered Code, include this CDDL HEADER in each
+% file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+% If applicable, add the following below this CDDL HEADER, with the
+% fields enclosed by brackets "[]" replaced with your own identifying
+% information: Portions Copyright [yyyy] [name of copyright owner]
+%
+% CDDL HEADER END
+%
+%ident	"%Z%%M%	%I%	%E% SMI"
+%
+% Version 3.16 prologue for troff files.
+%
+
+/#copies 1 store
+/aspectratio 1 def
+/formsperpage 1 def
+/landscape false def
+/linewidth .3 def
+/magnification 1 def
+/margin 0 def
+/orientation 0 def
+/resolution 720 def
+/xoffset 0 def
+/yoffset 0 def
+
+/roundpage true def
+/useclippath true def
+/pagebbox [0 0 612 792] def
+
+/R  /Times-Roman def
+/I  /Times-Italic def
+/B  /Times-Bold def
+/BI /Times-BoldItalic def
+/H  /Helvetica def
+/HI /Helvetica-Oblique def
+/HB /Helvetica-Bold def
+/HX /Helvetica-BoldOblique def
+/CW /Courier def
+/CO /Courier def
+/CI /Courier-Oblique def
+/CB /Courier-Bold def
+/CX /Courier-BoldOblique def
+/PA /Palatino-Roman def
+/PI /Palatino-Italic def
+/PB /Palatino-Bold def
+/PX /Palatino-BoldItalic def
+/Hr /Helvetica-Narrow def
+/Hi /Helvetica-Narrow-Oblique def
+/Hb /Helvetica-Narrow-Bold def
+/Hx /Helvetica-Narrow-BoldOblique def
+/KR /Bookman-Light def
+/KI /Bookman-LightItalic def
+/KB /Bookman-Demi def
+/KX /Bookman-DemiItalic def
+/AR /AvantGarde-Book def
+/AI /AvantGarde-BookOblique def
+/AB /AvantGarde-Demi def
+/AX /AvantGarde-DemiOblique def
+/NR /NewCenturySchlbk-Roman def
+/NI /NewCenturySchlbk-Italic def
+/NB /NewCenturySchlbk-Bold def
+/NX /NewCenturySchlbk-BoldItalic def
+/ZD /ZapfDingbats def
+/ZI /ZapfChancery-MediumItalic def
+/VR /Varitimes#Roman def
+/VI /Varitimes#Italic def
+/VB /Varitimes#Bold def
+/VX /Varitimes#BoldItalic def
+/S  /S def
+/S1 /S1 def
+/GR /Symbol def
+
+/inch {72 mul} bind def
+/min {2 copy gt {exch} if pop} bind def
+
+/setup {
+	counttomark 2 idiv {def} repeat pop
+
+	landscape {/orientation 90 orientation add def} if
+	/scaling 72 resolution div def
+	linewidth setlinewidth
+	1 setlinecap
+
+	pagedimensions
+	xcenter ycenter translate
+	orientation neg rotate
+	width 2 div neg height 2 div translate
+	xoffset inch yoffset inch translate
+	margin 2 div dup neg translate
+	magnification dup aspectratio mul scale
+	scaling scaling scale
+
+	/Symbol /S Sdefs cf
+	/Times-Roman /S1 S1defs cf
+	0 0 moveto
+} def
+
+/pagedimensions {
+	useclippath userdict /gotpagebbox known not and {
+		/pagebbox [clippath pathbbox newpath] def
+		roundpage currentdict /roundpagebbox known and {roundpagebbox} if
+	} if
+	pagebbox aload pop
+	4 -1 roll exch 4 1 roll 4 copy
+	landscape {4 2 roll} if
+	sub /width exch def
+	sub /height exch def
+	add 2 div /xcenter exch def
+	add 2 div /ycenter exch def
+	userdict /gotpagebbox true put
+} def
+
+/pagesetup {
+	/page exch def
+	currentdict /pagedict known currentdict page known and {
+		page load pagedict exch get cvx exec
+	} if
+} def
+
+/decodingdefs [
+	{counttomark 2 idiv {y moveto show} repeat}
+	{neg /y exch def counttomark 2 idiv {y moveto show} repeat}
+	{neg moveto {2 index stringwidth pop sub exch div 0 32 4 -1 roll widthshow} repeat}
+	{neg moveto {spacewidth sub 0.0 32 4 -1 roll widthshow} repeat}
+	{counttomark 2 idiv {y moveto show} repeat}
+	{neg setfunnytext}
+] def
+
+/setdecoding {/t decodingdefs 3 -1 roll get bind def} bind def
+
+/w {neg moveto show} bind def
+/m {neg dup /y exch def moveto} bind def
+/done {/lastpage where {pop lastpage} if} def
+
+/f {
+	dup /font exch def findfont exch
+	dup /ptsize exch def scaling div dup /size exch def scalefont setfont
+	linewidth ptsize mul scaling 10 mul div setlinewidth
+	/spacewidth ( ) stringwidth pop def
+} bind def
+
+/changefont {
+	/fontheight exch def
+	/fontslant exch def
+	currentfont [
+		1 0
+		fontheight ptsize div fontslant sin mul fontslant cos div
+		fontheight ptsize div
+		0 0
+	] makefont setfont
+} bind def
+
+/sf {f} bind def
+
+/cf {
+	dup length 2 idiv
+	/entries exch def
+	/chtab exch def
+	/newfont exch def
+
+	findfont dup length 1 add dict
+	/newdict exch def
+	{1 index /FID ne {newdict 3 1 roll put} {pop pop} ifelse} forall
+
+	newdict /Metrics entries dict put
+	newdict /Metrics get
+	begin
+		chtab aload pop
+		1 1 entries {pop def} for
+		newfont newdict definefont pop
+	end
+} bind def
+
+%
+% A few arrays used to adjust reference points and character widths in some
+% of the printer resident fonts. If square roots are too high try changing
+% the lines describing /radical and /radicalex to,
+%
+%	/radical	[0 -75 550 0]
+%	/radicalex	[-50 -75 500 0]
+%
+
+/Sdefs [
+	/bracketlefttp		[220 500]
+	/bracketleftbt		[220 500]
+	/bracketrighttp		[-70 380]
+	/bracketrightbt		[-70 380]
+	/braceleftbt		[220 490]
+	/bracketrightex		[220 -125 500 0]
+	/radical		[0 0 550 0]
+	% NeWSprint's \(br is too low, compensate
+	statusdict /product get (NeWS Server) eq {
+		/radicalex		[-50 100 500 0]
+		/parenleftex		[-20 100 0 0]
+
+	} {
+		/radicalex		[-50 0 500 0]
+		/parenleftex		[-20 -170 0 0]
+	} ifelse
+	/integral		[100 -50 500 0]
+	/infinity		[10 -75 730 0]
+] def
+
+/S1defs [
+	/underscore		[0 80 500 0]
+	/endash			[7 90 650 0]
+] def
+%%EndProlog
+%%BeginSetup
+mark
+/resolution 720 def
+setup
+2 setdecoding
+%%EndSetup
+%%Page: 1 1
+save
+mark
+1 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+9 B f
+( E)1 0( ME)1 60(N NA AM)2 215 3 720 960 t
+10 R f
+(cdda2wav)1080 1080 w
+10 S1 f
+(\261)1517 1080 w
+10 R f
+(dumps CD audio data into sound \256les with extra data veri\256cation)10 2684 1 1615 1080 t
+9 B f
+( S)1 0( IS)1 50( SI)1 35( PS)1 50( OP)1 55( YN NO)2 135(S SY)1 115 7 720 1248 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1080 1368 t
+10 R f
+([)1541 1368 w
+10 I f
+(options)1607 1368 w
+10 R f
+(][)1935 1368 w
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 2034 1368 t
+10 I f
+(device)2241 1368 w
+10 R f
+(] [)1 99 1 2528 1368 t
+10 I f
+(\256le\(s\))2627 1368 w
+10 R f
+(or)2887 1368 w
+10 I f
+(directories)3003 1368 w
+10 R f
+(])3444 1368 w
+9 B f
+( N)1 0( ON)1 65( IO)1 70( TI)1 35( PT)1 60( IP)1 55( CR RI)2 100( SC)1 65( ES)1 50(D DE)1 125 10 720 1536 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1080 1656 t
+10 R f
+( from CDROM drives that are capable of reading audio data digitally)11 2858(can retrieve audio tracks)3 1001 2 1541 1656 t
+(to the host via SCSI \()5 899 1 1080 1776 t
+10 B f
+(C CD DD DA A)4 288 1 1979 1776 t
+10 R f
+(\).)2267 1776 w
+(As)1080 1944 w
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1232 1944 t
+10 R f
+(implements strategies to work around typical defects on audio CDs it reads many disks)13 3698 1 1702 1944 t
+( As)1 185(that cannot be read by other software.)6 1600 2 1080 2064 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2906 2064 t
+10 R f
+(may be told to use)4 797 1 3375 2064 t
+10 B f
+( a)1 0( ia)1 50( oi)1 28( no)1 50( an)1 56( ra)1 50( ar)1 44( bp pa)2 106(l li ib)2 112 9 4213 2064 t
+10 R f
+(\(see)4750 2064 w
+10 S1 f
+(\261 \261)1 65 1 4951 2064 t
+10 B f
+( a)1 0( ia)1 50( oi)1 28( no)1 50( an)1 56( ra)1 50( ar)1 44(p pa)1 106 8 5016 2064 t
+10 R f
+( verify the data that has been read from the medium, it delivers superior quality even if)16 3639(option below\) to)2 681 2 1080 2184 t
+(the medium is dusty, scratched or if other problems occur.)9 2399 1 1080 2304 t
+(As)1080 2472 w
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1226 2472 t
+10 R f
+(may be directed to write the audio data to stdout, it writes all it's informational output to)16 3710 1 1690 2472 t
+(stderr by default. See)3 872 1 1080 2592 t
+10 B f
+( t)1 0( ut)1 33(o ou)1 106 3 1985 2592 t
+10 S1 f
+(\261 \261)1 65 1 2124 2592 t
+10 B f
+( =)1 0( d=)1 57(f fd)1 89 3 2189 2592 t
+10 I f
+(descriptor)2335 2592 w
+10 R f
+(option below.)1 558 1 2779 2592 t
+9 B f
+( s)1 0( gs)1 35( ng)1 45( in)1 50( tt ti)2 55( et)1 30( se)1 40( s)1 65( t)1 0( lt)1 30( ul)1 25( au)1 50( fa)1 45( ef)1 30(D De)1 105 15 900 2760 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(C Cd)1 128 5 1080 2880 t
+10 R f
+( the \256rst audio track from the medium and the default verbose level is set to)15 3156(defaults to reead)2 675 2 1569 2880 t
+10 S1 f
+(\261 \261)1 65 1 1080 3000 t
+10 B f
+( s)1 0( es)1 39( le)1 44( tl)1 28( it)1 33( ti)1 28( ,t)1 33( s,)1 25( rs)1 39( or)1 44( to)1 50( ec ct)2 77( se)1 44( ,s)1 39( y,)1 25( ry)1 50( ar)1 44( mm ma)2 133( um)1 83( su)1 56( ,s)1 39( c,)1 25( oc)1 44( to)1 50(v vt)1 83 25 1145 3000 t
+10 R f
+(and)2346 3000 w
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2536 3000 t
+10 R f
+(by default writes)2 713 1 3010 3000 t
+10 S f
+(* *)1 50 1 3769 3000 t
+10 B f
+( f)1 0( nf)1 33( in)1 56(. .i)1 53 4 3819 3000 t
+10 R f
+( extract all audio tracks)4 1011(\256les. To)1 382 2 4007 3000 t
+(with quality veri\256cation, it is recommended to call:)7 2105 1 1080 3120 t
+10 B f
+( B)1 0( -B)1 67( -)1 66( a)1 0( ia)1 50( oi)1 28( no)1 50( an)1 56( ra)1 50( ar)1 44( pa)1 50( -p)1 56( -)1 66( 0)1 0( =0)1 50( dd db b=)3 169( cd)1 56( c)1 77( ll l)2 28( va al)2 78( -v)1 50( -)1 66( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 27 1080 3288 t
+9 B f
+( g)1 0( ng)1 45( in)1 50( mi)1 25( am)1 75( na)1 45( n)1 80( ce e)2 40( ic)1 40( vi)1 25( ev)1 45(D De)1 105 12 900 3456 t
+10 R f
+( no)1 136( If)1 135( not need to care about device naming at all.)9 1862(Most users do)2 581 4 1080 3576 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 3830 3576 t
+10 R f
+(option was speci\256ed,)2 863 1 4073 3576 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4972 3576 t
+10 R f
+(implements)1080 3696 w
+10 B f
+( t)1 0( et)1 33( ge)1 44( rg)1 50( ar)1 44( ta)1 50( t)1 80( o)1 0( to)1 50( ut)1 33(a au)1 106 11 1594 3696 t
+10 R f
+(support and automagically \256nds the drive in case that exactly one CD-ROM)11 3269 1 2131 3696 t
+( the sys-)2 355( case that more than one CD-ROM type drive exists on)10 2297( In)1 151(type drive is available in the system.)6 1517 4 1080 3816 t
+(tem, a list of possible device name parameters may be retrieved with)11 2893 1 1080 3936 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4012 3936 t
+10 S1 f
+(\261 \261)1 65 1 4479 3936 t
+10 B f
+( s)1 0( nb bu us)3 151( an)1 56( ca)1 50(s sc)1 83 5 4544 3936 t
+10 R f
+(or from the)2 477 1 4923 3936 t
+( output of)2 421(target example from the)3 1001 2 1080 4056 t
+10 B f
+( p)1 0( lp)1 56( el)1 28( he)1 44( =h)1 56( v=)1 57( ev)1 50( de)1 44( d)1 97( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 14 2543 4056 t
+10 R f
+(, then the)2 401 1 3403 4056 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 3845 4056 t
+10 R f
+(parameter may be set based on)5 1307 1 4093 4056 t
+(the device listing.)2 724 1 1080 4176 t
+(The)1080 4344 w
+10 I f
+(device)1310 4344 w
+10 R f
+(parameter to the)2 748 1 1639 4344 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 2462 4344 t
+10 R f
+( below refers to)3 776(option explained)1 719 2 2744 4344 t
+10 I f
+(scsibus)4315 4344 w
+10 R f
+(/)4612 4344 w
+10 I f
+(target)4640 4344 w
+10 R f
+(/)4887 4344 w
+10 I f
+(lun)4915 4344 w
+10 R f
+(of the)1 281 1 5119 4344 t
+( the)1 161( a \256le /etc/default/cdrecord exists, the parameter to)7 2128(CD/DVD/BluRay-Recorder. If)1 1279 3 1080 4464 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 4687 4464 t
+10 R f
+(option may)1 467 1 4933 4464 t
+(also be a drive name label in said \256le \(see FILES section\).)11 2412 1 1080 4584 t
+9 B f
+( S)1 0( NS)1 50( ON)1 65( IO)1 70( TI)1 35( PT)1 60(O OP)1 125 7 720 4872 t
+( s)1 0( ns)1 35( on)1 50( io)1 45( ti)1 25( pt)1 30( op)1 50( o)1 75( e)1 0( ve)1 40( iv)1 45( ti)1 25( at)1 30( ma)1 45( rm)1 75( or)1 40( fo)1 45( nf)1 30(I In)1 85 19 900 4992 t
+10 S1 f
+(\261 \261)1 65 1 1080 5112 t
+10 B f
+(h h)1 56 1 1145 5112 t
+10 S1 f
+(\261 \261)1 65 1 1080 5280 t
+10 B f
+( p)1 0( lp)1 56( el)1 28(h he)1 100 4 1145 5280 t
+10 R f
+(display version information for cdda2wav on standard output.)7 2525 1 1440 5280 t
+10 S1 f
+(\261 \261)1 65 1 1080 5448 t
+10 B f
+( n)1 0( on)1 56( io)1 50( si)1 28( er rs)2 83(v ve)1 94 6 1145 5448 t
+10 R f
+(display version and Copyright information.)4 1762 1 1440 5568 t
+9 B f
+( s)1 0( ns)1 35( on)1 50( io)1 45( ti)1 25( pt)1 30( op)1 50( o)1 75( o)1 0( io)1 45( ud di)2 75(A Au)1 115 12 900 5736 t
+10 S1 f
+(\261 \261)1 65 1 1080 5856 t
+10 B f
+(a a)1 50 1 1145 5856 t
+10 I f
+(divider)1228 5856 w
+10 S1 f
+(\261 \261)1 65 1 1080 6024 t
+10 B f
+( er r)2 44( de)1 44( id)1 56( vi)1 28( iv)1 50(d di)1 84 6 1145 6024 t
+10 I f
+(divider)1484 6024 w
+10 R f
+(sets rate to 44100Hz /)4 903 1 1440 6144 t
+10 I f
+(divider)2376 6144 w
+10 R f
+( values are listed with the)5 1058(. Possible)1 425 2 2667 6144 t
+10 S1 f
+(\261 \261)1 65 1 4183 6144 t
+10 B f
+(R R)1 72 1 4248 6144 t
+10 R f
+(option.)4353 6144 w
+(The default divider value is 1.)5 1238 1 1440 6384 t
+10 S1 f
+(\261 \261)1 65 1 1080 6552 t
+10 B f
+(B B)1 67 1 1145 6552 t
+10 S1 f
+(\261 \261)1 65 1 1080 6720 t
+10 B f
+( k)1 0( lk)1 56(b bu ul)2 140 3 1145 6720 t
+10 S1 f
+(\261 \261)1 65 1 1080 6888 t
+10 B f
+( s)1 0( ks)1 39( ck)1 56( ac)1 44( ra)1 50( tr)1 44( ll lt)2 61(a al)1 78 8 1145 6888 t
+10 R f
+(copies each track into a separate \256le.)6 1513 1 1440 7008 t
+(The default is not to extract all tracks.)7 1570 1 1440 7248 t
+( 1)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7728 t
+cleartomark
+showpage
+restore
+%%EndPage: 1 1
+%%Page: 2 2
+save
+mark
+2 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+10 S1 f
+(\261 \261)1 65 1 1080 960 t
+10 B f
+(b b)1 56 1 1145 960 t
+10 I f
+(bits)1234 960 w
+10 S1 f
+(\261 \261)1 65 1 1080 1128 t
+10 B f
+( s)1 0( ts)1 39( it)1 33(b bi)1 84 4 1145 1128 t
+10 S1 f
+(\261 \261)1 65 1 1301 1128 t
+10 B f
+( er r)2 44(p pe)1 100 2 1366 1128 t
+10 S1 f
+(\261 \261)1 65 1 1510 1128 t
+10 B f
+( e)1 0( le)1 44( pl)1 28( mp)1 56( am)1 83(s sa)1 89 6 1575 1128 t
+10 I f
+(bits)1908 1128 w
+10 R f
+(sets)1440 1248 w
+10 I f
+(bits)1623 1248 w
+10 R f
+(per sample per channel:)3 974 1 1801 1248 t
+10 B f
+(8 8)1 50 1 2841 1248 t
+10 R f
+(,)2891 1248 w
+10 B f
+(1 12 2)2 100 1 2949 1248 t
+10 R f
+(or)3082 1248 w
+10 B f
+(1 16 6)2 100 1 3198 1248 t
+10 R f
+(.)3298 1248 w
+(The default is 16 bits per sample.)6 1377 1 1440 1488 t
+10 S1 f
+(\261 \261)1 65 1 1080 1656 t
+10 B f
+(c c)1 44 1 1145 1656 t
+10 I f
+(channels)1222 1656 w
+10 S1 f
+(\261 \261)1 65 1 1080 1824 t
+10 B f
+( s)1 0( ls)1 39( el)1 28( nn ne)2 100( an)1 56( ha)1 50(c ch)1 100 7 1145 1824 t
+10 I f
+(channels)1551 1824 w
+10 R f
+(use:)1440 1944 w
+10 B f
+(1 1)1 50 1 1440 2112 t
+10 R f
+(for mono recording)2 792 1 1800 2112 t
+10 B f
+(2 2)1 50 1 1440 2280 t
+10 R f
+(for stereo recording)2 802 1 1800 2280 t
+10 B f
+(s s)1 39 1 1440 2448 t
+10 R f
+(for stereo recording with both channels swapped)6 1988 1 1800 2448 t
+(The default is to do stereo recording.)6 1520 1 1440 2616 t
+10 S1 f
+(\261 \261)1 65 1 1080 2784 t
+10 B f
+(C C)1 72 1 1145 2784 t
+10 I f
+(endianess)1250 2784 w
+10 S1 f
+(\261 \261)1 65 1 1080 2952 t
+10 B f
+( m)1 0( om)1 83( ro)1 50( dr)1 44(c cd)1 100 5 1145 2952 t
+10 S1 f
+(\261 \261)1 65 1 1422 2952 t
+10 B f
+( ss s)2 39( es)1 39( ne)1 44( an)1 56( ia)1 50( nd di)2 84(e en)1 100 7 1487 2952 t
+10 I f
+(endianess)1932 2952 w
+10 R f
+( to override defaults.)3 880(sets endianess of the input samples to 'little', 'big', 'machine' or 'guess')11 3080 2 1440 3072 t
+( the host CPU in the)5 924(The value 'machine' or 'host' is evaluated as the actual byte order of)12 3036 2 1440 3192 t
+(current OS.)1 468 1 1440 3312 t
+(The default is to detect cdrom endianess automatically.)7 2258 1 1440 3552 t
+10 S1 f
+(\261 \261)1 65 1 1080 3720 t
+10 B f
+( e)1 0( le)1 44( \256l)1 28( e\256)1 56( ue)1 44(c cu)1 100 6 1145 3720 t
+10 R f
+( the CDRWIN)2 621( CUE \256le that completely follows)5 1452( A)1 151(Create a CDRWIN compatible CUE \256le.)5 1736 4 1440 3840 t
+( copies if there is a single \256le with audio data for)11 2071(documentation can only be used to create 1:1)7 1889 2 1440 3960 t
+( The)1 230( disk.)1 234(the whole)1 407 3 1440 4080 t
+10 S f
+(*)2353 4080 w
+10 R f
+(.inf \256le format implements more audio CD features than the CDRWIN)10 2997 1 2403 4080 t
+( the)1 158( Use)1 224( allows to create 1:1 copies if there is one audio data \256le per track.)14 2801(CUE format and it)3 777 4 1440 4200 t
+(CUE \256le format for meta data only if you really need this format.)12 2706 1 1440 4320 t
+(To allow)1 368 1 1440 4560 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1843 4560 t
+10 R f
+( \256les, you must also specify)5 1166(to create CUE)2 585 2 2306 4560 t
+10 S1 f
+(\261 \261)1 65 1 4093 4560 t
+10 B f
+( ll l)2 28( al)1 28( a)1 86(t t)1 33 4 4158 4560 t
+10 R f
+(to switch)1 375 1 4369 4560 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4780 4560 t
+10 R f
+(into)5244 4560 w
+(a mode that creates a single audio data \256le for the whole CD.)12 2533 1 1440 4680 t
+10 S1 f
+(\261 \261)1 65 1 1080 4848 t
+10 B f
+(T T)1 67 1 1145 4848 t
+10 S1 f
+(\261 \261)1 65 1 1080 5016 t
+10 B f
+( ze e)2 44( iz)1 44( si)1 28( as)1 39( ph ha)2 106( mp)1 56( ee em)2 127(d de)1 100 8 1145 5016 t
+10 R f
+(undo the effect of pre-emphasis in the input samples.)8 2180 1 1440 5136 t
+( audio data in the same state as on the medium and to mark the pre-)15 2888(The default is to keep the)5 1072 2 1440 5376 t
+(emphasis state in the)3 854 1 1440 5496 t
+10 S f
+(* *)1 50 1 2327 5496 t
+10 B f
+( f)1 0( nf)1 33( in)1 56(. .i)1 53 4 2377 5496 t
+10 R f
+(\256les.)2552 5496 w
+10 S1 f
+(\261 \261)1 65 1 1080 5664 t
+10 B f
+(L L)1 67 1 1145 5664 t
+10 I f
+(cddb mode)1 443 1 1245 5664 t
+10 S1 f
+(\261 \261)1 65 1 1080 5832 t
+10 B f
+( dd db b)3 112(c cd)1 100 2 1145 5832 t
+10 I f
+(cddb mode)1 443 1 1390 5832 t
+10 R f
+( parameter cddb mode)3 943( The)1 231( based on the cddb id.)5 961(does a cddbp album- and track title lookup)7 1825 4 1440 5952 t
+(de\256nes how multiple entries shall be handled.)6 1877 1 1440 6072 t
+10 S f
+(_ _________________________________________________________)1 2872 1 1984 6092 t
+10 R f
+(Parameter Description)1 1020 1 2034 6212 t
+10 S f
+(_ _________________________________________________________)1 2872 1 1984 6232 t
+10 R f
+( cddb queries. This is the default.)6 1374(-1 disable)1 516 2 2355 6352 t
+( mode. The user selects the entry to use.)8 1661(0 interactive)1 621 2 2388 6472 t
+( \256t mode. The \256rst entry is taken unconditionally.)8 2047(1 \256rst)1 356 2 2388 6592 t
+10 S f
+( \347)1 -2872(_ _________________________________________________________)1 2872 2 1984 6612 t
+(\347)1984 6592 w
+(\347)1984 6492 w
+(\347)1984 6392 w
+(\347)1984 6292 w
+(\347)1984 6192 w
+(\347)2513 6612 w
+(\347)2513 6592 w
+(\347)2513 6492 w
+(\347)2513 6392 w
+(\347)2513 6292 w
+(\347)2513 6192 w
+(\347)4856 6612 w
+(\347)4856 6592 w
+(\347)4856 6492 w
+(\347)4856 6392 w
+(\347)4856 6292 w
+(\347)4856 6192 w
+10 B f
+( dd db bp p)4 168(c cd)1 100 2 1080 6780 t
+10 S1 f
+(\261 \261)1 65 1 1348 6780 t
+10 B f
+( =)1 0( er r=)2 101( ve)1 44( er rv)2 94(s se)1 83 5 1413 6780 t
+10 I f
+(servername)1735 6780 w
+10 R f
+(sets the server to be contacted for title lookups.)8 1947 1 1440 6900 t
+10 B f
+( dd db bp p)4 168(c cd)1 100 2 1080 7068 t
+10 S1 f
+(\261 \261)1 65 1 1348 7068 t
+10 B f
+( =)1 0( t=)1 57( rt)1 33( or)1 44(p po)1 106 5 1413 7068 t
+10 I f
+(portnumber)1653 7068 w
+10 R f
+(sets the port number to be used for title lookups.)9 2004 1 1440 7188 t
+( 2)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 2 2
+%%Page: 3 3
+save
+mark
+3 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+10 S1 f
+(\261 \261)1 65 1 1080 960 t
+10 B f
+(d d)1 56 1 1145 960 t
+10 I f
+(duration)1234 960 w
+10 S1 f
+(\261 \261)1 65 1 1080 1128 t
+10 B f
+( n)1 0( on)1 56( io)1 50( ti)1 28( at)1 33( ra)1 50(d du ur)2 156 7 1145 1128 t
+10 I f
+(duration)1551 1128 w
+10 R f
+( a 'f' suf\256x \(like 75f)5 857( \(sectors\) are indicated by)4 1062( Frames)1 360(sets recording time in seconds or frames.)6 1681 4 1440 1248 t
+(for 75 sectors\).)2 617 1 1440 1368 t
+10 B f
+(0 0)1 50 1 2123 1368 t
+10 R f
+(sets the time for whole track.)5 1199 1 2206 1368 t
+(The default is to extract the whole track.)7 1669 1 1440 1608 t
+10 S1 f
+(\261 \261)1 65 1 1080 1776 t
+10 B f
+(E E)1 67 1 1145 1776 t
+10 I f
+(endianess)1245 1776 w
+10 S1 f
+(\261 \261)1 65 1 1080 1944 t
+10 B f
+( t)1 0( pu ut)2 89( tp)1 56( ut)1 33(o ou)1 106 5 1145 1944 t
+10 S1 f
+(\261 \261)1 65 1 1429 1944 t
+10 B f
+( ss s)2 39( es)1 39( ne)1 44( an)1 56( ia)1 50( nd di)2 84(e en)1 100 7 1494 1944 t
+10 I f
+(endianess)1939 1944 w
+10 R f
+( output samples to 'little', 'big' or 'machine' to override the default which)12 3109(sets endianess of the)3 851 2 1440 2064 t
+( value 'machine' or 'host' is evaluated as the actual)9 2197( The)1 229( order' \(big endian\).)3 851(is 'network byte)2 683 4 1440 2184 t
+(byte order of the host CPU in the current OS.)9 1881 1 1440 2304 t
+10 S1 f
+(\261 \261)1 65 1 1080 2472 t
+10 B f
+(F F)1 61 1 1145 2472 t
+10 S1 f
+(\261 \261)1 65 1 1080 2640 t
+10 B f
+(\256 \256n nd d)3 168 1 1145 2640 t
+10 S1 f
+(\261 \261)1 65 1 1313 2640 t
+10 B f
+( s)1 0( es)1 39( me)1 44( re em)2 127( tr)1 44( xt)1 33(e ex)1 94 7 1378 2640 t
+10 R f
+(\256nds extreme amplitudes in samples.)4 1512 1 1440 2760 t
+10 S1 f
+(\261 \261)1 65 1 1080 2928 t
+10 B f
+(G G)1 78 1 1145 2928 t
+10 S1 f
+(\261 \261)1 65 1 1080 3096 t
+10 B f
+(\256 \256n nd d)3 168 1 1145 3096 t
+10 S1 f
+(\261 \261)1 65 1 1313 3096 t
+10 B f
+( o)1 0( no)1 50( on)1 56(m mo)1 133 4 1378 3096 t
+10 R f
+(\256nds if input samples are in mono.)6 1434 1 1440 3216 t
+10 S1 f
+(\261 \261)1 65 1 1080 3384 t
+10 B f
+(g g)1 50 1 1145 3384 t
+10 S1 f
+(\261 \261)1 65 1 1080 3552 t
+10 B f
+( i)1 0( ui)1 28(g gu)1 106 3 1145 3552 t
+10 R f
+(formats the output to be better parsable by gui frontends.)9 2341 1 1440 3552 t
+10 S1 f
+(\261 \261)1 65 1 1080 3720 t
+10 B f
+(H H)1 78 1 1145 3720 t
+10 S1 f
+(\261 \261)1 65 1 1080 3888 t
+10 B f
+( o)1 0(n no)1 106 2 1145 3888 t
+10 S1 f
+(\261 \261)1 65 1 1251 3888 t
+10 B f
+( e)1 0( le)1 44( \256l)1 28( o\256)1 56( fo)1 50( nf)1 33(i in)1 84 7 1316 3888 t
+10 R f
+(does not write an info \256le, a cddb \256le and no cdtext \256le.)12 2327 1 1440 4008 t
+10 S1 f
+(\261 \261)1 65 1 1080 4176 t
+10 B f
+(i i)1 28 1 1145 4176 t
+10 I f
+(index)1206 4176 w
+10 S1 f
+(\261 \261)1 65 1 1080 4344 t
+10 B f
+( x)1 0( ex)1 50( nd de)2 100(i in)1 84 4 1145 4344 t
+10 I f
+(index)1412 4344 w
+10 R f
+(selects the start index.)3 906 1 1440 4464 t
+10 S1 f
+(\261 \261)1 65 1 1080 4632 t
+10 B f
+(J J)1 50 1 1145 4632 t
+10 S1 f
+(\261 \261)1 65 1 1080 4800 t
+10 B f
+( o)1 0( fo)1 50( nf)1 33(i in)1 84 4 1145 4800 t
+10 S1 f
+(\261 \261)1 65 1 1312 4800 t
+10 B f
+( y)1 0( ly)1 50( nl)1 28(o on)1 106 4 1377 4800 t
+10 R f
+(does not write to a \256le, it just gives information about the disc.)12 2601 1 1440 4920 t
+10 S1 f
+(\261 \261)1 65 1 1080 5088 t
+10 B f
+(M M)1 94 1 1145 5088 t
+10 S1 f
+(\261 \261)1 65 1 1080 5256 t
+10 B f
+( 5)1 0( d5)1 50(m md)1 139 3 1145 5256 t
+10 R f
+( for all audio bytes from the beginning of a track. The)11 2333(enables calculation of MD-5 checksum)4 1627 2 1440 5256 t
+( is skipped when calculating the MD-5 checksum to allow to compare MD-5 sums)13 3436(audio header)1 524 2 1440 5376 t
+(even for \256les with different header type.)6 1652 1 1440 5496 t
+10 S1 f
+(\261 \261)1 65 1 1080 5664 t
+10 B f
+(m m)1 83 1 1145 5664 t
+10 S1 f
+(\261 \261)1 65 1 1080 5832 t
+10 B f
+( o)1 0( no)1 50( on)1 56(m mo)1 133 4 1145 5832 t
+10 R f
+(sets to mono recording.)3 962 1 1440 5832 t
+10 S1 f
+(\261 \261)1 65 1 1080 6000 t
+10 B f
+( o)1 0(n no)1 106 2 1145 6000 t
+10 S1 f
+(\261 \261)1 65 1 1251 6000 t
+10 B f
+( n)1 0( en)1 56( dd de)2 100( id)1 56(h hi)1 84 5 1316 6000 t
+10 S1 f
+(\261 \261)1 65 1 1612 6000 t
+10 B f
+( k)1 0( ck)1 56( ac)1 44( ra)1 50(t tr)1 77 5 1677 6000 t
+10 R f
+( default,)1 342( By)1 190(Ignore hidden tracks on the CD.)5 1356 3 1440 6120 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 3368 6120 t
+10 R f
+(checks whether there might be a hid-)6 1564 1 3836 6120 t
+( be disabled with)3 734( check may take a few seconds and thus can)9 1924( This)1 255(den track before track 1.)4 1047 4 1440 6240 t
+10 S1 f
+(\261 \261)1 65 1 1440 6360 t
+10 B f
+( o)1 0(n no)1 106 2 1505 6360 t
+10 S1 f
+(\261 \261)1 65 1 1611 6360 t
+10 B f
+( n)1 0( en)1 56( dd de)2 100( id)1 56(h hi)1 84 5 1676 6360 t
+10 S1 f
+(\261 \261)1 65 1 1972 6360 t
+10 B f
+( k)1 0( ck)1 56( ac)1 44( ra)1 50(t tr)1 77 5 2037 6360 t
+10 R f
+(.)2264 6360 w
+10 S1 f
+(\261 \261)1 65 1 1080 6528 t
+10 B f
+(N N)1 72 1 1145 6528 t
+10 S1 f
+(\261 \261)1 65 1 1080 6696 t
+10 B f
+( o)1 0(n no)1 106 2 1145 6696 t
+10 S1 f
+(\261 \261)1 65 1 1251 6696 t
+10 B f
+( e)1 0( te)1 44( it)1 33( ri)1 28(w wr)1 116 5 1316 6696 t
+10 R f
+( this option is used)4 859( If)1 151( \256le, it just reads \(e.g. for debugging purposes\).)8 2108(does not write to a)4 842 4 1440 6816 t
+(together with the)2 705 1 1440 6936 t
+10 S1 f
+(\261 \261)1 65 1 2184 6936 t
+10 B f
+(e e)1 44 1 2249 6936 t
+10 R f
+(option, the CD is read and the audio content is played back to the sound)14 3068 1 2332 6936 t
+(device without creating output \256les with audio data.)7 2132 1 1440 7056 t
+10 S1 f
+(\261 \261)1 65 1 1080 7224 t
+10 B f
+( o)1 0(n no)1 106 2 1145 7224 t
+10 S1 f
+(\261 \261)1 65 1 1251 7224 t
+10 B f
+( s)1 0( ts)1 39( lt)1 33( ul)1 28( au)1 56( fa)1 50( ef)1 33( de)1 44( td)1 56( xt)1 33( ex)1 50(t te)1 77 12 1316 7224 t
+10 R f
+( 3)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7704 t
+cleartomark
+showpage
+restore
+%%EndPage: 3 3
+%%Page: 4 4
+save
+mark
+4 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+(By default,)1 461 1 1440 960 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1943 960 t
+10 R f
+(replaces empty CD-Text \256elds from tracks by the related CD-Text \256el)10 2986 1 2414 960 t
+( CD in case this is de\256ned. If the option)9 1768(for the whole)2 574 2 1440 1080 t
+10 S1 f
+(\261 \261)1 65 1 3827 1080 t
+10 B f
+( o)1 0(n no)1 106 2 3892 1080 t
+10 S1 f
+(\261 \261)1 65 1 3998 1080 t
+10 B f
+( s)1 0( ts)1 39( lt)1 33( ul)1 28( au)1 56( fa)1 50( ef)1 33( de)1 44( td)1 56( xt)1 33( ex)1 50(t te)1 77 12 4063 1080 t
+10 R f
+(is used,)1 320 1 4607 1080 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4972 1080 t
+10 R f
+(leaves the track related CD-Text \256elds empty in such a case.)10 2494 1 1440 1200 t
+10 S1 f
+(\261 \261)1 65 1 1080 1368 t
+10 B f
+( o)1 0(n no)1 106 2 1145 1368 t
+10 S1 f
+(\261 \261)1 65 1 1251 1368 t
+10 B f
+( e)1 0( le)1 44( \256l)1 28( t\256)1 56( xt)1 33( ex)1 50(t te)1 77 7 1316 1368 t
+10 R f
+(If)1440 1488 w
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1550 1488 t
+10 R f
+( The)1 233( CD, it writes a .cdtext \256le.)6 1200(encounters useful CD-Text information on the)5 1945 3 2022 1488 t
+(option)1440 1608 w
+10 S1 f
+(\261 \261)1 65 1 1729 1608 t
+10 B f
+( o)1 0(n no)1 106 2 1794 1608 t
+10 S1 f
+(\261 \261)1 65 1 1900 1608 t
+10 B f
+( e)1 0( le)1 44( \256l)1 28( t\256)1 56( xt)1 33( ex)1 50(t te)1 77 7 1965 1608 t
+10 R f
+(allows to suppress the creation of the .cdtext \256le.)8 2017 1 2286 1608 t
+10 S1 f
+(\261 \261)1 65 1 1080 1776 t
+10 B f
+(o o)1 50 1 1145 1776 t
+10 I f
+(offset)1228 1776 w
+10 S1 f
+(\261 \261)1 65 1 1080 1944 t
+10 B f
+( t)1 0( et)1 33( se)1 44( ff fs)2 72(o of)1 83 5 1145 1944 t
+10 I f
+(offset)1410 1944 w
+10 R f
+(starts)1440 2064 w
+10 I f
+(offset)1684 2064 w
+10 R f
+(sectors behind start track \(one sector equivalents 1/75 seconds\).)8 2606 1 1934 2064 t
+10 S1 f
+(\261 \261)1 65 1 1080 2232 t
+10 B f
+(O O)1 78 1 1145 2232 t
+10 I f
+(audiotype)1256 2232 w
+10 S1 f
+(\261 \261)1 65 1 1080 2400 t
+10 B f
+( t)1 0( pu ut)2 89( tp)1 56( ut)1 33(o ou)1 106 5 1145 2400 t
+10 S1 f
+(\261 \261)1 65 1 1429 2400 t
+10 B f
+( t)1 0( at)1 33( ma)1 50( rm)1 83( or)1 44(f fo)1 83 6 1494 2400 t
+10 I f
+(audiotype)1820 2400 w
+10 R f
+(can be)1 269 1 1440 2520 t
+10 I f
+(wav)1746 2520 w
+10 R f
+(\(for wav \256les\) or)3 709 1 1944 2520 t
+10 I f
+(aiff)2690 2520 w
+10 R f
+( \256les\) or)2 359(\(for apple/sgi aiff)2 722 2 2861 2520 t
+10 I f
+(aifc)3980 2520 w
+10 R f
+(\(for apple/sgi aifc \256les\) or)4 1094 1 4168 2520 t
+10 I f
+(au)5300 2520 w
+10 R f
+(or)1440 2640 w
+10 I f
+(sun)1556 2640 w
+10 R f
+(\(for sun .au PCM \256les\) or)5 1067 1 1728 2640 t
+10 I f
+(cdr)2828 2640 w
+10 R f
+(or)2994 2640 w
+10 I f
+(raw)3110 2640 w
+10 R f
+(\(for headerless \256les to be used for cd writers\).)8 1895 1 3299 2640 t
+(The default output format is now)5 1373 1 1440 2880 t
+10 B f
+( av v)2 50(w wa)1 122 2 2849 2880 t
+10 R f
+( the most)2 391(for all platforms as this \256le format has become)8 1952 2 3057 2880 t
+(common format. Note that former versions of)6 1894 1 1440 3000 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 3371 3000 t
+10 R f
+( exception and by default did)5 1217(made an)1 347 2 3836 3000 t
+(create)1440 3120 w
+10 B f
+( u)1 0(a au)1 106 2 1710 3120 t
+10 R f
+(type \256les on Solaris.)3 841 1 1849 3120 t
+10 S1 f
+(\261 \261)1 65 1 1080 3288 t
+10 B f
+(p p)1 56 1 1145 3288 t
+10 I f
+(percentage)1234 3288 w
+10 S1 f
+(\261 \261)1 65 1 1080 3456 t
+10 B f
+( k)1 0( ck)1 56( ac)1 44( ba)1 50( ay yb)2 106( la)1 50(p pl)1 84 7 1145 3456 t
+10 S1 f
+(\261 \261)1 65 1 1535 3456 t
+10 B f
+( e)1 0( me)1 44( im)1 83( ti)1 28( lt)1 33( al)1 28(r re ea)2 138 7 1600 3456 t
+10 I f
+(percentage)1987 3456 w
+10 R f
+(changes pitch of audio data copied to sound device.)8 2124 1 1440 3576 t
+10 S1 f
+(\261 \261)1 65 1 1080 3744 t
+10 B f
+(P P)1 61 1 1145 3744 t
+10 I f
+(sectors)1239 3744 w
+10 S1 f
+(\261 \261)1 65 1 1080 3912 t
+10 B f
+( t)1 0( et)1 33(s se)1 83 3 1145 3912 t
+10 S1 f
+(\261 \261)1 65 1 1261 3912 t
+10 B f
+( p)1 0( ap)1 56( la)1 50( er rl)2 72(o ov ve)2 144 5 1326 3912 t
+10 I f
+(sectors)1681 3912 w
+10 R f
+(sets the initial number of overlap)5 1398 1 1440 4032 t
+10 I f
+(sectors)2879 4032 w
+10 R f
+( correction in non-paranoia mode. Note that)6 1851(for jitter)1 346 2 3203 4032 t
+(overlapped reads re handled differently in paranoia mode.)7 2366 1 1440 4152 t
+(The default overlap in non-paranoia mode is 1.)7 1930 1 1440 4392 t
+10 S1 f
+(\261 \261)1 65 1 1080 4560 t
+10 B f
+( a)1 0( ia)1 50( oi)1 28( no)1 50( an)1 56( ra)1 50( ar)1 44(p pa)1 106 8 1145 4560 t
+10 R f
+( In)1 165( a \256lter on top of cdda2wav's routines for reading.)9 2223(use the paranoia library as)4 1139 3 1440 4680 t
+10 B f
+( a)1 0( ia)1 50( oi)1 28( no)1 50( an)1 56( ra)1 50( ar)1 44(p pa)1 106 8 5016 4680 t
+10 R f
+(mode, the latency time for the)5 1273 1 1440 4800 t
+10 S1 f
+(\261 \261)1 65 1 2753 4800 t
+10 B f
+( e)1 0( ve)1 44( iv)1 50( ti)1 28( ct)1 33( ac)1 44( er ra)2 94( te)1 44( nt)1 33(i in)1 84 10 2818 4800 t
+10 R f
+( typically 5..10 seconds. This)4 1225(mode is increased to)3 863 2 3312 4800 t
+(is caused by the fact that the)6 1191 1 1440 4920 t
+10 B f
+( a)1 0( ia)1 50( oi)1 28( no)1 50( an)1 56( ra)1 50( ar)1 44(p pa)1 106 8 2666 4920 t
+10 R f
+(code reads anything at least twice and in between needs)9 2315 1 3085 4920 t
+(to take care of emptying the cache RAM of the CD-ROM drive.)11 2644 1 1440 5040 t
+(If the)1 237 1 1440 5280 t
+10 B f
+( a)1 0( ia)1 50( oi)1 28( no)1 50( an)1 56( ra)1 50( ar)1 44(p pa)1 106 8 1726 5280 t
+10 R f
+(mode is used,)2 595 1 2159 5280 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2803 5280 t
+10 R f
+( extracted)1 415(displays some quality statistics for each)5 1705 2 3280 5280 t
+( following items appear in the list:)6 1420(track. The)1 445 2 1440 5400 t
+10 S f
+(_ _____________________________________________________)1 2697 1 2071 5420 t
+10 R f
+(Value Description)1 854 1 2182 5540 t
+10 S f
+(_ _____________________________________________________)1 2697 1 2071 5560 t
+10 R f
+( of hard read errors)4 795(rderr Number)1 670 2 2227 5680 t
+( of sectors skipped due to exhausted retries)7 1772(skip Number)1 644 2 2253 5800 t
+( of intra sector jitters \(frame jitters\) detected)7 1821(atom Number)1 677 2 2220 5920 t
+( of jitters between sectors detected)5 1417(edge Number)1 665 2 2232 6040 t
+( of dropped bytes \256xed)4 953(drop Number)1 660 2 2237 6160 t
+( of duplicate bytes \256xed)4 992(dup Number)1 627 2 2270 6280 t
+( of drifts detected)3 725(drift Number)1 649 2 2248 6400 t
+( of dynamic overlap size raises)5 1273(overlap Number)1 776 2 2121 6520 t
+10 S f
+( \347)1 -2697(_ _____________________________________________________)1 2697 2 2071 6540 t
+(\347)2071 6520 w
+(\347)2071 6420 w
+(\347)2071 6320 w
+(\347)2071 6220 w
+(\347)2071 6120 w
+(\347)2071 6020 w
+(\347)2071 5920 w
+(\347)2071 5820 w
+(\347)2071 5720 w
+(\347)2071 5620 w
+(\347)2071 5520 w
+(\347)2495 6540 w
+(\347)2495 6520 w
+(\347)2495 6420 w
+(\347)2495 6320 w
+(\347)2495 6220 w
+(\347)2495 6120 w
+(\347)2495 6020 w
+(\347)2495 5920 w
+(\347)2495 5820 w
+(\347)2495 5720 w
+(\347)2495 5620 w
+(\347)2495 5520 w
+(\347)4768 6540 w
+(\347)4768 6520 w
+(\347)4768 6420 w
+(\347)4768 6320 w
+(\347)4768 6220 w
+(\347)4768 6120 w
+(\347)4768 6020 w
+(\347)4768 5920 w
+(\347)4768 5820 w
+(\347)4768 5720 w
+(\347)4768 5620 w
+(\347)4768 5520 w
+10 R f
+( 4)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 4 4
+%%Page: 5 5
+save
+mark
+5 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+10 S1 f
+(\261 \261)1 65 1 1080 960 t
+10 B f
+( =)1 0( s=)1 57( ts)1 39( pt)1 33( ao op)2 106( ra)1 50( ar)1 44(p pa)1 106 8 1145 960 t
+10 I f
+(list)1580 960 w
+(List)1440 1080 w
+10 R f
+(is a comma separated list of suboptions passed to the paranoia library.)11 2884 1 1624 1080 t
+10 S f
+(_ ____________________________________________________________________)1 3421 1 1709 1100 t
+10 R f
+(Option Description)1 894 1 2158 1220 t
+10 S f
+(_ ____________________________________________________________________)1 3421 1 1709 1240 t
+10 R f
+( all paranoia options.)3 862(help lists)1 484 2 2264 1360 t
+( paranoia mode. Libparanoia is still being used)7 1926(disable disables)1 755 2 2153 1480 t
+( verify off, and static overlap on)6 1331(no-verify switches)1 865 2 2065 1600 t
+( the number of maximum retries per sector)7 1761(retries=amount set)1 866 2 1831 1720 t
+( the number of sectors used for statical paranoia overlap)9 2308(overlap=amount set)1 916 2 1781 1840 t
+( the min. number of sectors for dynamic paranoia overlap)9 2367(minoverlap=amt set)1 922 2 1775 1960 t
+( the max. number of sectors for dynamic paranoia overlap)9 2383(maxoverlap=amt set)1 938 2 1759 2080 t
+( maxoverlap=)1 560(proof set)1 477 2 2220 2200 t
+10 I f
+(sectors)3257 2200 w
+10 S1 f
+(\261)3540 2200 w
+10 I f
+(per)3605 2200 w
+10 S1 f
+(\261)3738 2200 w
+10 I f
+(request)3803 2200 w
+10 R f
+(-1,retries=200)4097 2200 w
+10 S f
+( \347)1 -3421(_ ____________________________________________________________________)1 3421 2 1709 2220 t
+(\347)1709 2200 w
+(\347)1709 2100 w
+(\347)1709 2000 w
+(\347)1709 1900 w
+(\347)1709 1800 w
+(\347)1709 1700 w
+(\347)1709 1600 w
+(\347)1709 1500 w
+(\347)1709 1400 w
+(\347)1709 1300 w
+(\347)1709 1200 w
+(\347)2511 2220 w
+(\347)2511 2200 w
+(\347)2511 2100 w
+(\347)2511 2000 w
+(\347)2511 1900 w
+(\347)2511 1800 w
+(\347)2511 1700 w
+(\347)2511 1600 w
+(\347)2511 1500 w
+(\347)2511 1400 w
+(\347)2511 1300 w
+(\347)2511 1200 w
+(\347)5130 2220 w
+(\347)5130 2200 w
+(\347)5130 2100 w
+(\347)5130 2000 w
+(\347)5130 1900 w
+(\347)5130 1800 w
+(\347)5130 1700 w
+(\347)5130 1600 w
+(\347)5130 1500 w
+(\347)5130 1400 w
+(\347)5130 1300 w
+(\347)5130 1200 w
+10 S1 f
+(\261 \261)1 65 1 1080 2388 t
+10 B f
+(q q)1 56 1 1145 2388 t
+10 S1 f
+(\261 \261)1 65 1 1080 2556 t
+10 B f
+( t)1 0( et)1 33( ie)1 44(q qu ui)2 140 4 1145 2556 t
+10 R f
+(quiet operation, no screen output.)4 1369 1 1440 2556 t
+10 S1 f
+(\261 \261)1 65 1 1080 2724 t
+10 B f
+(r r)1 44 1 1145 2724 t
+10 I f
+(rate)1222 2724 w
+10 S1 f
+(\261 \261)1 65 1 1080 2892 t
+10 B f
+( e)1 0( te)1 44( at)1 33(r ra)1 94 4 1145 2892 t
+10 I f
+(rate)1349 2892 w
+10 R f
+(sets)1440 3012 w
+10 I f
+(rate)1623 3012 w
+10 R f
+( values are listed with the)5 1058( Possible)1 400(in samples per second.)3 928 3 1817 3012 t
+10 S1 f
+(\261 \261)1 65 1 4236 3012 t
+10 B f
+(R R)1 72 1 4301 3012 t
+10 R f
+(option.)4406 3012 w
+10 S1 f
+(\261 \261)1 65 1 1080 3180 t
+10 B f
+(R R)1 72 1 1145 3180 t
+10 S1 f
+(\261 \261)1 65 1 1080 3348 t
+10 B f
+( p)1 0( mp)1 56(d du um)2 195 3 1145 3348 t
+10 S1 f
+(\261 \261)1 65 1 1396 3348 t
+10 B f
+( s)1 0( es)1 39( te)1 44( at)1 33(r ra)1 94 5 1461 3348 t
+10 R f
+(shows a list of all sample rates and their dividers.)9 2042 1 1440 3468 t
+10 S1 f
+(\261 \261)1 65 1 1080 3636 t
+10 B f
+(S S)1 56 1 1145 3636 t
+10 I f
+(speed)1234 3636 w
+10 S1 f
+(\261 \261)1 65 1 1080 3804 t
+10 B f
+( d)1 0( ee ed)2 100( pe)1 44(s sp)1 95 4 1145 3804 t
+10 I f
+(speed)1417 3804 w
+10 R f
+( maximum extraction)2 901( For)1 220( device to one of the selectable speeds for reading.)9 2218(sets the cdrom)2 621 4 1440 3924 t
+(quality, it is recommended to use speed values of 8 or below.)11 2532 1 1440 4044 t
+(The default is to extract at maximum speed.)7 1809 1 1440 4284 t
+10 S1 f
+(\261 \261)1 65 1 1080 4452 t
+10 B f
+(s s)1 39 1 1145 4452 t
+10 S1 f
+(\261 \261)1 65 1 1080 4620 t
+10 B f
+( o)1 0( er re eo)3 138( te)1 44(s st)1 72 4 1145 4620 t
+10 R f
+(sets to stereo recording.)3 972 1 1440 4620 t
+10 S1 f
+(\261 \261)1 65 1 1080 4788 t
+10 B f
+( t)1 0( rt)1 33( ar)1 44( ta)1 50(s st)1 72 5 1145 4788 t
+10 S1 f
+(\261 \261)1 65 1 1344 4788 t
+10 B f
+( r)1 0( or)1 44( to)1 50( ec ct)2 77(s se)1 83 5 1409 4788 t
+10 I f
+(sector)1696 4788 w
+10 R f
+(set an absolute start sector. This option is mutually exclusive to)10 2615 1 1440 4908 t
+10 S1 f
+(\261 \261)1 65 1 4088 4908 t
+10 B f
+( k)1 0( ck)1 56( ac)1 44( ra)1 50(t tr)1 77 5 4153 4908 t
+10 R f
+(and)4413 4908 w
+10 S1 f
+(\261 \261)1 65 1 4590 4908 t
+10 B f
+( t)1 0( et)1 33( se)1 44( ff fs)2 72(o of)1 83 5 4655 4908 t
+10 R f
+(.)4887 4908 w
+10 S1 f
+(\261 \261)1 65 1 1080 5076 t
+10 B f
+(t t)1 33 1 1145 5076 t
+10 I f
+(track[+endtrack])1211 5076 w
+10 S1 f
+(\261 \261)1 65 1 1080 5244 t
+10 B f
+( k)1 0( ck)1 56( ac)1 44( ra)1 50(t tr)1 77 5 1145 5244 t
+10 I f
+(track[+endtrack])1405 5244 w
+10 S1 f
+(\261 \261)1 65 1 1080 5412 t
+10 B f
+( k)1 0( ck)1 56( ac)1 44( ra)1 50(t tr)1 77 5 1145 5412 t
+10 I f
+(track)1405 5412 w
+10 B f
+( ax x)2 50( ma)1 50(+ +m)1 140 3 1618 5412 t
+10 S1 f
+(\261 \261)1 65 1 1080 5580 t
+10 B f
+( ll l)2 28( al)1 28( a)1 83( k)1 0( ck)1 56( ac)1 44( ra)1 50(t tr)1 77 8 1145 5580 t
+10 R f
+( If)1 153(selects the start track and optionally the end track.)8 2231 2 1440 5700 t
+10 S1 f
+(\261 \261)1 65 1 3878 5700 t
+10 B f
+( ll l)2 28( al)1 28( a)1 83(t t)1 33 4 3943 5700 t
+10 R f
+(is used, all audio tracks are)5 1231 1 4169 5700 t
+(selected. If)1 478 1 1440 5820 t
+10 S1 f
+(\261 \261)1 65 1 1951 5820 t
+10 B f
+( ax x)2 50( ma)1 50( +m)1 83( 2+)1 57( 2)1 83(t t)1 33 6 2016 5820 t
+10 R f
+(is used, all audio tracks starting with track 2 are selected.)10 2359 1 2405 5820 t
+10 S1 f
+(\261 \261)1 65 1 1080 5988 t
+10 B f
+(v v)1 50 1 1145 5988 t
+10 I f
+(itemlist)1228 5988 w
+10 S1 f
+(\261 \261)1 65 1 1080 6156 t
+10 B f
+( e)1 0( se)1 44( os)1 39( bo)1 50( er rb)2 100(v ve)1 94 6 1145 6156 t
+10 S1 f
+(\261 \261)1 65 1 1472 6156 t
+10 B f
+( l)1 0( el)1 28( ve)1 44( ev)1 50(l le)1 72 5 1537 6156 t
+10 I f
+(itemlist)1764 6156 w
+10 R f
+( about the CD.)3 652(Retrieves and prints verbose information)4 1719 2 1440 6276 t
+10 B f
+( l)1 0( el)1 28( ve)1 44( ev)1 50(L Le)1 111 5 3892 6276 t
+10 R f
+(is a list of comma separated)5 1227 1 4173 6276 t
+(suboptions. Each suboption controls the type of information to be reported.)10 3083 1 1440 6396 t
+( 5)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 5 5
+%%Page: 6 6
+save
+mark
+6 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+10 S f
+(_ ___________________________________________________________________)1 3351 1 1744 860 t
+10 R f
+(Suboption Description)1 1028 1 1875 980 t
+10 S f
+(_ ___________________________________________________________________)1 3351 1 1744 1000 t
+10 R f
+( the meaning of the following string)6 1486(! invert)1 416 2 2254 1120 t
+( the meaning of the following string)6 1486(not invert)1 511 2 2159 1240 t
+( information is given, warnings appear however)6 1958(disable no)1 533 2 2004 1360 t
+( information is given)3 860(all all)1 350 2 2187 1480 t
+( table of contents)3 709(toc show)1 483 2 2165 1600 t
+( a summary of the recording parameters)6 1638(summary show)1 733 2 1915 1720 t
+( and display index offsets)4 1053(indices determine)1 832 2 2004 1840 t
+( and display the media catalog number MCN)7 1851(catalog retrieve)1 742 2 1999 1960 t
+( and display the media catalog number MCN)7 1851(mcn retrieve)1 626 2 2115 2080 t
+( and display all Intern. Standard Recording Codes ISRC)8 2304(trackid retrieve)1 731 2 2010 2200 t
+( and display all Intern. Standard Recording Codes ISRC)8 2304(isrc retrieve)1 598 2 2143 2320 t
+( the table of contents in start sector notation)8 1812(sectors show)1 638 2 2010 2440 t
+( the table of contents with track titles \(when available\))9 2243(titles show)1 556 2 2092 2560 t
+( the audio tracks and their start sectors)7 1589(audio-tracks list)1 766 2 1794 2680 t
+10 S f
+( \347)1 -3351(_ ___________________________________________________________________)1 3351 2 1744 2700 t
+(\347)1744 2660 w
+(\347)1744 2560 w
+(\347)1744 2460 w
+(\347)1744 2360 w
+(\347)1744 2260 w
+(\347)1744 2160 w
+(\347)1744 2060 w
+(\347)1744 1960 w
+(\347)1744 1860 w
+(\347)1744 1760 w
+(\347)1744 1660 w
+(\347)1744 1560 w
+(\347)1744 1460 w
+(\347)1744 1360 w
+(\347)1744 1260 w
+(\347)1744 1160 w
+(\347)1744 1060 w
+(\347)1744 960 w
+(\347)2362 2700 w
+(\347)2362 2660 w
+(\347)2362 2560 w
+(\347)2362 2460 w
+(\347)2362 2360 w
+(\347)2362 2260 w
+(\347)2362 2160 w
+(\347)2362 2060 w
+(\347)2362 1960 w
+(\347)2362 1860 w
+(\347)2362 1760 w
+(\347)2362 1660 w
+(\347)2362 1560 w
+(\347)2362 1460 w
+(\347)2362 1360 w
+(\347)2362 1260 w
+(\347)2362 1160 w
+(\347)2362 1060 w
+(\347)2362 960 w
+(\347)5095 2700 w
+(\347)5095 2660 w
+(\347)5095 2560 w
+(\347)5095 2460 w
+(\347)5095 2360 w
+(\347)5095 2260 w
+(\347)5095 2160 w
+(\347)5095 2060 w
+(\347)5095 1960 w
+(\347)5095 1860 w
+(\347)5095 1760 w
+(\347)5095 1660 w
+(\347)5095 1560 w
+(\347)5095 1460 w
+(\347)5095 1360 w
+(\347)5095 1260 w
+(\347)5095 1160 w
+(\347)5095 1060 w
+(\347)5095 960 w
+10 R f
+(The default value for the verbose-level is)6 1688 1 1440 2940 t
+10 B f
+( s)1 0( es)1 39( le)1 44( tl)1 28( it)1 33( ti)1 28( ,t)1 33( s,)1 25( rs)1 39( or)1 44( to)1 50( ec ct)2 77( se)1 44( ,s)1 39( y,)1 25( ry)1 50( ar)1 44( mm ma)2 133( um)1 83( su)1 56( ,s)1 39( c,)1 25( oc)1 44(t to)1 83 24 3161 2940 t
+10 R f
+(.)4299 2940 w
+10 S1 f
+(\261 \261)1 65 1 1080 3108 t
+10 B f
+(w w)1 72 1 1145 3108 t
+10 S1 f
+(\261 \261)1 65 1 1080 3276 t
+10 B f
+( t)1 0( it)1 33( ai)1 28(w wa)1 122 4 1145 3276 t
+10 R f
+(waits for signal, then start recording.)5 1507 1 1440 3276 t
+10 S1 f
+(\261 \261)1 65 1 1080 3444 t
+10 B f
+(x x)1 50 1 1145 3444 t
+10 S1 f
+(\261 \261)1 65 1 1080 3612 t
+10 B f
+( ax x)2 50(m ma)1 133 2 1145 3612 t
+10 R f
+(sets maximum \(CD\) quality.)3 1163 1 1440 3612 t
+9 B f
+( s)1 0( ns)1 35( on)1 50( io)1 45( ti)1 25( pt)1 30( op)1 50( o)1 75( I)1 0( SI)1 35( CS)1 50(S SC)1 115 12 900 3780 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 1080 3900 t
+10 I f
+(device)1287 3900 w
+10 S1 f
+(\261 \261)1 65 1 1080 4068 t
+10 B f
+(D D)1 72 1 1145 4068 t
+10 I f
+(device)1250 4068 w
+10 S1 f
+(\261 \261)1 65 1 1080 4236 t
+10 B f
+( ce e)2 44( ic)1 44( vi)1 28( ev)1 50(d de)1 100 5 1145 4236 t
+10 I f
+(device)1444 4236 w
+10 R f
+(uses)1440 4356 w
+10 I f
+(device)1658 4356 w
+10 R f
+( example /dev/cdrom for the)4 1219( For)1 219(as the source for CDDA reading.)5 1423 3 1959 4356 t
+10 B f
+( d)1 0( ed)1 56( ke)1 44( oo ok)2 106(c co)1 94 5 4867 4356 t
+10 S f
+(_ _)1 50 1 5167 4356 t
+10 B f
+( l)1 0( tl)1 28( ct)1 33( oc)1 44(i io)1 78 5 5217 4356 t
+10 R f
+(interface and Bus,ID,Lun for the)4 1362 1 1440 4476 t
+10 B f
+( c)1 0( ic)1 44( er ri)2 72( ne)1 44( en)1 56(g ge)1 94 6 2842 4476 t
+10 S f
+(_ _)1 50 1 3152 4476 t
+10 B f
+( i)1 0( si)1 28( cs)1 39(s sc)1 83 4 3202 4476 t
+10 R f
+(interface. The)1 567 1 3391 4476 t
+10 I f
+(device)3997 4476 w
+10 R f
+(has to correspond with the)4 1110 1 4290 4476 t
+(interface setting if given \(see)4 1190 1 1440 4596 t
+10 S1 f
+(\261 \261)1 65 1 2663 4596 t
+10 B f
+(I I)1 39 1 2728 4596 t
+10 R f
+(and)2800 4596 w
+10 S1 f
+(\261 \261)1 65 1 2977 4596 t
+10 B f
+( ce e)2 44( ac)1 44( fa)1 50( er rf)2 77( te)1 44( nt)1 33(i in)1 84 7 3042 4596 t
+10 R f
+(option below\).)1 591 1 3451 4596 t
+(If no)1 199 1 1440 4836 t
+10 S1 f
+(\261 \261)1 65 1 1672 4836 t
+10 B f
+(I I)1 39 1 1737 4836 t
+10 R f
+(or)1809 4836 w
+10 S1 f
+(\261 \261)1 65 1 1925 4836 t
+10 B f
+( ce e)2 44( ac)1 44( fa)1 50( er rf)2 77( te)1 44( nt)1 33(i in)1 84 7 1990 4836 t
+10 R f
+( the device)2 450(option has been speci\256ed, the interface setting is derived from)9 2551 2 2399 4836 t
+( colon \(':'\) defaults to)4 912(name syntax. A device name that is in the form Bus,ID,Lun or contains a)13 3048 2 1440 4956 t
+(the)1440 5076 w
+10 B f
+( c)1 0( ic)1 44( er ri)2 72( ne)1 44( en)1 56(g ge)1 94 6 1595 5076 t
+10 S f
+(_ _)1 50 1 1905 5076 t
+10 B f
+( i)1 0( si)1 28( cs)1 39(s sc)1 83 4 1955 5076 t
+10 R f
+(interface.)2138 5076 w
+(Using the)1 407 1 1440 5316 t
+10 B f
+( d)1 0( ed)1 56( ke)1 44( oo ok)2 106(c co)1 94 5 1893 5316 t
+10 S f
+(_ _)1 50 1 2193 5316 t
+10 B f
+( l)1 0( tl)1 28( ct)1 33( oc)1 44(i io)1 78 5 2243 5316 t
+10 R f
+( recommended as this makes)4 1236(is not)1 241 2 2472 5316 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 3996 5316 t
+10 R f
+(mainly depend on the)3 929 1 4471 5316 t
+( of the operating system which is usually extremely bad. For this reason,)12 2993(audio extraction quality)2 967 2 1440 5436 t
+(avoid using parameters like)3 1125 1 1440 5556 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 2598 5556 t
+10 R f
+(/dev/cdrom for the device.)3 1077 1 2805 5556 t
+(The setting of the environment variable)5 1618 1 1440 5796 t
+10 B f
+(C CD DD DA A)4 288 1 3091 5796 t
+10 S f
+(_ _)1 50 1 3379 5796 t
+10 B f
+( E)1 0( CE)1 67( IC)1 72( VI)1 39( EV)1 72(D DE)1 139 6 3429 5796 t
+10 R f
+(is overridden by this option.)4 1157 1 3851 5796 t
+(If no)1 208 1 1440 6036 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 1690 6036 t
+10 R f
+(option is present, or if the)5 1112 1 1939 6036 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 3093 6036 t
+10 R f
+( a transport specifyer but no)5 1207(option only contains)2 851 2 3342 6036 t
+(address,)1440 6156 w
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1801 6156 t
+10 R f
+( exactly one is)3 607( If)1 135( the SCSI address space for CD-ROM drives.)7 1891(tries to scan)2 501 4 2266 6156 t
+(found, this is used by default.)5 1220 1 1440 6276 t
+(For more information, see the description of the)7 1970 1 1440 6516 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 3443 6516 t
+10 R f
+(option from)1 483 1 3683 6516 t
+10 B f
+( d)1 0( rd)1 56( or)1 44( re ec co)3 138( dr)1 44(c cd)1 100 6 4199 6516 t
+10 R f
+(\(1\).)4581 6516 w
+10 B f
+( =)1 0( g=)1 57( bu ug)2 106( eb)1 56(d de)1 100 5 1080 6684 t
+10 S1 f
+(#)1399 6684 w
+10 B f
+( =)1 0( i=)1 57( si)1 28( cs)1 39( sc)1 44( -s)1 39( g-)1 33( bu ug)2 106( eb)1 56(d de)1 100 10 1080 6852 t
+10 S1 f
+(#)1582 6852 w
+10 R f
+(Set the debug level for the)5 1091 1 1440 6972 t
+10 B f
+( g)1 0( cg)1 50( sc)1 44( bs)1 39(l li ib)2 112 5 2564 6972 t
+10 R f
+(SCSI OS abstraction layer.)3 1101 1 2842 6972 t
+10 B f
+( =)1 0( g=)1 57( bu ug)2 106( eb)1 56(k kd de)2 156 5 1080 7140 t
+10 S1 f
+(#)1455 7140 w
+10 B f
+( =)1 0( i=)1 57( si)1 28( cs)1 39( sc)1 44( -s)1 39( g-)1 33( bu ug)2 106( eb)1 56(k kd de)2 156 10 1080 7308 t
+10 S1 f
+(#)1638 7308 w
+10 R f
+( 6)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7788 t
+cleartomark
+showpage
+restore
+%%EndPage: 6 6
+%%Page: 7 7
+save
+mark
+7 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+10 B f
+( =)1 0(k kd d=)2 169 2 1080 960 t
+10 S1 f
+(#)1249 960 w
+10 R f
+( kernel debug level for the kernel driver called by the)10 2242(Set the)1 286 2 1440 960 t
+10 B f
+( g)1 0( cg)1 50( sc)1 44( bs)1 39(l li ib)2 112 5 4005 960 t
+10 R f
+(SCSI OS abstraction layer.)3 1113 1 4287 960 t
+(This option is not supported on all platforms.)7 1862 1 1440 1080 t
+10 S1 f
+(\261 \261)1 65 1 1080 1248 t
+10 B f
+( s)1 0( nb bu us)3 151( an)1 56( ca)1 50(s sc)1 83 5 1145 1248 t
+10 R f
+( be used)2 345(Scan all SCSI devices on all SCSI busses and print the inquiry strings. This option may)15 3615 2 1440 1368 t
+( as labels)2 384( numbers printed out)3 860( The)1 223(to \256nd SCSI address of the CD/DVD-Recorder on a system.)9 2493 4 1440 1488 t
+(are computed by:)2 709 1 1440 1608 t
+10 B f
+( s)1 0(b bu us)2 151 2 2182 1608 t
+10 S f
+(* *)1 50 1 2366 1608 t
+10 B f
+( t)1 0( et)1 33( ge)1 44( rg)1 50( ar)1 44( ta)1 50( t)1 66( +)1 0( +)1 90(1 10 00 0)3 150 10 2449 1608 t
+( =)1 0( s=)1 57(t ts)1 72 3 1080 1776 t
+10 S1 f
+(#)1209 1776 w
+10 R f
+(Set the maximum transfer size for a single SCSI command to)10 2558 1 1440 1776 t
+10 S1 f
+(#)4034 1776 w
+10 R f
+( the)1 159( syntax for)2 449(. The)1 249 3 4084 1776 t
+10 B f
+( =)1 0( s=)1 57(t ts)1 72 3 4978 1776 t
+10 R f
+(option)5144 1776 w
+(is the same as for cdrecord fs=)6 1267 1 1440 1896 t
+10 S1 f
+(#)2707 1896 w
+10 R f
+(or sdd bs=)2 433 1 2790 1896 t
+10 S1 f
+(#)3223 1896 w
+10 R f
+(.)3273 1896 w
+(If no)1 199 1 1440 2136 t
+10 B f
+( =)1 0( s=)1 57(t ts)1 72 3 1672 2136 t
+10 R f
+(option has been speci\256ed,)3 1056 1 1834 2136 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2923 2136 t
+10 R f
+( If libscg gets)3 568( MB.)1 214(defaults to a transfer size of 3)6 1234 3 3384 2136 t
+( is reduced to the maximum value that is pos-)9 1899(lower values from the operating system, the value)7 2061 2 1440 2256 t
+( help to further reduce the transfer)6 1458( it may)2 308( Sometimes,)1 543(sible with the current operating system.)5 1651 4 1440 2376 t
+( a long time to \256nd a better value by experiment-)10 2043(size or to enhance it, but note that it may take)10 1917 2 1440 2496 t
+(ing with the)2 494 1 1440 2616 t
+10 B f
+( =)1 0( s=)1 57(t ts)1 72 3 1967 2616 t
+10 R f
+(option.)2129 2616 w
+( the transfer)2 524( If)1 148(Some operating systems return wrong values for the maximum transfer size.)10 3288 3 1440 2856 t
+( it may be appropriate to reduce the transfer size to less than 64 kB)14 2779(totally hangs or resets occur,)4 1181 2 1440 2976 t
+(or even less than 32 kB.)5 1000 1 1440 3096 t
+10 S1 f
+(\261 \261)1 65 1 1080 3264 t
+10 B f
+(V V)1 72 1 1145 3264 t
+10 S1 f
+(\261 \261)1 65 1 1080 3432 t
+10 B f
+( e)1 0( se)1 44( os)1 39( bo)1 50( er rb)2 100(v ve)1 94 6 1145 3432 t
+10 S1 f
+(\261 \261)1 65 1 1472 3432 t
+10 B f
+( i)1 0( si)1 28( cs)1 39(s sc)1 83 4 1537 3432 t
+10 R f
+(enable SCSI command logging to the console. This is mainly used for debugging.)12 3367 1 1440 3552 t
+10 S1 f
+(\261 \261)1 65 1 1080 3720 t
+10 B f
+(Q Q)1 78 1 1145 3720 t
+10 S1 f
+(\261 \261)1 65 1 1080 3888 t
+10 B f
+( t)1 0( nt)1 33( en)1 56( il le)2 72(s si)1 67 5 1145 3888 t
+10 S1 f
+(\261 \261)1 65 1 1373 3888 t
+10 B f
+( i)1 0( si)1 28( cs)1 39(s sc)1 83 4 1438 3888 t
+10 R f
+(suppress SCSI command error reports to the console. This is mainly used for guis.)13 3393 1 1440 4008 t
+9 B f
+( s)1 0( ns)1 35( on)1 50( io)1 45( ti)1 25( pt)1 30( op)1 50( o)1 75( ce e)2 40( ac)1 40( fa)1 45( er rf)2 70( te)1 40( nt)1 30( In)1 50( I)1 65( S)1 0(O OS)1 120 18 900 4296 t
+10 S1 f
+(\261 \261)1 65 1 1080 4416 t
+10 B f
+(A A)1 72 1 1145 4416 t
+10 I f
+(auxdevice)1250 4416 w
+10 S1 f
+(\261 \261)1 65 1 1080 4584 t
+10 B f
+( ce e)2 44( ic)1 44( vi)1 28( ev)1 50( de)1 44( xd)1 56( ux)1 50(a au)1 106 8 1145 4584 t
+10 I f
+(auxdevice)1600 4584 w
+10 R f
+(uses)1440 4704 w
+10 I f
+(auxdevice)1646 4704 w
+10 R f
+( CDROMMULTISESSION ioctl on Linux)4 1746(as CDROM drive to allow to send the)7 1576 2 2078 4704 t
+(although the)1 505 1 1440 4824 t
+10 B f
+( c)1 0( ic)1 44( er ri)2 72( ne)1 44( en)1 56(g ge)1 94 6 1978 4824 t
+10 S f
+(_ _)1 50 1 2288 4824 t
+10 B f
+( i)1 0( si)1 28( cs)1 39(s sc)1 83 4 2338 4824 t
+10 R f
+(interface is in use.)3 750 1 2521 4824 t
+10 S1 f
+(\261 \261)1 65 1 1080 4992 t
+10 B f
+(I I)1 39 1 1145 4992 t
+10 I f
+(interface)1217 4992 w
+10 S1 f
+(\261 \261)1 65 1 1080 5160 t
+10 B f
+( ce e)2 44( ac)1 44( fa)1 50( er rf)2 77( te)1 44( nt)1 33(i in)1 84 7 1145 5160 t
+10 I f
+(interface)1554 5160 w
+10 R f
+(speci\256es the)1 499 1 1440 5280 t
+10 I f
+(interface)1972 5280 w
+10 R f
+(to use for accessing the CDROM:)5 1391 1 2360 5280 t
+10 B f
+( c)1 0( ic)1 44( er ri)2 72( ne)1 44( en)1 56(g ge)1 94 6 1440 5568 t
+10 S f
+(_ _)1 50 1 1750 5568 t
+10 B f
+( i)1 0( si)1 28( cs)1 39(s sc)1 83 4 1800 5568 t
+10 R f
+(for sending SCSI commands directly to the drive.)7 2038 1 1800 5688 t
+10 B f
+( d)1 0( ed)1 56( ke)1 44( oo ok)2 106(c co)1 94 5 1440 5856 t
+10 S f
+(_ _)1 50 1 1740 5856 t
+10 B f
+( l)1 0( tl)1 28( ct)1 33( oc)1 44(i io)1 78 5 1790 5856 t
+10 R f
+(for using the programming interface supplied by the OS kernel.)9 2607 1 1800 5976 t
+( and only works on a limited number of)8 1670(The latter is not recommended as it gives lower quality)9 2290 2 1440 6216 t
+(platforms.)1440 6336 w
+( 7)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 7 7
+%%Page: 8 8
+save
+mark
+8 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+10 S1 f
+(\261 \261)1 65 1 1080 960 t
+10 B f
+( e)1 0( ve)1 44( iv)1 50( ti)1 28( ct)1 33( ac)1 44( er ra)2 94( te)1 44( nt)1 33(i in)1 84 10 1145 960 t
+10 R f
+(Go into interactive mode that reads commands from)7 2265 1 1440 1080 t
+10 B f
+( n)1 0( in)1 56( di)1 28( td)1 56(s st)1 72 5 3756 1080 t
+10 R f
+(and writes the textual replies to)5 1381 1 4019 1080 t
+10 B f
+( er rr r)3 88( de)1 44( td)1 56(s st)1 72 4 1440 1200 t
+10 R f
+( speci\256ed by the)3 682(, or the \256le descriptor that has been)7 1480 2 1700 1200 t
+10 B f
+( t)1 0( ut)1 33(o ou)1 106 3 3897 1200 t
+10 S1 f
+(\261 \261)1 65 1 4036 1200 t
+10 B f
+( d)1 0(f fd)1 89 2 4101 1200 t
+10 R f
+( mode has been)3 648(option. This)1 527 2 4225 1200 t
+(introduced mainly to allow cdrecord to be called by gstreamer plugins.)10 2906 1 1440 1320 t
+(If)1440 1560 w
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1545 1560 t
+10 R f
+( with the option)3 676(was called)1 432 2 2012 1560 t
+10 S1 f
+(\261 \261)1 65 1 3160 1560 t
+10 B f
+( e)1 0( ve)1 44( iv)1 50( ti)1 28( ct)1 33( ac)1 44( er ra)2 94( te)1 44( nt)1 33(i in)1 84 10 3225 1560 t
+10 R f
+(, it reads the TOC from the medium and)8 1721 1 3679 1560 t
+(then waits for command input as if it has been issued a)11 2299 1 1440 1680 t
+10 B f
+( p)1 0( op)1 56( to)1 50(s st)1 72 4 3774 1680 t
+10 R f
+( command is)2 529(command. If the next)3 884 2 3987 1680 t
+(a)1440 1800 w
+10 B f
+( t)1 0( nt)1 33( on)1 56(c co)1 94 4 1531 1800 t
+10 R f
+(command, then)1 638 1 1761 1800 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2446 1800 t
+10 R f
+( the next)2 390( If)1 147( the medium.)2 571(extracts the whole audio part of)5 1371 4 2921 1800 t
+(command is a)2 577 1 1440 1920 t
+10 B f
+( d)1 0( ad)1 56(r re ea)2 138 3 2053 1920 t
+10 R f
+(command, then)1 627 1 2283 1920 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2946 1920 t
+10 R f
+( the position that was indi-)5 1114(starts extracting from)2 876 2 3410 1920 t
+(cated by the)2 498 1 1440 2040 t
+10 B f
+( d)1 0( ad)1 56(r re ea)2 138 3 1971 2040 t
+10 R f
+(command parameter.)1 850 1 2198 2040 t
+10 S f
+(_ ___________________________________________________________________)1 3365 1 1737 2060 t
+10 R f
+( Description)1 1065(Command Parameters)1 1010 2 1787 2180 t
+10 S f
+(_ ___________________________________________________________________)1 3365 1 1737 2200 t
+10 R f
+( processing at current position)4 1236(cont continue)1 1831 2 1909 2320 t
+( processing)1 460(exit exit)1 1626 2 1920 2440 t
+( command help and wait for input)6 1402(help print)1 1676 2 1909 2560 t
+( processing)1 460(quit exit)1 1629 2 1917 2680 t
+(read sectors)1 721 1 1910 2800 t
+10 I f
+(sector number)1 582 1 2664 2800 t
+10 R f
+(read sectors starting from)3 1041 1 3396 2800 t
+10 I f
+(sector number)1 582 1 4470 2800 t
+10 R f
+(read tracks)1 682 1 1910 2920 t
+10 I f
+(track number)1 543 1 2625 2920 t
+10 R f
+(read sectors starting from)3 1041 1 3396 2920 t
+10 I f
+(track number)1 543 1 4470 2920 t
+10 R f
+( processing and wait for new input)6 1429(stop stop)1 1651 2 1912 3040 t
+10 S f
+( \347)1 -3365(_ ___________________________________________________________________)1 3365 2 1737 3060 t
+(\347)1737 2960 w
+(\347)1737 2860 w
+(\347)1737 2760 w
+(\347)1737 2660 w
+(\347)1737 2560 w
+(\347)1737 2460 w
+(\347)1737 2360 w
+(\347)1737 2260 w
+(\347)1737 2160 w
+(\347)2279 3060 w
+(\347)2279 2960 w
+(\347)2279 2860 w
+(\347)2279 2760 w
+(\347)2279 2660 w
+(\347)2279 2560 w
+(\347)2279 2460 w
+(\347)2279 2360 w
+(\347)2279 2260 w
+(\347)2279 2160 w
+(\347)3321 3060 w
+(\347)3321 2960 w
+(\347)3321 2860 w
+(\347)3321 2760 w
+(\347)3321 2660 w
+(\347)3321 2560 w
+(\347)3321 2460 w
+(\347)3321 2360 w
+(\347)3321 2260 w
+(\347)3321 2160 w
+(\347)5102 3060 w
+(\347)5102 2960 w
+(\347)5102 2860 w
+(\347)5102 2760 w
+(\347)5102 2660 w
+(\347)5102 2560 w
+(\347)5102 2460 w
+(\347)5102 2360 w
+(\347)5102 2260 w
+(\347)5102 2160 w
+10 B f
+( t)1 0( ut)1 33(o ou)1 106 3 1080 3228 t
+10 S1 f
+(\261 \261)1 65 1 1219 3228 t
+10 B f
+( =)1 0( d=)1 57(f fd)1 89 3 1284 3228 t
+10 I f
+(descriptor)1430 3228 w
+10 R f
+( to the \256le descriptor named by)6 1465(Redirect informational output)2 1260 2 1440 3348 t
+10 B f
+( r)1 0( or)1 44( to)1 50( pt)1 33( ip)1 56( cr ri)2 72( sc)1 44( es)1 39(d de)1 100 9 4227 3348 t
+10 R f
+( parameter)1 460(. The)1 275 2 4665 3348 t
+10 B f
+( r)1 0( or)1 44( to)1 50( pt)1 33( ip)1 56( cr ri)2 72( sc)1 44( es)1 39(d de)1 100 9 1440 3468 t
+10 R f
+( default,)1 337( By)1 185(speci\256es a UNIX \256le descriptor number.)5 1669 3 1913 3468 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4138 3468 t
+10 R f
+(sends informational)1 800 1 4600 3468 t
+(output to)1 373 1 1440 3588 t
+10 B f
+( er rr r)3 88( de)1 44( td)1 56(s st)1 72 4 1852 3588 t
+10 R f
+( the informational output to a different \256le descriptor helps gui's)10 2725(. Redirecting)1 563 2 2112 3588 t
+(and other programs that call)4 1152 1 1440 3708 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2625 3708 t
+10 R f
+(via pipes.)1 391 1 3086 3708 t
+10 B f
+( o)1 0( io)1 50( ud di)2 84(a au)1 106 4 1080 3876 t
+10 S1 f
+(\261 \261)1 65 1 1320 3876 t
+10 B f
+( =)1 0( d=)1 57(f fd)1 89 3 1385 3876 t
+10 I f
+(descriptor)1531 3876 w
+10 R f
+( for the audio data \256le is)6 1043(In case that the \256le name)5 1050 2 1440 3996 t
+10 S1 f
+(")3570 3996 w
+10 R f
+(-)3611 3996 w
+10 S1 f
+(")3644 3996 w
+10 R f
+(, redirect audio output to the \256le descrip-)7 1715 1 3685 3996 t
+(tor named by)2 561 1 1440 4116 t
+10 B f
+( r)1 0( or)1 44( to)1 50( pt)1 33( ip)1 56( cr ri)2 72( sc)1 44( es)1 39(d de)1 100 9 2043 4116 t
+10 R f
+( parameter)1 440(. The)1 255 2 2481 4116 t
+10 B f
+( r)1 0( or)1 44( to)1 50( pt)1 33( ip)1 56( cr ri)2 72( sc)1 44( es)1 39(d de)1 100 9 3218 4116 t
+10 R f
+( descriptor number.)2 811(speci\256es a UNIX \256le)3 891 2 3698 4116 t
+(By default,)1 472 1 1440 4236 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1965 4236 t
+10 R f
+(sends audio data to)3 847 1 2446 4236 t
+10 B f
+( t)1 0( ut)1 33( ou)1 56( do)1 50( td)1 56(s st)1 72 6 3346 4236 t
+10 R f
+( a \256le.)2 305(if the output is not directed into)6 1429 2 3666 4236 t
+( that)1 193(Redirecting the audio output to a different \256le descriptor helps gui's and other programs)13 3767 2 1440 4356 t
+(call)1440 4476 w
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1617 4476 t
+10 R f
+(via pipes.)1 391 1 2078 4476 t
+10 S1 f
+(\261 \261)1 65 1 1080 4644 t
+10 B f
+( k)1 0( rk)1 56( or)1 44( -f fo)2 83( o-)1 33(n no)1 106 6 1145 4644 t
+10 R f
+(Do not fork for extended buffering. If)6 1618 1 1440 4764 t
+10 S1 f
+(\261 \261)1 65 1 3102 4764 t
+10 B f
+( k)1 0( rk)1 56( or)1 44( -f fo)2 83( o-)1 33(n no)1 106 6 3167 4764 t
+10 R f
+(is used and)2 482 1 3533 4764 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4059 4764 t
+10 R f
+(is used to play back)4 868 1 4532 4764 t
+(audio CDs in)2 560 1 1440 4884 t
+10 B f
+( a)1 0( ia)1 50( oi)1 28( no)1 50( an)1 56( ra)1 50( ar)1 44(p pa)1 106 8 2041 4884 t
+10 R f
+( lack of buffer-)3 645(mode, the playback is not always uninterrupted due to)8 2289 2 2466 4884 t
+( the other side, allowing)4 1079(ing. On)1 361 2 1440 5004 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2934 5004 t
+10 R f
+(to fork will increase the latency time for the)8 1984 1 3416 5004 t
+10 S1 f
+(\261 \261)1 65 1 1440 5124 t
+10 B f
+( e)1 0( ve)1 44( iv)1 50( ti)1 28( ct)1 33( ac)1 44( er ra)2 94( te)1 44( nt)1 33(i in)1 84 10 1505 5124 t
+10 R f
+(mode.)1992 5124 w
+10 S1 f
+(\261 \261)1 65 1 1080 5292 t
+10 B f
+(e e)1 44 1 1145 5292 t
+10 S1 f
+(\261 \261)1 65 1 1080 5460 t
+10 B f
+( o)1 0( ho)1 50(e ec ch)2 144 3 1145 5460 t
+10 R f
+(copies audio data to sound device from the operating system e.g.)10 2665 1 1440 5460 t
+10 B f
+( p)1 0( sp)1 56( ds)1 39( /d)1 56( v/)1 28( ev)1 50( de)1 44(/ /d)1 84 8 4171 5460 t
+10 R f
+(.)4528 5460 w
+10 B f
+( un nd d)3 112( ou)1 56(s so)1 89 3 1080 5628 t
+10 S1 f
+(\261 \261)1 65 1 1337 5628 t
+10 B f
+( =)1 0( ce e=)2 101( ic)1 44( vi)1 28( ev)1 50(d de)1 100 6 1402 5628 t
+10 I f
+(sounddevice)1725 5628 w
+10 R f
+(set an alternate sound device to use for)7 1605 1 1440 5748 t
+10 S1 f
+(\261 \261)1 65 1 3078 5748 t
+10 B f
+(e e)1 44 1 3143 5748 t
+10 R f
+(.)3187 5748 w
+10 S1 f
+(\261 \261)1 65 1 1080 5916 t
+10 B f
+(n n)1 56 1 1145 5916 t
+10 I f
+(sectors)1234 5916 w
+10 S1 f
+(\261 \261)1 65 1 1080 6084 t
+10 B f
+( s)1 0( rs)1 39( or)1 44( to)1 50( ec ct)2 77(s se)1 83 6 1145 6084 t
+10 S1 f
+(\261 \261)1 65 1 1438 6084 t
+10 B f
+( er r)2 44(p pe)1 100 2 1503 6084 t
+10 S1 f
+(\261 \261)1 65 1 1647 6084 t
+10 B f
+( t)1 0( st)1 33( es)1 39( qu ue)2 100(r re eq)2 144 5 1712 6084 t
+10 I f
+(sectors)2061 6084 w
+10 R f
+(reads)1440 6204 w
+10 I f
+(sectors)1683 6204 w
+10 R f
+(per request.)1 473 1 1999 6204 t
+10 S1 f
+(\261 \261)1 65 1 1080 6372 t
+10 B f
+(l l)1 28 1 1145 6372 t
+10 I f
+(buffers)1206 6372 w
+10 S1 f
+(\261 \261)1 65 1 1080 6540 t
+10 B f
+( s)1 0( er rs)2 83( ff fe)2 77(b bu uf)2 145 4 1145 6540 t
+10 S1 f
+(\261 \261)1 65 1 1450 6540 t
+10 B f
+( n)1 0(i in)1 84 2 1515 6540 t
+10 S1 f
+(\261 \261)1 65 1 1599 6540 t
+10 B f
+( g)1 0( ng)1 50( in)1 56(r ri)1 72 4 1664 6540 t
+10 I f
+(buffers)1875 6540 w
+10 R f
+(uses a ring buffer with)4 930 1 1440 6660 t
+10 I f
+(buffers)2403 6660 w
+10 R f
+(total.)2714 6660 w
+9 B f
+( S)1 0( BL LE ES)3 170( AB)1 60( IA)1 65( VA AR RI)3 165( V)1 95( T)1 0( NT)1 60( EN)1 65( ME)1 60( NM)1 85( ON)1 65( RO)1 70( IR)1 65( NV VI)2 100(E EN)1 125 16 720 6948 t
+10 R f
+(Some defaults for)2 742 1 1080 7068 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1863 7068 t
+10 R f
+( in and depend on the)5 942(are compiled)1 534 2 2332 7068 t
+10 B f
+( e)1 0( le)1 44( \256l)1 28( e\256)1 56( ke)1 44( ak)1 56(M Ma)1 144 7 3850 7068 t
+10 R f
+(others on the)2 550 1 4264 7068 t
+10 B f
+( t)1 0( nt)1 33( en)1 56( me)1 44( nm)1 83( on)1 56( ro)1 50( ir)1 44( vi)1 28( nv)1 50(e en)1 100 11 4856 7068 t
+( e)1 0( le)1 44( bl)1 28( ab)1 56( ia)1 50( ri)1 28(v va ar)2 144 7 1080 7188 t
+10 R f
+(settings.)1463 7188 w
+( 8)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 8 8
+%%Page: 9 9
+save
+mark
+9 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+10 B f
+(C CD DD DA A)4 288 1 1080 960 t
+10 S f
+(_ _)1 50 1 1368 960 t
+10 B f
+( E)1 0( CE)1 67( IC)1 72( VI)1 39( EV)1 72(D DE)1 139 6 1418 960 t
+10 R f
+(is used to set the device name. The device naming is compatible with)12 2862 1 1440 1080 t
+10 B f
+( d)1 0( rd)1 56( or)1 44( re ec co)3 138( dr)1 44(c cd)1 100 6 4335 1080 t
+10 R f
+(\(1\).)4717 1080 w
+10 B f
+( P)1 0( BP)1 61(C CD DD DB)3 283 3 1080 1248 t
+10 S f
+(_ _)1 50 1 1424 1248 t
+10 B f
+( R)1 0( ER)1 72( RV VE)2 139( ER)1 72(S SE)1 123 5 1474 1248 t
+10 R f
+(is used for cddbp title lookups when supplied.)7 1894 1 1440 1368 t
+10 B f
+( P)1 0( BP)1 61(C CD DD DB)3 283 3 1080 1536 t
+10 S f
+(_ _)1 50 1 1424 1536 t
+10 B f
+( T)1 0( RT)1 67( OR)1 72(P PO)1 139 4 1474 1536 t
+10 R f
+(is used for cddbp title lookups when supplied.)7 1894 1 1440 1656 t
+10 B f
+( H)1 0( SH)1 78(R RS)1 128 3 1080 1824 t
+10 R f
+(If the)1 240 1 1440 1824 t
+10 B f
+( H)1 0( SH)1 78(R RS)1 128 3 1732 1824 t
+10 R f
+( the remote connection will not be created via)8 2048(environment variable is present,)3 1362 2 1990 1824 t
+10 B f
+( d)1 0( md)1 56(r rc cm)2 171 3 1440 1944 t
+10 R f
+( by)1 135(\(3\) but by calling the program pointed to)7 1706 2 1667 1944 t
+10 B f
+( H)1 0( SH)1 78(R RS)1 128 3 3543 1944 t
+10 R f
+( e.g.)1 179(. Use)1 248 2 3749 1944 t
+10 B f
+( =)1 0( H=)1 57( SH)1 78(R RS)1 128 4 4211 1944 t
+10 R f
+(/usr/bin/ssh to create a)3 926 1 4474 1944 t
+(secure shell connection.)2 972 1 1440 2064 t
+(Note that this forces)3 837 1 1440 2304 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2312 2304 t
+10 R f
+(to create a pipe to the)5 906 1 2775 2304 t
+10 B f
+( \))1 0( 1\))1 33( \(1)1 50( h\()1 33( sh)1 56(r rs)1 83 6 3716 2304 t
+10 R f
+(program and disallows)2 930 1 4006 2304 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4972 2304 t
+10 R f
+( makes it impossible to set up)6 1268( This)1 250( to the remote server.)4 901(to directly access the network socket)5 1541 4 1440 2424 t
+( and slows down the connection compared to a)8 2005(performance parameters)1 981 2 1440 2544 t
+10 B f
+( t)1 0( oo ot)2 83(r ro)1 94 3 4468 2544 t
+10 R f
+(initiated)4687 2544 w
+10 B f
+( \))1 0( 3\))1 33( \(3)1 50( d\()1 33( md)1 56(r rc cm)2 171 6 5057 2544 t
+10 R f
+(connection.)1440 2664 w
+10 B f
+( I)1 0( SI)1 39( CS)1 56( SC)1 72(R RS)1 128 5 1080 2832 t
+10 R f
+(If the)1 226 1 1440 2832 t
+10 B f
+( I)1 0( SI)1 39( CS)1 56( SC)1 72(R RS)1 128 5 1704 2832 t
+10 R f
+( the remote SCSI server will not be the program)9 2043(environment variable is present,)3 1320 2 2037 2832 t
+10 B f
+( i)1 0( si)1 28( cs)1 39( sc)1 44( rs)1 39( /r)1 44( n/)1 28( in)1 56( bi)1 28( sb)1 56( /s)1 39( y/)1 28( il ly)2 78( hi)1 28( ch)1 56( sc)1 44( /s)1 39( t/)1 28( pt)1 33( op)1 56(/ /o)1 78 21 1440 2952 t
+10 R f
+(but the program pointed to by)5 1251 1 2346 2952 t
+10 B f
+( I)1 0( SI)1 39( CS)1 56( SC)1 72(R RS)1 128 5 3633 2952 t
+10 R f
+( that the remote SCSI server)5 1184(. Note)1 288 2 3928 2952 t
+(program name will be ignored if you log in using an account that has been created with a)17 3960 1 1440 3072 t
+(remote SCSI server program as login shell.)6 1771 1 1440 3192 t
+9 B f
+( S)1 0( US)1 50( TU)1 65( AT)1 60( TA)1 65( ST)1 60( S)1 80( T)1 0( IT)1 60( XI)1 35(E EX)1 125 11 720 3360 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1080 3480 t
+10 R f
+(uses the following exit codes to indicate various degress of success:)10 2787 1 1541 3480 t
+10 S f
+(_ ___________________________________________________________________)1 3388 1 1546 3500 t
+10 R f
+(Exitcode Description)1 971 1 1596 3620 t
+10 S f
+(_ ___________________________________________________________________)1 3388 1 1546 3640 t
+10 R f
+( errors encountered, successful operation.)4 1688(0 no)1 300 2 1901 3760 t
+( or syntax error. cdda2wav got inconsistent arguments.)7 2244(1 usage)1 427 2 1901 3880 t
+( \(un\)set errors. permission changes failed.)5 1711(2 permission)1 639 2 1901 4000 t
+( errors on the cdrom/burner device encountered.)6 1967(3 read)1 371 2 1901 4120 t
+( errors while writing one of the output \256les encountered.)9 2324(4 write)1 405 2 1901 4240 t
+( with soundcard handling \(initialization/write\).)4 1900(5 errors)1 432 2 1901 4360 t
+( with stat\(\) system call on the read device \(cooked ioctl\).)10 2345(6 errors)1 432 2 1901 4480 t
+( communication errors encountered \(in forked mode\).)6 2190(7 pipe)1 372 2 1901 4600 t
+( handler installation errors encountered.)4 1620(8 signal)1 439 2 1901 4720 t
+( of shared memory failed \(in forked mode\).)7 1785(9 allocation)1 594 2 1901 4840 t
+( heap memory allocation failed.)4 1299(10 dynamic)1 594 2 1851 4960 t
+( on the audio cd medium encountered.)6 1576(11 errors)1 482 2 1851 5080 t
+( open error in ioctl handling detected.)6 1548(12 device)1 510 2 1851 5200 t
+( condition in ioctl interface handling detected.)6 1887(13 race)1 415 2 1851 5320 t
+( in ioctl\(\) operation encountered.)4 1343(14 error)1 443 2 1851 5440 t
+( error encountered. Please report back!!!)5 1650(15 internal)1 555 2 1851 5560 t
+( in semaphore operation encountered \(install / request\).)7 2257(16 error)1 443 2 1851 5680 t
+( not get the scsi transfer buffer.)6 1292(17 could)1 472 2 1851 5800 t
+( not create pipes for process communication \(in forked mode\).)9 2561(18 could)1 472 2 1851 5920 t
+10 S f
+( \347)1 -3388(_ ___________________________________________________________________)1 3388 2 1546 5940 t
+(\347)1546 5900 w
+(\347)1546 5800 w
+(\347)1546 5700 w
+(\347)1546 5600 w
+(\347)1546 5500 w
+(\347)1546 5400 w
+(\347)1546 5300 w
+(\347)1546 5200 w
+(\347)1546 5100 w
+(\347)1546 5000 w
+(\347)1546 4900 w
+(\347)1546 4800 w
+(\347)1546 4700 w
+(\347)1546 4600 w
+(\347)1546 4500 w
+(\347)1546 4400 w
+(\347)1546 4300 w
+(\347)1546 4200 w
+(\347)1546 4100 w
+(\347)1546 4000 w
+(\347)1546 3900 w
+(\347)1546 3800 w
+(\347)1546 3700 w
+(\347)1546 3600 w
+(\347)2026 5940 w
+(\347)2026 5900 w
+(\347)2026 5800 w
+(\347)2026 5700 w
+(\347)2026 5600 w
+(\347)2026 5500 w
+(\347)2026 5400 w
+(\347)2026 5300 w
+(\347)2026 5200 w
+(\347)2026 5100 w
+(\347)2026 5000 w
+(\347)2026 4900 w
+(\347)2026 4800 w
+(\347)2026 4700 w
+(\347)2026 4600 w
+(\347)2026 4500 w
+(\347)2026 4400 w
+(\347)2026 4300 w
+(\347)2026 4200 w
+(\347)2026 4100 w
+(\347)2026 4000 w
+(\347)2026 3900 w
+(\347)2026 3800 w
+(\347)2026 3700 w
+(\347)2026 3600 w
+(\347)4934 5940 w
+(\347)4934 5900 w
+(\347)4934 5800 w
+(\347)4934 5700 w
+(\347)4934 5600 w
+(\347)4934 5500 w
+(\347)4934 5400 w
+(\347)4934 5300 w
+(\347)4934 5200 w
+(\347)4934 5100 w
+(\347)4934 5000 w
+(\347)4934 4900 w
+(\347)4934 4800 w
+(\347)4934 4700 w
+(\347)4934 4600 w
+(\347)4934 4500 w
+(\347)4934 4400 w
+(\347)4934 4300 w
+(\347)4934 4200 w
+(\347)4934 4100 w
+(\347)4934 4000 w
+(\347)4934 3900 w
+(\347)4934 3800 w
+(\347)4934 3700 w
+(\347)4934 3600 w
+9 B f
+( N)1 0( ON)1 65( IO)1 70( SS SI)2 85( CU US)2 115( SC)1 65( IS)1 50(D DI)1 100 8 720 6108 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1080 6228 t
+10 R f
+(is able to read parts of an)6 1177 1 1562 6228 t
+10 B f
+( o)1 0( io)1 50( ud di)2 84(a au)1 106 4 2793 6228 t
+10 R f
+(CD or)1 277 1 3088 6228 t
+10 B f
+( a)1 0( ia)1 50( di)1 28( ed)1 56( me)1 44( im)1 83( ti)1 28( lt)1 33( ul)1 28(m mu)1 139 10 3420 6228 t
+10 R f
+(CDROM \(containing audio parts\))3 1436 1 3964 6228 t
+(directly digitally. These parts can be written to a \256le, a pipe, or to a sound device.)16 3384 1 1080 6348 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1080 6516 t
+10 R f
+(stands for)1 400 1 1542 6516 t
+10 B f
+(C CD DD DA A)4 288 1 1976 6516 t
+10 R f
+(to)2298 6516 w
+10 B f
+( AV V)2 72(W WA)1 172 2 2410 6516 t
+10 R f
+(\(where)2688 6516 w
+10 B f
+(C CD DD DA A)4 288 1 2999 6516 t
+10 R f
+(stands for compact disc digital audio and)6 1697 1 3322 6516 t
+10 B f
+( AV V)2 72(W WA)1 172 2 5054 6516 t
+10 R f
+(is)5333 6516 w
+( allows copying)2 677( It)1 141( sample format introduced by MS Windows\).)6 1944(a sound)1 331 4 1080 6636 t
+10 B f
+(C CD DD DA A)4 288 1 4220 6636 t
+10 R f
+(audio data from the)3 845 1 4555 6636 t
+(CDROM drive into a \256le in)5 1143 1 1080 6756 t
+10 B f
+( AV V)2 72(W WA)1 172 2 2256 6756 t
+10 R f
+(or other formats.)2 684 1 2533 6756 t
+(Some versions of)2 746 1 1080 6924 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1877 6924 t
+10 R f
+( to get higher real-time scheduling priorities to ensure smooth)9 2710(may try)1 334 2 2356 6924 t
+( priorities are available for super users and are higher than those of 'nor-)13 3006(\(uninterrupted\) operation. These)2 1314 2 1080 7044 t
+(mal' processes. Thus delays are minimized.)5 1784 1 1080 7164 t
+( 9)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 9 9
+%%Page: 10 10
+save
+mark
+10 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+( simply invoke)2 629(If you only have one CDROM and it is loaded with an audio CD, you may)15 3221 2 1080 960 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4972 960 t
+10 R f
+(and it will create the sound \256le)6 1298 1 1080 1080 t
+10 B f
+( av v)2 50( wa)1 50( .w)1 72( o.)1 25( io)1 50( ud di)2 84(a au)1 106 7 2414 1080 t
+10 R f
+( whole track beginning with track 1 in stereo at)9 1973(recording the)1 540 2 2887 1080 t
+( recording time)2 648( Otherwise)1 487( system has enough space free.)5 1325(16 bit at 44100 Hz sample rate, if your \256le)9 1860 4 1080 1200 t
+(will be limited. For details see \256les)6 1451 1 1080 1320 t
+10 B f
+( E)1 0( ME)1 67( AD DM)2 166( EA)1 72(R RE)1 139 5 2564 1320 t
+10 R f
+(and)3041 1320 w
+10 B f
+( LL L)2 67( AL)1 67( TA)1 72( ST)1 67( NS)1 56( IN)1 72( .I)1 39( E.)1 25( ME)1 67( AD DM)2 166( EA)1 72(R RE)1 139 12 3218 1320 t
+10 R f
+(.)4127 1320 w
+(If you have more then one CD-ROM type drive in the system, you need to specify the)16 3559 1 1080 1488 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 4672 1488 t
+10 R f
+(option.)4912 1488 w
+9 B f
+( S)1 0( NS)1 50( ON)1 65( IO)1 70( TI)1 35( PT)1 60( OP)1 55( O)1 100( N)1 0( ON)1 65( O)1 100( S)1 0( TS)1 50( NT)1 60( IN)1 65(H HI)1 105 16 720 1656 t
+10 R f
+( most of them)3 592(Most of the options are used to control the format of the WAV \256le. In the following text)17 3728 2 1080 1776 t
+(are discussed in a more verbose way.)6 1530 1 1080 1896 t
+9 B f
+( ce e)2 40( ic)1 40( vi)1 25( ev)1 45( De)1 40( D)1 95( t)1 0( ec ct)2 70( le)1 40( el)1 25(S Se)1 90 11 900 2064 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 1080 2184 t
+10 I f
+(device)1287 2184 w
+10 R f
+( the)1 163( speci\256er given should correspond to)5 1548( The)1 228(selects the CDROM drive device to be used.)7 1880 4 1581 2184 t
+( the)1 161( For)1 211(selected interface \(see below\).)3 1248 3 1080 2304 t
+10 B f
+( d)1 0( ed)1 56( ke)1 44( oo ok)2 106(c co)1 94 5 2739 2304 t
+10 S f
+(_ _)1 50 1 3039 2304 t
+10 B f
+( l)1 0( tl)1 28( ct)1 33( oc)1 44(i io)1 78 5 3089 2304 t
+10 R f
+( the cdrom device descriptor.)4 1213(interface this is)2 638 2 3311 2304 t
+10 B f
+( e)1 0( he)1 44(T Th)1 123 3 5233 2304 t
+( v)1 0( ev)1 50( we)1 44( ow)1 72( ho)1 50( h)1 102( ce e)2 44( ac)1 44( fa)1 50( er rf)2 77( te)1 44( nt)1 33( in)1 56( i)1 74( I)1 0( SI)1 39( CS)1 56( SC)1 72( S)1 102( c)1 0( ic)1 44( er ri)2 72( ne)1 44( en)1 56( ge)1 44( g)1 96( e)1 0( he)1 44( th)1 56( t)1 79( h)1 0( th)1 56( it)1 33( wi)1 28( w)1 118( d)1 0( ed)1 56( se)1 44( us)1 39( u)1 102( s)1 0( ce es)2 83( ic)1 44( vi)1 28( ev)1 50( de)1 44( d)1 102( I)1 0( SI)1 39( CS)1 56(S SC)1 128 51 1080 2424 t
+( ,)1 0( s,)1 25( us)1 39( Bu)1 56( -B)1 67( I-)1 33( SI)1 39( CS)1 56( SC)1 72( S)1 103( r)1 0( ir)1 44( ei)1 28( he)1 44( th)1 56( t)1 80( h)1 0( th)1 56( it)1 33( wi)1 28( w)1 119( d)1 0( ed)1 56( ss se)2 83( re es)2 83( dd dr)2 100( ad)1 56( a)1 97( re e)2 44( ar)1 44( a)1 97(e er r)2 88 32 3674 2424 t
+( i)1 0( vi)1 28( ev)1 50( de)1 44( d)1 105( I)1 0( SI)1 39( CS)1 56( SC)1 72( S)1 105( c)1 0( ic)1 44( er ri)2 72( ne)1 44( en)1 56( ge)1 44( g)1 99( e)1 0( he)1 44( th)1 56( t)1 82( f)1 0( of)1 33( o)1 99( d)1 0( ad)1 56( ea)1 50( te)1 44( st)1 33( ns)1 39( in)1 56( i)1 77( un n)2 56( Lu)1 56( -L)1 67( I-)1 33( SI)1 39( CS)1 56( SC)1 72( S)1 105( nd d)2 56( an)1 56( a)1 100( ,)1 0( d,)1 25( Id)1 56( -I)1 39( I-)1 33( SI)1 39( CS)1 56(S SC)1 128 51 1080 2544 t
+( .)1 0( r.)1 25( or)1 44( to)1 50( pt)1 33( ip)1 56( cr ri)2 72( sc)1 44( es)1 39( de)1 44( d)1 105(c ce e)2 88 12 3679 2544 t
+10 R f
+(One example for a SCSI)4 1072 1 4328 2544 t
+(CDROM drive on bus 0 with SCSI ID 3 and lun 0 is)12 2191 1 1080 2664 t
+10 B f
+( 0)1 0( ,0)1 50( 3,)1 25( ,3)1 50( 0,)1 25( =0)1 50( v=)1 57( ev)1 50(d de)1 100 9 3304 2664 t
+10 R f
+(.)3711 2664 w
+9 B f
+( ce e)2 40( ic)1 40( vi)1 25( ev)1 45( de)1 40( d)1 80( y)1 0( ry)1 45( ar)1 40( il li ia)3 95( xi)1 25( ux)1 45( Au)1 50( A)1 95( t)1 0( ec ct)2 70( le)1 40( el)1 25(S Se)1 90 19 900 2832 t
+10 S1 f
+(\261 \261)1 65 1 1080 2952 t
+10 B f
+(A A)1 72 1 1145 2952 t
+10 I f
+(auxdevice)1263 2952 w
+10 R f
+(may be needed in some rare cases for CD-Extra handling.)9 2494 1 1707 2952 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(C Cd)1 128 5 4281 2952 t
+10 R f
+(usually has no)2 616 1 4784 2952 t
+( Non-SCSI-)1 488( For)1 210( multi-session information for CD-Extra using raw SCSI commands.)8 2850(problem to get the)3 772 4 1080 3072 t
+(CDROM drives this is the same device as given by)9 2112 1 1080 3192 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 3225 3192 t
+10 R f
+(\(see above\). For SCSI-CDROM drives it is the)7 1934 1 3466 3192 t
+(CDROM drive \(SCSI\) device \(i.e.)4 1437 1 1080 3312 t
+10 B f
+( 0)1 0( r0)1 50( sr)1 44( /s)1 39( v/)1 28( ev)1 50( de)1 44(/ /d)1 84 8 2560 3312 t
+10 R f
+( the SCSI device \(i.e.)4 917(\) corresponding to)2 768 2 2942 3312 t
+10 B f
+( 0)1 0( ,0)1 50( 3,)1 25( ,3)1 50(0 0,)1 75 5 4702 3312 t
+10 R f
+(\). It has to)3 456 1 4944 3312 t
+(match the device used for sampling.)5 1482 1 1080 3432 t
+9 B f
+( ce e)2 40( ac)1 40( fa)1 45( er rf)2 70( te)1 40( nt)1 30( In)1 50( I)1 65( t)1 0( ec ct)2 70( le)1 40( el)1 25(S Se)1 90 13 900 3600 t
+10 S1 f
+(\261 \261)1 65 1 1080 3720 t
+10 B f
+(I I)1 39 1 1145 3720 t
+10 I f
+(interface)1243 3720 w
+10 R f
+( method is typically)3 897(selects the CDROM drive communication method. This interface)7 2846 2 1657 3720 t
+( SCSI drives)2 538( For)1 213(automatically selected from the device name.)5 1887 3 1080 3840 t
+10 B f
+( c)1 0( ic)1 44( er ri)2 72( ne)1 44( en)1 56(g ge)1 94 6 3759 3840 t
+10 S f
+(_ _)1 50 1 4069 3840 t
+10 B f
+( i)1 0( si)1 28( cs)1 39(s sc)1 83 4 4119 3840 t
+10 R f
+(is used \(cooked)2 651 1 4309 3840 t
+10 S f
+(_)4960 3840 w
+10 R f
+(ioctl may)1 390 1 5010 3840 t
+( names are)2 468( Valid)1 300(not be available for all devices\).)5 1380 3 1080 3960 t
+10 B f
+( c)1 0( ic)1 44( er ri)2 72( ne)1 44( en)1 56(g ge)1 94 6 3274 3960 t
+10 S f
+(_ _)1 50 1 3584 3960 t
+10 B f
+( i)1 0( si)1 28( cs)1 39(s sc)1 83 4 3634 3960 t
+10 R f
+(and)3830 3960 w
+10 B f
+( d)1 0( ed)1 56( ke)1 44( oo ok)2 106(c co)1 94 5 4020 3960 t
+10 S f
+(_ _)1 50 1 4320 3960 t
+10 B f
+( l)1 0( tl)1 28( ct)1 33( oc)1 44(i io)1 78 5 4370 3960 t
+10 R f
+( \256rst uses the)3 588(. The)1 259 2 4553 3960 t
+( variant works only)3 837(generic SCSI interface, the latter uses the ioctl of the CDROM driver. The latter)13 3483 2 1080 4080 t
+(when the kernel driver supports)4 1332 1 1080 4200 t
+10 B f
+(C CD DD DA A)4 288 1 2454 4200 t
+10 R f
+( to match the selected CDROM device)6 1650(reading. This entry has)3 966 2 2784 4200 t
+(\(see above\).)1 489 1 1080 4320 t
+9 B f
+( d)1 0( rd)1 50( ar)1 40( ca)1 45( un nd dc)3 140( ou)1 50( so)1 45( s)1 65( o)1 0( to)1 45( t)1 60( o)1 0( ho)1 45( ec ch)2 90( e)1 70( e)1 0( le)1 40( bl)1 25( ab)1 50( na)1 45(E En)1 110 21 900 4488 t
+10 S1 f
+(\261 \261)1 65 1 1080 4608 t
+10 B f
+(e e)1 44 1 1145 4608 t
+10 R f
+( the sound card while recording, so you hear it nearly simultaneously. The)12 3286(copies audio data to)3 874 2 1240 4608 t
+( is recorded. This is time critical, so it works best with the)12 2447(soundcard gets the same data that)5 1399 2 1080 4728 t
+10 S1 f
+(\261 \261)1 65 1 4962 4728 t
+10 B f
+(q q)1 56 1 5027 4728 t
+10 R f
+(option.)5119 4728 w
+(To use)1 277 1 1080 4848 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1390 4848 t
+10 R f
+(as a pseudo CD player without recording in a \256le you could use)12 2637 1 1851 4848 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1080 5016 t
+10 S1 f
+(\261 \261)1 65 1 1541 5016 t
+10 B f
+(q q)1 56 1 1606 5016 t
+10 S1 f
+(\261 \261)1 65 1 1695 5016 t
+10 B f
+(e e)1 44 1 1760 5016 t
+10 S1 f
+(\261 \261)1 65 1 1837 5016 t
+10 B f
+( 2)1 0(t t2)1 83 2 1902 5016 t
+10 S1 f
+(\261 \261)1 65 1 2018 5016 t
+10 B f
+( 0)1 0(d d0)1 106 2 2083 5016 t
+10 S1 f
+(\261 \261)1 65 1 2222 5016 t
+10 B f
+(N N)1 72 1 2287 5016 t
+10 R f
+(to play the whole second track or)6 1373 1 1080 5184 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1080 5352 t
+10 S1 f
+(\261 \261)1 65 1 1541 5352 t
+10 B f
+(q q)1 56 1 1606 5352 t
+10 S1 f
+(\261 \261)1 65 1 1695 5352 t
+10 B f
+(e e)1 44 1 1760 5352 t
+10 S1 f
+(\261 \261)1 65 1 1837 5352 t
+10 B f
+(B B)1 67 1 1902 5352 t
+10 S1 f
+(\261 \261)1 65 1 2002 5352 t
+10 B f
+(N N)1 72 1 2067 5352 t
+10 R f
+( feature reduces the recording speed to at most onefold speed.)10 2543( This)1 244(to play the whole disk.)4 940 3 1080 5520 t
+9 B f
+( o)1 0( io)1 45( ud di)2 75( au)1 50( a)1 75( d)1 0( ed)1 50( oe)1 40( ho)1 45( ec ch)2 90( e)1 70( f)1 0( of)1 30( o)1 75( h)1 0( ch)1 50( tc)1 40( it)1 30( pi)1 25( p)1 80( e)1 0( ge)1 40( ng)1 45( an)1 50( ha)1 45(C Ch)1 115 26 900 5688 t
+10 S1 f
+(\261 \261)1 65 1 1080 5808 t
+10 B f
+( e)1 0( ag ge)2 94( ta)1 50( nt)1 33( er rc ce en)4 188( pe)1 44( p)1 90(p p)1 56 8 1145 5808 t
+10 R f
+( card. Only the copy to the soundcard is)8 1669(changes the pitch of all audio echoed to a sound)9 1997 2 1734 5808 t
+( pitch, which is the default, is)6 1279( Normal)1 380( samples in a \256le remain the same.)7 1495(affected, the recorded audio)3 1166 4 1080 5928 t
+( to lower pitches, i.e.)4 879( percentages correspond)2 983( Lower)1 328(given by 100%.)2 650 4 1080 6048 t
+10 S1 f
+(\261)3989 6048 w
+10 R f
+(p 50 transposes the audio output)5 1346 1 4054 6048 t
+( the script)2 432( also)1 206( See)1 222(one octave lower.)2 746 4 1080 6168 t
+10 B f
+( ay y)2 50( la)1 50( hp pl)2 84( ch)1 56( tc)1 44( it)1 33(p pi)1 84 7 2730 6168 t
+10 R f
+(as an example. This option was contributed by Raul)8 2225 1 3175 6168 t
+(Sobon.)1080 6288 w
+9 B f
+( g)1 0( ng)1 45( in)1 50( di)1 25( rd)1 50( or)1 40( re ec co)3 125( r)1 70( o)1 0( er re eo)3 125( te)1 40( st)1 30( s)1 65( r)1 0( or)1 40( o)1 75( o)1 0( no)1 45( on)1 50( mo)1 45( m)1 105( t)1 0( ec ct)2 70( le)1 40( el)1 25(S Se)1 90 26 900 6456 t
+10 S1 f
+(\261 \261)1 65 1 1080 6576 t
+10 B f
+(m m)1 83 1 1145 6576 t
+10 R f
+(or)1265 6576 w
+10 S1 f
+(\261 \261)1 65 1 1385 6576 t
+10 B f
+( 1)1 0( 1)1 87(c c)1 44 3 1450 6576 t
+10 R f
+(selects mono recording \(both stereo channels are mixed\),)7 2362 1 1618 6576 t
+10 S1 f
+(\261 \261)1 65 1 4017 6576 t
+10 B f
+(s s)1 39 1 4082 6576 t
+10 R f
+(or)4158 6576 w
+10 S1 f
+(\261 \261)1 65 1 4278 6576 t
+10 B f
+( 2)1 0( 2)1 88(c c)1 44 3 4343 6576 t
+10 R f
+(or)4513 6576 w
+10 S1 f
+(\261 \261)1 65 1 4634 6576 t
+10 B f
+( s)1 0( s)1 77(c c)1 44 3 4699 6576 t
+10 R f
+(selects stereo)1 542 1 4858 6576 t
+(recording. Parameter s will swap both sound channels.)7 2233 1 1080 6696 t
+9 B f
+( y)1 0( ty)1 45( li it)2 55( al)1 25( qu ua)2 95( q)1 80( m)1 0( um)1 75( mu)1 50( im)1 75( ax xi)2 70( ma)1 45( m)1 105( t)1 0( ec ct)2 70( le)1 40( el)1 25(S Se)1 90 18 900 6864 t
+10 S1 f
+(\261 \261)1 65 1 1080 6984 t
+10 B f
+(x x)1 50 1 1145 6984 t
+10 R f
+( other format options)3 901( that)1 194( Note)1 271(will set stereo, 16 bits per sample at 44.1 KHz \(full CD quality\).)12 2795 4 1239 6984 t
+(given later can change this setting.)5 1421 1 1080 7104 t
+( 10)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 10 10
+%%Page: 11 11
+save
+mark
+11 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+9 B f
+( y)1 0( ty)1 45( li it)2 55( al)1 25( qu ua)2 95( q)1 80( e)1 0( le)1 40( pl)1 25( mp)1 50( am)1 75( sa)1 45( s)1 65( t)1 0( ec ct)2 70( le)1 40( el)1 25(S Se)1 90 18 900 960 t
+10 S1 f
+(\261 \261)1 65 1 1080 1080 t
+10 B f
+( 8)1 0( 8)1 87(b b)1 56 3 1145 1080 t
+10 R f
+( each sample in each channel;)5 1253(speci\256es 8 bit \(1 Byte\) for)5 1106 2 1325 1080 t
+10 S1 f
+(\261 \261)1 65 1 3722 1080 t
+10 B f
+( 12 2)2 50( 1)1 88(b b)1 56 3 3787 1080 t
+10 R f
+(speci\256es 12 bit \(2 Byte\) for each)6 1381 1 4019 1080 t
+(sample in each channel;)3 1007 1 1080 1200 t
+10 S1 f
+(\261 \261)1 65 1 2129 1200 t
+10 B f
+( 16 6)2 50( 1)1 92(b b)1 56 3 2194 1200 t
+10 R f
+( each channel \(Ensure that)4 1116(speci\256es 16 bit \(2 Byte\) for each sample in)8 1850 2 2434 1200 t
+( Selecting 12 or 16 bits)5 975(your sample player or sound card is capable of playing 12-bit or 16-bit samples\).)13 3345 2 1080 1320 t
+( samples are aligned to 16-bit samples, so they waste some disk space.)12 2909( 12-bit)1 305(doubles \256le size.)2 685 3 1080 1440 t
+9 B f
+( e)1 0( te)1 40( at)1 30( ra)1 45( r)1 70( e)1 0( le)1 40( pl)1 25( mp)1 50( am)1 75( sa)1 45( s)1 65( t)1 0( ec ct)2 70( le)1 40( el)1 25(S Se)1 90 17 900 1608 t
+10 S1 f
+(\261 \261)1 65 1 1080 1728 t
+10 B f
+(r r)1 44 1 1145 1728 t
+10 I f
+(samplerate)1226 1728 w
+10 R f
+(selects a sample rate.)3 878 1 1707 1728 t
+10 I f
+(samplerate)2655 1728 w
+10 R f
+( 900. Option)2 529(can be in a range between 44100 and)7 1560 2 3136 1728 t
+10 S1 f
+(\261 \261)1 65 1 5263 1728 t
+10 B f
+(R R)1 72 1 5328 1728 t
+10 R f
+(lists all available rates.)3 934 1 1080 1848 t
+9 B f
+( er r)2 40( de)1 40( id)1 50( vi)1 25( iv)1 45( di)1 25( d)1 80( e)1 0( te)1 40( at)1 30( ra)1 45( r)1 70( e)1 0( le)1 40( pl)1 25( mp)1 50( am)1 75( sa)1 45( s)1 65( t)1 0( ec ct)2 70( le)1 40( el)1 25(S Se)1 90 24 900 2016 t
+10 S1 f
+(\261 \261)1 65 1 1080 2136 t
+10 B f
+(a a)1 50 1 1145 2136 t
+10 I f
+(divider)1229 2136 w
+10 R f
+(selects a sample rate divider.)4 1186 1 1546 2136 t
+10 I f
+(divider)2799 2136 w
+10 R f
+(can be minimally 1 and maximally 50.5 and everything)8 2284 1 3116 2136 t
+( Option)1 344(between in steps of 0.5.)4 975 2 1080 2256 t
+10 S1 f
+(\261 \261)1 65 1 2432 2256 t
+10 B f
+(R R)1 72 1 2497 2256 t
+10 R f
+(lists all available rates.)3 934 1 2602 2256 t
+(To make the sound smoother at lower sampling rates,)8 2259 1 1080 2496 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 3379 2496 t
+10 R f
+(sums over)1 423 1 3847 2496 t
+10 I f
+(n)4310 2496 w
+10 R f
+(samples \(where)1 638 1 4400 2496 t
+10 I f
+(n)5079 2496 w
+10 R f
+(is the)1 230 1 5170 2496 t
+( So for 22050 Hertz output we have to sum over 2 samples, for 900 Hertz we have to)18 3571(speci\256c dividend\).)1 749 2 1080 2616 t
+( cancels higher frequencies. Standard sector size of an audio CD \(ignoring)11 3152( This)1 253( samples.)1 389(sum over 49)2 526 4 1080 2736 t
+( sample at sector boun-)4 982(additional information\) is 2352 Bytes. In order to \256nish summing for an output)12 3338 2 1080 2856 t
+( sampling rates in high quality would require some)8 2152( Arbitrary)1 444( to be chosen.)3 594(daries the rates above have)4 1130 4 1080 2976 t
+(interpolation scheme, which needs much more sophisticated programming.)7 3055 1 1080 3096 t
+9 B f
+( s)1 0( es)1 35( te)1 40( at)1 30( ra)1 45( r)1 70( g)1 0( ng)1 45( li in)2 75( pl)1 25( mp)1 50( am)1 75( sa)1 45( s)1 65( ll l)2 25( al)1 25( a)1 75( f)1 0( of)1 30( o)1 75( e)1 0( le)1 40( bl)1 25( ab)1 50( ta)1 45( t)1 60( a)1 0( a)1 75( t)1 0( st)1 30( is)1 35(L Li)1 85 32 900 3264 t
+10 S1 f
+(\261 \261)1 65 1 1080 3384 t
+10 B f
+(R R)1 72 1 1145 3384 t
+10 R f
+(shows a list of all sample rates and their dividers. Dividers can range from 1 to 50.5 in steps of 0.5.)20 4116 1 1250 3384 t
+9 B f
+( k)1 0( ck)1 50( ac)1 40( ra)1 45( tr)1 40( t)1 60( nd d)2 50( en)1 50( e)1 70( y)1 0( ll ly)2 70( al)1 25( na)1 45( on)1 50( io)1 45( ti)1 25( pt)1 30( op)1 50( o)1 75( nd d)2 50( an)1 50( a)1 75( k)1 0( ck)1 50( ac)1 40( ra)1 45( tr)1 40( t)1 60( t)1 0( rt)1 30( ar)1 40( ta)1 45( st)1 30( s)1 65( t)1 0( ec ct)2 70( le)1 40( el)1 25(S Se)1 90 39 900 3552 t
+10 S1 f
+(\261 \261)1 65 1 1080 3672 t
+10 B f
+(t t)1 33 1 1145 3672 t
+10 I f
+(n+m)1215 3672 w
+10 R f
+(selects)1442 3672 w
+10 B f
+(n n)1 56 1 1745 3672 t
+10 R f
+(as the start track and optionally)5 1316 1 1838 3672 t
+10 B f
+(m m)1 83 1 3192 3672 t
+10 R f
+( These)1 309(as the last track of a range to be recorded.)9 1778 2 3313 3672 t
+( sets the track where recording begins. Recording can)8 2280( This)1 254(tracks must be from the table of contents.)7 1786 3 1080 3792 t
+( tracks as well \(limited by the optional end track or otherwise depending)12 3058(advance through the following)3 1262 2 1080 3912 t
+( one \256le or different \256les are then created depends on the)11 2456(on recording time\). Whether)3 1190 2 1080 4032 t
+10 S1 f
+(\261 \261)1 65 1 4768 4032 t
+10 B f
+(B B)1 67 1 4833 4032 t
+10 R f
+(option \(see)1 458 1 4942 4032 t
+(below\).)1080 4152 w
+9 B f
+( x)1 0( ex)1 45( nd de)2 90( in)1 50( i)1 55( t)1 0( rt)1 30( ar)1 40( ta)1 45( st)1 30( s)1 65( t)1 0( ec ct)2 70( le)1 40( el)1 25(S Se)1 90 16 900 4320 t
+10 S1 f
+(\261 \261)1 65 1 1080 4440 t
+10 B f
+(i i)1 28 1 1145 4440 t
+10 I f
+(n)1208 4440 w
+10 R f
+( other than 1 will invoke the index scanner, which)9 2096( Indices)1 356(selects the index to start recording with.)6 1655 3 1293 4440 t
+(will take some time to \256nd the correct start position. An offset may be given additionally \(see below\).)17 4201 1 1080 4560 t
+9 B f
+( n)1 0( on)1 50( io)1 45( ti)1 25( at)1 30( ra)1 45( du ur)2 90( d)1 80( g)1 0( ng)1 45( in)1 50( di)1 25( rd)1 50( or)1 40( re ec co)3 125( r)1 70( t)1 0( et)1 30(S Se)1 90 19 900 4728 t
+10 S1 f
+(\261 \261)1 65 1 1080 4848 t
+10 B f
+( n)1 0( n)1 131(d d)1 56 3 1145 4848 t
+10 R f
+(sets recording time to)3 914 1 1374 4848 t
+10 I f
+(n)2331 4848 w
+10 R f
+(seconds or set recording time for whole track if)8 2034 1 2424 4848 t
+10 I f
+(n)4501 4848 w
+10 R f
+(is zero. In order to)4 806 1 4594 4848 t
+( \(sectors\) also, the argument can have an appended 'f'. Then the numerical)12 3088(specify the duration in frames)4 1232 2 1080 4968 t
+( note that if track ranges are)6 1245( Please)1 335( as frames \(sectors\) rather than seconds.)6 1724(argument is to be taken)4 1016 4 1080 5088 t
+(being used they de\256ne the recording time as well thus overriding any)11 2848 1 1080 5208 t
+10 S1 f
+(\261 \261)1 65 1 3961 5208 t
+10 B f
+(d d)1 56 1 4026 5208 t
+10 R f
+(option speci\256ed times.)2 919 1 4115 5208 t
+(Recording time is de\256ned as the time the generated sample will play \(at the de\256ned sample rate\). Since)17 4320 1 1080 5448 t
+( amount of generated samples, it's not the time of the sampling process itself \(which)14 3595(it's related to the)3 725 2 1080 5568 t
+( neither strictly coupled with the time information on the audio CD \(shown by)13 3253( It's)1 201( or more\).)2 416(can be less)2 450 4 1080 5688 t
+( can occur by the usage of the)7 1342( Differences)1 544(your hi\256 CD player\).)3 904 3 1080 5808 t
+10 S1 f
+(\261 \261)1 65 1 3917 5808 t
+10 B f
+(o o)1 50 1 3982 5808 t
+10 R f
+( that)1 196(option \(see below\). Notice)3 1125 2 4079 5808 t
+( anytime)1 361(recording time will be shortened, unless enough disk space exists. Recording can be aborted at)14 3959 2 1080 5928 t
+(by pressing the break character \(signal SIGQUIT\).)6 2067 1 1080 6048 t
+9 B f
+( l)1 0( \256l)1 25( \256)1 80( e)1 0( te)1 40( at)1 30( ra)1 45( ar)1 40( pa)1 45( ep)1 50( se)1 40( s)1 65( n)1 0( in)1 50( i)1 55( CD D)2 65( C)1 95( o)1 0( io)1 45( ud di)2 75( au)1 50( a)1 75( e)1 0( te)1 40( et)1 30( le)1 40( pl)1 25( mp)1 50( om)1 75( co)1 45( c)1 70( a)1 0( a)1 75( f)1 0( of)1 30( o)1 75( s)1 0( ks)1 35( ck)1 50( ac)1 40( ra)1 45( tr)1 40( t)1 60( ll l)2 25( al)1 25( a)1 75( d)1 0( rd)1 50( or)1 40( ec co)2 85(R Re)1 105 51 900 6216 t
+( s)1 0(e es)1 75 2 3100 6216 t
+10 S1 f
+(\261 \261)1 65 1 1080 6336 t
+10 B f
+(B B)1 67 1 1145 6336 t
+10 R f
+( can be given. File names have an appended track)9 2068(copies each track into a separate \256le. A base name)9 2086 2 1246 6336 t
+( CD, use a)3 458(number and an extension corresponding to the audio format. To record all audio tracks of a)15 3862 2 1080 6456 t
+(suf\256cient high duration \(i.e.)3 1137 1 1080 6576 t
+10 S1 f
+(\261)2250 6576 w
+10 R f
+(d99999\).)2315 6576 w
+9 B f
+( t)1 0( et)1 30( se)1 40( ff fs)2 65( of)1 30( o)1 75( r)1 0( or)1 40( to)1 45( ec ct)2 70( se)1 40( s)1 65( t)1 0( rt)1 30( ar)1 40( ta)1 45( st)1 30( s)1 65( t)1 0( et)1 30(S Se)1 90 21 900 6744 t
+10 S1 f
+(\261 \261)1 65 1 1080 6864 t
+10 B f
+(o o)1 50 1 1145 6864 t
+10 I f
+(sectors)1232 6864 w
+10 R f
+(increments start sector of the track by)6 1574 1 1552 6864 t
+10 I f
+(sectors)3163 6864 w
+10 R f
+( skip a certain)3 596( this option you are able to)6 1138(. By)1 212 3 3454 6864 t
+( want. Each sector runs for 1/75)6 1332(amount at the beginning of a track so you can pick exactly the part you)14 2988 2 1080 6984 t
+( you have very \256ne control. If your offset is so high that it would not \256t into the current)19 3847(seconds, so)1 473 2 1080 7104 t
+( skip)1 206( \(To)1 216( time is not reduced.)4 869( Recording)1 489(track, a warning message is issued and the offset is ignored.)10 2540 5 1080 7224 t
+( 11)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7704 t
+cleartomark
+showpage
+restore
+%%EndPage: 11 11
+%%Page: 12 12
+save
+mark
+12 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+(introductory quiet passages automagically, use the)5 2054 1 1080 960 t
+10 S1 f
+(\261 \261)1 65 1 3167 960 t
+10 B f
+(w w)1 72 1 3232 960 t
+10 R f
+(option see below.\))2 751 1 3337 960 t
+9 B f
+( n)1 0( on)1 50( io)1 45( ti)1 25( pt)1 30( op)1 50( o)1 75( l)1 0( al)1 25( na)1 45( gn)1 50( ig)1 45( si)1 25( s)1 65( r)1 0( or)1 40( fo)1 45( f)1 60( t)1 0( it)1 30( ai)1 25(W Wa)1 135 22 900 1128 t
+10 S1 f
+(\261 \261)1 65 1 1080 1248 t
+10 B f
+(w w)1 72 1 1145 1248 t
+10 R f
+( option will suppress all silent output at startup, reducing possibly \256le size.)12 3433(Turning on this)2 689 2 1278 1248 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1080 1368 t
+10 R f
+(will watch for any signal in the output signal and switches on writing to \256le.)14 3158 1 1541 1368 t
+9 B f
+( s)1 0( es)1 35( le)1 40( pl)1 25( mp)1 50( am)1 75( sa)1 45( s)1 65( e)1 0( me)1 40( re em)2 115( tr)1 40( xt)1 30( ex)1 45( e)1 70( nd d)2 50( in)1 50(F Fi)1 80 18 900 1536 t
+10 S1 f
+(\261 \261)1 65 1 1080 1656 t
+10 B f
+(F F)1 61 1 1145 1656 t
+10 R f
+(Turning on this option will display the most negative and the most positive sample value found dur-)16 4159 1 1241 1656 t
+(ing recording for both channels. This can be useful for readjusting the volume. The values shown are not)17 4320 1 1080 1776 t
+( they cover the complete sampling process. They are taken from the original)12 3269(reset at track boundaries,)3 1051 2 1080 1896 t
+(samples and have the same format \(i.e. they are independent of the selected output format\).)14 3751 1 1080 2016 t
+9 B f
+( o)1 0( no)1 45( on)1 50( mo)1 45( m)1 105( n)1 0( in)1 50( i)1 55( re e)2 40( ar)1 40( a)1 75( s)1 0( es)1 35( le)1 40( pl)1 25( mp)1 50( am)1 75( sa)1 45( s)1 65( t)1 0( np pu ut)3 130( in)1 50( i)1 55( f)1 0( if)1 30( i)1 55( nd d)2 50( in)1 50(F Fi)1 80 29 900 2184 t
+10 S1 f
+(\261 \261)1 65 1 1080 2304 t
+10 B f
+(G G)1 78 1 1145 2304 t
+10 R f
+( the program)2 530(If this option is given, input samples for both channels will be compared. At the end of)16 3613 2 1257 2304 t
+( is printed. Differences in the channels indicate stereo, otherwise when both channels are equal)14 3939(the result)1 381 2 1080 2424 t
+(it will indicate mono.)3 880 1 1080 2544 t
+9 B f
+( s)1 0( es)1 35( le)1 40( pl)1 25( mp)1 50( am)1 75( sa)1 45( s)1 65( t)1 0( np pu ut)3 130( in)1 50( i)1 55( e)1 0( he)1 40( th)1 50( t)1 60( n)1 0( in)1 50( i)1 55( s)1 0( is)1 35( si)1 25( as)1 35( ph ha)2 95( mp)1 50( em)1 75( -e)1 40( re e-)2 70( pr)1 40( p)1 80( e)1 0( he)1 40( th)1 50( t)1 60( o)1 0( nd do)2 95(U Un)1 115 37 900 2712 t
+10 S1 f
+(\261 \261)1 65 1 1080 2832 t
+10 B f
+(T T)1 67 1 1145 2832 t
+10 R f
+( are recorded with a modi\256ed frequency response called pre-emphasis. This is)11 3219(Some older audio CDs)3 935 2 1246 2832 t
+( correction can be seen in the \257ags of the Table Of Contents)12 2587(found mostly in classical recordings. The)5 1733 2 1080 2952 t
+(often. But there are recordings, that show this setting only in the subchannels. If this option is given, the)18 4320 1 1080 3072 t
+( started, which reads the q-subchannel of each track. If pre-emphasis is indicated in)13 3439(index scanner will be)3 881 2 1080 3192 t
+( in the TOC, pre-emphasis will be assumed to be present, and subse-)12 2855(the q-subchannel of a track, but not)6 1465 2 1080 3312 t
+(quently a reverse \256ltering is done for this track before the samples are written into the audio \256le.)17 3985 1 1080 3432 t
+9 B f
+( t)1 0( at)1 30( ma)1 45( rm)1 75( or)1 40( fo)1 45( f)1 60( o)1 0( io)1 45( ud di)2 75( au)1 50( a)1 75( t)1 0( et)1 30(S Se)1 90 15 900 3600 t
+10 S1 f
+(\261 \261)1 65 1 1080 3720 t
+10 B f
+( e)1 0( pe)1 44( yp)1 56( ty)1 50( ot)1 33( io)1 50( ud di)2 84( au)1 56( a)1 121(O O)1 78 10 1145 3720 t
+10 R f
+(can be)1 270 1 1755 3720 t
+10 I f
+(wav)2063 3720 w
+10 R f
+(\(for wav \256les\) or)3 712 1 2262 3720 t
+10 I f
+(au)3012 3720 w
+10 R f
+(or)3150 3720 w
+10 I f
+(sun)3271 3720 w
+10 R f
+( PCM \256les\) or)3 612(\(for sun)1 326 2 3448 3720 t
+10 I f
+(cdr)4425 3720 w
+10 R f
+(or)4597 3720 w
+10 I f
+(raw)4719 3720 w
+10 R f
+(\(for header-)1 486 1 4914 3720 t
+( \(as done)2 378( \256le samples are coded in linear pulse code modulation)9 2284( All)1 196(less \256les to be used for cd writers\).)7 1462 4 1080 3840 t
+( to)1 134( \256les are compatible)3 897( Wav)1 276(in the audio compact disc format\). This holds for all audio formats.)11 3013 4 1080 3960 t
+(Wind)1080 4080 w
+10 S f
+(*)1302 4080 w
+10 R f
+( is the opposite byte order to the one used on)10 1907(ws sound \256les, they have lsb,msb byte order which)8 2141 2 1352 4080 t
+( type \256les are not like the older common)8 1767( Sun)1 233( default \256lename extension is '.wav'.)5 1573(the audio cd. The)3 747 4 1080 4200 t
+(logarithmically coded .au \256les, but instead as mentioned above linear PCM is used. The byte order is)16 4320 1 1080 4320 t
+( AIFF and the newer variant)5 1253( The)1 238( is '.au'.)2 377(msb,lsb to be compatible. The default \256lename extension)7 2452 4 1080 4440 t
+( bigendian format \(msb,lsb\). In AIFC no)6 1837(AIFC from the Apple/SGI world store their samples in)8 2483 2 1080 4560 t
+( the easiest 'format', the cdr aka raw format. It is done per default in)14 3076( Finally)1 366(compression is used.)2 878 3 1080 4680 t
+( most cd writers. Since there is no header information)9 2258(msb,lsb byte order to satisfy the order wanted by)8 2062 2 1080 4800 t
+( the sample parameters can only be identi\256ed by playing the samples on a soundcard or)15 3726(in this format,)2 594 2 1080 4920 t
+(similar. The default \256lename extension is '.cdr' or '.raw'.)8 2359 1 1080 5040 t
+9 B f
+( d)1 0( ee ed)2 90( pe)1 40( sp)1 50( s)1 65( g)1 0( ng)1 45( in)1 50( di)1 25( ad)1 50( re ea)2 85( r)1 70( e)1 0( ve)1 40( iv)1 45( ri)1 25( dr)1 40( d)1 80( m)1 0( om)1 75( ro)1 45( dr)1 40( cd)1 50( c)1 70( t)1 0( ec ct)2 70( le)1 40( el)1 25(S Se)1 90 29 900 5208 t
+10 S1 f
+(\261 \261)1 65 1 1080 5328 t
+10 B f
+( d)1 0( ee ed)2 100( pe)1 44( sp)1 56( s)1 113(S S)1 56 6 1145 5328 t
+10 R f
+( certain level of speed in order to reduce read errors.)10 2254(allows to switch the cdrom drive to a)7 1591 2 1555 5328 t
+( An)1 192( very much on the cdrom drives.)6 1367( depend)1 326( Details)1 354(The argument is transferred verbatim to the drive.)7 2081 5 1080 5448 t
+(argument of 0 for example is often the default speed of the drive, a value of 1 often selects single speed.)20 4312 1 1080 5568 t
+9 B f
+( s)1 0( ms)1 35( um)1 75( su)1 50( ks)1 35( ec ck)2 90( he)1 40( ch)1 50( c)1 70( 5)1 0( D5)1 45( MD)1 65( M)1 115( e)1 0( le)1 40( bl)1 25( ab)1 50( na)1 45(E En)1 110 19 900 5736 t
+10 S1 f
+(\261 \261)1 65 1 1080 5856 t
+10 B f
+( t)1 0( un nt)2 89( ou)1 56( co)1 50( c)1 112(M M)1 94 6 1145 5856 t
+10 R f
+( the beginning of a track. This)6 1267(enables calculation of MD-5 checksum for 'count' bytes from)8 2552 2 1581 5856 t
+(was introduced for quick comparisons of tracks.)6 1969 1 1080 5976 t
+9 B f
+( s)1 0( rs)1 35( or)1 40( to)1 45( ec ct)2 70( se)1 40( s)1 65( f)1 0( of)1 30( o)1 75( g)1 0( ng)1 45( in)1 50( di)1 25( ad)1 50( re ea)2 85( r)1 70( r)1 0( or)1 40( fo)1 45( f)1 60( a)1 0( ia)1 45( oi)1 25( no)1 45( an)1 50( ra)1 45( ar)1 40( bp pa)2 95( li ib)2 75( l)1 55( s)1 0( 's)1 35( y')1 30( ty)1 45( nt)1 30( on)1 50( Mo)1 45( M)1 115( e)1 0( se)1 40(U Us)1 100 42 900 6144 t
+10 S1 f
+(\261 \261)1 65 1 1080 6264 t
+10 B f
+( a)1 0( ia)1 50( oi)1 28( no)1 50( an)1 56( ra)1 50( ar)1 44(p pa)1 106 8 1145 6264 t
+10 R f
+( Monty's library is used with the follow-)7 1708(selects an alternate way of extracting audio sectors.)7 2127 2 1565 6264 t
+(ing default options:)2 794 1 1080 6384 t
+(PARANOIA)1080 6624 w
+10 S f
+(_)1596 6624 w
+10 R f
+(MODE)1646 6624 w
+10 S f
+(_)1940 6624 w
+10 R f
+(FULL, but without PARANOIA)3 1324 1 1990 6624 t
+10 S f
+(_)3314 6624 w
+10 R f
+(MODE)3364 6624 w
+10 S f
+(_)3658 6624 w
+10 R f
+(NEVERSKIP)3708 6624 w
+( this case the option)4 826( In)1 149(for details see Monty's libparanoia documentation.)5 2076 3 1080 6864 t
+10 S1 f
+(\261 \261)1 65 1 4164 6864 t
+10 B f
+(P P)1 61 1 4229 6864 t
+10 R f
+(has no effect.)2 550 1 4323 6864 t
+9 B f
+( s)1 0( rs)1 35( or)1 40( to)1 45( ec ct)2 70( se)1 40( s)1 65( f)1 0( of)1 30( o)1 75( g)1 0( ng)1 45( in)1 50( di)1 25( ad)1 50( re ea)2 85( r)1 70( g)1 0( ng)1 45( in)1 50( pp pi)2 75( ap)1 50( la)1 45( er rl)2 65( ov ve)2 85( o)1 75( r)1 0( or)1 40( o)1 75( r)1 0( ar)1 40( ea)1 45( ne)1 40( li in)2 75( l)1 55( o)1 0(D Do)1 110 37 900 7032 t
+10 R f
+(\(This applies unless option)3 1105 1 1080 7152 t
+10 S1 f
+(\261 \261)1 65 1 2220 7152 t
+10 B f
+( a)1 0( ia)1 50( oi)1 28( no)1 50( an)1 56( ra)1 50( ar)1 44(p pa)1 106 8 2285 7152 t
+10 R f
+(is used.\))1 343 1 2704 7152 t
+10 S1 f
+(\261 \261)1 65 1 3115 7152 t
+10 B f
+( s)1 0( rs)1 39( or)1 44( to)1 50( ec ct)2 77( se)1 44( s)1 108(P P)1 61 8 3180 7152 t
+10 R f
+(sets the given number of sectors for initial)7 1761 1 3639 7152 t
+( For nonzero values, some)4 1155(overlap sampling for jitter correction. Two cases are to be distinguished.)10 3165 2 1080 7272 t
+( 12)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7752 t
+cleartomark
+showpage
+restore
+%%EndPage: 12 12
+%%Page: 13 13
+save
+mark
+13 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+( zero is given, no overlap)5 1054( an argument of)3 653( If)1 132(sectors are read twice to enable cdda2wav's jitter correction.)8 2481 4 1080 960 t
+( nonzero overlap sectors cdda2wav dynamically adjusts the setting during)9 3137( For)1 218( used.)1 254(sampling will be)2 711 4 1080 1080 t
+( the read with an increased)5 1121( no match can be found, cdda2wav retries)7 1732( If)1 134(sampling \(like cdparanoia does\).)3 1333 4 1080 1200 t
+( the current overlapped samples, cdda2wav reduces the)7 2353( the amount of jitter is lower than)7 1496(overlap. If)1 471 3 1080 1320 t
+( argument given has to be lower than the total)9 1954( The)1 227( a higher reading speed.)4 1006(overlap setting, resulting in)3 1133 4 1080 1440 t
+(number of sectors per request \(see option)6 1778 1 1080 1560 t
+10 I f
+(-n)2905 1560 w
+10 R f
+( will check this setting and issues a)7 1556(below\). Cdda2wav)1 809 2 3035 1560 t
+( or errorfree \(perfect\))3 901( case of zero sectors is nice on low load situations)10 2161( The)1 230(error message otherwise.)2 1028 4 1080 1680 t
+(cdrom drives and perfect \(not scratched\) audio cds.)7 2100 1 1080 1800 t
+9 B f
+( ze e)2 40( iz)1 40( si)1 25( s)1 65( er r)2 40( fe)1 40( sf)1 30( ns)1 35( an)1 50( ra)1 45( tr)1 40( t)1 60( e)1 0( he)1 40( th)1 50( t)1 60( t)1 0( et)1 30(S Se)1 90 19 900 1968 t
+10 S1 f
+(\261 \261)1 65 1 1080 2088 t
+10 B f
+( s)1 0( rs)1 39( or)1 44( to)1 50( ec ct)2 77( se)1 44( s)1 105(n n)1 56 8 1145 2088 t
+10 R f
+(will set the transfer size to the speci\256ed sectors per request.)10 2450 1 1593 2088 t
+9 B f
+( s)1 0( ts)1 35( nt)1 30( en)1 50( me)1 40( em)1 75( le)1 40( el)1 25( e)1 70( er r)2 40( ff fe)2 70( bu uf)2 80( b)1 80( g)1 0( ng)1 45( in)1 50( ri)1 25( r)1 70( f)1 0( of)1 30( o)1 75( er r)2 40( be)1 40( mb)1 50( nu um)2 125( n)1 80( t)1 0( et)1 30(S Se)1 90 29 900 2256 t
+10 S1 f
+(\261 \261)1 65 1 1080 2376 t
+10 B f
+( s)1 0( er rs)2 83( ff fe)2 77( bu uf)2 89( b)1 122(l l)1 28 6 1145 2376 t
+10 R f
+(will allocate the speci\256ed number of ring buffer elements.)8 2379 1 1577 2376 t
+9 B f
+( s)1 0( es)1 35( le)1 40( pl)1 25( mp)1 50( am)1 75( sa)1 45( s)1 65( t)1 0( np pu ut)3 130( in)1 50( i)1 55( f)1 0( of)1 30( o)1 75( ss s)2 35( es)1 35( ne)1 40( an)1 50( ia)1 45( nd di)2 75( en)1 50( e)1 70( t)1 0( et)1 30(S Se)1 90 26 900 2544 t
+10 S1 f
+(\261 \261)1 65 1 1080 2664 t
+10 B f
+( ss s)2 39( es)1 39( ne)1 44( an)1 56( ia)1 50( nd di)2 84( en)1 56( e)1 114(C C)1 72 9 1145 2664 t
+10 R f
+( can be set explicitly to)5 989( Endianess)1 476(will override the default settings of the input format.)8 2199 3 1736 2664 t
+10 S1 f
+(")1080 2784 w
+10 R f
+(little)1121 2784 w
+10 S1 f
+(")1305 2784 w
+10 R f
+(,)1346 2784 w
+10 S1 f
+(")1404 2784 w
+10 R f
+(big)1445 2784 w
+10 S1 f
+(")1573 2784 w
+10 R f
+(or)1647 2784 w
+10 S1 f
+(")1763 2784 w
+10 R f
+(machine)1804 2784 w
+10 S1 f
+(")2142 2784 w
+10 R f
+(or to the automatic endianess detection based on voting with)9 2489 1 2216 2784 t
+10 S1 f
+(")4738 2784 w
+10 R f
+(guess)4779 2784 w
+10 S1 f
+(")5001 2784 w
+10 R f
+(.)5042 2784 w
+9 B f
+( s)1 0( es)1 35( le)1 40( pl)1 25( mp)1 50( am)1 75( sa)1 45( s)1 65( t)1 0( pu ut)2 80( tp)1 50( ut)1 30( ou)1 50( o)1 75( f)1 0( of)1 30( o)1 75( ss s)2 35( es)1 35( ne)1 40( an)1 50( ia)1 45( nd di)2 75( en)1 50( e)1 70( t)1 0( et)1 30(S Se)1 90 28 900 2952 t
+10 S1 f
+(\261 \261)1 65 1 1080 3072 t
+10 B f
+( ss s)2 39( es)1 39( ne)1 44( an)1 56( ia)1 50( nd di)2 84( en)1 56( e)1 120(E E)1 67 9 1145 3072 t
+10 R f
+(\(endianess can be)2 739 1 1743 3072 t
+10 S1 f
+(")2525 3072 w
+10 R f
+(little)2566 3072 w
+10 S1 f
+(")2750 3072 w
+10 R f
+(,)2791 3072 w
+10 S1 f
+(")2860 3072 w
+10 R f
+(big)2901 3072 w
+10 S1 f
+(")3029 3072 w
+10 R f
+(or)3114 3072 w
+10 S1 f
+(")3241 3072 w
+10 R f
+(machine)3282 3072 w
+10 S1 f
+(")3620 3072 w
+10 R f
+(\) will override the default settings of the)7 1739 1 3661 3072 t
+(output format.)1 580 1 1080 3192 t
+9 B f
+( n)1 0( on)1 50( io)1 45( ti)1 25( pt)1 30( op)1 50( o)1 75( e)1 0( se)1 40( os)1 35( bo)1 45( er rb)2 90(V Ve)1 105 13 900 3360 t
+10 S1 f
+(\261 \261)1 65 1 1080 3480 t
+10 B f
+( t)1 0( st)1 33( li is)2 67( ml)1 28( em)1 83( te)1 44( it)1 33( i)1 94(v v)1 50 9 1145 3480 t
+10 R f
+(prints more information. A list allows selection of different information items.)10 3211 1 1610 3480 t
+10 B f
+( p)1 0( lp)1 56( el)1 28(h he)1 100 4 1080 3768 t
+10 R f
+(Print a summary of possible members of the diffopts list.)9 2349 1 1580 3768 t
+10 B f
+(! !)1 33 1 1080 3936 t
+10 R f
+(Invert the meaning of the following string. No comma is needed after the exclamation mark.)14 3800 1 1580 3936 t
+10 B f
+( t)1 0( ot)1 33(n no)1 106 3 1080 4104 t
+10 R f
+( from an)2 356(Invert the meaning of all members in the diffopts list i.e. exclude all present options)14 3464 2 1580 4104 t
+( using)1 261( When)1 315(initially complete set compare list.)4 1456 3 1580 4224 t
+10 B f
+( h)1 0( sh)1 56(c cs)1 83 3 3656 4224 t
+10 R f
+(\(1\) you might have problems to use)6 1529 1 3795 4224 t
+10 B f
+(! !)1 33 1 5367 4224 t
+10 R f
+( is why the)3 460( This)1 244(due to its strange parser.)4 1005 3 1580 4344 t
+10 B f
+( t)1 0( ot)1 33(n no)1 106 3 3322 4344 t
+10 R f
+(alias exists.)1 469 1 3494 4344 t
+10 B f
+( e)1 0( le)1 44( bl)1 28( ab)1 56( sa)1 50( is)1 39(d di)1 84 7 1080 4512 t
+10 R f
+(disables verbosity)1 727 1 1580 4512 t
+10 B f
+( ll l)2 28(a al)1 78 2 1080 4680 t
+10 R f
+(all information is given)3 960 1 1580 4680 t
+10 B f
+( c)1 0( oc)1 44(t to)1 83 3 1080 4848 t
+10 R f
+(displays the table of contents)4 1192 1 1580 4848 t
+10 B f
+( y)1 0( ry)1 50( ar)1 44( mm ma)2 133( um)1 83(s su)1 95 6 1080 5016 t
+10 R f
+(displays a summary of recording parameters)5 1811 1 1580 5016 t
+10 B f
+( s)1 0( ce es)2 83( ic)1 44( nd di)2 84(i in)1 84 5 1080 5184 t
+10 R f
+(invokes the index scanner and displays start positions of indices)9 2628 1 1580 5184 t
+10 B f
+( og g)2 50( lo)1 50( al)1 28( ta)1 50( at)1 33(c ca)1 94 6 1080 5352 t
+10 R f
+(retrieves and displays a media catalog number)6 1894 1 1580 5352 t
+10 B f
+( d)1 0( id)1 56( ki)1 28( ck)1 56( ac)1 44( ra)1 50(t tr)1 77 7 1080 5520 t
+10 R f
+(retrieves and displays international standard recording codes)6 2465 1 1580 5520 t
+10 B f
+( s)1 0( rs)1 39( or)1 44( to)1 50( ec ct)2 77(s se)1 83 6 1080 5688 t
+10 R f
+(displays track start positions in absolute sector notation)7 2269 1 1580 5688 t
+(To combine several requests just list the suboptions separated with commas.)10 3130 1 1080 5856 t
+9 B f
+( s)1 0( ts)1 35( nt)1 30( en)1 50( te)1 40( nt)1 30( on)1 50( co)1 45( c)1 70( f)1 0( of)1 30( o)1 75( e)1 0( le)1 40( bl)1 25( ab)1 50( ta)1 45( t)1 60( e)1 0( he)1 40(T Th)1 110 21 900 6024 t
+10 R f
+( with number of tracks and total time \(displayed in)9 2113(The display will show the table of contents)7 1781 2 1080 6144 t
+10 I f
+(mm)5009 6144 w
+10 R f
+(:)5161 6144 w
+10 I f
+(ss)5189 6144 w
+10 R f
+(.)5275 6144 w
+10 I f
+(hh)5300 6144 w
+10 R f
+(format,)1080 6264 w
+10 I f
+(mm)1405 6264 w
+10 R f
+(=minutes,)1557 6264 w
+10 I f
+(ss)1989 6264 w
+10 R f
+(=seconds,)2075 6264 w
+10 I f
+(hh)2506 6264 w
+10 R f
+( displays track number)3 931( following list)2 580( The)1 222(=rounded 1/100 seconds\).)2 1053 4 2614 6264 t
+( summary gives a line per track describing the type of the track.)12 2638( The)1 221(and track time for each entry.)5 1214 3 1080 6384 t
+10 B f
+( s)1 0( ns)1 39( an)1 56( ha)1 50( ch)1 56( c)1 77( e)1 0( pe)1 44( yp)1 56( ty)1 50( kt)1 33( ck)1 56( ac)1 44( ra)1 50( tr)1 44( t)1 66( d)1 0( ed)1 56( tt te)2 77( it)1 33( mi)1 28( er rm)2 127( pe)1 44( yp)1 56( py)1 50( op)1 56( co)1 50( c)1 77( s)1 0( is)1 39( si)1 28( as)1 39( ph ha)2 106( mp)1 56( re ee em)3 171( pr)1 44( p)1 89( k)1 0( ck)1 56( ac)1 44( ra)1 50(t tr)1 77 42 2070 6624 t
+10 R f
+(The)1080 6864 w
+10 B f
+( k)1 0( ck)1 56( ac)1 44( ra)1 50(t tr)1 77 5 1268 6864 t
+10 R f
+( track number.)2 597(column holds the)2 705 2 1528 6864 t
+10 B f
+( s)1 0( is)1 39( si)1 28( as)1 39( ph ha)2 106( mp)1 56( re ee em)3 171(p pr)1 100 8 2897 6864 t
+10 R f
+(shows if that track has been given a non linear)9 1930 1 3470 6864 t
+( You can undo this effect with the)7 1426( NOTE:)1 363(frequency response.)1 808 3 1080 6984 t
+10 S1 f
+(\261 \261)1 65 1 3712 6984 t
+10 B f
+(T T)1 67 1 3777 6984 t
+10 R f
+(option.)3879 6984 w
+10 B f
+( y)1 0( py)1 50( op)1 56(c co)1 94 4 4228 6984 t
+10 S1 f
+(\261 \261)1 65 1 4428 6984 t
+10 B f
+( d)1 0( ed)1 56( tt te)2 77( it)1 33( mi)1 28( er rm)2 127(p pe)1 100 7 4493 6984 t
+10 R f
+(indicates if)1 451 1 4949 6984 t
+(this track is allowed to copy.)5 1199 1 1080 7104 t
+10 B f
+( e)1 0( pe)1 44( yp)1 56( ty)1 50( kt)1 33( ck)1 56( ac)1 44( ra)1 50(t tr)1 77 9 2347 7104 t
+10 R f
+(can be data or audio. On multimedia CDs \(except hidden track)10 2608 1 2792 7104 t
+(CDs\) both of them should be present.)6 1592 1 1080 7224 t
+10 B f
+( s)1 0( ls)1 39( el)1 28( nn ne)2 100( an)1 56( ha)1 50(c ch)1 100 7 2746 7224 t
+10 R f
+( tracks only. There can be two or)7 1418(is de\256ned for audio)3 822 2 3160 7224 t
+( 13)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7704 t
+cleartomark
+showpage
+restore
+%%EndPage: 13 13
+%%Page: 14 14
+save
+mark
+14 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+(four channels.)1 573 1 1080 960 t
+9 B f
+( t)1 0( pu ut)2 80( tp)1 50( ut)1 30( ou)1 50( o)1 75( e)1 0( le)1 40( \256l)1 25( \256)1 80( o)1 0(N No)1 110 12 900 1128 t
+10 S1 f
+(\261 \261)1 65 1 1080 1248 t
+10 B f
+(N N)1 72 1 1145 1248 t
+10 R f
+(this debugging option switches off writing to a \256le.)8 2111 1 1250 1248 t
+9 B f
+( n)1 0( on)1 50( io)1 45( ti)1 25( at)1 30( er ra)2 85( ne)1 40( en)1 50( ge)1 40( g)1 75( e)1 0( le)1 40( \256l)1 25( o\256)1 50( fo)1 45( nf)1 30( in)1 50( i)1 55( o)1 0(N No)1 110 20 900 1416 t
+10 S1 f
+(\261 \261)1 65 1 1080 1536 t
+10 B f
+(H H)1 78 1 1145 1536 t
+10 R f
+(this option switches off creation of an info \256le and a cddb \256le.)12 2579 1 1256 1536 t
+9 B f
+( s)1 0( nd ds)2 85( en)1 50( te)1 40( nt)1 30( on)1 50( ro)1 45( fr)1 40( f)1 60( i)1 0( ui)1 25( gu)1 50( g)1 75( r)1 0( or)1 40( fo)1 45( f)1 60( t)1 0( pu ut)2 80( tp)1 50( ut)1 30( ou)1 50( o)1 75( e)1 0( le)1 40( pl)1 25( mp)1 50( im)1 75( si)1 25( s)1 65( f)1 0( of)1 30( o)1 75( n)1 0( on)1 50( io)1 45( ti)1 25( at)1 30( er ra)2 85( ne)1 40( en)1 50(G Ge)1 110 42 900 1704 t
+10 S1 f
+(\261 \261)1 65 1 1080 1824 t
+10 B f
+(g g)1 50 1 1145 1824 t
+10 R f
+( gui frontends \(like xcd-)4 1033(this option switches on simple line formatting, which is needed to support)11 3131 2 1236 1824 t
+(roast\).)1080 1944 w
+9 B f
+( g)1 0( ng)1 45( in)1 50( og gg gi)3 115( lo)1 45( l)1 55( I)1 0( SI)1 35( CS)1 50( SC)1 65( S)1 80( e)1 0( se)1 40( os)1 35( bo)1 45( er rb)2 90(V Ve)1 105 17 900 2112 t
+10 S1 f
+(\261 \261)1 65 1 1080 2232 t
+10 B f
+(V V)1 72 1 1145 2232 t
+10 R f
+( SCSI commands. This will produce a lot of output \(when SCSI)11 2715(this option switches on logging of)5 1429 2 1256 2232 t
+( format is the same as being used)7 1414( is needed for debugging purposes. The)6 1656( This)1 250(devices are being used\).)3 1000 4 1080 2352 t
+(with the cdrecord program, see)4 1270 1 1080 2472 t
+10 B f
+( d)1 0( rd)1 56( or)1 44( re ec co)3 138( dr)1 44(c cd)1 100 6 2383 2472 t
+10 R f
+(\(1\) for more information.)3 1033 1 2765 2472 t
+9 B f
+( n)1 0( on)1 50( io)1 45( ti)1 25( pt)1 30( op)1 50( o)1 75( t)1 0( et)1 30( ie)1 40( ui)1 25(Q Qu)1 120 12 900 2640 t
+10 S1 f
+(\261 \261)1 65 1 1080 2760 t
+10 B f
+(q q)1 56 1 1145 2760 t
+10 R f
+( reduces cpu time resources.)4 1159( That)1 249(suppresses all screen output except error messages.)6 2090 3 1234 2760 t
+9 B f
+( n)1 0( on)1 50( io)1 45( ti)1 25( pt)1 30( op)1 50( o)1 75( n)1 0( on)1 50( io)1 45( ti)1 25( at)1 30( ma)1 45( rm)1 75( or)1 40( fo)1 45( nf)1 30( in)1 50( i)1 55( w)1 0( ow)1 65( ho)1 45( sh)1 50( s)1 65( t)1 0( st)1 30( us)1 35(J Ju)1 95 28 900 2928 t
+10 S1 f
+(\261 \261)1 65 1 1080 3048 t
+10 B f
+(J J)1 50 1 1145 3048 t
+10 R f
+( the)1 160(does not write a \256le, it only prints information about the disc \(depending on)13 3182 2 1232 3048 t
+10 S1 f
+(\261 \261)1 65 1 4612 3048 t
+10 B f
+(v v)1 50 1 4677 3048 t
+10 R f
+(option\). This is)2 635 1 4765 3048 t
+(just for information purposes.)3 1212 1 1080 3168 t
+9 B f
+( t)1 0( rt)1 30( or)1 40( up pp po)3 145( su)1 50( s)1 65( P)1 0( BP)1 55(C CD DD DB)3 255 9 720 3336 t
+( n)1 0( on)1 50( io)1 45( ti)1 25( pt)1 30( op)1 50( o)1 75( s)1 0( es)1 35( le)1 40( tl)1 25( it)1 30( ti)1 25( t)1 60( k)1 0( ck)1 50( ac)1 40( ra)1 45( tr)1 40( t)1 60( nd d)2 50( an)1 50( a)1 75( m)1 0( bu um)2 125( lb)1 50( al)1 25( a)1 75( ku up p)3 100( oo ok)2 95(L Lo)1 105 31 900 3456 t
+10 S1 f
+(\261 \261)1 65 1 1080 3576 t
+10 B f
+( e)1 0( de)1 44( od)1 56( mo)1 50( m)1 126( dd db bp p)4 168( cd)1 56( c)1 120(L L)1 67 9 1145 3576 t
+10 R f
+( performer, album-, and track titles from a cddbp server.)9 2415(Cdda2wav tries to retrieve)3 1110 2 1875 3576 t
+( is planned to have more control over the server)9 2048( It)1 135(The default server right now is 'freedb.freedb.org'.)6 2137 3 1080 3696 t
+( parameter de\256nes how multiple entries are handled:)7 2149( The)1 221(handling later.)1 585 3 1080 3816 t
+10 B f
+(0 0)1 50 1 1080 3984 t
+10 R f
+(interactive mode, the user chooses one of the entries.)8 2176 1 1440 3984 t
+10 B f
+(1 1)1 50 1 1080 4152 t
+10 R f
+(take the \256rst entry without asking.)5 1406 1 1440 4152 t
+9 B f
+( s)1 0( ku up ps)3 135( oo ok)2 95( lo)1 45( l)1 55( e)1 0( le)1 40( tl)1 25( it)1 30( ti)1 25( t)1 60( r)1 0( or)1 40( fo)1 45( f)1 60( er r)2 40( ve)1 40( er rv)2 85( se)1 40( s)1 65( t)1 0( et)1 30(S Se)1 90 23 900 4320 t
+10 B f
+( dd db bp p)4 168(c cd)1 100 2 1080 4440 t
+10 S1 f
+(\261 \261)1 65 1 1348 4440 t
+10 B f
+( e)1 0( me)1 44( am)1 83( na)1 50( er rn)2 100( ve)1 44( er rv)2 94( se)1 44( s)1 112( er r)2 44( ve)1 44( er rv)2 94(s se)1 83 13 1413 4440 t
+10 R f
+(When using)1 495 1 2289 4440 t
+10 S1 f
+(\261)2824 4440 w
+10 R f
+(L or)1 184 1 2889 4440 t
+10 S1 f
+(\261)3113 4440 w
+10 R f
+( server being contacted can be set with this)8 1841(cddb, the)1 381 2 3178 4440 t
+(option.)1080 4560 w
+9 B f
+( s)1 0( ku up ps)3 135( oo ok)2 95( lo)1 45( l)1 55( e)1 0( le)1 40( tl)1 25( it)1 30( ti)1 25( t)1 60( r)1 0( or)1 40( fo)1 45( f)1 60( er r)2 40( be)1 40( mb)1 50( nu um)2 125( tn)1 50( rt)1 30( or)1 40( po)1 45( p)1 80( t)1 0( et)1 30(S Se)1 90 27 900 4728 t
+10 B f
+( dd db bp p)4 168(c cd)1 100 2 1080 4848 t
+10 S1 f
+(\261 \261)1 65 1 1348 4848 t
+10 B f
+( er r)2 44( be)1 44( mb)1 56( nu um)2 139( tn)1 56( rt)1 33( or)1 44( po)1 50( p)1 132( t)1 0( rt)1 33( or)1 44(p po)1 106 13 1413 4848 t
+10 R f
+(When using)1 498 1 2237 4848 t
+10 S1 f
+(\261)2778 4848 w
+10 R f
+(L or)1 187 1 2843 4848 t
+10 S1 f
+(\261)3073 4848 w
+10 R f
+( contacted can be set with)5 1123(cddb, the server port being)4 1139 2 3138 4848 t
+(this option.)1 459 1 1080 4968 t
+9 B f
+( E)1 0( GE)1 60( AG)1 70( SA)1 65( US)1 50( U)1 95( N)1 0( ON)1 65( O)1 100( S)1 0( TS)1 50( NT)1 60( IN)1 65(H HI)1 105 14 720 5136 t
+10 R f
+( sample player software and sound card)6 1813(Don't create samples you cannot read. First check your)8 2507 2 1080 5256 t
+(hardware. I experienced problems with very low sample rates \(stereo)9 2897 1 1080 5376 t
+10 S1 f
+(<)4018 5376 w
+10 R f
+(= 1575 Hz, mono)3 745 1 4074 5376 t
+10 S1 f
+(<)4859 5376 w
+10 R f
+(= 3675 Hz\))2 485 1 4915 5376 t
+( standard WAV players for sound blaster \(maybe they are not legal in)12 3017(when trying to play them with)5 1303 2 1080 5496 t
+10 B f
+( AV V)2 72(W WA)1 172 2 1080 5616 t
+10 R f
+( cdda2wav sup-)2 662( Now)1 270( in a bigendian format.)4 979(format\). Most CD-Writers insist on audio samples)6 2121 4 1368 5616 t
+(ports the)1 355 1 1080 5736 t
+10 S1 f
+(\261 \261)1 65 1 1468 5736 t
+10 B f
+( ss s)2 39( es)1 39( ne)1 44( an)1 56( ia)1 50( nd di)2 84( en)1 56( e)1 110(E E)1 67 9 1533 5736 t
+10 R f
+(option to control the endianess of the written samples.)8 2226 1 2111 5736 t
+( the 'perfect')2 534(If your hardware is fast enough to run cdda2wav uninterrupted and your CD drive is one of)16 3786 2 1080 5904 t
+( all overlap sampling off with the)6 1422(ones, you will gain speed when switching)6 1764 2 1080 6024 t
+10 S1 f
+(\261 \261)1 65 1 4306 6024 t
+10 B f
+( 0)1 0( 0)1 123(P P)1 61 3 4371 6024 t
+10 R f
+(option. Further \256ne)2 805 1 4595 6024 t
+(tuning can be done with the)5 1157 1 1080 6144 t
+10 S1 f
+(\261 \261)1 65 1 2272 6144 t
+10 B f
+( s)1 0( rs)1 39( or)1 44( to)1 50( ec ct)2 77( se)1 44( s)1 107(n n)1 56 8 2337 6144 t
+10 R f
+( should be requested)3 851(option. You can specify how much sectors)6 1760 2 2789 6144 t
+(in one go.)2 413 1 1080 6264 t
+(Cdda2wav supports)1 799 1 1080 6432 t
+10 B f
+( s)1 0( es)1 39( pe)1 44( ip)1 56(p pi)1 84 5 1912 6432 t
+10 R f
+( a \256lename of)3 570(. Use)1 246 2 2135 6432 t
+10 S1 f
+(\261 \261)1 65 1 2984 6432 t
+10 R f
+(to let cdda2wav output its samples to standard output.)8 2216 1 3082 6432 t
+( the)1 158(Conversion to other sound formats can be done using)8 2211 2 1080 6600 t
+10 B f
+( ox x)2 50(s so)1 89 2 3485 6600 t
+10 R f
+(program package \(although the use of)5 1565 1 3660 6600 t
+10 B f
+( ox x)2 50(s so)1 89 2 5261 6600 t
+10 S1 f
+(\261 \261)1 65 1 1080 6720 t
+10 B f
+(x x)1 50 1 1145 6720 t
+10 R f
+( option)1 292(to change the byte order of samples should be no more necessary; see)12 2921 2 1232 6720 t
+10 S1 f
+(\261 \261)1 65 1 4481 6720 t
+10 B f
+(E E)1 67 1 4546 6720 t
+10 R f
+(to change the out-)3 751 1 4649 6720 t
+(put byteorder\).)1 601 1 1080 6840 t
+( possible with)2 582(If you want to sample more than one track into different \256les in one run, this is currently)17 3738 2 1080 7008 t
+(the)1080 7128 w
+10 S1 f
+(\261 \261)1 65 1 1235 7128 t
+10 B f
+(B B)1 67 1 1300 7128 t
+10 R f
+(option. When recording time exceeds the track limit a new \256le will be opened for the next track.)17 3976 1 1400 7128 t
+( 14)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 14 14
+%%Page: 15 15
+save
+mark
+15 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+9 B f
+( S)1 0( LE ES)2 110( IL)1 60(F FI)1 90 4 720 960 t
+10 R f
+(Cdda2wav can generate a lot of \256les for various purposes.)9 2389 1 1080 1080 t
+9 B f
+( :)1 0( s:)1 30( es)1 35( le)1 40( \256l)1 25( \256)1 80( o)1 0( io)1 45( ud di)2 75(A Au)1 115 10 900 1248 t
+10 R f
+( samples with default extensions .wav, .au, .aifc, .aiff, and .cdr according)11 3020(There are audio \256les containing)4 1300 2 1080 1368 t
+( are not generated when option \()6 1399( \256les)1 211( These)1 315(to the selected sound format.)4 1227 4 1080 1488 t
+10 S1 f
+(\261 \261)1 65 1 4232 1488 t
+10 B f
+(N N)1 72 1 4297 1488 t
+10 R f
+(\) is given. Multiple \256les)4 1031 1 4369 1488 t
+( written when the bulk copy option \()7 1590(may be)1 309 2 1080 1608 t
+10 S1 f
+(\261 \261)1 65 1 2979 1608 t
+10 B f
+(B B)1 67 1 3044 1608 t
+10 R f
+(\) is used. Individual \256le names can be given as argu-)10 2289 1 3111 1608 t
+( the number of \256le names given is suf\256cient to cover all included audio tracks, the \256le names)17 3950(ments. If)1 370 2 1080 1728 t
+( than \256les needed to write the included)7 1685( if there are less \256le names)6 1178( Otherwise,)1 512(will be used verbatim.)3 945 4 1080 1848 t
+(tracks, the part of the \256le name before the extension is extended with ')13 3084 1 1080 1968 t
+10 S f
+(_)4164 1968 w
+10 R f
+(dd' where dd represents the)4 1186 1 4214 1968 t
+(current track number.)2 877 1 1080 2088 t
+9 B f
+( :)1 0( s:)1 30( es)1 35( le)1 40( \256l)1 25( \256)1 80( x)1 0( ex)1 45( nd de)2 90( in)1 50( di)1 25( Cd)1 50( C)1 95( nd d)2 50( an)1 50( a)1 75( dd db b)3 100(C Cd)1 115 18 900 2256 t
+10 R f
+( .cdtext)1 310(If cdda2wav detects cd-extra or cd-text \(album/track\) title information, then .cddb, .cdindex and)12 4010 2 1080 2376 t
+( generated unless suppressed by the option)6 1763(\256les are)1 324 2 1080 2496 t
+10 S1 f
+(\261 \261)1 65 1 3202 2496 t
+10 B f
+(H H)1 78 1 3267 2496 t
+10 R f
+( contain suitable formatted entries for sub-)6 1757(. They)1 298 2 3345 2496 t
+( The CDINDEX and CDDB\(tm\) systems are)6 1924(mission to audio cd track title databases in the internet.)9 2396 2 1080 2616 t
+(currently supported. For more information please visit www.musicbrainz.org and www.freedb.com.)9 4062 1 1080 2736 t
+9 B f
+( :)1 0( s:)1 30( es)1 35( le)1 40( \256l)1 25( \256)1 80( f)1 0( nf)1 30(I In)1 85 9 900 2904 t
+10 R f
+( audio cd, it was taken from. They are)8 1609(The inf \256les are describing the sample \256les and the part from the)12 2711 2 1080 3024 t
+(a means to transfer information to a cd burning program like cdrecord. For example, if the original audio)17 4320 1 1080 3144 t
+(cd had pre-emphasis enabled, and cdda2wav)5 1838 1 1080 3264 t
+10 S1 f
+(\261 \261)1 65 1 2956 3264 t
+10 B f
+(T T)1 67 1 3021 3264 t
+10 R f
+(did remove the pre-emphasis, then the inf \256le has pre-)9 2274 1 3126 3264 t
+( .cddb and the .cdindex have)5 1199(emphasis not set \(since the audio \256le does not have it anymore\), while the)13 3121 2 1080 3384 t
+(pre-emphasis set as the original does.)5 1532 1 1080 3504 t
+9 B f
+( G)1 0( NG)1 70( IN)1 65( AR RN NI)3 165(W WA)1 155 5 720 3672 t
+10 B f
+( :)1 0( T:)1 33( AN NT)2 139( TA)1 72( RT)1 67( OR)1 72( PO)1 78( MP)1 61(I IM)1 133 9 1080 3792 t
+10 R f
+(it is prohibited to sell copies of copyrighted material by noncopyright holders. This pro-)13 3631 1 1769 3792 t
+( constraint when using the)4 1093( user acknowledges this)3 987( The)1 225(gram may not be used to circumvent copyrights.)7 2015 4 1080 3912 t
+(software.)1080 4032 w
+9 B f
+( S)1 0( GS)1 50( UG)1 70(B BU)1 125 4 720 4200 t
+10 R f
+(The index scanner may give timeouts.)5 1560 1 1080 4320 t
+(The resampling \(rate conversion code\) uses polynomial interpolation, which is not optimal.)11 3737 1 1080 4560 t
+(Cdda2wav should use threads.)3 1239 1 1080 4800 t
+(Cdda2wav currently cannot sample hidden audio tracks that reside in track)10 3063 1 1080 5040 t
+10 S1 f
+(#)4176 5040 w
+10 R f
+(1 index 0.)2 413 1 4226 5040 t
+9 B f
+( S)1 0( TS)1 50( NT)1 60( EN)1 65( ME)1 60( EM)1 85( GE)1 60( DG)1 70( LE ED)2 125( WL)1 60( OW)1 90( NO)1 70( KN)1 65(A AC CK)2 200 14 720 5208 t
+10 R f
+( and Fraunhofer Institut f)4 1080(Thanks goto Project MODE \(http://www.mode.net/\))4 2165 2 1080 5328 t
+(. .)1 45 1 4325 5273 t
+(ur integrierte Schaltungen)2 1075 1 4325 5328 t
+( Europe and Ricoh Japan provided)5 1558( Plextor)1 383(\(FhG-IIS\) \(http://www.iis.fhg.de/\) for \256nancial support.)4 2379 3 1080 5448 t
+( has helped a lot)4 701( Rammi)1 366( this software.)2 589(cdrom disk drives and cd burners which helped a lot to develop)11 2664 4 1080 5568 t
+( showed a lot of stamina when hearing 100 times the \256rst 16 seconds of the \256rst)16 3346(with the debugging and)3 974 2 1080 5688 t
+( Montgomery\))1 662( contributed by Monty \(Christopher)4 1751( Libparanoia)1 621(track of the Krupps CD.)4 1286 4 1080 5808 t
+(xiphmont)1080 5928 w
+10 S1 f
+(@)1464 5928 w
+10 R f
+(mit.edu.)1556 5928 w
+9 B f
+( R)1 0( HO OR)2 135( TH)1 70(A AU UT)2 190 4 720 6096 t
+10 R f
+(Heiko Eissfeldt heiko)2 882 1 1080 6216 t
+10 S1 f
+(@)1962 6216 w
+10 R f
+(colossus.escape.de \(1993-2004\))1 1280 1 2054 6216 t
+(2004-today:)1080 6384 w
+(J)1080 6624 w
+(. .)1 47 1 1119 6569 t
+(org Schilling)1 528 1 1119 6624 t
+(Seestr. 110)1 452 1 1080 6744 t
+(D-13353 Berlin)1 638 1 1080 6864 t
+(Germany)1080 6984 w
+( 15)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 15 15
+%%Page: 16 16
+save
+mark
+16 pagesetup
+10 R f
+( \( 1 \))3 164( CDDA2WAV)1 3839(User Commands)1 677 3 720 480 t
+9 B f
+( TE E)2 60(D DA AT)2 190 2 720 960 t
+10 R f
+(12 Jan 2010)2 499 1 1080 1080 t
+9 B f
+( Y)1 0( TY)1 65( IT)1 60( LI)1 35( IL)1 60( BI)1 35( AB)1 60( TA)1 65( ST)1 60( S)1 80( E)1 0( AC CE)2 125( FA)1 65( RF)1 55( TE ER)2 125( NT)1 60(I IN)1 100 17 720 1248 t
+10 R f
+(The interfaces provided by)3 1123 1 1080 1368 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2245 1368 t
+10 R f
+( As)1 187( long term stability.)3 838(are designed for)2 676 3 2715 1368 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4459 1368 t
+10 R f
+(depends on)1 470 1 4930 1368 t
+(interfaces provided by the underlying operating system, the stability of the interfaces offered by)13 4320 1 1080 1488 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1080 1608 t
+10 R f
+( the interface stability of the OS interfaces. Modi\256ed interfaces in the OS may)13 3377(depends on)1 471 2 1552 1608 t
+(enforce modi\256ed interfaces in)3 1218 1 1080 1728 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2331 1728 t
+10 R f
+(.)2759 1728 w
+( 16)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 16 16
+%%Trailer
+done
+%%DocumentFonts: Times-Roman Times-Bold Times-Italic Symbol
+%%Pages: 16

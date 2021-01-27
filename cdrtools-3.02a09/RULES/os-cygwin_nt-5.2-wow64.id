@@ -1,0 +1,23 @@
+#ident "@(#)os-cygwin_nt-5.2-wow64.id	1.5 09/04/11 "
+###########################################################################
+# Written 2006 by J. Schilling
+###########################################################################
+#
+# OS specific MACRO definitions for Cygnus GCC for MS Windows NT-5.2 (Server 2003)
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+include $(SRCROOT)/$(RULESDIR)/os-cygwin32_wow64.id
+
+WINNTDEFS +=	-D_WIN32_WINNT=0x0502

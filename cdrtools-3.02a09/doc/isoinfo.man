@@ -1,0 +1,330 @@
+
+
+
+Maintenance Procedures                                 ISOINFO(8)
+
+
+
+NNAAMMEE
+     devdump, isoinfo, isovfy, isodump  -  Utility  programs  for
+     dumping and verifying iso9660 images.
+
+SSYYNNOOPPSSIISS
+     ddeevvdduummpp _i_s_o_i_m_a_g_e
+
+     iissoodduummpp _i_s_o_i_m_a_g_e
+
+     iissooiinnffoo [ -dd ] [ -hh ] [ -RR ] [ -JJ ] [ -jj _c_h_a_r_s_e_t ] [ -ff ]  [
+     -ll ] [ -pp ] [ -TT _s_e_c_t_o_r ] [ -NN _s_e_c_t_o_r ] [ -ii _i_s_o_i_m_a_g_e ] [ -xx
+     _p_a_t_h ]
+
+     iissoovvffyy _i_s_o_i_m_a_g_e
+
+DDEESSCCRRIIPPTTIIOONN
+     ddeevvdduummpp is a crude utility to interactively display the con-
+     tents of device or filesystem images.  The initial screen is
+     a display of the first 256 bytes of the first 2048 byte sec-
+     tor.  The commands are the same as with iissoodduummpp.
+
+     iissoodduummpp is a crude utility to interactively display the con-
+     tents  of  iso9660  images  in  order  to  verify  directory
+     integrity.  The initial screen is a  display  of  the  first
+     part  of  the  root  directory, and the prompt shows you the
+     extent number and offset in the extent.
+
+          You can use the 'a' and 'b' commands to move  backwards
+          and  forwards  within the image. The 'g' command allows
+          you to goto an arbitrary extent, and  the  'f'  command
+          specifies  a  search string to be used. The '+' command
+          searches forward for the next instance  of  the  search
+          string, and the 'q' command exits ddeevvdduummpp or iissoodduummpp.
+
+     iissooiinnffoo is a utility to perform directory like  listings  of
+     iso9660 images.
+
+     iissoovvffyy is a utility to verify the integrity  of  an  iso9660
+     image.  Most  of  the  tests in iissoovvffyy were added after bugs
+     were discovered in early versions of mmkkiissooffss.. It  isn't  all
+     that  clear  how useful this is anymore, but it doesn't hurt
+     to have this around.
+
+
+OOPPTTIIOONNSS
+     The options common to all  programs  are  -hheellpp,-hh,-vveerrssiioonn,
+     ii=_n_a_m_e,ddeevv=_n_a_m_e.  The iissooiinnffoo program has additional command
+     line options. The options are:
+
+     -hheellpp
+
+     -hh   print a summary of all options.
+
+
+
+Version 3.0           Last change: 09/10/11                     1
+
+
+
+
+
+
+Maintenance Procedures                                 ISOINFO(8)
+
+
+
+     -dd   Print information from the  primary  volume  descriptor
+          (PVD)  of  the iso9660 image. This includes information
+          about Rock Ridge, Joliet extensions and  Eltorito  boot
+          information if present.
+
+     -ff   generate output as if a 'find  .  -print'  command  had
+          been  run  on the iso9660 image. You should not use the
+          --ll image with the --ff option.
+
+     -ii iissoo__iimmaaggee
+          Specifies the path of the iso9660 image that we wish to
+          examine.   The  options  -ii  and  ddeevv==_t_a_r_g_e_t are mutual
+          exclusive.
+
+     ddeevv==_t_a_r_g_e_t
+          Sets the SCSI target for the drive, see notes above.  A
+          typical   device  specification  is  ddeevv==_6,_0  .   If  a
+          filename must be provided together with  the  numerical
+          target  specification,  the  filename is implementation
+          specific.  The correct filename in  this  case  can  be
+          found  in  the  system  specific  manuals of the target
+          operating system.  On a _F_r_e_e_B_S_D system without _C_A_M sup-
+          port,   you  need  to  use  the  control  device  (e.g.
+          /_d_e_v/_r_c_d_0._c_t_l).  A correct device specification in this
+          case may be ddeevv==/_d_e_v/_r_c_d_0._c_t_l:@ .
+
+          On Linux, drives connected to a parallel  port  adapter
+          are  mapped  to  a virtual SCSI bus. Different adapters
+          are mapped to different targets on  this  virtual  SCSI
+          bus.
+
+          If no _d_e_v option is present, the program  will  try  to
+          get the device from the CCDDRR__DDEEVVIICCEE environment.
+
+          If the argument to the ddeevv== option does not contain the
+          characters  ',',  '/', '@' or ':', it is interpreted as
+          an  label  name  that  may  be  found   in   the   file
+          /etc/default/cdrecord (see FILES section).
+
+          The options -ii and ddeevv==_t_a_r_g_e_t are mutual exclusive.
+
+     -ddeebbuugg
+          Print additional debug information. This  enables  e.g.
+          printing  of  all  directory entries if a file has more
+          than one directory entry and printing of more  informa-
+          tion from the primary volume descriptor.
+
+          In debug mode, Rock Ridge information is parsed with -RR
+          even if it is not standard compliant.
+
+     -ll   generate output as if a 'ls -lR' command had  been  run
+          on  the iso9660 image.  You should not use the --ff image
+
+
+
+Version 3.0           Last change: 09/10/11                     2
+
+
+
+
+
+
+Maintenance Procedures                                 ISOINFO(8)
+
+
+
+          with the --ll option.
+
+     -NN sseeccttoorr
+          Quick hack to help examine single  session  disc  files
+          that  are  to  be  written to a multi-session disc. The
+          sector number specified is the sector number  at  which
+          the  iso9660  image  should be written when send to the
+          cd-writer. Not used for the first session on the disc.
+
+     -pp   Print path table information.
+
+     -RR   Extract information  from  Rock  Ridge  extensions  (if
+          present) for permissions, file names and ownerships.
+
+     -JJ   Extract information from Joliet extensions (if present)
+          for file names.
+
+     -jj cchhaarrsseett
+          Convert Joliet file names (if present) to the  supplied
+          charset. See mmkkiissooffss(8) for details.
+
+     -TT sseeccttoorr
+          Quick hack to help examine  multi-session  images  that
+          have  already  been burned to a multi-session disc. The
+          sector number specified is the sector  number  for  the
+          start of the session we wish to display.
+
+     -xx ppaatthhnnaammee
+          Extract specified file to stdout.
+
+AAUUTTHHOORR
+     The author of the original sources (1993 ... 1998)  is  Eric
+     Youngdale  <ericy@gnu.ai.mit.edu>  or <eric@andante.jic.com>
+     is to blame for these shoddy hacks.  Joerg  Schilling  wrote
+     the  SCSI  transport library and its adaptation layer to the
+     programs and newer parts (starting from 1999) of the  utili-
+     ties,  this  makes them Copyright (C) 1999-2004 Joerg Schil-
+     ling.  Patches to improve general usability would be  gladly
+     accepted.
+
+BBUUGGSS
+     The user interface really sucks.
+
+FFUUTTUURREE IIMMPPRROOVVEEMMEENNTTSS
+     These utilities are really quick hacks, which are very  use-
+     ful  for  debugging  problems  in  mkisofs  or in an iso9660
+     filesystem. In the long run, it would be nice to have a dae-
+     mon that would NFS export a iso9660 image.
+
+     The isoinfo program is probably the program that is  of  the
+     most use to the general user.
+
+
+
+
+Version 3.0           Last change: 09/10/11                     3
+
+
+
+
+
+
+Maintenance Procedures                                 ISOINFO(8)
+
+
+
+AAVVAAIILLAABBIILLIITTYY
+     These utilities come with the ccddrrttoooollss package, and the pri-
+     mary  ftp  site  is ftp.berlios.de in /pub/cdrecord and many
+     other mirror sites. Despite the name, the  software  is  not
+     beta.
+
+
+EENNVVIIRROONNMMEENNTT
+     CCDDRR__DDEEVVIICCEE
+          This may either hold a device identifier that is  suit-
+          able  to the open call of the SCSI transport library or
+          a label in the file /etc/default/cdrecord.
+
+     RRSSHH  If the RRSSHH environment is present, the  remote  connec-
+          tion will not be created via rrccmmdd(3) but by calling the
+          program pointed to by RRSSHH.  Use  e.g.  RRSSHH==/usr/bin/ssh
+          to create a secure shell connection.
+
+          Note that this forces the program to create a  pipe  to
+          the   rrsshh((11))  program  and  disallows  the  program  to
+          directly  access  the  network  socket  to  the  remote
+          server.  This makes it impossible to set up performance
+          parameters and slows down the connection compared to  a
+          rroooott initiated rrccmmdd((33)) connection.
+
+     RRSSCCSSII
+          If the RRSSCCSSII environment is present,  the  remote  SCSI
+          server  will  not be the program //oopptt//sscchhiillyy//ssbbiinn//rrssccssii
+          but the program pointed to by  RRSSCCSSII.   Note  that  the
+          remote  SCSI server program name will be ignored if you
+          log in using an account that has been  created  with  a
+          remote SCSI server program as login shell.
+
+
+FFIILLEESS
+     /etc/default/cdrecord
+          Default values can be set for the following options  in
+          /etc/default/cdrecord.
+
+          CDR_DEVICE
+               This may either hold a device identifier  that  is
+               suitable  to  the  open call of the SCSI transport
+               library    or    a    label    in     the     file
+               /etc/default/cdrecord  that  allows  to identify a
+               specific drive on the system.
+
+          Any other label
+               is an identifier for a specific drive on the  sys-
+               tem.  Such an identifier may not contain the char-
+               acters ',', '/', '@' or ':'.
+
+               Each line that follows  a  label  contains  a  TAB
+
+
+
+Version 3.0           Last change: 09/10/11                     4
+
+
+
+
+
+
+Maintenance Procedures                                 ISOINFO(8)
+
+
+
+               separated  list  of  items.  Currently, four items
+               are recognized: the SCSI  ID  of  the  drive,  the
+               default  speed that should be used for this drive,
+               the default FIFO size that should be used for this
+               drive  and  drive specific options. The values for
+               _s_p_e_e_d and _f_i_f_o_s_i_z_e may be set to -1  to  tell  the
+               program to use the global defaults.  The value for
+               driveropts may be set to "" if no  driveropts  are
+               used.  A typical line may look this way:
+
+               teac1= 0,5,0   4    8m   ""
+
+               yamaha= 1,6,0  -1   -1   burnfree
+
+               This tells the program that a drive named _t_e_a_c_1 is
+               at  scsibus  0, target 5, lun 0 and should be used
+               with speed 4 and a FIFO size of 8  MB.   A  second
+               drive  may  be found at scsibus 1, target 6, lun 0
+               and uses the default speed and  the  default  FIFO
+               size.
+
+SSEEEE AALLSSOO
+     mmkkiissooffss(8), ccddrreeccoorrdd(1), rreeaaddccdd(1), ssccgg(7), rrccmmdd(3), sssshh(1).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Version 3.0           Last change: 09/10/11                     5
+
+
+

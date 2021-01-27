@@ -1,0 +1,139 @@
+. \"  Manual Seite fuer getfiles
+. \" @(#)getfiles.3	1.4 16/10/13 Copyright 1985 J. Schilling
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH GETFILES 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+getfiles() \- gets next non flag-type argument
+.SH SYNOPSIS
+.nf
+#include <schily/getargs.h>
+
+.B
+int getfiles(pac, pav, fmt)
+.B
+	int *pac;       /* pointer to arg count */
+.B
+	char *(*pav)[]; /* pointer to address of arg vector */
+.B
+	char *fmt;      /* format string */
+.fi
+.SH DESCRIPTION
+.BR getfiles ()
+returns, with a value of
+.BR "+1 " ( NOTAFLAG )
+or
+.BR "+2 " ( FLAGDELIM ),
+whenever a non-flag type argument is encountered.
+Flag-type (option) arguments, along with their
+values, are ignored. The filename is at
+.BR *pav[0] .
+The caller must increment
+.B *pav
+and decrement
+.B *pac
+before calling
+.BR getfiles ()
+again.
+.SH RETURNS
+.TP 14
+.B FLAGDELIM\ 2
+The command line argument "\c
+.B \-\-\c
+"
+stopped flag processing.
+.TP
+.B NOTAFLAG\ \ 1
+The argument
+.B *pav
+does not appear to be a flag.
+.TP
+.B NOARGS\ \ \ \ 0
+All arguments have been successfully examined.
+.TP
+.B BADFLAG\ \ \-1
+A bad flag (option) argument was supplied to the program.
+The argument
+.B *pav
+contains the offending command line argument.
+.TP
+.B BADFMT\ \ \-2
+A bad format descriptor string has been detected.
+The calling program, rather than the user, was in error.
+.de ..
+.TP
+.B NOTAFILE\ \-3
+A flag type argument rather than a file type argument has been detected.
+..
+.LP
+General rules for the return code:
+.TP 14
+.B >\ 0
+A file type argument was found.
+.TP
+.B \ \ 0
+All arguments have been parsed.
+.TP
+.B <\ 0
+An error occured or not a file type argument.
+.LP
+Flag and file arg processing should be terminated after getting a
+return code <= 0.
+
+.SH EXAMPLES
+
+.SH "SEE ALSO"
+.nh 
+.sp 
+.LP
+.BR getallargs (3),
+.BR getargerror (3),
+.BR getargs (3).
+
+.SH NOTES
+Initially, 
+.B *pav
+must point to the first argument (not the
+program name) and
+.B *pac
+must not count the program name. Before calling
+.BR getfiles ()
+again, decrement
+.B *pac
+and increment
+.BR *pav ,
+or the same name will be pointed to by
+.BR *pav .
+
+.SH BUGS
+none
+
+.SH AUTHOR
+.nf
+J\*org Schilling
+Seestr. 110
+D\-13353 Berlin
+Germany
+.fi
+.PP
+Mail bugs and suggestions to:
+.PP
+.B
+schilling@fokus.gmd.de
+or
+.B
+js@cs.tu\-berlin.de
+or
+.B
+joerg@schily.isdn.cs.tu\-berlin.de

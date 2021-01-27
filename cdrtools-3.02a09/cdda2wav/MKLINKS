@@ -1,0 +1,49 @@
+#!/bin/sh
+###########################################################################
+#ident "@(#)MKLINKS	1.7 13/04/21 "
+###########################################################################
+# Written 2008-2011 by J. Schilling
+###########################################################################
+# Copyright (c) 2008-2011 J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+symlink="ln -s"
+MKLINKS_TEST=${MKLINKS_TEST-:}
+if [ ".$MKLINKS_COPY" = '.' ]; then
+	rm -f xxzzy.123 xxzzy.345
+	echo test > xxzzy.123
+	$symlink xxzzy.123 xxzzy.345
+	test $? = 0 || symlink=cp
+	test -r xxzzy.345 || symlink=cp
+	${MKLINKS_TEST} -h xxzzy.345 || symlink=cp
+	rm -f xxzzy.123 xxzzy.345
+else
+	symlink=cp
+fi
+###########################################################################
+
+$symlink ../cdrecord/cd_misc.c		.
+$symlink ../cdrecord/scsi_cdr.c		.
+$symlink ../cdrecord/scsi_scan.c	.
+$symlink ../cdrecord/priv.c		.
+
+$symlink ../autoconf/acgeneral.m4	.
+$symlink ../autoconf/aclocal.m4		.
+$symlink ../autoconf/acoldnames.m4	.
+$symlink ../autoconf/acspecific.m4	.
+$symlink ../autoconf/autoconf.m4	.
+$symlink ../autoconf/autoconf		.
+$symlink ../autoconf/autoheader.m4	.
+$symlink ../autoconf/config.guess	.
+$symlink ../autoconf/config.sub		.
+
+$symlink ../conf/install-sh		.

@@ -1,0 +1,75 @@
+/*
+ * Exports (libparanoia) cdda_paranoia.h
+ */
+cdrom_paranoia	*paranoia_init	__PR((void * d, int nsectors));
+void		paranoia_modeset __PR((cdrom_paranoia * p, int mode));
+long		paranoia_seek	__PR((cdrom_paranoia * p, long seek, int mode));
+Int16_t		*paranoia_read	__PR((cdrom_paranoia * p, void (*callback) (long, int)));
+Int16_t		*paranoia_read_limited __PR((cdrom_paranoia * p, void (*callback) (long, int), int maxretries));
+void		paranoia_free	__PR((cdrom_paranoia * p));
+void		paranoia_overlapset __PR((cdrom_paranoia * p, long overlap));
+
+/*
+ * Exports ?? (libparanoia) overlap.h
+ */
+extern	void	paranoia_resetall	__PR((cdrom_paranoia * p));
+extern	void	paranoia_resetcache	__PR((cdrom_paranoia * p));
+
+Supported:
+
+PARANOIA_MODE_VERIFY
+PARANOIA_MODE_OVERLAP
+PARANOIA_MODE_NEVERSKIP
+
+Unsupported:
+
+PARANOIA_MODE_FRAGMENT
+PARANOIA_MODE_SCRATCH
+PARANOIA_MODE_REPAIR
+
+
+
+/*
+ * Imports (global Code)
+ */
+cdda_disc_firstsector	(cdrom_drive *d)		-> long sector
+cdda_disc_lastsector	(cdrom_drive *d)		-> long sector
+cdda_read		(cdrom_drive *d, void *buffer, long beginsector, long sectors)	-> long sectors
+cdda_sector_gettrack	(cdrom_drive *d,long sector)	-> int trackno
+cdda_track_audiop	(cdrom_drive *d,int track)	-> int ???  /* Is audiotrack */
+cdda_track_firstsector	(cdrom_drive *d,int track)	-> long sector
+cdda_track_lastsector	(cdrom_drive *d,int track)	-> long sector
+cdda_tracks		(cdrom_drive *d)		-> int tracks
+
+callback		(long inpos, int function)
+
+/*
+ * Imports (libc)
+ */
+calloc
+free
+malloc
+realloc
+
+memcmp
+memcpy
+memmove
+memset
+
+qsort
+
+/*--------------------------------------------------------------------------*/
+scgp = scg_open();
+bufsize = scg_bufsize(scgp, CDR_BUF_SIZE);
+nsecs = bufsize / SEC_SIZE;
+
+cdp = paranoia_init(scgp, nsecs);
+# paranoia_modeset(cdp, mode);
+# paranoia_overlapset(cdp, overlap);
+
+while (not ready) {
+	bp = paranoia_read(cdp, NULL);
+	write(f, bp, SEC_SISE);
+}
+
+paranoia_free(cdp);

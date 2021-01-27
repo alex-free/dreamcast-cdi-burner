@@ -1,0 +1,64 @@
+#ident @(#)r-smake.obj	1.10 13/07/22 
+###########################################################################
+# Written 1996 by J. Schilling
+###########################################################################
+#
+# Object building rules for smake
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+# A copy of the CDDL is also available via the Internet at
+# http://www.opensource.org/licenses/cddl1.txt
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+# This defines a rule that compiles source files from current directory and
+# puts the resultant objects directly into $(ARCHDIR),
+# to allow concurrent compilation on different platforms.
+# Object file names are constructed from $(CFILES) and $(C++FILES).
+###########################################################################
+ARCHDIRX=
+___C++OFILES=		$(C++FILES:%.C=%.$o)
+__C++OFILES=		$(___C++OFILES:%.cc=%.$o)
+_C++OFILES=		$(__C++OFILES:%.cpp=%.$o)
+C++OFILES=		$(_C++OFILES:%.cxx=%.$o)
+C++POFILES=		$(C++OFILES:%=$(ARCHDIR)/%)
+OFILES=			$(CFILES:%.c=%.$o)		$(C++OFILES)
+POFILES=		$(CFILES:%.c=$(ARCHDIR)/%.$o)	$(C++POFILES)
+.OBJDIR:		$(ARCHDIR)
+###########################################################################
+__COMPILE.c=		$(_UNIQ)$(COMPILE.c)
+___COMPILE.c=		$(__COMPILE.c:$(_UNIQ)=$(CCCC) $(CFLAGS) $(CPPFLAGS) -c)
+_COMPILE.c=		$(___COMPILE.c:$(_UNIQ)%=%)
+
+__COMPILE.cc=		$(_UNIQ)$(COMPILE.cc)
+___COMPILE.cc=		$(__COMPILE.cc:$(_UNIQ)=$(CC++) $(C++FLAGS) $(CPPFLAGS) -c)
+_COMPILE.cc=		$(___COMPILE.cc:$(_UNIQ)%=%)
+
+__OUTPUT_OPTION=	$(_UNIQ)$(OUTPUT_OPTION)
+___OUTPUT_OPTION=	$(__OUTPUT_OPTION:$(_UNIQ)=-o $O/$@)
+_OUTPUT_OPTION=		$(___OUTPUT_OPTION:$(_UNIQ)%=%)
+###########################################################################
+%.$o: %.c
+			$(_COMPILE.c) $(_OUTPUT_OPTION) $<  $(CC_OUTPUT_FILTER)
+%.$o: %.C
+			$(_COMPILE.cc) $(_OUTPUT_OPTION) $< $(CC_OUTPUT_FILTER)
+%.$o: %.cc
+			$(_COMPILE.cc) $(_OUTPUT_OPTION) $< $(CC_OUTPUT_FILTER)
+%.$o: %.cpp
+			$(_COMPILE.cc) $(_OUTPUT_OPTION) $< $(CC_OUTPUT_FILTER)
+%.$o: %.cxx
+			$(_COMPILE.cc) $(_OUTPUT_OPTION) $< $(CC_OUTPUT_FILTER)
+
+#$(ARCHDIR)/%.$o: %.c
+#			$(CCCC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $(*F).c
+
+###########################################################################

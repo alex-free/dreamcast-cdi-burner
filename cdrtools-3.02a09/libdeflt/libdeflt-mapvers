@@ -1,0 +1,20 @@
+# /* @(#)libdeflt-mapvers        1.2 13/09/12 Copyright 2005-2013 J. Schilling */
+
+SCHILY_1.1 {
+global:
+	defltsect;
+
+} SCHILY_1.0;
+
+SCHILY_1.0 {
+global:
+	defltopen;
+	defltfirst;
+	defltclose;
+	defltcntl;
+	defltnext;
+	defltread;
+
+local:
+	*;
+};

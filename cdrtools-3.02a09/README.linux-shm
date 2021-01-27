@@ -1,0 +1,25 @@
+System V IPC
+CONFIG_SYSVIPC
+  Inter Process Communication is a suite of library functions and
+  system calls which let processes (running programs) synchronize and
+  exchange information. It is generally considered to be a good thing,
+  and some programs won't run unless you say Y here. In particular, if
+  you want to run the DOS emulator dosemu under Linux (read the
+  DOSEMU-HOWTO, available from
+  http://www.linuxdoc.org/docs.html#howto ), you'll need to say Y
+  here.
+ 
+  You can find documentation about IPC with "info ipc" and also in
+  section 6.4 of the Linux Programmer's Guide, available from
+  http://www.linuxdoc.org/docs.html#guide .
+ 
+  Shared memory is now implemented using a new (minimal) virtual file
+  system, which you need to mount before programs can use shared memory.
+  To do this automatically at system startup just add the following line
+  to your /etc/fstab:
+ 
+  none  /var/shm        shm     defaults        0 0
+ 
+  Saying Y here enlarges your kernel by about 18 KB. Just say Y.
+
+

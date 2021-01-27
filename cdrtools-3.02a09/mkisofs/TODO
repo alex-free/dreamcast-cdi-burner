@@ -1,0 +1,57 @@
+/* @(#)TODO	1.6 03/04/27 joerg */
+	1) Finish multiple paths.  Update nlink count on directories if it is
+	different than what stat returned.  Save the nlink count that we store in
+	the rock ridge attributes so know when we don't have to adjust it.
+
+
+Andy Polyakov <appro@fy.chalmers.se>
+Well, it was rather hard to get it wrong... But the answer is "yes" if
+you have to hear this very word.
+
+And while we're discussing this code. A *cosmetic* *suggestion*.
+Consider modifying two lines above the "if(is_directory)" as following:
+
+        set32(&fe->uid,0);
+        set32(&fe->gid,0);
+
+or to any other small number. Problem is that with -1 as now 'ls -l'
+results in wider output which is rather annoying (it has to print
+4294967295 twice while it formats for 8 chars).
+
+Cheers. A.
+
+/*--------------------------------------------------------------------------*/
+
+Option to modify Volume id, ... in PVD after the image has been
+created?
+
+/*--------------------------------------------------------------------------*/
+http://www.y-adagio.com/public/standards/iso_cdromr/tocont.htm
+
+Annex B has:
+
+Changes from ISO 9660:1988 to this International Standard:
+
+a) The Volume Descriptor Version is changed to indicate the new structure; 
+     Version number 2 indicated the new specification. 
+b) The File Structure Version is changed to indicate the new structure; 
+     Version number 2 indicated the new specification. 
+c) The limitation in the Depth of Hierarchy is lifted; 
+     The levels in the hierarchy can exceed eight. 
+d) The File Identifier is not separated to components; 
+     The SEPARATORS are not specified.
+     A complex file name can be expressed. 
+e) The File Identifier does not have File Version Numbers; 
+     File with and without Version Numbers should not exist in the same directory. 
+f) The character used for filling byte positions which are specified to be characters is subject to agreement
+between the originator and the recipient of the volume; 
+g) The length of File Identifier is limited to 207; 
+     Long file name can be expressed. 
+h) The length of a Directory Identifier is limited to 207; 
+     Long directory name can be expressed. 
+/*--------------------------------------------------------------------------*/
+
+Extent # auch als off_t statt int
+
+Wenn HFS, dann max File size == 2 GB?
+

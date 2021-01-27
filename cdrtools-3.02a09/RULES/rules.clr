@@ -1,0 +1,46 @@
+#ident @(#)rules.clr	1.7 10/10/02 
+###########################################################################
+# Written 1996 by J. Schilling
+###########################################################################
+#
+# Rules to make source tree clean
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+# Do not remove target if it is in the current directory
+###########################################################################
+RMTARGET=	$(PTARGET:$(TARGET)%=%)
+###########################################################################
+clean:
+			$(RM) $(RM_FORCE)	$(CLEAN_FILES) $(POFILES) \
+						$(PTARGETC)	\
+						$(PMAPVERS)	\
+						$(CLEAN_FILEX) \
+						$(PYOFILES) $(PLOFILES)
+
+clobber:		clean
+			$(RM) $(RM_FORCE)	$(RMTARGET) $(PALLDEP_FILE) \
+						$(PTARGETC)	\
+						$(CLOBBER_FILEX)
+			$(RM) $(RM_FORCE)	$(ARCHDIR)/Dnull
+
+distclean:
+			$(RM) $(RM_RF)		$(CLEAN_FILES) \
+						.EDTMP *.bak OBJ/* \
+						$(SRCROOT)/libs/* $(SRCROOT)/incs/*
+
+rmtarget:
+			$(RM) $(RM_FORCE)	$(RMTARGET)
+
+relink:	rmtarget all

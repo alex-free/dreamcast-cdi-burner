@@ -1,0 +1,58 @@
+. \"  Manual Seite fuer ofindline
+. \" @(#)ofindline.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH OFINDLINE 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+ofindline() \- finds a line with a matching field
+.SH SYNOPSIS
+.nf
+.B
+int ofindline(f,delim,string,field,array,arraysize)
+.B	FILE *f;
+.B	char delim;
+.B	char *string;
+.B	int field;
+.B	char *array[];
+.B	int arraysize;
+.fi
+.SH DESCRIPTION
+ofindline() retrieves a line from an open file that has a
+matching character string in the given field.
+.PP
+ofindline() fills in array with pointers to strings that make up
+each field on the line. The strings are allocated new storage.
+The field delimiter, delim, is used to break up each line of the
+file into fields. string is the string to match. fieldno is
+the field number to match. Fields are numbered 0..n. array is
+an array of pointers to fill in. arraysize is the size of
+array.
+.SH RETURNS
+.TP
+.B +1
+match.
+.TP
+.B \-1
+no match.
+.TP
+.B \-2
+arg error. Returned only if the condition
+findline_arg_err is handled and the handler returns.
+.TP
+.B \-4
+not enough memory to allocate space for files.
+Returned only if the condition findline_storage is
+handled and the handler returns.
+.SH NOTES
+none

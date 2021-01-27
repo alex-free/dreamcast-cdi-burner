@@ -1,0 +1,48 @@
+# @(#)vc9-cygwin-setup	1.4 11/08/01 Copyright 2006-2011 J. Schilling
+
+#
+# Keep in sync with vc9-cygwin-setup as we cannot rely on hard links
+#
+
+#
+# Disable warnings for nonportable variable assignements.
+# We only use smake MS-WIN, so this is not a problem.
+#
+.NO_WARN: :=
+
+#
+# A German installation
+#
+VSINSTALLDIR=C:\Programme\Microsoft Visual Studio 9.0
+VSINS=/cygdrive/c/Programme/Microsoft Visual Studio 9.0
+
+#
+# An English installation
+#
+VSINSTALLDIR=C:\Program Files (x86)\Microsoft Visual Studio 9.0
+VSBASEDIR=C:\Program Files (x86)
+VSINS=/cygdrive/c/Program Files (x86)/Microsoft Visual Studio 9.0
+
+export	VSINSTALLDIR
+
+VCINSTALLDIR :=${VSINSTALLDIR}\VC
+export	VCINSTALLDIR
+
+PATH :=${VSINS}/VC/bin:${VSINS}/Common7/IDE:${PATH}
+export	PATH
+
+#INCLUDE :=${VCINSTALLDIR}\include;${VCINSTALLDIR}\PlatformSDK\INCLUDE;${INCLUDE}
+INCLUDE :=${VCINSTALLDIR}\atlmfc\include;${VCINSTALLDIR}\include;${VSBASEDIR}\Microsoft SDKs\Windows\v5.0\include;C:\Program Files\\Microsoft SDKs\Windows\v6.0A\include;${INCLUDE}
+export	INCLUDE
+
+#LIB :=${VCINSTALLDIR}\lib;${VCINSTALLDIR}\PlatformSDK\LIB;${LIB}
+LIB :=${VCINSTALLDIR}\atlmfc\lib;${VCINSTALLDIR}\lib;C:\Program Files\\Microsoft SDKs\Windows\v6.0A\lib;${LIB}
+export	LIB
+
+VC_SETUP=dummy-setup
+export	VC_SETUP
+
+#
+# Re-enable all warnings.
+#
+.NO_WARN:

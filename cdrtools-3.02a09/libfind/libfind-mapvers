@@ -1,0 +1,49 @@
+# /* @(#)libfind-mapvers	1.11 15/05/19 Copyright 2005-2015 J. Schilling */
+
+SCHILY_0.2 {		# Not yet a stable interface!
+global:
+	find_hasexec;	# find.c
+	find_hasprint;	# find.c
+} SCHILY_0.1;
+
+SCHILY_0.1 {		# Not yet a stable interface!
+global:
+	dfetchdir;	# fetchdir.c
+	fetchdir;	# fetchdir.c
+	cmpdir;		# cmpdir.c
+	sortdir;	# cmpdir.c
+	fdircomp;	# cmpdir.c
+	find_addprint;	# find.c
+	find_argsinit;	# find.c
+	find_expr;	# find.c
+	find_firstprim;	# find.c
+	find_free;	# find.c
+	find_list;	# find_list.c
+	find_main;	# find_main.c
+	find_parse;	# find.c
+	find_plusflush;	# find.c
+	find_pname;	# find.c
+	find_primary;	# find.c
+	find_printnode;	# find.c
+	find_timeinit;	# find.c
+	find_tname;	# find.c
+	find_token;	# find.c
+	find_usage;	# find.c
+	has_acl;	# find_misc.c
+	has_xattr;	# find_misc.c
+	treewalk;	# walk.c
+	walkopen;	# walk.c
+	walkclose;	# walk.c
+	walkhome;	# walk.c
+	walkgethome;	# walk.c
+	walkinitstate;	# walk.c
+	ic_gidname;	# idcache.c
+	ic_namegid;	# idcache.c
+	ic_nameuid;	# idcache.c
+	ic_uidname;	# idcache.c
+	ic_uid_nobody;	# idcache.c
+	ic_gid_nobody;	# idcache.c
+
+local:
+	*;
+};

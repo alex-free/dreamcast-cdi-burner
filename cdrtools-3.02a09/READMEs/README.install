@@ -1,0 +1,33 @@
+To install makefiles, just take the tar archive makefiles.tar
+and untar it on the source root of your new project.
+
+The tar file contains:
+
+-	the RULES directory with the main make rules
+-	two different DEFAULT directories with predefined project settings
+-	a directory containing templates for all purpose
+-	a skeleton directory structure for the new project
+-	some README files that will be useful for developers and users
+
+If you want to see a better example, please have a look at the "star"
+source. It may be found on:
+
+http://sourceforge.net/projects/s-tar/files/
+
+
+Have a look at the manual page, it is included in the distribution.
+Install the manual page with 
+
+make install first and include /opt/schily/man in your MANPATH
+
+Author:
+
+Joerg Schilling
+Seestr. 110
+D-13353 Berlin
+Germany
+
+Email: 	joerg@schily.isdn.cs.tu-berlin.de, js@cs.tu-berlin.de
+	joerg.schilling@fokus.fraunhofer.de
+
+Please mail bugs and suggestions to me.

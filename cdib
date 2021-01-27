@@ -1,0 +1,132 @@
+#!/bin/bash
+
+version=1.0.5
+mac=false
+tmp=~/.dcdib_tmp 
+
+unmount_cd () {
+if [ "$mac" = true ]; then
+    disktool -u disk1 0 > /dev/null 2>&1
+else
+    umount /mnt/cdrom > /dev/null 2>&1
+fi
+}
+
+if [ "$#" -ne 1 ]; then
+	echo "At least one argument is required!"
+	exit 1
+fi
+
+if [ ! -f "$1" ]; then
+    echo "Error: Can not open CDI file: "$1""
+    exit 1
+fi
+
+
+if [ -e "/System/Library/CoreServices/SystemVersion.plist" ]; then
+	mac=true
+	cdrecord=/Applications/DCDIB.app/bin/cdrecord
+	cdirip=/Applications/DCDIB.app/bin/cdirip
+else
+	cdrecord=/usr/local/dreamcast-cdi-burner-$version-linux/bin/cdrecord
+	cdirip=/usr/local/dreamcast-cdi-burner-$version-linux/bin/cdirip
+fi
+
+if [[ $EUID -ne 0 ]]; then 
+    echo "$USER does not have the required privilages to run $0. Execute sudo $0 to continue." 
+    exit 1 
+fi
+
+unmount_cd
+
+rm -rf $tmp
+mkdir $tmp
+echo "Extracting $cdi"
+$cdirip "$1" $tmp 
+cd $tmp 
+echo "Looking For Burner Services, Please Wait"
+
+if [ "$mac" = true ]; then
+	if ioreg -l | grep "IOCompactDiscServices"; then
+	device=IOCompactDiscServices
+	elif ioreg -l | grep "IODVDServices"; then
+	device=IODVDServices
+	else
+	echo "Can Not Determine Burner, Nothing Burned"
+	rm -rf $tmp
+	exit 1
+	fi
+    echo "Found Service: $device"
+fi
+
+echo "Burning"
+if [ -f "taudio01.wav" ]; then
+    echo "Detected CDI Type: WAV Track 1"
+    for f in *wav; do echo -n " -audio $f" >> a; done
+    b1=$(cat a)
+    unmount_cd
+    
+	if [ "$mac" = true ]; then
+	    $cdrecord -speed=8 -v dev=$device -dao -multi $b1
+	else
+	    $cdrecord -speed=8 -v -dao -multi $b1
+	fi
+    
+    unmount_cd
+
+	if [ "$mac" = true ]; then
+	    $cdrecord -overburn -speed=8 -v dev=$device -tao -xa *.iso
+	else
+	    $cdrecord -overburn -speed=8 -v -tao -xa *.iso
+	fi
+
+    unmount_cd
+
+elif [ -f "tdata01.iso" ]; then
+    echo "Detected CDI Type: ISO Track 1"
+    unmount_cd
+
+	if [ "$mac" = true ]; then
+	    $cdrecord -speed=8 -v dev=$device -tao -multi -xa tdata01.iso
+	else
+	    $cdrecord -speed=8 -v -tao -multi -xa tdata01.iso
+	fi
+
+    unmount_cd
+
+	if [ "$mac" = true ]; then	
+	    $cdrecord -overburn -speed=8 -v dev=$device -tao -multi -xa tdata02.iso
+	else
+	    $cdrecord -overburn -speed=8 -v -tao -multi -xa tdata02.iso
+	fi
+
+    unmount_cd
+
+else
+
+    echo "Failed To Find Burn Files, Nothing Burned"
+    rm -rf $tmp
+    exit 1
+
+fi
+
+rm -rf $tmp
+unmount_cd
+
+if [ "$mac" = true ]; then
+
+	if [ -f "/usr/bin/drutil" ]; then
+	    echo "Ejecting CD-ROM"
+	    drutil eject cd
+	fi
+	
+	if [ -f "/usr/bin/afplay" ]; then
+
+		if [ -f "/System/Library/Sounds/Glass.aiff" ]; then
+		    afplay /System/Library/Sounds/Glass.aiff
+		fi
+
+	fi
+
+fi
+echo "Complete!"

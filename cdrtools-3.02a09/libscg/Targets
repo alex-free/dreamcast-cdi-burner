@@ -1,0 +1,13 @@
+CFILES=		scsitransp.c scsihack.c scsiopen.c scgsettarget.c \
+		scsierrs.c scgtimes.c scsihelp.c scsiopts.c \
+		rdummy.c
+
+#
+# scgmisc.c fuer aspiemu.c ...
+#
+#CFILES=		scsitransp.c scsihack.c scsiopen.c scgsettarget.c \
+#		scgmisc.c \
+#		scsierrs.c scgtimes.c \
+#		scglerror.c \
+#		rdummy.c
+

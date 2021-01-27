@@ -1,0 +1,43 @@
+# @(#)rules.cnf.in	1.32 17/04/27 Copyright 1998-2014 J. Schilling
+
+EXEEXT= @EXEEXT@
+XEXEEXT= @XEXEEXT@
+OBJEXT= @OBJEXT@
+
+YACC= @YACC@
+BISON= @BISON@
+TSORT_PROG= @TSORT@
+LORDER_PROG= @LORDER@
+CPP= @CPP@
+CPPX= @CPPX@
+
+LARGEFILE_CC_OPT= @largefile_cc_opt@
+SUN_CC64_OPT= @sun_cc64_opt@	# Used on e.g. Solaris and Linux
+HP_CC_ANSI_OPT= @hp_cc_ansi_opt@	# Used on HP-UX
+HP_CC_OPT_OPT= @hp_cc_opt_opt@	# Used on HP-UX
+HP_CC_GPROF_OPT= @hp_cc_gprof_opt@	# Used on HP-UX
+
+MAY_LINUX_SRC_INCLUDE= @may_linux_src_include@
+
+SCSILIB= @scsi_lib@
+LIB_SCSI= @lib_scsi@
+LIB_RESOLV= @lib_resolv@
+LIB_CRYPT= @lib_crypt@
+LIB_INTL= @lib_intl@
+LIB_ICONV= @lib_iconv@
+LIB_EXPAT= @lib_expat@
+LIB_PCSC= @lib_pcsc@
+LIB_CRYPTO= @lib_crypto@
+LIB_SSL= @lib_ssl@
+LIB_NSL= @lib_nsl@		# For gethostbyname() users
+LIB_ACL= @lib_acl@		# Full (test/set) ACL users like star
+LIB_ACL_TEST= @lib_acl_test@	# Test only ACL users like libfind
+LIB_ATTR = @lib_attr@
+LIB_SECDB = @lib_secdb@
+LIB_GEN = @lib_gen@
+LIB_ELF= @lib_elf@
+LIB_PTHREAD = @lib_pthread@
+LIB_RT = @lib_rt@
+LIB_DL= @lib_dl@
+LIB_DIR= @lib_dir@
+LIB_CAP= @lib_cap@

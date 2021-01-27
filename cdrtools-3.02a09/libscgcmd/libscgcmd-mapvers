@@ -1,0 +1,32 @@
+# /* @(#)libscgcmd-mapvers	1.2 10/10/02 Copyright 2008-2010 J. Schilling */
+
+SCHILY_1.0 {
+
+global:
+	__is_atapi;
+	allow_atapi;
+	get_mode_params;
+	inquiry;
+	mode_select;
+	mode_select_g0;
+	mode_select_g1;
+	mode_select_sg0;
+	mode_sense;
+	mode_sense_g0;
+	mode_sense_g1;
+	mode_sense_sg0;
+	print_capacity;
+	read_buffer;
+	read_capacity;
+	read_g0;
+	read_g1;
+	read_scsi;
+	set_mode_params;
+	test_unit_ready;
+	unit_ready;
+	wait_unit_ready;
+	write_buffer;
+
+local:
+	*;
+};

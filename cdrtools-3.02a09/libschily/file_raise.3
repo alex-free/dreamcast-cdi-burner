@@ -1,0 +1,40 @@
+. \"  Manual Seite fuer file_raise
+. \" @(#)file_raise.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH FILE_RAISE 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+file_raise() \- controls raising of file_read_err and
+file_write_err
+.SH SYNOPSIS
+.nf
+.B
+file_raise(f,flag)
+.B	FILE *f;
+.B	BOOL flag;
+.fi
+.SH DESCRIPTION
+file_raise() can be used to control whether the conditions
+"file_read_err" and "file_write_err" are raised when an error
+occurs during an I/O function ( fileread(), filewrite() , etc)
+on FILE f. Calling file_raise() with the flag TRUE enables
+raising, calling it with flag FALSE disables raising. If raising
+is disabled and an error occurs the function will return an
+appropriate error code, this is equivalent to handling the
+condition and ignoring it. The default is to raise the
+conditions.
+.SH RETURNS
+none
+.SH NOTES
+none

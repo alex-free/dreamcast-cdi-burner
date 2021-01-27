@@ -1,0 +1,51 @@
+     A new milestone in modular portable programming is ready!
+
+The "Slottable Source Plugin Module" system (SSPM) is an idea that
+really is more than 3 years old but I was hesitating to announce it
+earlier. Now I can tell you that the new makefile system has been
+under test during the last 6 months and nobody complained about any 
+problem caused by the SSPM.
+
+The portability overhead is currently about 2 MB. This turns a medium
+sized application like 'star' which is about 500 kB of pure source
+into a packet that is 5x as big as the pure source size.
+
+As all my applications are based on the Schily SING makefile system
+and share a common portability base it makes sense to share the
+advantages of the Schily makefile system with all users.
+
+Simple ideas like the SSPM are usually hard to understand by people
+from outside, so I try to describe the new system by giving you an
+example on how it is used:
+
+--------------------
+You may test the new system by first downloading the latest
+cdrtools package 
+
+	https://sourceforge.net/projects/cdrtools/files/alpha/
+
+Then unpack the source tarball, chdir into the top level
+directory of the cdrtools package. Run 'make' and wait until the 
+compilation has finished.
+
+So far, there is nothing new (except that some people may recognize
+that this is a 'smooth' fully integrated compilation and you don't need
+to call 'configure'.
+
+Now, to understand what a "Slottable Source Plugin Module" is, fetch
+another source. There is currently only one demo source that is ready
+for testing:
+
+	http://sourceforge.net/projects/s-tar/files/star-1.4-sspm.tar.gz
+
+Unpack this tarball in the top level directory of cdrtools and
+call 'make' again. The Schily makefile system does recognize that there
+is additional (uncompiled) source and will compile these new parts.
+As there is no need to run 'configure' again, compilation of the 
+additional 'star' sources is much faster than the compilation of the
+complete 'star' source package would take.
+
+To understand how the "Slottable Source Plugin Module" system works,
+have a look into the TARGETS directory.....
+
+-------------------

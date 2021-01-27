@@ -1,0 +1,77 @@
+#ident "@(#)Defaults.cygwin32_nt	1.7 17/07/09 "
+###########################################################################
+#
+# global definitions for Cygnus GCC for WINNT Systems
+#
+###########################################################################
+#
+# Compiler stuff
+#
+###########################################################################
+#DEFCCOM=	cc
+DEFCCOM=	gcc
+
+###########################################################################
+#
+# Link mode for libraries that are part of the makefile system:
+# If DEFLINKMODE is set to "static", no dynamic linking will be used
+# If DEFLINKMODE is set to "dynamic", dynamic linking will be used
+#
+###########################################################################
+DEFLINKMODE=	static
+
+###########################################################################
+#
+# If the next line is commented out, compilation is done with max warn level
+# If the next line is uncommented, compilation is done with minimal warnings
+#
+###########################################################################
+CWARNOPTS=
+
+DEFINCDIRS=	$(SRCROOT)/include
+DEFOSINCDIRS=
+#LDPATH=		-L/opt/schily/lib
+LDPATH=
+#RUNPATH=	-R$(INS_BASE)/lib -R/opt/schily/lib -R$(OLIBSDIR)
+RUNPATH=
+
+###########################################################################
+#
+# Installation config stuff
+#
+###########################################################################
+INS_BASE=	/opt/schily
+INS_KBASE=	/
+INS_RBASE=	/
+#
+DEFUMASK=	002
+#
+DEFINSMODEF=	444
+DEFINSMODEX=	755
+DEFINSUSR=	root
+DEFINSGRP=	root
+
+#
+# This is not the correct place for doing this, 
+# the correct place is RULES/cc-msc.rul.
+# We do it here because otherwise cc-config would not work.
+# This kind of hack may not work for other platforms.
+#
+_PLATFORM=	cygwin
+VC=7
+
+_VCNAME=	$(_UNIQ)$(XMAKEPROG)
+__VCNAME=	$(_VCNAME:$(_UNIQ)=dummy)
+___VCNAME=	$(__VCNAME:$(_UNIQ)smake=vc$(VC)$(_PLATFORM:%=-%))
+VCNAME=		$(___VCNAME:$(_UNIQ)%=dummy)
+
+_VC_SETUP=	$(_UNIQ)$(VC_SETUP)
+__VC_SETUP=	$(_VC_SETUP:$(_UNIQ)=$(VCNAME)-setup)
+VCSETUP=	$(__VC_SETUP:$(_UNIQ)%=%)
+
+###########################################################################
+# IMPORTANT Note:
+# We also include $(DEFLTSROOT)/$(DEFLTSDIR)/$(VCSETUP) from RULES/cc-msc.rul
+# in order to be able to test for the existence of "cl.exe" early.
+###########################################################################
+include		$(DEFLTSROOT)/$(DEFLTSDIR)/$(VCSETUP)

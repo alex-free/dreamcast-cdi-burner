@@ -1,0 +1,89 @@
+# /* @(#)libscg-mapvers	1.3 10/10/02 Copyright 2006-2010 J. Schilling */
+#include <schily/mconfig.h>
+
+SCHILY_1.0 {
+global:
+	__scg_help;
+	__scg_times;
+	scg__close;
+	scg__errmsg;
+	scg__open;
+	scg__sprinterr;
+	scg_bufsize;
+	scg_close;
+	scg_cmd;
+	scg_cmd_err;
+	scg_cmd_status;
+#ifdef	__use_scglerror__
+	scg_comerr;
+#endif
+	scg_dummy_ops;
+	scg_errfflush;
+	scg_errflush;
+#ifdef	__use_scglerror__
+	scg_errmsg;
+	scg_exit;
+	scg_ferrmsg;
+#endif
+	scg_fprascii;
+	scg_fprbytes;
+	scg_fprintdev;
+	scg_fprinterr;
+	scg_fprsense;
+	scg_freebuf;
+	scg_getbuf;
+	scg_getdmacnt;
+	scg_getresid;
+	scg_havebus;
+	scg_help;
+	scg_initiator_id;
+	scg_isatapi;
+	scg_numbus;
+	scg_open;
+	scg_prascii;
+	scg_prbytes;
+	scg_printcdb;
+	scg_printdev;
+	scg_printerr;
+	scg_printf;
+	scg_printrdata;
+	scg_printresult;
+	scg_printstatus;
+	scg_printwdata;
+	scg_prsense;
+	scg_remote;
+	scg_remote_ops;
+	scg_reset;
+	scg_sense_code;
+	scg_sense_key;
+	scg_sense_qual;
+	scg_sensemsg;
+#ifdef	__use_scglerror__
+	scg_serrmsg;
+#endif
+	scg_setnonstderrs;
+	scg_settarget;
+	scg_settimeout;
+	scg_sfree;
+	scg_smalloc;
+	scg_sprascii;
+	scg_sprbytes;
+	scg_sprintcdb;
+	scg_sprinterr;
+	scg_sprintrdata;
+	scg_sprintresult;
+	scg_sprintstatus;
+	scg_sprintwdata;
+	scg_sprsense;
+	scg_std_ops;
+	scg_svhead;
+	scg_svtail;
+	scg_version;
+	scg_vhead;
+	scg_vsetup;
+	scg_vtail;
+	scg_yes;
+
+local:
+	*;
+};

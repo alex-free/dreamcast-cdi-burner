@@ -1,0 +1,10 @@
+# /* @(#)libedc_ecc_dec-mapvers        1.2 10/10/02 Copyright 2006-2010 J. Schilling */
+
+SCHILY_1.0 {
+global:
+	check_sub;
+	crc_check;
+	do_decode_L2;
+local:
+	*;
+};

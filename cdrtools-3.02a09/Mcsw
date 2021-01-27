@@ -1,0 +1,49 @@
+#ident @(#)Mcsw	1.4 11/09/28 
+###########################################################################
+deftgt:
+SRCROOT=	.
+DIRNAME=	SRCROOT
+RULESDIR=	RULES
+include		$(SRCROOT)/$(RULESDIR)/rules.top
+###########################################################################
+
+#include		$(SRCROOT)/TARGETS/Targetdirs_s
+#DIRS=		lib/.aonly libdeflt libscg libedc
+
+PROJECTNAME=	CSWschily-10.06.2006
+TARGET_AR=	opt-schily-0.99
+INS_BASE=	/opt/csw
+COPTX="-DSEEK_DATA=3 -DSEEK_HOLE=4 -D_PC_MIN_HOLE_SIZE=21 -DNO_DOIT -DNO_DEFAULTS_PATH"
+PKG_TYPE=CSW
+
+deftgt:
+	$(MAKE) -f Mcsw INS_BASE=$(INS_BASE) COPTX=$(COPTX)		all
+	$(MAKE) -f Mcsw INS_BASE=$(INS_BASE) COPTX=$(COPTX)		all
+	#$(MAKE) -f Mcsw INS_BASE=/	     COPTX=$(COPTX)		pkg1
+	$(MAKE) -f Mcsw INS_BASE=$(INS_BASE) COPTX=$(COPTX)		pkg1
+	fakeroot '$(MAKE) -f Mcsw INS_BASE=$(INS_BASE) COPTX=$(COPTX)	package PKGTYPE=$(PKG_TYPE)'
+
+STRIPLIST=      ./$(INS_BASE)/*bin/* ./$(INS_BASE)/ccs/bin/*
+STRIPXLIST=      ./$(INS_BASE)/lib/*.so.*
+MCSLIST=	$(STRIPLIST) $(STRIPXLIST)
+MAKE_FILE=	-f Mcsw
+PRE_INST_CMDS=	mkdir -p etc/default
+POST_INST_CMDS=	mkdir -p usr/bin; \
+		(cd usr/bin; ln -s ../../$(INS_BASE)/bin/* . ; rm -f cut paste label tar mt); \
+		mkdir -p usr/ccs/bin;
+POST_STRIP_CMDS=	chmod -f u=rwx,g=x,o=x,u+s \
+		./$(INS_BASE)/bin/readcd ./$(INS_BASE)/bin/cdda2wav \
+		./$(INS_BASE)/bin/smt ./$(INS_BASE)/bin/sdd \
+		./$(INS_BASE)/bin/star ./$(INS_BASE)/bin/cdrecord \
+		./$(INS_BASE)/sbin/rscsi ;\
+		chmod -f u=rx,g=rx,o=rx ./$(INS_BASE)/lib/lib*.so.*
+
+#POST_STRIP_CMDS= chmod u=rx,g=rx,o=rx ./$(INS_BASE)/lib/lib*.so.*
+
+###########################################################################
+# Due to a bug in SunPRO make we need special rules for the root makefile
+#
+#include		$(SRCROOT)/$(RULESDIR)/rules.tpk
+include		$(SRCROOT)/$(RULESDIR)/rules.pkg
+include		$(SRCROOT)/$(RULESDIR)/rules.rdi
+###########################################################################

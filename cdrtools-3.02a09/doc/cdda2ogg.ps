@@ -1,0 +1,575 @@
+%!PS
+%%Version: 3.15
+%%DocumentFonts: (atend)
+%%Pages: (atend)
+%%EndComments
+%
+% Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
+% Use is subject to license terms.
+%
+% CDDL HEADER START
+%
+% The contents of this file are subject to the terms of the
+% Common Development and Distribution License, Version 1.0 only
+% (the "License").  You may not use this file except in compliance
+% with the License.
+%
+% You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+% or http://www.opensolaris.org/os/licensing.
+% See the License for the specific language governing permissions
+% and limitations under the License.
+%
+% When distributing Covered Code, include this CDDL HEADER in each
+% file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+% If applicable, add the following below this CDDL HEADER, with the
+% fields enclosed by brackets "[]" replaced with your own identifying
+% information: Portions Copyright [yyyy] [name of copyright owner]
+%
+% CDDL HEADER END
+%
+%ident	"%Z%%M%	%I%	%E% SMI"
+%
+% Version 3.16 prologue for troff files.
+%
+
+/#copies 1 store
+/aspectratio 1 def
+/formsperpage 1 def
+/landscape false def
+/linewidth .3 def
+/magnification 1 def
+/margin 0 def
+/orientation 0 def
+/resolution 720 def
+/xoffset 0 def
+/yoffset 0 def
+
+/roundpage true def
+/useclippath true def
+/pagebbox [0 0 612 792] def
+
+/R  /Times-Roman def
+/I  /Times-Italic def
+/B  /Times-Bold def
+/BI /Times-BoldItalic def
+/H  /Helvetica def
+/HI /Helvetica-Oblique def
+/HB /Helvetica-Bold def
+/HX /Helvetica-BoldOblique def
+/CW /Courier def
+/CO /Courier def
+/CI /Courier-Oblique def
+/CB /Courier-Bold def
+/CX /Courier-BoldOblique def
+/PA /Palatino-Roman def
+/PI /Palatino-Italic def
+/PB /Palatino-Bold def
+/PX /Palatino-BoldItalic def
+/Hr /Helvetica-Narrow def
+/Hi /Helvetica-Narrow-Oblique def
+/Hb /Helvetica-Narrow-Bold def
+/Hx /Helvetica-Narrow-BoldOblique def
+/KR /Bookman-Light def
+/KI /Bookman-LightItalic def
+/KB /Bookman-Demi def
+/KX /Bookman-DemiItalic def
+/AR /AvantGarde-Book def
+/AI /AvantGarde-BookOblique def
+/AB /AvantGarde-Demi def
+/AX /AvantGarde-DemiOblique def
+/NR /NewCenturySchlbk-Roman def
+/NI /NewCenturySchlbk-Italic def
+/NB /NewCenturySchlbk-Bold def
+/NX /NewCenturySchlbk-BoldItalic def
+/ZD /ZapfDingbats def
+/ZI /ZapfChancery-MediumItalic def
+/VR /Varitimes#Roman def
+/VI /Varitimes#Italic def
+/VB /Varitimes#Bold def
+/VX /Varitimes#BoldItalic def
+/S  /S def
+/S1 /S1 def
+/GR /Symbol def
+
+/inch {72 mul} bind def
+/min {2 copy gt {exch} if pop} bind def
+
+/setup {
+	counttomark 2 idiv {def} repeat pop
+
+	landscape {/orientation 90 orientation add def} if
+	/scaling 72 resolution div def
+	linewidth setlinewidth
+	1 setlinecap
+
+	pagedimensions
+	xcenter ycenter translate
+	orientation neg rotate
+	width 2 div neg height 2 div translate
+	xoffset inch yoffset inch translate
+	margin 2 div dup neg translate
+	magnification dup aspectratio mul scale
+	scaling scaling scale
+
+	/Symbol /S Sdefs cf
+	/Times-Roman /S1 S1defs cf
+	0 0 moveto
+} def
+
+/pagedimensions {
+	useclippath userdict /gotpagebbox known not and {
+		/pagebbox [clippath pathbbox newpath] def
+		roundpage currentdict /roundpagebbox known and {roundpagebbox} if
+	} if
+	pagebbox aload pop
+	4 -1 roll exch 4 1 roll 4 copy
+	landscape {4 2 roll} if
+	sub /width exch def
+	sub /height exch def
+	add 2 div /xcenter exch def
+	add 2 div /ycenter exch def
+	userdict /gotpagebbox true put
+} def
+
+/pagesetup {
+	/page exch def
+	currentdict /pagedict known currentdict page known and {
+		page load pagedict exch get cvx exec
+	} if
+} def
+
+/decodingdefs [
+	{counttomark 2 idiv {y moveto show} repeat}
+	{neg /y exch def counttomark 2 idiv {y moveto show} repeat}
+	{neg moveto {2 index stringwidth pop sub exch div 0 32 4 -1 roll widthshow} repeat}
+	{neg moveto {spacewidth sub 0.0 32 4 -1 roll widthshow} repeat}
+	{counttomark 2 idiv {y moveto show} repeat}
+	{neg setfunnytext}
+] def
+
+/setdecoding {/t decodingdefs 3 -1 roll get bind def} bind def
+
+/w {neg moveto show} bind def
+/m {neg dup /y exch def moveto} bind def
+/done {/lastpage where {pop lastpage} if} def
+
+/f {
+	dup /font exch def findfont exch
+	dup /ptsize exch def scaling div dup /size exch def scalefont setfont
+	linewidth ptsize mul scaling 10 mul div setlinewidth
+	/spacewidth ( ) stringwidth pop def
+} bind def
+
+/changefont {
+	/fontheight exch def
+	/fontslant exch def
+	currentfont [
+		1 0
+		fontheight ptsize div fontslant sin mul fontslant cos div
+		fontheight ptsize div
+		0 0
+	] makefont setfont
+} bind def
+
+/sf {f} bind def
+
+/cf {
+	dup length 2 idiv
+	/entries exch def
+	/chtab exch def
+	/newfont exch def
+
+	findfont dup length 1 add dict
+	/newdict exch def
+	{1 index /FID ne {newdict 3 1 roll put} {pop pop} ifelse} forall
+
+	newdict /Metrics entries dict put
+	newdict /Metrics get
+	begin
+		chtab aload pop
+		1 1 entries {pop def} for
+		newfont newdict definefont pop
+	end
+} bind def
+
+%
+% A few arrays used to adjust reference points and character widths in some
+% of the printer resident fonts. If square roots are too high try changing
+% the lines describing /radical and /radicalex to,
+%
+%	/radical	[0 -75 550 0]
+%	/radicalex	[-50 -75 500 0]
+%
+
+/Sdefs [
+	/bracketlefttp		[220 500]
+	/bracketleftbt		[220 500]
+	/bracketrighttp		[-70 380]
+	/bracketrightbt		[-70 380]
+	/braceleftbt		[220 490]
+	/bracketrightex		[220 -125 500 0]
+	/radical		[0 0 550 0]
+	% NeWSprint's \(br is too low, compensate
+	statusdict /product get (NeWS Server) eq {
+		/radicalex		[-50 100 500 0]
+		/parenleftex		[-20 100 0 0]
+
+	} {
+		/radicalex		[-50 0 500 0]
+		/parenleftex		[-20 -170 0 0]
+	} ifelse
+	/integral		[100 -50 500 0]
+	/infinity		[10 -75 730 0]
+] def
+
+/S1defs [
+	/underscore		[0 80 500 0]
+	/endash			[7 90 650 0]
+] def
+%%EndProlog
+%%BeginSetup
+mark
+/resolution 720 def
+setup
+2 setdecoding
+%%EndSetup
+%%Page: 1 1
+save
+mark
+1 pagesetup
+10 R f
+( \( 1 \))3 164( cdda2ogg)1 3839(User Commands)1 677 3 720 480 t
+9 B f
+( E)1 0( ME)1 60(N NA AM)2 215 3 720 960 t
+10 R f
+(cdda2ogg, cdda2mp3)1 862 1 1080 1080 t
+10 S1 f
+(\261)1975 1080 w
+10 R f
+(extract CD audio tracks and encode them)6 1694 1 2073 1080 t
+9 B f
+( S)1 0( IS)1 50( SI)1 35( PS)1 50( OP)1 55( YN NO)2 135(S SY)1 115 7 720 1248 t
+10 B f
+( a2 2o og gg g)5 200( dd da)2 106(c cd)1 100 3 1080 1368 t
+10 R f
+([)1519 1368 w
+10 I f
+(options)1585 1368 w
+10 R f
+(][)1913 1368 w
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 2012 1368 t
+10 I f
+(device)2219 1368 w
+10 R f
+(] [)1 99 1 2506 1368 t
+10 I f
+(\256le pre\256x)1 382 1 2605 1368 t
+10 R f
+(] [)1 99 1 2995 1368 t
+10 I f
+(ogg opts)1 350 1 3094 1368 t
+10 R f
+(])3452 1368 w
+10 B f
+( 3)1 0( p3)1 50( mp)1 56( a2 2m)2 133( dd da)2 106(c cd)1 100 6 1080 1536 t
+10 R f
+([)1558 1536 w
+10 I f
+(options)1624 1536 w
+10 R f
+(][)1952 1536 w
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 2051 1536 t
+10 I f
+(device)2258 1536 w
+10 R f
+(] [)1 99 1 2545 1536 t
+10 I f
+(\256le pre\256x)1 382 1 2644 1536 t
+10 R f
+(] [)1 99 1 3034 1536 t
+10 I f
+(lame opts)1 394 1 3133 1536 t
+10 R f
+(])3535 1536 w
+9 B f
+( N)1 0( ON)1 65( IO)1 70( TI)1 35( PT)1 60( IP)1 55( CR RI)2 100( SC)1 65( ES)1 50(D DE)1 125 10 720 1704 t
+10 B f
+( a2 2o og gg g)5 200( dd da)2 106(c cd)1 100 3 1080 1824 t
+10 R f
+(is a script that uses the)5 987 1 1528 1824 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2557 1824 t
+10 R f
+( all audio tracks with the)5 1075(command to extract)2 827 2 3027 1824 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4972 1824 t
+10 R f
+(command and encode them using the)5 1524 1 1080 1944 t
+10 B f
+( c)1 0( nc)1 44( en)1 56(o og gg ge)3 194 4 2637 1944 t
+10 R f
+(\(1\))2931 1944 w
+10 B f
+( s)1 0( is)1 39( bi)1 28( rb)1 56( or)1 44( Vo)1 50( V)1 105( gg g)2 50(O Og)1 128 9 3080 1944 t
+10 R f
+(encoder.)3613 1944 w
+10 B f
+( 3)1 0( p3)1 50( mp)1 56( a2 2m)2 133( dd da)2 106(c cd)1 100 6 1080 2112 t
+10 R f
+(is a script that uses the)5 977 1 1564 2112 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 2581 2112 t
+10 R f
+(command to extract all audio tracks with the)7 1883 1 3049 2112 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4972 2112 t
+10 R f
+(command and encode them using the)5 1524 1 1080 2232 t
+10 B f
+( e)1 0( me)1 44( am)1 83(l la)1 78 4 2637 2232 t
+10 R f
+(\(1\))2842 2232 w
+10 B f
+( 3)1 0( P3)1 50(M MP)1 155 3 2991 2232 t
+10 R f
+(encoder.)3229 2232 w
+(There is no CDDB support yet.)5 1289 1 1080 2400 t
+9 B f
+( S)1 0( NS)1 50( ON)1 65( IO)1 70( TI)1 35( PT)1 60(O OP)1 125 7 720 2688 t
+10 S1 f
+(\261 \261)1 65 1 1080 2808 t
+10 B f
+( p)1 0( lp)1 56( el)1 28(h he)1 100 4 1145 2808 t
+10 R f
+(print a short online usage message and exit.)7 1798 1 1680 2808 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 1080 2976 t
+10 I f
+(device)1287 2976 w
+10 R f
+( system, the)2 505(The device to read the data from. If there is only one CD-ROM drive in the)15 3215 2 1680 2976 t
+10 B f
+( =)1 0( v=)1 57( ev)1 50(d de)1 100 4 1680 3096 t
+10 R f
+(option may be omitted. For possible values of the)8 2276 1 1950 3096 t
+10 I f
+(device)4288 3096 w
+10 R f
+(parameter, see the)2 796 1 4604 3096 t
+10 B f
+( d)1 0( rd)1 56( or)1 44( re ec co)3 138( dr)1 44(c cd)1 100 6 1680 3216 t
+10 R f
+(\(1\) man page.)2 567 1 2062 3216 t
+10 S1 f
+(\261 \261)1 65 1 1080 3384 t
+10 S f
+(* *)1 50 1 1145 3384 t
+10 R f
+(Any other option beginning with a '-' sign is passed to the)11 2417 1 1680 3384 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4130 3384 t
+10 R f
+(program.)4591 3384 w
+(Any other option past the)4 1084 1 1080 3552 t
+10 B f
+( x)1 0( \256x)1 50( re e\256)2 100( pr)1 44( p)1 99( e)1 0( le)1 44(\256 \256l)1 84 8 2206 3552 t
+10 R f
+(argument and beginning with a '-' sign is passed to the encoder)11 2730 1 2670 3552 t
+(program.)1080 3672 w
+9 B f
+( S)1 0( BL LE ES)3 170( AB)1 60( IA)1 65( VA AR RI)3 165( V)1 95( T)1 0( NT)1 60( EN)1 65( ME)1 60( NM)1 85( ON)1 65( RO)1 70( IR)1 65( NV VI)2 100(E EN)1 125 16 720 3840 t
+10 R f
+( the)1 173(The following environment variables may be used to change the behavior of)11 3322 2 1080 3960 t
+10 B f
+( a2 2o og gg g)5 200( dd da)2 106(c cd)1 100 3 4626 3960 t
+10 R f
+(and the)1 317 1 5083 3960 t
+10 B f
+( 3)1 0( p3)1 50( mp)1 56( a2 2m)2 133( dd da)2 106(c cd)1 100 6 1080 4080 t
+10 R f
+(command:)1558 4080 w
+10 B f
+( AV V)2 72( WA)1 72( 2W)1 100(C CD DD DA A2)4 338 4 1080 4248 t
+10 R f
+( default value is)3 659( The)1 221(De\256nes the command to extract WAV data from the CD.)9 2351 3 1440 4368 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 4704 4368 t
+10 R f
+(.)5132 4368 w
+10 B f
+( AV V)2 72( WA)1 72( 2W)1 100(C CD DD DA A2)4 338 4 1080 4536 t
+10 S f
+(_ _)1 50 1 1662 4536 t
+10 B f
+( S)1 0( TS)1 56( PT)1 67(O OP)1 139 4 1712 4536 t
+10 R f
+( default)1 319( The)1 230( to the CDDA program while extracting from the CD.)9 2300(De\256nes the options passed)3 1111 4 1440 4656 t
+(value is)1 316 1 1440 4776 t
+10 S1 f
+(\261 \261)1 65 1 1789 4776 t
+10 B f
+(H H)1 78 1 1854 4776 t
+10 S1 f
+(\261 \261)1 65 1 1965 4776 t
+10 B f
+(q q)1 56 1 2030 4776 t
+10 R f
+(.)2086 4776 w
+10 B f
+( P)1 0(M MP)1 155 2 1080 4944 t
+10 S f
+(_ _)1 50 1 1235 4944 t
+10 B f
+( R)1 0( ER)1 72( DE)1 67( OD)1 72(C CO)1 150 5 1285 4944 t
+10 R f
+( default value is)3 737( The)1 247( the audio data.)3 712(The encoder program used to compress)5 1736 4 1440 5064 t
+10 B f
+( c)1 0( nc)1 44( en)1 56(o og gg ge)3 194 4 4931 5064 t
+10 R f
+(for)5284 5064 w
+10 B f
+( a2 2o og gg g)5 200( dd da)2 106(c cd)1 100 3 1440 5184 t
+10 R f
+(and)1879 5184 w
+10 B f
+( e)1 0( me)1 44( am)1 83(l la)1 78 4 2056 5184 t
+10 R f
+(for)2294 5184 w
+10 B f
+( 3)1 0( p3)1 50( mp)1 56( a2 2m)2 133( dd da)2 106(c cd)1 100 6 2443 5184 t
+10 R f
+(.)2888 5184 w
+10 B f
+( P)1 0(M MP)1 155 2 1080 5352 t
+10 S f
+(_ _)1 50 1 1235 5352 t
+10 B f
+( S)1 0( NS)1 56( ON)1 72( IO)1 78( TI)1 39( PT)1 67(O OP)1 139 7 1285 5352 t
+10 R f
+( default is empty.)3 718( The)1 221(Options passed to the encoder program.)5 1626 3 1440 5472 t
+10 B f
+( X)1 0( IX)1 72( FI)1 39( EF)1 61( RE)1 67( PR)1 72( LE EP)2 128( IL)1 67(F FI)1 100 9 1080 5640 t
+10 R f
+( default \256le name is)4 928( The)1 248(The base \256lename part of the resulting audio \256les.)8 2280 3 1440 5760 t
+10 B f
+( -)1 0( K-)1 33( RA AC CK)3 222( TR)1 72($ $T)1 117 5 4956 5760 t
+( og gg g)3 100( .o)1 50( X.)1 25( IX)1 72( FI)1 39( EF)1 61( RE)1 67( PR)1 72( LE EP)2 128( IL)1 67( FI)1 39($ $F)1 111 12 1440 5880 t
+10 R f
+(for)2305 5880 w
+10 B f
+( a2 2o og gg g)5 200( dd da)2 106(c cd)1 100 3 2455 5880 t
+10 R f
+(and)2895 5880 w
+10 B f
+( 3)1 0( p3)1 50( mp)1 56( .m)1 83( X.)1 25( IX)1 72( FI)1 39( EF)1 61( RE)1 67( PR)1 72( LE EP)2 128( IL)1 67( FI)1 39( $F)1 61( -$)1 50( K-)1 33( RA AC CK)3 222( TR)1 72($ $T)1 117 19 3073 5880 t
+10 R f
+(for)4421 5880 w
+10 B f
+( 3)1 0( p3)1 50( mp)1 56( a2 2m)2 133( dd da)2 106(c cd)1 100 6 4571 5880 t
+10 R f
+(if no)1 195 1 5050 5880 t
+10 I f
+(\256le)5278 5880 w
+10 R f
+( 1)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 1 1
+%%Page: 2 2
+save
+mark
+2 pagesetup
+10 R f
+( \( 1 \))3 164( cdda2ogg)1 3839(User Commands)1 677 3 720 480 t
+10 I f
+(pre\256x)1440 960 w
+10 R f
+(argument was given on the command line.)6 1743 1 1700 960 t
+9 B f
+( S)1 0( LE ES)2 110( IL)1 60(F FI)1 90 4 720 1128 t
+10 R f
+(If the following \256les are present, then the scripts source them to set up local defaults:)15 3515 1 1080 1248 t
+10 B f
+( a2 2o og gg g)5 200( dd da)2 106( cd)1 56( /c)1 44( n/)1 28( in)1 56( bi)1 28( /b)1 56( y/)1 28( il ly)2 78( hi)1 28( ch)1 56( sc)1 44( /s)1 39( t/)1 28( pt)1 33( op)1 56(/ /o)1 78 18 1080 1416 t
+10 R f
+(To set up default values for)5 1135 1 1440 1536 t
+10 B f
+( a2 2o og gg g)5 200( dd da)2 106(c cd)1 100 3 2608 1536 t
+10 R f
+(.)3014 1536 w
+10 B f
+( 3)1 0( p3)1 50( mp)1 56( a2 2m)2 133( dd da)2 106( cd)1 56( /c)1 44( n/)1 28( in)1 56( bi)1 28( /b)1 56( y/)1 28( il ly)2 78( hi)1 28( ch)1 56( sc)1 44( /s)1 39( t/)1 28( pt)1 33( op)1 56(/ /o)1 78 21 1080 1704 t
+10 R f
+(To set up default values for)5 1135 1 1440 1824 t
+10 B f
+( 3)1 0( p3)1 50( mp)1 56( a2 2m)2 133( dd da)2 106(c cd)1 100 6 2608 1824 t
+10 R f
+(.)3053 1824 w
+(The content may be set up to modify environment variables or to set up local defaults.)15 3560 1 1080 1992 t
+9 B f
+( O)1 0( SO)1 70( LS)1 50( AL)1 60( A)1 95( EE E)2 60(S SE)1 110 7 720 2280 t
+10 B f
+( av v)2 50( wa)1 50( a2 2w)2 122( dd da)2 106(c cd)1 100 5 1080 2400 t
+10 R f
+(\(1\),)1508 2400 w
+10 B f
+( d)1 0( rd)1 56( or)1 44( re ec co)3 138( dr)1 44(c cd)1 100 6 1682 2400 t
+10 R f
+(\(1\),)2064 2400 w
+10 B f
+( c)1 0( nc)1 44( en)1 56(o og gg ge)3 194 4 2238 2400 t
+10 R f
+(\(1\),)2532 2400 w
+10 B f
+( e)1 0( me)1 44( am)1 83(l la)1 78 4 2706 2400 t
+10 R f
+(\(1\).)2911 2400 w
+9 B f
+( S)1 0( TE ES)2 110( OT)1 60(N NO)1 135 4 720 2568 t
+10 R f
+( 1, a \256le name with track number 00 is created with)11 2206(If a CD contains a hidden audio track before track)9 2114 2 1080 2688 t
+(the content of the hidden track.)5 1282 1 1080 2808 t
+(The program)1 534 1 1080 2976 t
+10 B f
+( c)1 0( nc)1 44( en)1 56(o og gg ge)3 194 4 1655 2976 t
+10 R f
+(\(1\) is part of the)4 711 1 1949 2976 t
+10 B f
+( s)1 0( ls)1 39( oo ol)2 78( -t to)2 83( s-)1 33( is)1 39( bi)1 28( rb)1 56(v vo or)2 144 9 2702 2976 t
+10 R f
+(project See)1 463 1 3244 2976 t
+10 B f
+( m)1 0( om)1 83( co)1 50( .c)1 44( s.)1 25( is)1 39( bi)1 28( rb)1 56( vo or)2 94( .v)1 50( ww ww w.)3 169( // /w)2 100( :/)1 28( p:)1 33( tt tp)2 89(h ht)1 89 16 3749 2976 t
+10 R f
+(for more infor-)2 632 1 4768 2976 t
+(mation.)1080 3096 w
+(The program)1 534 1 1080 3336 t
+10 B f
+( e)1 0( me)1 44( am)1 83(l la)1 78 4 1655 3336 t
+10 R f
+(\(1\) is part of the)4 711 1 1860 3336 t
+10 B f
+( e)1 0( me)1 44( am)1 83(l la)1 78 4 2613 3336 t
+10 R f
+(project. See)1 521 1 2860 3336 t
+10 B f
+( /)1 0( t/)1 28( et)1 33( ne)1 44( .n)1 56( e.)1 25( ge)1 44( rg)1 50( or)1 44( fo)1 50( rc ce ef)3 121( ur)1 44( ou)1 56( so)1 50( .s)1 39( e.)1 25( me)1 44( am)1 83( // /l la)3 106( :/)1 28( p:)1 33( tt tp)2 89(h ht)1 89 23 3423 3336 t
+10 R f
+(for more informa-)2 754 1 4646 3336 t
+(tion.)1080 3456 w
+9 B f
+( R)1 0( HO OR)2 135( TH)1 70(A AU UT)2 190 4 720 3624 t
+10 R f
+(The \256rst versions of the scripts have been based on a news article by Tom Kludy.)15 3370 1 1080 3744 t
+( 2)1 1829( change: Version 3.0)3 850( Last)1 1509(SunOS 5.10)1 492 4 720 7680 t
+cleartomark
+showpage
+restore
+%%EndPage: 2 2
+%%Trailer
+done
+%%DocumentFonts: Times-Roman Times-Bold Times-Italic Symbol
+%%Pages: 2

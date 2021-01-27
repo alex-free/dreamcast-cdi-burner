@@ -1,0 +1,36 @@
+Cdda2wav development has been funded by
+
+Project MODE
+http://www.mode.net/
+
+and 
+
+Fraunhofer Institut für integrierte Schaltungen (FhG-IIS)
+http://www.iis.fhg.de/
+
+Code for extraction of ISRC and MCN codes as well as MD5 signatures
+has been made possible by their contributions, thanks very much.
+
+Thanks to Rik Swusten of Plextor Europe for supplying a cd burner
+for development.
+
+Thanks to Ricoh for supplying a cd burner for development.
+
+Thanks to Sanyo for supplying a Burn-Proof cd burner with documentaion
+for development.
+
+More thanks goto
+Joerg Schilling (helped a lot to integrate his SCSI library)
+Aaron Newsome (which created an account on his machine for me to do testing)
+Christopher Montgomery (aka Monty, for his work on jitter correction)
+Zygo Blaxell (a lot of code improvements)
+Thomas Niederreiter (extensions for cd-writers)
+Piercarlo Grandi (rewrote of cdda2wav's man page)
+Stewart Addison (suggestions and a fine web page on cdda)
+Leland Olds (the cdda2wav debian maintainer)
+Francesco Chemolli (getopt_long patches)
+
+Thanks to all testers and finally Jim McLaughlin for supplying
+the first cdda-reader source code (that got me started).
+
+Heiko Eißfeldt

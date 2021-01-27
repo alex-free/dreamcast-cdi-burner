@@ -1,0 +1,37 @@
+. \"  Manual Seite fuer strcatl
+. \" @(#)strcatl.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH STRCATL 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+strcatl() \- concatenates strings
+.SH SYNOPSIS
+.nf
+.B
+char *strcatl(outbuf,s1\|.\|.\|.sn,NULL) 
+.B	char *outbuf,*s1\|.\|.\|.*sn;
+.fi
+.SH DESCRIPTION
+strcatl() concatenates the "to" strings (s1\|.\|.\|.sn) into outbuf.
+The end of the list is signalled by NULL.
+.SH RETURNS
+Returns a pointer to the end of the concatenated output, in
+outbuf.
+.SH NOTES
+No check for buffer overflow is made.
+.PP
+A strcatl() of the form: strcatl(foo,bar,foo,NULL) does not work
+correctly, although a strcatl() of the form
+"strcatl(foo,foo,bar,NULL)" will. The destination string can
+only be a source string if it is the first string in the list.

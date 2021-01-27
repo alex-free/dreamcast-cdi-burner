@@ -1,0 +1,39 @@
+#! /bin/sh
+#
+# Script to play audio tracks with different pitches 
+# through a soundcard (cdda2wav must have soundcard
+# support enabled).
+#
+# Pitches are specified in percentage with 100% being
+# the original pitch, 50% being one octave lower, 200%
+# one octave higher.
+#
+# based on a script from Raul Sobon, who created the pitch
+# feature. Thanks Raul.
+#
+# usage: pitchplay <track a> <pitch a> <track b> <pitch b> ...
+#
+# example: pitchplay 1 90  3 140  5 50
+# will play track 1 with a pitch of 90%,
+#           track 3 with a pitch of 140%, and
+#           track 5 with a pitch of 50%.
+#
+CDDA2WAV=cdda2wav
+#CDDA2WAVOPTS="-qeNP0 -n75"
+CDDA2WAVOPTS="-qeNP0 -n40"
+
+if [ $(( $# % 2 )) -eq 0 ]; then
+  while [ $# -ge 2 ]; do
+    echo playing track $1 with a pitch of $2%
+    $CDDA2WAV $CDDA2WAVOPTS -t $1 -p $2
+    RES=$?
+    if [ $RES -ne 0 ]; then
+      echo "cdda2wav error, return value "$RES". Aborted." >&2
+      break
+    fi
+    shift 2
+  done
+else
+  echo "usage: $0 [<Tracknr> <Pitch>] ..." >&2
+fi
+

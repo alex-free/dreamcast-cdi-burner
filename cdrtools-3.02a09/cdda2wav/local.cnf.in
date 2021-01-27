@@ -1,0 +1,155 @@
+# @(#)local.cnf.in       1.11 15/10/07 Copyright 1998-2002,2015 Heiko Eissfeldt. Copyright 2007-2015 J. Schilling
+#
+# Makefile for cdda2wav, a sampling utility.
+#
+
+# ############ interface
+# choose one of the following interfacing and device types.
+# generic_scsi is for scsi cdrom devices.
+# uncomment one INTERFACE and one DEF_DEVICE line
+# (for details consult the README)
+INTERFACE='"generic_scsi"'
+#INTERFACE='"cooked_ioctl"'
+
+# set the default cdrom device
+SUN_OS_DEFAULT_DEV=	'"0,6,0"'
+YOUR_DEFAULT_DEV=	'"yourSCSI_Bus,yourSCSI_ID,yourSCSI_LUN"'
+
+_DEF_DEVICE=	$(_UNIQ)$(HAVE_SUN_OS)
+__DEF_DEVICE=	$(_DEF_DEVICE:$(_UNIQ)=$(YOUR_DEFAULT_DEV))
+DEF_DEVICE=	$(__DEF_DEVICE:$(_UNIQ)$(HAVE_SUN_OS)=$(SUN_OS_DEFAULT_DEV))
+
+# optional matching device used for a MULTISESSION ioctl
+LINUX_AUX_DEV=	'"/dev/cdrom"'
+
+_AUX_DEVICE=	$(_UNIQ)$(HAVE_LINUX)
+__AUX_DEVICE=	$(_AUX_DEVICE:$(_UNIQ)='""')
+AUX_DEVICE=	$(__AUX_DEVICE:$(_UNIQ)$(HAVE_LINUX)=$(LINUX_AUX_DEV))
+
+# number of sectors to request
+# under BSD better use < 128 K of shared memory
+SECTORS=75
+BSD_SECTORS=27
+
+_SECTORS=	$(_UNIQ)$(HAVE_BSD_OS)
+__SECTORS=	$(_SECTORS:$(_UNIQ)=$(SECTORS))
+NSECTORS=	$(__SECTORS:$(_UNIQ)$(HAVE_BSD_OS)=$(BSD_SECTORS))
+
+# some architectures can use the ioctl() interface cooked_ioctl
+HAVE_SUN_IOCTL=	@HAVE_SUN_IOCTL@
+_HAVE_IOCTL=	$(_UNIQ)$(HAVE_BSD_OS)$(HAVE_SUN_IOCTL)$(HAVE_LINUX)
+__HAVE_IOCTL=	$(_HAVE_IOCTL:$(_UNIQ)=)
+HAVE_IOCTL=	$(__HAVE_IOCTL:$(_UNIQ)$(HAVE_BSD_OS)$(HAVE_SUN_IOCTL)$(HAVE_LINUX)=-DHAVE_IOCTL_INTERFACE)
+
+############# Sound device support
+#to disable sound support comment out the corresponding line with HAVE_SOUND
+ALSA_SOUND_DEV=	'"default"'
+OSS_SOUND_DEV=	'"/dev/dsp"'
+SUN_SOUND_DEV=	'"/dev/audio"'
+SNDIO_SOUND_DEV='SIO_DEVANY'
+NO_SOUND_DEV='""'
+
+HAVE_ALSA=	@HAVE_ALSA@
+HAVE_SUNSOUND=	@HAVE_SUNSOUND@
+HAVE_WINSOUND=	@HAVE_WINSOUND@
+HAVE_OS2SOUND=	@HAVE_OS2SOUND@
+HAVE_QNXSOUND=	@HAVE_SYS_ASOUNDLIB_H@
+HAVE_SNDIO=	@HAVE_SNDIO@
+_HAVE_OSS=	@HAVE_OSS@
+__HAVE_OSS=	$(_UNIQ)$(_HAVE_OSS)_$(HAVE_SUNSOUND)$(HAVE_ALSA)$(HAVE_SNDIO)$(HAVE_OS2SOUND)$(HAVE_QNXSOUND)
+___HAVE_OSS=	$(__HAVE_OSS:$(_UNIQ)1_=$(_HAVE_OSS))
+____HAVE_OSS=	$(___HAVE_OSS:$(_UNIQ)1_%=)
+HAVE_OSS=	$(____HAVE_OSS:$(_UNIQ)_%=)
+_HAVE_SOUND=	$(_UNIQ)$(HAVE_ALSA)$(HAVE_OSS)$(HAVE_SUNSOUND)$(HAVE_OS2SOUND)$(HAVE_SNDIO)
+__HAVE_SOUND=	$(_HAVE_SOUND:$(_UNIQ)=)
+HAVE_SOUND=	$(__HAVE_SOUND:$(_UNIQ)$(HAVE_ALSA)$(HAVE_OSS)$(HAVE_SUNSOUND)$(HAVE_OS2SOUND)$(HAVE_SNDIO)=-DECHO_TO_SOUNDCARD)
+
+
+# SNDIO    -> SNDIO_SOUND_DEV
+# ALSA     -> ALSA_SOUND_DEV
+# SUNSOUND -> SUN_SOUND_DEV
+# OSS      -> OSS_SOUND_DEV
+_SOUND_DEVICE=	$(_UNIQ)$(HAVE_SOUND)_$(HAVE_SNDIO)_$(HAVE_ALSA)_$(HAVE_SUNSOUND)_$(HAVE_OSS)
+__SOUND_DEVICE=		$(_SOUND_DEVICE:$(_UNIQ)$(HAVE_SOUND)____='""')
+___SOUND_DEVICE=	$(__SOUND_DEVICE:$(_UNIQ)$(HAVE_SOUND)_1_%=$(SNDIO_SOUND_DEV))
+____SOUND_DEVICE=	$(___SOUND_DEVICE:$(_UNIQ)$(HAVE_SOUND)__1%=$(ALSA_SOUND_DEV))
+_____SOUND_DEVICE=	$(____SOUND_DEVICE:$(_UNIQ)$(HAVE_SOUND)___1%=$(SUN_SOUND_DEV))
+SOUND_DEVICE=		$(_____SOUND_DEVICE:$(_UNIQ)$(HAVE_SOUND)____1=$(OSS_SOUND_DEV))
+
+_EXTRALIB=	$(_UNIQ)$(HAVE_WINSOUND)$(HAVE_OS2SOUND)$(HAVE_QNXSOUND)
+__EXTRALIB=	$(_EXTRALIB:$(_UNIQ)=@EXTRALIBS@)
+___EXTRALIB=	$(__EXTRALIB:$(_UNIQ)$(HAVE_WINSOUND)=@EXTRALIBS@ -lwinmm)
+____EXTRALIB=	$(___EXTRALIB:$(_UNIQ)$(HAVE_QNXSOUND)=@EXTRALIBS@ -lasound)
+EXTRALIB=	$(____EXTRALIB:$(_UNIQ)$(HAVE_OS2SOUND)=@EXTRALIBS@ -los2me)
+
+############# sound file defaults
+# Defaults for wav/au/cdr output file formats
+# default divider for 44.1 KHz
+DEF_UNDERSAMPLING=1
+
+# 16, 12 or 8 bits per sample
+DEF_BITS=16
+# 1 = mono, 2 = stereo
+DEF_CHANNELS=2
+
+DEF_TIME=0                      # number of seconds to record
+
+DEF_SPEED=0			# default reading speed
+#DEF_SPEED=0xFFFF		# default reading speed
+
+############## output file types: wav, aiff, aifc, sun au or cdr ###########
+# enable one DEF_TYPE and one DEF_FILE
+# first are for wav sound files, second are for sun au pcm sound files,
+# third are for headerless sound files (raw samples in bigendian format)
+# default audio file type
+
+_DEF_TYPE=	$(_UNIQ)$(HAVE_SUN_OS)
+__DEF_TYPE=	$(_DEF_TYPE:$(_UNIQ)='"wav"')
+DEF_TYPE=	$(__DEF_TYPE:$(_UNIQ)$(HAVE_SUN_OS)='"au"')
+DEF_TYPE=	'"wav"'
+#DEF_TYPE=	'"au"'
+#DEF_TYPE=	'"cdr"'
+#DEF_TYPE=	'"aiff"'
+#DEF_TYPE=	'"aifc"'
+
+# default file name for sound file
+DEF_FILE='"audio"'
+
+############## enable/disable info files ####################################
+# Info files contain date/time, track, recording time, ISRC, optional MD5 
+# signature and more, each item in one line. These files are generated one
+# per track.
+# Comment out if you don't want this.
+WANT_INFOFILES=-DINFOFILES
+
+############## enable/disable MD5 signatures in info files ##################
+# Comment out if you don't want this.
+WANT_MD5=-DMD5_SIGNATURES
+MD5OBJECTS=md5.o
+
+# CDINDEX server support
+# Comment out if you don't want a disk description file for the cdindex server
+WANT_CDINDEX_SUPPORT=-DCDINDEX_SUPPORT
+
+# CDDB server support
+# Comment out if you don't want a network access to the cddb server
+WANT_CDDB_SUPPORT=-DCDDB_SUPPORT
+CDDB_SERVERHOST='"freedb.freedb.org"'
+CDDB_SERVERPORT=8880
+
+# end of tunable parameters
+#
+CDDA2WAVDEFS=-DCD_DEVICE=$(DEF_DEVICE) -DFILENAME=$(DEF_FILE) \
+-DUNDERSAMPLING=$(DEF_UNDERSAMPLING) -DVERSION_OS=$(CUR_VERSION) \
+-DBITS_P_S=$(DEF_BITS) -DCHANNELS=$(DEF_CHANNELS) -DAUDIOTYPE=$(DEF_TYPE) \
+-DDURATION=$(DEF_TIME) -DDEF_INTERFACE=$(INTERFACE) -DUSE_PARANOIA=1 \
+-DDEFAULT_SPEED=$(DEF_SPEED) $(WANT_CDINDEX_SUPPORT) $(WANT_CDDB_SUPPORT) \
+-DCDDBHOST=$(CDDB_SERVERHOST) -DCDDBPORT=$(CDDB_SERVERPORT) $(HAVE_IOCTL) \
+$(HAVE_SOUND) -DSOUND_DEV=$(SOUND_DEVICE) -DNSECTORS=$(NSECTORS) \
+$(WANT_INFOFILES) $(WANT_MD5) -DAUX_DEVICE=$(AUX_DEVICE)
+
+LIBS +=	@LIBS@
+
+#VERSION_OS=@CDRTOOLS_VERSION@_$(O_ARCH)_$(OSREL)_$(K_ARCH)_$(P_ARCH)
+VERSION_OS=_$(O_ARCH)_$(OSREL)_$(K_ARCH)_$(P_ARCH)
+CUR_VERSION='"$(VERSION_OS)"'

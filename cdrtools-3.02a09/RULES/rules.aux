@@ -1,0 +1,38 @@
+#ident "@(#)rules.aux	1.9 10/05/14 "
+###########################################################################
+# Written 1997 by J. Schilling
+###########################################################################
+#
+# Rules for installing auxiliary files
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+PTARGET=	$(TARGET)$(AUXSRCEXT)
+SRCFILE=	$(TARGET)$(AUXSRCEXT)
+###########################################################################
+
+_INSMODEI=	$(_UNIQ)$(INSMODE)
+__INSMODEI=	$(_INSMODEI:$(_UNIQ)=$(INSMODEF))
+INSMODEI=	$(__INSMODEI:$(_UNIQ)%=%)
+
+all:		$(SRCFILE)
+
+###########################################################################
+include		$(SRCROOT)/$(RULESDIR)/sub.htm
+include		$(SRCROOT)/$(RULESDIR)/rules.clr
+include		$(SRCROOT)/$(RULESDIR)/rules.ins
+include		$(SRCROOT)/$(RULESDIR)/rules.tag
+include		$(SRCROOT)/$(RULESDIR)/rules.hlp
+include		$(SRCROOT)/$(RULESDIR)/dummy.dep
+###########################################################################

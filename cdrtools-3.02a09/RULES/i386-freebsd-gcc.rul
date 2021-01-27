@@ -1,0 +1,39 @@
+#ident "@(#)i386-freebsd-gcc.rul	1.8 07/05/08 "
+###########################################################################
+# Written 1997 by J. Schilling
+###########################################################################
+#
+# Platform dependent MACROS for FreeBSD
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+include $(SRCROOT)/$(RULESDIR)/rules.prg
+###########################################################################
+include $(SRCROOT)/$(RULESDIR)/cc-gcc.rul
+
+OSDEFS +=
+
+KDEFINES=	-DKERNEL -D_KERNEL
+
+LIB_PREFIX=	lib
+LIB_SUFFIX=	.a
+SHL_SUFFIX=	.so.1.0
+
+LIB_SOCKET=	
+LIB_MATH=	-lm
+LIB_KVM=	
+
+LDOPTS=		$(LIBS_PATH) $(LDPATH)
+
+RANLIB=		@echo "	==> RANDOMIZING ARCHIVE \"$@\""; ranlib

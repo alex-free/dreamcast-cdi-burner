@@ -1,0 +1,47 @@
+#ident "@(#)i86pc-sunos5-clang.rul	1.2 14/04/07 "
+###########################################################################
+# Written 1996-2014 by J. Schilling
+###########################################################################
+#
+# Platform dependent MACROS for SunOS 5.x for PC using Clang
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+# A copy of the CDDL is also available via the Internet at
+# http://www.opensource.org/licenses/cddl1.txt
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+include $(SRCROOT)/$(RULESDIR)/rules.prg
+###########################################################################
+include $(SRCROOT)/$(RULESDIR)/cc-$(C_ARCH).rul
+
+OSDEFS +=	-D__SVR4 -DSVR4
+KDEFINES=	-DKERNEL -D_KERNEL
+
+LIB_SOCKET=	-lsocket -lnsl -ldl
+LIB_MATH=	-lm
+LIB_KVM=	-lkvm -lelf
+LIB_VOLMGT=	-lvolmgt
+
+#
+# Solaris comes with a linker that supports mapfiles
+#
+MAPVERS=	$(_MAPVERS) # This enables to use mapfiles
+
+#
+# We should use -Wl,-ztext here, but gcc does not create fully compliant
+# object files.
+#
+#LDOPTDYN=	-dy -G -h $(TARGET) $(PMAPVERS:%=-Wl,-M%) -ldl
+LDOPTDYN=	-Wl,-dy -Wl,-G -Wl,-h$(TARGET) $(PMAPVERS:%=-Wl,-M%) -ldl
+
+ARFLAGS=	crs

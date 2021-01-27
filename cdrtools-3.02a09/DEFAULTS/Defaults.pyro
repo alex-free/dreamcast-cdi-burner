@@ -1,0 +1,51 @@
+#ident "@(#)Defaults.pyro	1.2 13/11/04 "
+###########################################################################
+#
+# global definitions for Pyro Systems
+#
+###########################################################################
+#
+# Compiler stuff
+#
+###########################################################################
+#DEFCCOM=	cc
+DEFCCOM=	gcc
+
+###########################################################################
+#
+# Link mode for libraries that are part of the makefile system:
+# If DEFLINKMODE is set to "static", no dynamic linking will be used
+# If DEFLINKMODE is set to "dynamic", dynamic linking will be used
+#
+###########################################################################
+DEFLINKMODE=	static
+
+###########################################################################
+#
+# If the next line is commented out, compilation is done with max warn level
+# If the next line is uncommented, compilation is done with minimal warnings
+#
+###########################################################################
+CWARNOPTS=
+
+DEFINCDIRS=	$(SRCROOT)/include
+DEFOSINCDIRS=	/boot/Include
+LDPATH=		-L/opt/schily/lib
+#RUNPATH=	-R$(INS_BASE)/lib -R/opt/schily/lib -R$(OLIBSDIR)
+RUNPATH=	-R$(INS_BASE)/lib -R/opt/schily/lib
+
+###########################################################################
+#
+# Installation config stuff
+#
+###########################################################################
+INS_BASE=	/tmp/schily
+INS_KBASE=	/tmp/schily/admin
+INS_RBASE=	/tmp/schily/admin
+#
+DEFUMASK=	002
+#
+DEFINSMODEF=	444
+DEFINSMODEX=	755
+DEFINSUSR=	admin
+DEFINSGRP=	bin

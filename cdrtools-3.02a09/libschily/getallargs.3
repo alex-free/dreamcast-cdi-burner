@@ -1,0 +1,142 @@
+. \"  Manual Seite fuer getallargs
+. \" @(#)getallargs.3	1.4 16/10/13 Copyright 1985 J. Schilling
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH GETALLARGS 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+getallargs() \- parses all the flag-type arguments
+.SH SYNOPSIS
+.nf
+#include <schily/getargs.h>
+
+.B
+int getallargs(pac, pav, fmt, a1, \|.\|.\|., an)
+.B
+	int *pac;       /* pointer to arg count */
+.B
+	char *(*pav)[]; /* pointer to address of arg vector */
+.B
+	char *fmt;      /* format string */
+.B
+	type *a1;       /* pointer to result 1 */
+.B
+	                /* (corresponding to the */
+.B
+	                /* first descriptor in fmt) */
+.B
+	type *an;       /* pointer to result n */
+.B
+	                /* (corresponding to the */
+.B
+	                /* nth descriptor in fmt) */
+.fi
+.SH DESCRIPTION
+.BR getallargs ()
+parses all flag (option) arguments (anywhere on the command line).
+It does not return until all the arguments have been parsed
+correctly (returning 0), or an error has occurred (returning <
+0).
+.PP
+See
+.BR getargs ()
+for a more detailed description of the parameter
+matching.
+.SH RETURNS
+.TP 14
+.B NOARGS\ \ \ \ 0
+All arguments have been successfully examined.
+.TP
+.B BADFLAG\ \ \-1
+A bad flag (option) argument was supplied to the program.
+The argument
+.B *pav
+contains the offending command line argument.
+.TP
+.B BADFMT\ \ \-2
+A bad format descriptor string has been detected.
+The calling program, rather than the user, was in error.
+.LP
+General rules for the return code:
+.TP 14
+.B >\ 0
+A file type argument was found.
+.TP
+.B \ \ 0
+All arguments have been parsed.
+.TP
+.B <\ 0
+An error occured or not a file type argument.
+.LP
+Flag and file arg processing should be terminated after getting a
+return code <= 0.
+
+.SH EXAMPLES
+
+.SH "SEE ALSO"
+.nh 
+.sp 
+.LP
+.BR getargs (3),
+.BR getargerror (3),
+.BR getfiles (3).
+
+.SH NOTES
+.BR getallargs ()
+must be called with the address of a count of items
+in the vector and the address of a pointer to the vector. Both
+addresses must already have been properly treated in order to
+skip over the first parameter which is the name of the program.
+[e.g.
+.BR "\-\-ac; ++av" ].
+.PP
+Since
+.BR getallargs ()
+will destroy these values, copies should be
+made for later use in the program. If an error occurs,
+.B av[0]
+points to the unmatched argument.
+.PP
+The special argument,
+.B
+"\-\-"\fP,
+is ignored, but the following
+argument in the command line is treated as a literal filename
+argument. This way, filenames beginning with
+.RB ' \- ',
+.RB ' + ',
+or containing
+.RB ' = '
+can be passed to the routine.
+
+.SH BUGS
+none
+
+.SH AUTHOR
+.nf
+J\*org Schilling
+Seestr. 110
+D\-13353 Berlin
+Germany
+.fi
+.PP
+Mail bugs and suggestions to:
+.PP
+.B
+schilling@fokus.gmd.de
+or
+.B
+js@cs.tu\-berlin.de
+or
+.B
+joerg@schily.isdn.cs.tu\-berlin.de

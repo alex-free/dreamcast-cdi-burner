@@ -1,0 +1,53 @@
+#ident @(#)bepc-beos-gcc.rul	1.12 07/05/09 
+###########################################################################
+# Written 1996 by J. Schilling
+###########################################################################
+#
+# Platform dependent MACROS for BeOS
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+include $(SRCROOT)/$(RULESDIR)/rules.prg
+###########################################################################
+include $(SRCROOT)/$(RULESDIR)/cc-gcc.rul
+
+#
+# XXX Old BeOS needs libroot.so to get [efg]cvt()
+# XXX New BeOS seems to have this in libc and in addition we include
+# XXX strtod.c for floating point conversion on OS without such code.
+# XXX For this reason, -DNO_FLOATINGPOINT -DUSE_FLOATINGARGS has been
+# XXX removed and printing floating numbers will work with old/new BeOS
+#
+#OSDEFS +=	-DNO_FLOATINGPOINT -DUSE_FLOATINGARGS
+OSDEFS +=
+
+KDEFINES=	-DKERNEL -D_KERNEL
+
+#CONFFLAGS=	i586
+
+LIB_PREFIX=	lib
+LIB_SUFFIX=	.a
+SHL_SUFFIX=	.so
+
+LIB_SOCKET=	-lsocket -lbind
+LIB_MATH=
+LIB_KVM=	
+
+#LDOPTS=		$(LIBS_PATH) $(LDPATH) $(RUNPATH:-R%=-Wl,-R%)
+LDOPTS=		$(LIBS_PATH) $(LDPATH)
+
+LORDER=		echo
+TSORT=		cat
+
+LN=             /bin/ln -s

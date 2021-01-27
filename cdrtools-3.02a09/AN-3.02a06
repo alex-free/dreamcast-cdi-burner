@@ -1,0 +1,204 @@
+***************** Important news ******************************
+
+For the 'Slottable Source Plugin Module' SSPM Features read README.SSPM
+
+***************** Please Test *********************************
+
+NEW features of cdrtools-3.02a06:
+
+This is the first localization step for cdrtools. All programs now (hopefully)
+call gettext() for all strings that need localization.
+
+-	The next step will include dgettext() calls for the libraries.
+
+-	The following step will include the extracted strings
+
+-	The last step will include German translations and install support
+	for the resulting binary message object files.
+
+----------> Please test and report compilation problems! <---------
+
+***** NOTE: As mentioned since 2004, frontends to cdrtools should *****
+*****		call all programs from cdrtools in the "C" locale *****
+*****		by e.g. calling: LC_ALL=C cdrecord ....		  *****
+*****		unless these frontends support localized strings  *****
+*****		used by the cdrtools with NLS support.		  *****
+
+This version compiles on Win-DOS using the Microsoft compiler cl.exe but
+warning: due to missing POSIX compliance with basic features (e.g. stat()
+does not return inode numbers), there are many problems with the resulting
+code and thus it is recommended to better use a POSIX layer on top of 
+WIN-DOS.
+
+		*** WARNING        ***
+		*** Need new smake ***
+
+	*** Due to the fact that schily-2014-04-03 introduced to use new macro
+	*** expansions and a related bug fix in smake, you need a new smake
+	*** to compile this source. To ensure this, get a recent "schily"
+	*** tarball from http://sourceforge.net/projects/schilytools/files/
+	*** and call:
+
+	cd ./psmake
+	./MAKE-all
+	cd ..
+	psmake/smake
+	psmake/smake install
+
+	The new smake version mentioned above is smake-1.2.4.
+	Note that smake-1.2.5 exists and is preferrable.
+
+	Now you have a new smake that is able to compile this source.
+
+	Note that the major makefile restructuring introduced in
+	schily-2014-04-03 is now more than one month ago and thus seems
+	to work without problems.
+
+	WARNING: the new version of the isoinfo program makes use of the 
+		*at() series of functions that have been introduced by Sun
+		in August 2001 and added to POSIX.1-2008. For older platforms,
+		libschily now includes emulations for these functions but
+		these emulations have not yet been tested thoroughly.
+		Please report problems!
+
+
+All:
+
+Libschily:
+
+-	libschily: fprformat.c now compiles with format.c in a way that is useful
+	on all possible targets by implementing a double buffered macro based
+	internal method for fprfprmat().
+
+	This is aprox. 10% slower than the previous single buffered solution for
+	Solaris (based on the putc_unlocked() macro) but it works anywhere and
+	it does not have the problems with unbuffered streams (like stderr) 
+	that have been seen on Solaris since fprformat() was introduced in 2013.
+
+-	libschily: js_printf() and js_fprintf() now by default uses fprfprmat()
+	on all platforms. This reduces the performance on Solaris by 10% but it
+	enhances the performance on all other platforms. Our "od" implementation
+	via "hdump" is now 70% faster than "gnu od" on Linux instead of
+	being 50% faster before that change. It seems to be a good idea to get
+	a fast and POSIX compliant "od" implementation on Linux.
+
+-	Some typos in some manpages have been fixed.
+
+Libcdrdeflt:
+
+Libdeflt:
+
+Libedc (Optimized by Jörg Schilling, originated by Heiko Eißfeldt heiko@hexco.de):
+
+Libfile:
+
+Libfind:
+
+Libhfs_iso:
+
+Libmdigest:
+
+Libparanoia (Ported/enhanced by Jörg Schilling, originated by Monty xiphmont@mit.edu):
+
+Libscg:
+
+-	libscg: fix a comparison with the timeout value that was wrong
+	because of a wrong copy/paste action. This code fragment is
+	used when the Linux kernel returns unspecific SCSI error codes
+	and previously caused cdrecord to incorrectly assume a timeout
+	that than incorrectly stopped the write operation.
+
+-	libscg: added a debug message (in non-silent mode) that prints
+	the sg_io.host_status value in case of unknown states.
+
+-	libscg: A new interface function "scg_opts()" has been introduced to parse
+	and set op generic SCSI options. The only new implemented general option
+	for now is: "ignore-resid". This option was introduced in order to be able
+	to work around a Linux kernel bug that results in a DMA residual count
+	!= 0 even though all data was transferred.
+
+Libscgcmd:
+
+Libsiconv:
+
+Rscsi:
+
+Cdrecord:
+
+-	cdrecord: A new option scgopts=list has been introduced. Call
+	"cdrecord scgopts=ignore-resid ..." in order to work around the mentioned
+	Linus kernel bug.  
+
+-	cdrecord: The man page now also mentions scgopts=ignore-resid
+
+Cdda2wav (Maintained/enhanced by Jörg Schilling, originated by Heiko Eißfeldt heiko@hexco.de):
+
+-	cdda2wav: A new option scgopts=list has been introduced.
+
+Readcd:
+
+-	readcd: A new option scgopts=list has been introduced.
+
+Scgcheck:
+
+-	scgcheck: A new option scgopts=list has been introduced.
+
+Scgskeleton:
+
+-	scgskeleton: A new option scgopts=list has been introduced.
+
+Btcflash:
+
+-	btcflash: A new option scgopts=list has been introduced.
+
+Mkisofs (Maintained/enhanced by Jörg Schilling since 1997, originated by Eric Youngdale):
+
+-	mkisofs call free(mroot) in main to quiet the address sanitzier.
+	Thanks to Heiko Eißfeldt for reporting.
+
+-	mkisofs: better error messages for rotten ISO-9660 directories
+	that are encountered in multi-session mode.
+	Thanks to Heiko Eißfeldt for reporting.
+
+
+HELIOS TODO:
+
+	-	Add the HELIOS UNICODE mapping code. This needs to be done 
+		at UCS-2 level for Joliet and UDF (instead of UTF-8) and only
+		for Rock Ridge (in case of a UTF-8 based target locale) using
+		UTF-8 based translations.
+
+	-	Make the Apple extensions work again with "mkisofs -find"
+
+TODO:
+
+	-	read Joliet filenames with multi-session if no TRANS.TBL
+		or RR is present. I am looking for a volunteer for this task!
+
+		Note that this can never be 100% correct as there is no relation
+		between the names on the master (UNIX) filesystem, the ISO-9660
+		names and the Joliet names. Only the Rock Ridge names are
+		untranslated with respect to the original files on the
+		master (UNIX) filesystem.
+
+	-	add libecc/edc for CDI and similar.
+
+
+CYGWIN NT-4.0 NOTES:
+
+To compile on Cygwin32, get Cygwin and install it.
+For more information read README.win32
+
+The files are located on:
+
+http://sourceforge.net/projects/cdrtools/files/alpha/ ...
+
+NOTE:	These tar archives are 100% POSIX compatible. GNU tar may get some
+	minor trouble. If you like a 100% POSIX compliant tar, get star from
+	http://sourceforge.net/projects/s-tar/files/ of from the schily-*
+	tarball at: http://sourceforge.net/projects/schilytools/files/
+
+WARNING: Do not use 'winzip' to extract the tar file!
+	Winzip cannot extract symbolic links correctly.
+
+Joerg

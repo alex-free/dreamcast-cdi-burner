@@ -1,0 +1,37 @@
+. \"  Manual Seite fuer fdup
+. \" @(#)fdup.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH FDUP 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+fdup() \- returns new file identical to the given file
+.SH SYNOPSIS
+.nf
+.B
+FILE fdup(f)
+.B	FILE *f;
+.fi
+.SH DESCRIPTION
+fdup() creates a new file stream which accesses the same file as
+f. The new file will have the same read/write/buffered
+attributes as the old file.
+fdup() can be used to simultaneously read from two different
+positions in a file.
+.SH RETURNS
+Returns the duplicate file, if successful.
+Returns NULL, if it could not create the new stream.
+.SH NOTES
+This call should be used carefully on buffered files open for
+writing. Changes made on one stream might be superseded by
+changes made on the other.

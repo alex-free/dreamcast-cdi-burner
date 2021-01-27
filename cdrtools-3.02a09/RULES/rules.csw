@@ -1,0 +1,52 @@
+#ident "@(#)rules.csw	1.6 11/09/28 "
+###########################################################################
+# Written 2005 by J. Schilling
+###########################################################################
+#
+# Rules for creating Blastwave SVr4 packages
+#
+###########################################################################
+# Copyright (c) J. Schilling
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+
+PKG	:sh=	sed -n 's/^PKG=//p' pkginfo
+#VERSION	:sh=	sed -n 's/^VERSION=//p' pkginfo
+VERSION	:sh=	sed -n 's/^VERSION=\([^,]*\).*/\1/p' pkginfo
+NAME	:sh=	sed -n 's/^NAME=//p' pkginfo|awk '{print $1}'
+OS_NAME :sh=	uname -s
+DATE	:sh=	date '+REV=%Y.%m.%d'
+
+VENDOR=		-CSW
+PROTOTYPE=	prototype
+
+$(SRCROOT)/packages/$(OARCH):
+		$(MKDIR) -p $@
+
+all: $(SRCROOT)/packages/$(OARCH)
+	if [ .$(PKG_RELOC) = .no ]; then		\
+		pkgmk -o -r `pwd`/$(SRCROOT)/$(PROTODIR)$(PKGROOTX) -d $(SRCROOT)/packages/$(OARCH) \
+						-a $(P_ARCH) \
+						-v $(VERSION),$(DATE) -f $(PROTOTYPE)_r		\
+						$(EMAIL:%=EMAIL=%) $(HOTLINE:%=HOTLINE=%) \
+						pkgbase=`pwd` \
+						$(PKGOPTX);	\
+	else					\
+		pkgmk -o -b `pwd`/$(SRCROOT)/$(PROTODIR)/$(INSBASE) -d $(SRCROOT)/packages/$(OARCH) \
+						-a $(P_ARCH) \
+						-v $(VERSION),$(DATE) -f $(PROTOTYPE) BASEDIR=$(INSBASE)	\
+						$(EMAIL:%=EMAIL=%) $(HOTLINE:%=HOTLINE=%) \
+						pkgbase=`pwd` \
+						$(PKGOPTX);	\
+	fi
+	pkgtrans -s $(SRCROOT)/packages/$(OARCH) $(NAME)-$(VERSION),$(DATE)-$(OS_NAME)$(OSREL)-$(P_ARCH)$(VENDOR).pkg $(PKG)
+	gzip -9f $(SRCROOT)/packages/$(OARCH)/$(NAME)-$(VERSION),$(DATE)-$(OS_NAME)$(OSREL)-$(P_ARCH)$(VENDOR).pkg

@@ -1,0 +1,40 @@
+. \"  Manual Seite fuer fgetline
+. \" @(#)fgetline.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH FGETLINE 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+fgetline() \- gets a line from a file
+.SH SYNOPSIS
+.nf
+.B
+int fgetline(f,buf,length)
+.B	FILE *f;
+.B	char *buf;
+.B	int length;
+.fi
+.SH DESCRIPTION
+fgetline() reads up to length characters from the input file
+using getc() (q.v.). The transfer is also terminated by a
+newline, end of file, or read error. The newline character is
+stripped and the string is NULL ('\\0') terminated.
+.SH RETURNS
+.TP
+.B >=0
+the number of bytes read.
+.TP
+.B < 0
+if an error occurred.
+.SH NOTES
+none

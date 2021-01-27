@@ -1,0 +1,31 @@
+#!/bin/sh -
+echo 'configure is no longer used - just type "make", supported make programs are:'
+echo ''
+echo 'smake	-	The Schily smake program'
+echo '		This is the preferred make program, the source can be'
+echo '		found on https://sourceforge.net/projects/s-make/files/alpha/'
+echo ''
+echo '		Smake is the only make program with automake features, it is'
+echo '		the only program that works on unknown platforms.'
+echo ''
+echo 'make	-	SunPRO make (on SunOS/Solaris only)'
+echo '		in /usr/bin/ (SunOS 4.x) or /usr/ccs/bin/ (Solaris)'
+echo ''
+echo 'gmake	-	GNU make'
+echo '		GNU make will not work correctly on all platforms'
+echo '		and due to some conceptional bugs output several'
+echo '		error messages that are not related to the makefile'
+echo '		system but to GNU make (see README.gmake)'
+echo ''
+echo 'Other make programs will not work, for more information read README.compile'
+echo ''
+echo 'If you have problems and if you are in doubt, try to use smake'
+echo '	Always compile the latest version that can be found on:'
+echo '		https://sourceforge.net/projects/s-make/files/alpha/'
+echo ''
+#
+# Make automated procedures that believe all programs still use the outdated GNU
+# "./configure; make" procedure think configure failed and get the attention of
+# a human ...
+#
+exit 1

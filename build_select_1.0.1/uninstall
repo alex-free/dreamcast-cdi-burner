@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+if [[ $EUID -ne 0 ]]; then
+   echo "Execute "$1" with sudo or as root"
+   exit 1
+fi
+cd "$(dirname "$0")"
+bselect --reset
+rm /usr/bin/bselect
+echo "Build Select has been uninstalled"

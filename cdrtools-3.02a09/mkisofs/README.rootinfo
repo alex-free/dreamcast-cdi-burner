@@ -1,0 +1,72 @@
+The -icon-position option will attempt to preserve folder window positions,
+scroll bars, views etc. for Apple/Unix file formats that support this
+information (see below for which Apple/Unix encoding are supported).
+
+This information is stored in the 'FinderInfo' part of a Apple/Unix directory.
+For example, in a CAP directory structure a directory called 'dirA' will
+have the necessary FinderInfo stored in file '.finderinfo/dirA'. This file
+stores information including, the folder's location and size on screen,
+its scroll positions, folder View (view as Icons, Small Icons, etc.).
+
+However, the similar FinderInfo data for the 'root' folder is a special case.
+For example, if a directory called '/some/dir/macfiles' is a CAP volume that
+is mounted on a Mac as 'macfiles', then the FinderInfo for this directory
+is stored in the file '/some/dir/.finderinfo/macfiles' - which is outside
+the CAP directory structure.
+
+To get round this, an extra option, '-root-info' is used that takes as its
+argument the name of the file that stores the root folder's FinderInfo.
+
+Using the above example, the command file options will be something like:
+
+% mkhybrid --cap -root-info /some/dir/.finderinfo/macfiles /some/dir/macfiles
+
+The format of the root FinderInfo file must be the same as the 'double-dash'
+option(s) given on the command line.
+
+The Apple/Unix encodings that mkhybrid can decode the root FinderInfo are:
+
+CAP:
+	CAP directory:		/some/dir/macfiles
+	Root FinderInfo file:	/some/dir/.finderinfo/macfiles
+
+Netatalk:
+	Netatalk directory:	/some/dir/macfiles
+	Root FinderInfo file:	/some/dir/.AppleDouble/RootInfo
+
+EtherShare:
+	EtherShare directory:	/some/dir/macfiles
+	Root FinderInfo file:	/some/dir/.rsrc/macfiles
+
+If an HFS disk is mounted on a Linux platform, then the root FinderInfo
+files are:
+
+Option 'fork=cap':
+	Root FinderInfo file:	/mountpoint/.rootinfo
+
+Option 'fork=double':
+	Root FinderInfo file:	/mountpoint/%RootInfo
+
+Option 'fork=netatalk':
+	Root FinderInfo file:	/mountpoint/.AppleDouble/RootInfo
+
+
+The '-root-info' option implies the '-icon-position' option. Future releases
+of mkhybrid may automatically find the root FinderInfo file.
+
+The volume name is not set from the root FinderInfo file. Use the -V or
+-hfs-volid options to set the volume name.
+
+Currently UShare, SGI/XINET, PC Exchange and SFM Apple/Unix root FinderInfo
+files are not supported by mkhybrid - more information about these formats
+is required in order to supoort them.
+
+AppleSingle and MacBinary are file only formats - they don't support folders
+or volumes.
+
+Using this option, it is now possible to make a nearly true representation
+of a Mac folder layout on a Unix/Linux platform.
+
+James Pearson 26-Apr-2000
+
+Any comments/problems to j.pearson@ge.ucl.ac.uk

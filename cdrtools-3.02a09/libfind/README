@@ -1,0 +1,129 @@
+Libfind allows to be used for adding find(1) like command line features
+to other programs (e.g. star and mkisofs). It also allows to implement
+a find(1) command in 10 lines of code and it allows to be used as shell
+built in function.
+
+Example code for a complete find(1) program:
+/*--------------------------------------------------------------------------*/
+/* %Z%%M%	%I% %E% Copyright 2004-2007 J. Schilling */
+#ifndef lint
+static	char sccsid[] =
+	"%Z%%M%	%I% %E% Copyright 2004-2007 J. Schilling";
+#endif
+/*
+ *	Another find implementation...
+ *
+ *	Copyright (c) 2004-2007 J. Schilling
+ */
+/*
+ * The contents of this file are subject to the terms of the
+ * Common Development and Distribution License, Version 1.0 only
+ * (the "License").  You may not use this file except in compliance
+ * with the License.
+ *
+ * See the file CDDL.Schily.txt in this distribution for details.
+ *
+ * When distributing Covered Code, include this CDDL HEADER in each
+ * file and include the License file CDDL.Schily.txt from this distribution.
+ */
+
+#include <schily/mconfig.h>
+#include <schily/unistd.h>
+#include <schily/standard.h>
+#include <schily/schily.h>
+
+#include "walk.h"
+#include "find.h"
+
+EXPORT	int	main		__PR((int ac, char **av));
+
+EXPORT int
+main(ac, av)
+	int	ac;
+	char	**av;
+{
+	FILE	*std[3];
+
+	std[0] = stdin;
+	std[1] = stdout;
+	std[2] = stderr;
+	return (find_main(ac, av, NULL, std, NULL));
+}
+/*--------------------------------------------------------------------------*/
+
+Example code for redirecting I/O and for catching/handling signals in "bsh":
+/*--------------------------------------------------------------------------*/
+#include "../libfind/walk.h"
+#include "../libfind/find.h"
+
+LOCAL int
+quitfun(void *arg)
+{
+	return (*((int *)arg) != 0);	/* Return TRUE is a signal was catched */
+}
+
+/* ARGSUSED */
+EXPORT void
+bfind(vp, std, flag)
+	vector	*vp;
+	FILE	*std[];
+	int	flag;
+{
+	squit_t	quit;
+
+	quit.quitfun = quitfun;	/* The function to evaluate "ctlc" */
+	quit.qfarg = &ctlc;	/* The ^C catched counter	   */
+
+	ex_status = find_main(vp->v_ac, vp->v_av, evarray, std, &quit);
+}
+/*--------------------------------------------------------------------------*/
+
+Example code for how to redirect I/O in ksh93 and how to catch signals:
+NOTE: as th ksh93 does not use stdio but sfio, you need two wrapper
+functions in order to run a standard program inside ksh93.
+/*--------------------------------------------------------------------------*/
+a.c:    (compiled against sfio)
+
+int
+quitfun(void *dummy)
+{
+	return (cmdquit() != 0);
+}
+
+int
+b_find(int ac, char **av, void* context))
+{
+	int	i, o, e;
+
+	cmdinit(ac, av, context, ERROR_CATALOG, ERROR_NOTIFY);
+
+	i = fileno(stdin);
+	o = fileno(stdout);
+	e = fileno(stderr);
+
+	return xfind(ac, av, dup(i), dup(o), dup(e), quitfun);
+}  
+
+------
+b.c: (compiled against stdio)
+
+int
+xfind(int ac, char **av, int i, int o, int e, int (*quitfun)(void *))
+{
+	int	ret;
+	FILE	*std[3];
+	squit_t	quit;
+
+	quit.quitfun = quitfun;	/* The function to evaluate "ctlc" */
+	quit.qfarg = NULL;	/* Dummy			   */
+
+	std[0] = fdopen(i, "r+");
+	std[1] = fdopen(o, "w");
+	std[2] = fdopen(e, "w+");
+	ret = find_main(ac, av, NULL, std, &quit);
+	fclose(std[0]);
+	fclose(std[1]);
+	fclose(std[2]);
+	return (ret);
+}
+/*--------------------------------------------------------------------------*/

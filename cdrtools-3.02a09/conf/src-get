@@ -1,0 +1,459 @@
+#!/bin/sh
+# @(#)src-get  1.21 09/12/22 Copyright 2005-2009 J. Schilling
+###########################################################################
+# Written 2005-2009 by J. Schilling
+###########################################################################
+# A source package controlling system which should behave similar to
+# the Debian apt-get command.
+###########################################################################
+# The contents of this file are subject to the terms of the
+# Common Development and Distribution License, Version 1.0 only
+# (the "License").  You may not use this file except in compliance
+# with the License.
+#
+# See the file CDDL.Schily.txt in this distribution for details.
+#
+# When distributing Covered Code, include this CDDL HEADER in each
+# file and include the License file CDDL.Schily.txt from this distribution.
+###########################################################################
+
+#
+# Set up server URL for package description files.
+# Must have a slash at the end.
+#
+server_url=http://sps.berlios.de/pkg/testing/
+
+#
+# If you do not have write access to a server, you may set up a local copy
+#
+#server_url=file:///tmp/pkg/
+
+#
+# Set up default pager.
+#
+PAGER=${PAGER-more}
+
+#
+# Set up default wget.
+#
+WGET=${WGET-sh_wget}
+
+case $PATH in
+	*/usr/sfw/bin*)
+		;;
+	*)
+		if [ -d /usr/sfw/bin ]; then
+			XPATH=/usr/sfw/bin:${XPATH-}
+		fi
+		;;
+esac
+
+PATH=${XPATH-}${PATH}
+
+usage() {
+	echo "Usage: src-get [cmd] [target]..."
+	echo "Possible commands are:"
+	echo "	init	initialize skeleton makefile system in empty directory"
+	echo "	setup	setup platform dependent build commands in bins/<archdir>/*"
+	echo "	install	install a source package"
+	echo "	list	list installable packages"
+	echo "	shell	start a SHELL with a clean environment"
+	echo "	compile	do a full compilation from SRCROOT with a clean environment"
+	echo "	version	print the 'srg-get' version"
+}
+
+if [ $# -lt 1 ]; then
+	usage
+	exit 1
+fi
+cmd=$1
+shift
+
+case "$cmd" in
+	*version*)
+		;;
+
+	*)
+		echo "cmd:  $cmd"
+		echo "args: $@"
+		;;
+esac
+
+excode=255
+trap 'rm -rf /tmp/.d.$$; if [ -f ./$do_wget_file ]; then rm -f ./$do_wget_file; fi; exit 1' 1 2 15
+trap 'rm -rf /tmp/.d.$$; exit $excode' 0
+
+ZIP_SUFFIX=
+ZIP=cat
+UNZIP=cat
+
+if bzip2 --help > /dev/null 2>&1; then
+	UNZIP="bzip2 -d"
+	ZIP=bzip2
+	ZIP_SUFFIX=.bz2
+elif gzip --help > /dev/null 2>&1; then
+	UNZIP="gzip -d"
+	ZIP=gzip
+	ZIP_SUFFIX=.gz
+fi
+
+get_srcroot() {
+	SRCROOT=.
+	loop=1
+	while [ $loop -lt 100 ]; do
+		if [ ! -d $SRCROOT ]; then
+			# Abort on ENAMETOOLONG
+			break
+		fi
+		if [ -r $SRCROOT/RULES/rules.top ]; then
+			break
+		fi
+		if [ "$SRCROOT" = . ]; then
+			SRCROOT=".."
+		else
+			SRCROOT="$SRCROOT/.."
+		fi
+		loop="`expr $loop + 1`"
+	done
+	if [ ! -r $SRCROOT/RULES/rules.top ]; then
+		echo "Cannot find SRCROOT directory" 1>&2
+		return 1
+	fi
+	return 0
+}
+
+cd_srcroot() {
+	if [ ".$SRCROOT" = ".$NO_SRCROOT" ]; then
+		echo "SRCROOT not known."			1>&2
+		exit 1
+	fi
+	cd "$SRCROOT" || (echo "Cannot chdir to $SRCROOT"	1>&2; exit 1)
+	SRCROOT=.
+}
+
+set_binspath() {
+	PWD=`pwd`
+	if [ "$SRCROOT" = . ];then
+		PATH="${PWD}/${BINS}:${PWD}/conf:${PATH}"
+	else
+		PATH="${PWD}/${SRCROOT}/${BINS}:${PWD}/${SRCROOT}/conf:${PATH}"
+	fi
+	export PATH
+	unset PWD
+}
+
+get_bins() {
+	if [ ".$SRCROOT" = ".$NO_SRCROOT" ]; then
+		return 1
+	fi
+	OARCH=`${SRCROOT}/conf/oarch.sh`
+	BINS=bins/"$OARCH"
+}
+
+need_mfs() {
+	if [ ! -r ${SRCROOT}/RULES/rules.top ]; then
+		echo "A makefile system is not installed."	1>&2
+		echo "Run 'src-get init' first."		1>&2
+		exit 1
+	fi
+}
+
+check_bins() {
+	if [	-r ${SRCROOT}/${BINS}/bzip2 -a	\
+		-r ${SRCROOT}/${BINS}/gzip -a	\
+		-r ${SRCROOT}/${BINS}/lndir -a	\
+		-r ${SRCROOT}/${BINS}/patch -a	\
+		-r ${SRCROOT}/${BINS}/smake -a	\
+		-r ${SRCROOT}/${BINS}/star -a	\
+		-r ${SRCROOT}/${BINS}/wget	]; then
+			if [ "$WGET" = sh_wget ]; then
+				WGET="wget --passive-ftp"
+			fi
+			return 0
+	fi
+	return 1
+}
+
+need_bins() {
+	need_mfs
+	get_bins
+	if check_bins; then
+		return 0
+	else
+		echo "Setup for $OARCH not yet done."	1>&2
+		echo "Run 'src-get setup' first."	1>&2
+		exit 1
+	fi
+}
+
+
+sh_wget() {
+	excode=255
+
+	if [ $# -lt 1 ]; then
+		echo "Usage: wget.sh URL"			1>&2
+		echo "Only ftp:// type URLs are supported"	1>&2
+		return 1
+	fi
+
+	wget_url="$1"
+	wget_rest=`echo "$wget_url" | sed -e 's,^ftp://,,'`
+	if [ "$wget_url" = "$wget_rest" ]; then
+		echo "Unsupported protocol in" "$wget_url"	1>&2
+		return 1
+	fi
+	wget_host=`echo "$wget_rest" | sed -e 's,/.*,,'`
+	wget_file=`echo "$wget_rest" | sed -e 's,^[^/]*/,,'`
+	wget_dname=`echo "$wget_file" | sed -e 's,[^/]*$,,;s,/$,,;s,^$,.,'`
+	wget_fname=`echo "$wget_file" | sed -e 's,.*/,,'`
+
+	mkdir /tmp/.d.$$
+	cat <<-	EOF > /tmp/.d.$$/.netrc
+		machine "$wget_host"  login ftp password wget.sh@Makefiles.Schily.build
+	EOF
+	chmod 600 /tmp/.d.$$/.netrc
+
+	HOME=/tmp/.d.$$ ftp "$wget_host" <<- EOF
+		bin
+		passive on
+		cd "$wget_dname"
+		dir "$wget_fname"
+		hash on
+		verbose on
+		get "$wget_fname"
+		bye
+	EOF
+	excode=$?
+	rm -fr /tmp/.d.$$
+	return $excode
+}
+
+do_wget() {
+	do_wget_url="$1"
+	case "$1" in
+	file:///*)
+		do_wget_rest=`echo "$do_wget_url" | sed -e 's,^file://,,'`
+		do_wget_file=`echo "$do_wget_url" | sed -e 's,.*/,,'`
+		rm -rf "$do_wget_file"
+		cp "$do_wget_rest" "$do_wget_file"
+		return $?
+		;;
+	esac
+	loop=0
+	wget_retries=10
+	while [ $loop -lt $wget_retries ]; do
+		do_wget_file=`echo "$do_wget_url" | sed -e 's,.*/,,'`
+		rm -rf "$do_wget_file"
+		$WGET "$do_wget_url"
+
+		if [ -f "$do_wget_file" ]; then
+			break
+		fi
+		echo
+		echo Retrying in 10 seconds
+		sleep 10
+		loop="`expr $loop + 1`"
+	done
+	if [ $loop -ge $wget_retries ]; then
+		echo "Wget retry count exhausted - giving up."	1>&2
+		exit 1
+	fi
+	do_wget_file=
+}
+
+get_catalog() {
+	mkdir -p src-list
+	cd src-list
+	rm -f catalog
+	do_wget ${server_url}catalog
+	cd ..
+}
+
+do_dep() {
+	deps="$@"
+
+	if [ ."$@" = . ]; then
+		return
+	fi
+	echo "Fetching dependencies: $deps"
+	src-get install $deps
+}
+
+do_patch() {
+	(
+		cd $1
+		if [ -r patches/patch.sh ]; then
+			patches/patch.sh
+		fi
+	)
+}
+
+do_install() {
+	target="$1"
+	echo "Searching for target:" $target
+	mkdir -p src-list
+	cd src-list
+	# target already installed?
+	#rm $target
+	TGT=`grep "$target" < ../src-list/catalog`
+	#echo TGT $TGT
+	nmatches=`echo "$TGT" | wc -w`
+	#echo MATCHES $nmatches
+	if [ $nmatches = 0 ]; then
+		echo "No matching source for" $target
+		exit
+	fi
+	if [ $nmatches -gt 1 ]; then
+		echo "Too many matching sources for" $target
+		echo "Select one from:" $TGT
+		exit
+	fi
+	echo "Matching target:     " "$TGT"
+	#
+	# Retrieve Target desciption file that contains:
+	#
+	#	PKG=	The URL of the tar archive containing the wrappers
+	#	DIR=	The directory in local tree where to put the target dir
+	#	URL=	The URL where to fetch the source from upstream
+	#	DEP=	A list of package names the current target depends on
+	#
+	do_wget ${server_url}"$TGT"
+	PKG=
+	DIR=
+	URL=
+	DEP=
+	. ./$TGT
+	echo PKG "'$PKG'"
+	echo DIR "'$DIR'"
+	echo URL "'$URL'"
+	echo DEP "'$DEP'"
+	do_dep "$DEP"
+
+	if [ ."$URL" = . ]; then
+		cd ..
+		return
+	fi
+	do_wget ${server_url}"$PKG"
+	cd ..
+	pkg_fname=`echo "$PKG" | sed -e 's,.*/,,'`
+	url_fname=`echo "$URL" | sed -e 's,.*/,,'`
+	conf/mkdir.sh -p -T "$DIR"/"$TGT"
+	star -x -C "$DIR" < src-list/"$pkg_fname"
+	(cd "$DIR"/"$TGT" && ( do_wget $URL; star -x < "$url_fname" ) )
+	do_patch "$DIR"/"$TGT"
+}
+
+NO_SRCROOT=no-SRCROOT-directory-found
+if get_srcroot; then
+	case "$cmd" in
+
+		*version*)	;;
+
+		*)		echo SRCROOT: $SRCROOT;;
+	esac
+else
+	SRCROOT="$NO_SRCROOT"
+fi
+
+case $cmd in
+
+	init)	
+			if [ -r RULES/rules.top ]; then
+				echo "A makefile system is already installed in the current directory."	1>&2
+				exit 1
+			fi
+			if [ ! -z "`ls`" ]; then
+				if [ "`ls`" != src-get ]; then
+					echo "Current directory not empty."		1>&2
+					echo "Will not install makefile system."	1>&2
+					exit 1
+				fi
+			fi
+			do_wget ftp://ftp.berlios.de/pub/makefiles/testing/makefiles.tar${ZIP_SUFFIX}
+			${UNZIP} < makefiles.tar${ZIP_SUFFIX} | tar xf -
+			#
+			# tar on HP-UX-10.x does not like tar xpf
+			#
+			if [ ! -r RULES/rules.top ]; then
+				echo "The installation of the makefile system did fail."		1>&2
+				exit 1
+			fi
+			echo
+			echo "*********"
+			echo "The installation of Makefiles was successful."
+			echo
+			echo "Do not forget to run 'src-get setup' for all platforms."
+			echo "*********"
+			echo
+			exit
+			;;
+
+	setup)
+			need_mfs
+			# $BINS not set up
+			#
+			if [ ! -r RULES/rules.top ]; then
+				echo "A makefile system is not installed in the current directory."	1>&2
+				echo "Run 'src-get init' first"						1>&2
+				exit 1
+			fi
+			sh conf/setup.sh
+			;;
+
+	list)
+			need_bins
+			set_binspath
+			cd_srcroot
+			get_catalog
+			$PAGER src-list/catalog
+			;;
+
+	install)
+			need_bins
+			set_binspath
+			cd_srcroot
+			get_catalog
+			for i in "$@"; do
+				echo $i
+				do_install "$i"
+			done
+			;;
+
+	shell)
+			need_bins
+			unset LD_LIBRARY_PATH
+			unset LD_RUN_PATH
+			SHELL=${SHELL-/bin/sh}
+			set_binspath
+			echo "Note that 'smake' is the preferred make program."
+			echo "Starting ${SHELL}..."
+			exec ${SHELL}
+			echo "Cannot exec ${SHELL}"	1>&2
+			exit 1
+			;;
+
+	compile)
+			need_bins
+			unset LD_LIBRARY_PATH
+			unset LD_RUN_PATH
+			SHELL=${SHELL-/bin/sh}
+			set_binspath
+			cd_srcroot
+			echo "Starting compilation..."
+			exec smake "$@"
+			echo "Cannot exec smake $@"	1>&2
+			exit 1
+			;;
+
+	version|-version|--version)
+			echo "src-get  1.21 09/12/22 Copyright 2005-2009 J. Schilling"
+			exit 0
+			;;
+
+	-help|*)	echo "@(#)src-get  1.21 09/12/22 Copyright 2005-2009 J. Schilling"
+			usage
+			exit 0
+			;;
+
+esac
+

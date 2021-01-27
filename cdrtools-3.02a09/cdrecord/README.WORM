@@ -1,0 +1,10 @@
+CD-R drives are anything but WORM drives, but older drives identify themselves
+as WORM drives.
+A Worm drive is able to write each sector once at any time without preparation.
+A CD-R drives is not and never will be able to do this.
+However some old drives identify as WORM drives.
+
+For this reason the SCSI-3 standard tells CD-R drives simply CD drives
+with multi media extensions.
+
+

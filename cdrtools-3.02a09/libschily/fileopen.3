@@ -1,0 +1,55 @@
+. \"  Manual Seite fuer fileopen
+. \" @(#)fileopen.3	1.1
+. \"
+.if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
+.if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
+.if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
+.if t .ds A \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'A
+.if t .ds O \v'-0.77m'\h'0.25n'\z.\h'0.45n'\z.\v'0.77m'\h'-0.70n'O
+.if t .ds U \v'-0.77m'\h'0.30n'\z.\h'0.45n'\z.\v'0.77m'\h'-.75n'U
+.if t .ds s \(*b
+.if t .ds S SS
+.if n .ds a ae
+.if n .ds o oe
+.if n .ds u ue
+.if n .ds s sz
+.TH FILEOPEN 3 "15. Juli 1988" "J\*org Schilling" "Schily\'s LIBRARY FUNCTIONS"
+.SH NAME
+fileopen() \- opens or creates files
+.SH SYNOPSIS
+.nf
+.B
+FILE *fileopen(filename,modes)
+.B	char *filename;
+.B	char *modes;
+.fi
+.SH DESCRIPTION
+fileopen() opens filename. The mode is specified by the
+characters from the following set:
+.TP
+.B a
+seek to end-of-file after opening
+.TP
+.B c
+create file if necessary
+.TP
+.B r
+allow read access
+.TP
+.B t
+truncate file after opening if it already exists
+.TP
+.B u
+unbuffered all read/writes directly to system
+.TP
+.B w
+allow write access
+.SH RETURNS
+NULL open failed.
+other value should be used in other I/O calls and is of the
+type FILE.
+.SH NOTES
+The file is opened with rw rw access.
+If there is not enough room to allocate a buffer, the file is
+opened in an unbuffered mode. There is a limit to the number of
+open files.
