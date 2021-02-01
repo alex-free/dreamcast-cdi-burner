@@ -1,6 +1,6 @@
 #!/bin/bash
-
-version=1.0.5
+cdr=cdrtools-3.02a09
+version=1.0.6
 set -e
 cd "$(dirname "$0")"
 
@@ -15,13 +15,15 @@ cpu=$(uname -p)
 if [ "$os" = "Linux" ]; then
     echo "Linux detected"
         if [ "$cpu" = "powerpc" ] || [ "$cpu" = "ppc" ] || [ "$cpu" = "ppc64" ]; then
+            echo "Building For Big Endian CPUs"
 # 0.6.3 removed Big Endian Support
             cdi=cdirip-0.6.2
         else
+            echo "Building For Little Endian CPUs"
 # Assume Little Endian (if your CPU is big endian and not being detected above add it to the big endian check...)
-    cdi=cdirip-0.6.3
+            cdi=cdirip-0.6.3
         fi
-    app=/usr/local/dreamcast-cdi-burner-"$version"-linux
+    app=/usr/local/dreamcast-cdi-burner
     release_name=linux
 elif [ "$os" = "Darwin" ]; then
     echo "Mac Build"
@@ -29,19 +31,26 @@ elif [ "$os" = "Darwin" ]; then
     appd=DCDIB.app
     app=/Applications/$appd
         if [ "$cpu" = "powerpc" ]; then
+            echo "Building For Big Endian CPUs"
 # 0.6.3 removed Big Endian Support
             cdi=cdirip-0.6.2
+            if [ -d "/Developer/SDKs/MacOSX10.3.9.sdk" ] && [ -d "/Developer/SDKs/MacOSX10.4u.sdk" ] ; then
+                echo "Detected the 10.3.9 SDK, the 10.4u SDK, and a PowerPC Mac OS X system, using build select. This will run on Mac OS X 10.3.9-10.6.8."
+                build_select_1.0.1/install
+                bselect 4.0 10.4u ppc 10.3
+            else
+                echo "Did not find the 10.3.9 and 10.4u SDKs on a PowerPC Mac OS X system, not using build select."
+            fi
         else
+            echo "Building For Little Endian CPUs"
 # Assume Little Endian
             cdi=cdirip-0.6.3
         fi
     release_name=mac
 else
     echo "Hmm, this is appears to be neither Linux or Mac OS X. Can not continue."
-exit 1
+    exit 1
 fi
-
-cdr=cdrtools-3.02a09
 
 rm -rf build
 mkdir build
@@ -60,8 +69,6 @@ if [ "$os" = "Darwin" ]; then
 	    echo "Found $appd"
 	    cp -rv $appd /Applications
 	    cp -v applet.icns $app/Contents/Resources/applet.icns
-        build_select_1.0.1/install
-        bselect 4.0 10.4u ppc 10.3
 	fi
 fi
 
@@ -69,9 +76,20 @@ cp -rv $cdi build
 cd build/$cdi
 if [ "$os" = "Darwin" ]; then
 # -lm is not in default link on Mac for some reason...
-    bselect 4.0 10.4u ppc 10.3 "-lm"
-    make -f Makefile.linux
-    bselect 4.0 10.4u ppc 10.3
+    if [ "$cpu" = "powerpc" ]; then
+        cp -v ../../cdirip-0.6.2_Makefile.osx Makefile.osx
+        if [ -d "/Developer/SDKs/MacOSX10.3.9.sdk" ] && [ -d "/Developer/SDKs/MacOSX10.4u.sdk" ] ; then
+            bselect 4.0 10.4u ppc 10.3
+            make -f Makefile.osx
+            bselect 4.0 10.3.9 ppc 10.3      
+        else
+            cp -v ../../cdirip-0.6.3_Makefile.osx Makefile.osx
+            make -f Makefile.osx
+        fi  
+    else
+        cp -v ../../cdirip-0.6.3_Makefile.osx Makefile.osx
+        make -f Makefile.osx  
+    fi
 elif [ "$os" = "Linux" ]; then
     make -f Makefile.linux
 fi

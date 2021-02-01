@@ -22,7 +22,7 @@ OBJS=cdirip.o buffer.o cdi.o common.o audio.o
 
 all: compile_res
 	$(CC) -c $(SRCS) $(CFLAGS)
-	$(CC) -o $(OUTPUT) $(OBJS) $(CFLAGS)
+	$(CC) -o $(OUTPUT) $(OBJS) $(CFLAGS) -lm
 
 compile_res:
 

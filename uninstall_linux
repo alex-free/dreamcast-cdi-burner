@@ -10,6 +10,6 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-rm -rf /usr/local/dreamcast-cdi-burner-"$version"-linux /usr/local/bin/cdib
+rm -rf /usr/local/dreamcast-cdi-burner /usr/local/bin/cdib
 echo "
 Uninstallation complete!"

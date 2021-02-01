@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-version=1.0.5
 
 cd "$(dirname "$0")"
 
@@ -10,7 +9,7 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-cp -rv dreamcast-cdi-burner-"$version"-linux /usr/local
+cp -rv dreamcast-cdi-burner /usr/local
 cp -v cdib /usr/local/bin
 echo "
 Installation complete! To use Dreamcast CDI Burner, execute the cdib command with the .CDI file as the first argument. Please read readme.html for complete documentation"
