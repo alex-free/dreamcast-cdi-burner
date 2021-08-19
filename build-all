@@ -1,6 +1,6 @@
 #!/bin/bash
 cdr=cdrtools-3.02a09
-version=1.0.6
+version=1.0.7
 set -e
 cd "$(dirname "$0")"
 
@@ -34,13 +34,6 @@ elif [ "$os" = "Darwin" ]; then
             echo "Building For Big Endian CPUs"
 # 0.6.3 removed Big Endian Support
             cdi=cdirip-0.6.2
-            if [ -d "/Developer/SDKs/MacOSX10.3.9.sdk" ] && [ -d "/Developer/SDKs/MacOSX10.4u.sdk" ] ; then
-                echo "Detected the 10.3.9 SDK, the 10.4u SDK, and a PowerPC Mac OS X system, using build select. This will run on Mac OS X 10.3.9-10.6.8."
-                build_select_1.0.1/install
-                bselect 4.0 10.4u ppc 10.3
-            else
-                echo "Did not find the 10.3.9 and 10.4u SDKs on a PowerPC Mac OS X system, not using build select."
-            fi
         else
             echo "Building For Little Endian CPUs"
 # Assume Little Endian
@@ -76,20 +69,13 @@ cp -rv $cdi build
 cd build/$cdi
 if [ "$os" = "Darwin" ]; then
 # -lm is not in default link on Mac for some reason...
-    if [ "$cpu" = "powerpc" ]; then
-        cp -v ../../cdirip-0.6.2_Makefile.osx Makefile.osx
-        if [ -d "/Developer/SDKs/MacOSX10.3.9.sdk" ] && [ -d "/Developer/SDKs/MacOSX10.4u.sdk" ] ; then
-            bselect 4.0 10.4u ppc 10.3
+        if [ "$cpu" = "powerpc" ]; then
+            cp -v ../../cdirip-0.6.2_Makefile.osx Makefile.osx
             make -f Makefile.osx
-            bselect 4.0 10.3.9 ppc 10.3      
         else
             cp -v ../../cdirip-0.6.3_Makefile.osx Makefile.osx
             make -f Makefile.osx
-        fi  
-    else
-        cp -v ../../cdirip-0.6.3_Makefile.osx Makefile.osx
-        make -f Makefile.osx  
-    fi
+        fi
 elif [ "$os" = "Linux" ]; then
     make -f Makefile.linux
 fi
@@ -99,7 +85,7 @@ rm -rf build/$cdi
 
 cp -rv $cdr build
 cd build/$cdr
-make INS_BASE=$app install
+make INS_BASE=$app GMAKE_NOWARN=true install
 cd ../../
 rm -rf build/$cdr
 
