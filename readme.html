@@ -33,39 +33,34 @@
 <li><a href="#bundled_software">Bundled Software & Licensing</a></ul>
 
 <a name=downloads><h2>Downloads</h2></a>
-<h3>Version 1.0.6 - (1/31/2021) - <a href="#changelog">Changes In This Version</a></h3>
-<p><a href=https://github.com/alex-free/dreamcast-cdi-burner/releases/download/1.0.6/dreamcast_cdi_burner_1.0.6_mac_powerpc.zip>Mac OS X 10.3.9-10.6.x (PPC)</a></p>
-<p><a href=https://github.com/alex-free/dreamcast-cdi-burner/releases/download/1.0.6/dreamcast_cdi_burner_1.0.6_fedora_33_linux_x86_64.zip>Fedora 33 Linux x86_64</a></p>
-<p><a href=https://github.com/alex-free/dreamcast-cdi-burner/archive/1.0.6.zip>Source Code</a></p>
+<h3>Version 1.0.7 - (8/19/2021) - <a href="#changelog">Changes In This Version</a></h3>
+<p><a href=https://github.com/alex-free/dreamcast-cdi-burner/releases/download/1.0.7/dreamcast_cdi_burner_1.0.7_mac_powerpc.zip>Mac OS X 10.3.9-10.6.x (PowerPC)</a></p>
+<p><a href=https://github.com/alex-free/dreamcast-cdi-burner/releases/download/1.0.7/dreamcast_cdi_burner_1.0.7_mac_i386.zip>Mac OS X 10.6.x-10.14.x (Intel)</a></p>
+<p><a href=https://github.com/alex-free/dreamcast-cdi-burner/archive/1.0.7.zip>Source Code</a></p>
 <p>View <a href=https://github.com/alex-free/dreamcast-cdi-burner/releases/>all releases</a>.</p>
 
 <a name=install><h2>Installation</h2></a>
 
-<h3>Mac OS X 10.3.9-10.6.8 (Officially Supported)</h3>
+<h3>Mac OS X</h3>
 
-<p>Download the latest <a href=https://github.com/alex-free/dreamcast-cdi-burner/releases/download/1.0.6/dreamcast_cdi_burner_1.0.6_mac_powerpc.zip>Mac OS X 10.3.9-10.6.x (PPC)</a> release and unzip it (Rosetta must be installed on Intel Macs to use this release). Copy <code>DCDIB.app</code> to <code>/Applications/DCDIB.app</code>. If <code>DCDIB.app</code> is ran anywhere else or named differently you will be prompted to copy it to <code>/Applications/DCDIB.app</code> before you can continue.</p>
+<p>Download the PowerPC or Intel release, and unzip it. Copy the <code>DCDIB.app</code> to <code>/Applications/DCDIB.app</code>. If <code>DCDIB.app</code> is ran anywhere else or named differently you will be prompted to copy it to <code>/Applications/DCDIB.app</code> before you can continue.</p>
 
-<h3>Mac OS X 10.7+ (Untested)</h3>
-<p>Mac OS X 10.7 does not support PowerPC programs and I do not have an Intel Mac to test/build Intel releases, however building Dreamcast CDI Burner from <a href="#install_source">source</a> (which is one command) should work on any Mac OS X version newer then 10.4. Please open an <a href=https://github.com/alex-free/dreamcast-cdi-burner/issues>issue</a> on GitHub if using this on an Intel Mac for feedback on this.</p>
-
-
-<h3>Fedora Linux 33 x86_64 (Officially Supported)</h3>
-<p>Download the latest <a href=https://github.com/alex-free/dreamcast-cdi-burner/releases/download/1.0.6/dreamcast_cdi_burner_1.0.6_fedora_33_linux_x86_64.zip>Fedora 33 Linux x86_64</a> release and unzip it. Execute the <code>install</code> script (in the release download) with sudo privilages or as root. You can type <code>sudo</code> in the Terminal application, add a space, and then simply drag the <code>install</code> script as well, it does not need to be executed from the same directory.</p>
-
-<h3>Other Linux Distros (Officially Supported)</h3>
-<p>If your not running Fedora 33 x86_64, you need to install Dreamcast CDI Burner from <a href="#install_source">source</a> (which is one command). Any Linux distro should work.</p> 
+<h3>Linux</h3>
+<p>A pre-built release is not available. Install Dreamcast CDI Burner from <a href="#install_source">source</a>.</p>
 
 <a name=install_source><h2>Install From Source</h2></a>
 
-<p>Compiling for Mac OS X requires Mac OS X 10.4 Tiger or newer. Xcode and or Xcode Command Line Tools (depending on your OS version) is required.</p>
+<h3>Mac OS X Requirements</h3>
+
+<p>Mac OS X 10.3.9 or newer is required to build for Mac OS X. PowerPC and Intel are supported. To target Mac OS X 10.3.9-10.6.8 PowerPC build on Mac OS X 10.3.9. To target Mac OS X 10.4-10.14 Intel, build on Mac OS X 10.4. Xcode and or Xcode Command Line Tools (depending on your OS version) is required.</p>
+
+<h3>Linux Requirements</h3>
 
 <p>Compiling for Linux requires gcc and GNUmake installed.</p>
 
+<h3>Building</h3>
+
 <p>Compiling Dreamcast CDI Burner is done by executing one command found in the <a href="https://github.com/alex-free/dreamcast-cdi-burner/archive/1.0.6.zip">source code</a> download, the <code>build-all</code> script with sudo privilages or as root. The <code>build-all</code> script does not need to be executed from the same directory to work. It will compile and install Dreamcast CDI Burner, as well as create a release in the <code>build</code> directory.</p>
-
-<a name=optical_drive_note><h2>Important Info For Systems With Multiple CD Burners</h2></a>
-
-<p>Currently for Dreamcast CDI Burner to work, your computer must have only one internal CD Burner connected and available to the system. If your computer has only an external burner (think USB), or multiple internal burners, the cdib script will fail. If you have multiple internal burners, the "solution" is to unplug all except one burner. Alternatively if you are an advanced user that knows how <a href=http://cdrtools.sourceforge.net/private/cdrecord.html>CDRtools</a> works, you could try adding your own dev= value in the <a href=https://github.com/alex-free/dreamcast-cdi-burner/blob/master/cdib>cdib</a> script.</p>
 
 <a name=cdr_note><h2>Important Info About CD-ROMs</h2></a>
 <p>Some people swear by <a href=https://www.verbatim.com/home?con=696>Verbatim</a> CD-ROMs, however this has not been my experience. I've been able to grab any CD-ROM brand (such as Maxell) and they work perfectly on my Model 1 Sega Dreamcast.</p>
@@ -145,6 +140,12 @@
 
 <a name=changelog><h2>Changelog</h2></a>
 
+<h3>Version 1.0.7 (8/19/2021)</h3>
+
+<ul><li>Removed build select, 10.3.9 is now required to build targeting Panther PowerPC.</li>
+<li>Added Intel Mac support, and Mac OS 10.11+ compatibility by unloading diskarbitrationd and not loading it until burning is complete.</li>
+<li>Always specify IODVDServices.</ul>
+
 <h3>Version 1.0.6 (2/1/2021)</h3>
 
 <ul><li>Fixed the CDRtools compatibility regression on Mac OS X 10.3.9</li>
@@ -172,7 +173,6 @@
 
 <ul><li><a href=http://cdrtools.sourceforge.net/private/cdrecord.html>CDRtools v3.02a09</a> (CDDL, BSDL 2 clause, LGPL version 2.1, GPL version 2, Public Domain)</li>
 <li>CDIrip (<a href=https://sourceforge.net/projects/cdimagetools/files/CDIRip>0.6.3</a> - GNU GPL version 2), (<a href=https://web.archive.org/web/20060213170824/http://cdirip.cjb.net>0.6.2</a> - as is, no license, source code available).</li>
-<li>Build Select (<a href=https://github.com/alex-free/build-select>1.0.1</a> - 3-BSD</a>).</li>
 <li><a href=https://github.com/alex-free/dreamcast-cdi-burner/blob/master/cdib>Cdib</a> (my own script) along with everything else that is not the above software, but is included in the source and releases, is released into the Public Domain (unlicense).</li></ul>
 
 <p>For more information, see the 'licenses' directory in each release.</p>
