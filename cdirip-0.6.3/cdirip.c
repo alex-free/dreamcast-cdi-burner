@@ -30,7 +30,9 @@ char *global_write_buffer_ptr;
 
 // Main function
 
-int main( int argc, char **argv )
+int chdir(int number);
+
+int main(int argc, char **argv)
 {
 
 int  i;

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tmp=~/.dcdib_tmp 
+tmp=~/Desktop/.dcdib_tmp 
 os=$(uname)
 
 unmount_cd () {
