@@ -74,10 +74,8 @@ cd $tmp
 echo "Burning..."
 if [ -f "taudio01.wav" ]; then
     echo "Detected CDI Type: WAV Track 1"
-    for f in *wav; do echo -n " -audio $f" >> a; done
-    b1=$(cat a)
     unmount_cd
-    cdrecord -speed=8 -v $device -dao -multi $b1
+    cdrecord -speed=8 -v $device -dao -multi *.wav
 
     unmount_cd
     cdrecord -eject -overburn -speed=8 -v $device -tao -xa *.iso
