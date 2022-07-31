@@ -12,7 +12,7 @@ trap err ERR
 set -e 
 
 # Put temp directory in /tmp (or whatever the OS prefers)
-tmp=$(mktemp -d cdib.XXX)
+tmp=$(mktemp -d --tmpdir cdib.XXX)
 os=$(uname)
 
 unmount_cd () {
@@ -52,6 +52,11 @@ if ! type cdirip >/dev/null 2>&1; then
     exit 1
 fi
 
+if [[ "$os" = "Darwin"  ]]; then
+    device="dev=IODVDServices"
+else
+    device=""
+fi
 
 if [[ "$os" = "Darwin" && $EUID -ne 0 ]]; then 
     # XXX Does Darwin truly require root to burn a disk!? XXX
@@ -67,12 +72,6 @@ cd $tmp
 
 
 echo "Burning..."
-if [ "$os" = "Darwin"  ]; then
-    device="dev=IODVDServices"
-else
-    device=""
-fi
-
 if [ -f "taudio01.wav" ]; then
     echo "Detected CDI Type: WAV Track 1"
     for f in *wav; do echo -n " -audio $f" >> a; done
