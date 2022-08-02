@@ -54,7 +54,25 @@ Download the PowerPC or Intel release, and unzip it. Copy the `DCDIB.app` to `/A
 
 ### Linux
 
-A pre-built release is not available. Install Dreamcast CDI Burner from [source](#install_source).
+A pre-built release is not yet available. Please install Dreamcast CDI
+Burner from [source](#install_source).
+
+Note that the heart of this program is just a bash shell script,
+[cdib](raw/master/cdib) which calls two other programs: cdrecorder and cdirip. 
+By default, those programs are compiled and installed with this package.
+
+If you already have cdrecorder installed (very likely) and
+[cdirip](https://github.com/jozip/cdirip) (less likely), then
+all you need to install is the shell script:
+
+1. Download the cdib script.
+       wget https://github.com/alex-free/dreamcast-cdi-burner/raw/master/cdib
+2. Make it executable.
+       chmod +x cdib
+3. Put it in your PATH.
+       mv cdib /usr/local/bin/
+
+
 
 Install From Source
 -------------------
