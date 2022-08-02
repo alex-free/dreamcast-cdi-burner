@@ -58,10 +58,10 @@ A pre-built release is not yet available. Please install Dreamcast CDI
 Burner from [source](#install_source).
 
 Note that the heart of this program is just a bash shell script,
-[cdib](raw/master/cdib) which calls two other programs: cdrecorder and cdirip. 
+[cdib](raw/master/cdib) which calls two other programs: cdrecord and cdirip. 
 By default, those programs are compiled and installed with this package.
 
-If you already have cdrecorder installed (very likely) and
+If you already have cdrecord installed (very likely) and
 [cdirip](https://github.com/jozip/cdirip) (less likely), then
 all you need to install is the shell script:
 
