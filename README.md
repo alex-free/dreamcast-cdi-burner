@@ -65,13 +65,11 @@ If you already have cdrecorder installed (very likely) and
 [cdirip](https://github.com/jozip/cdirip) (less likely), then
 all you need to install is the shell script:
 
-1. Download the cdib script.
-       wget https://github.com/alex-free/dreamcast-cdi-burner/raw/master/cdib
-2. Make it executable.
-       chmod +x cdib
-3. Put it in your PATH.
-       mv cdib /usr/local/bin/
-
+```bash
+ wget https://github.com/alex-free/dreamcast-cdi-burner/raw/master/cdib		# Download the cdib script.
+ chmod +x cdib				# Make it executable.
+ mv cdib /usr/local/bin/		# Put it in your PATH.
+```
 
 
 Install From Source
