@@ -59,7 +59,6 @@ else
 fi
 
 if [[ "$os" = "Darwin" && $EUID -ne 0 ]]; then 
-    # XXX Does Darwin truly require root to burn a disk!? XXX
     echo "$USER does not have the required privilages to run $0. Execute sudo $0 to continue." 
     exit 1 
 fi
