@@ -22,15 +22,14 @@ Table Of Contents
 -----------------
 
 *   [Downloads](#downloads)
-*   [Installation](#install)
-*   [Install From Source](#install_source)
-*   [How To Uninstall](#uninstall)
-*   [Important Info For Systems With Multiple CD Burners](#optical_drive_note)
-*   [Important Info About CD-ROMs](#cdr_note)
+*   [Installation](#installation)
+*   [Install From Source](#install-from-source)
+*   [How To Uninstall](#how-to-uninstall)
+*   [Important Info About CD-ROMs](#important-info-about-cd-roms)
 *   [Usage](#usage)
-*   [Example Burns (Images)](#images)
-*   [Changlog](#changelog)
-*   [Bundled Software & Licensing](#bundled_software)
+*   [Example Burns (Images)](#example-burns-images)
+*   [Changelog](#changelog)
+*   [Bundled Software & Licensing](#bundled-software--licensing)
 
 Downloads
 ---------
@@ -55,7 +54,7 @@ Download the PowerPC or Intel release, and unzip it. Copy the `DCDIB.app` to `/A
 ### Linux
 
 A pre-built release is not yet available. Please install Dreamcast CDI
-Burner from [source](#install_source).
+Burner from [source](#install-from-source).
 
 Note that the heart of this program is just a bash shell script,
 [cdib](raw/master/cdib) which calls two other programs: cdrecord and cdirip. 
