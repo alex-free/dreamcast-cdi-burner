@@ -55,7 +55,7 @@ fi
 if [[ "$os" = "Darwin"  ]]; then
     device="dev=IODVDServices"
 else
-    device=""
+    device="dev=/dev/sr0"
 fi
 
 if [[ "$os" = "Darwin" && $EUID -ne 0 ]]; then 
