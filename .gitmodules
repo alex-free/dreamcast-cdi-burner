@@ -1,0 +1,9 @@
+[submodule "cdrtools"]
+	path = cdrtools
+	url = https://github.com/Distrotech/cdrtools
+[submodule "cdirip"]
+	path = cdirip
+	url = https://github.com/jozip/cdirip
+[submodule "pled"]
+	path = pled
+	url = https://github.com/alex-free/pled

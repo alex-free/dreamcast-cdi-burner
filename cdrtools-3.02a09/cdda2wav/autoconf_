@@ -1,5 +1,0 @@
-#!/bin/sh
-#
-# @(#)autoconf_	1.1 06/02/15 Copyright 2006 J. Schilling
-#
-../conf/autoconf -m ../conf

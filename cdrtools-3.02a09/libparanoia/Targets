@@ -1,2 +1,0 @@
-CFILES=		gap.c isort.c overlap.c p_block.c paranoia.c pmalloc.c
-HFILES=		cdda_paranoia.h gap.h isort.h overlap.h p_block.h pmalloc.h

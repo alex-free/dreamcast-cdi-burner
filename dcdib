@@ -1,0 +1,98 @@
+#!/bin/bash
+
+version="1.0.8"
+# When this script exits, automatically delete the temp directory.
+cleanup() 
+{ 
+    if [[ -e "$tmp" ]]; then  
+        rm -r "$tmp"   
+    fi
+}
+trap cleanup EXIT
+
+# Print out any uncaught errors.
+err() 
+{	
+    echo "Uncaught error in $0:$BASH_LINENO" >&2
+}
+trap err ERR
+
+# If any command unexpectedly exits with an error, quit the whole script. 
+set -e 
+# Save the main directory containing the dcdib script so we can use absolute filepaths to execute cdrecord from inside the tmp directory we create next
+cd "$(dirname "$0")"
+main="$(pwd)"
+# Put temp directory in /tmp (or whatever the OS prefers)
+tmp=$(mktemp -d --tmpdir cdib.XXX)
+echo -e "Dreamcast CDI Burner v$version\nBy Alex Free\n"
+
+unmount_cd () 
+{
+    ( pumount cdrom ||              # Easiest
+          umount /media/cdrom ||        # Most common
+          umount /mnt/cdrom             # For old systems
+    )> /dev/null 2>&1  || true
+}
+
+if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
+    echo -e "Usage:\ndcdib <file.cdi> <cd burner device>\n\n<file.cdi> is the .cdi file you'd like to burn to a CD-R.\n\n<cd burner device> is OPTIONAL and should only be given if the default CD burner device devname is not working for your OS.\n"
+    exit 1
+fi
+
+# We need root for 2 reasons. 
+# 1) Ensures that buffer under-runs do not occur when burning (this has happened to me and will make a coaster!). 
+# 2) The PLED libraries do not work unless you are root for hardware access. This is a wont-fix issue.
+if [ $EUID -ne 0 ]; then
+    echo "Error: DCDIB requires sudo or root."
+    exit 1
+fi
+
+if [ "$#" -eq 2 ]; then
+# Explicitly set your own device for the CD burner, which can change on different OSes.
+    echo -e "Info: Using explicitly specified CD burner device from second argument: "$2"\n"
+    device="$2"
+else
+# This works on most Linux distros
+    echo -e "Info: Using default CD burner device: /dev/sr0\n"
+    device="/dev/sr0"
+fi
+
+if [ ! -f "$1" ]; then
+    echo "Error: Can not open CDI file: "$1"\n"
+    exit 1
+else
+    unmount_cd
+    echo "Extracting "$1"...\n"
+    bin/cdirip "$1" $tmp 
+    cd $tmp
+fi
+# There are 2 different main kinds of CDI images that we need to burn differently. DATA session 1 + DATA session 2 and AUDIO session 1 + AUDIO session 2.
+# Technically you could however say there are 4 different kinds:
+# - Data ISO + DATA ISO
+# - WAV/audio track + DATA ISO
+# - Multiple CDDA WAVs/audio tracks + DATA ISO
+# - Multiple CDDA WAVs/audio tracks in an ISO + DATA ISO
+echo -e "\nBurning "$1"..."
+if [ -f "taudio01.wav" ]; then
+    echo "Detected CDI Type: WAV Track 1"
+    unmount_cd
+    "$main"/bin/cdrecord -speed=8 -v dev=$device -dao -multi *.wav
+    unmount_cd
+    "$main"/bin/cdrecord -eject -overburn -speed=8 -v dev=$device -tao -xa *.iso
+    unmount_cd
+elif [ -f "tdata01.iso" ]; then
+    echo "Detected CDI Type: ISO Track 1"
+    unmount_cd
+    "$main"/bin/cdrecord -speed=8 -v dev=$device -tao -multi -xa tdata01.iso
+    unmount_cd
+    "$main"/bin/cdrecord -eject -overburn -speed=8 -v dev=$device -tao -multi -xa tdata02.iso
+    unmount_cd
+else
+    echo "Error: Failed To Find Burn Files, Nothing Burned!"
+    exit 1
+fi
+
+unmount_cd
+echo "Ejecting CD-ROM, please wait..."
+eject || true
+echo "Complete!"
