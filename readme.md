@@ -1,10 +1,6 @@
-dcdib 
-
 [alex-free.github.io](https://alex-free.github.io)
-==================================================
 
-Dreamcast CDI Burner (DCDIB) : Burn ALL Sega Dreamcast .CDI Files On Linux With Open Source Software
-====================================================================================================
+# Dreamcast CDI Burner (DCDIB) : Burn ALL Sega Dreamcast .CDI Files On Linux With Open Source Software
 
 by Alex Free
 
@@ -19,24 +15,21 @@ DCDIB supports burning **all 4 Sega Dreamcast CDI file format types**:
 *   Multiple CDDA WAVs/audio tracks (Session 1) + Data ISO (Session 2)
 *   Multiple CDDA WAVs/audio tracks in an ISO (Session 1) + Data ISO (Session 2)
 
-Links
------
+## Links
 
 *   [GitHub](https://github.com/alex-free/dreamcast-cdi-burner)
 *   [Homepage](https://alex-free.github.io/dcdib)
 *   [Dreamcast-Talk Thread](https://www.dreamcast-talk.com/forum/viewtopic.php?f=2&t=13974)
 
-Table Of Contents
------------------
+## Table Of Contents
 
 *   [Downloads](#downloads)
-*   [CD-R Media & The Sega Dreamcast](#cdrmedia)
+*   [CD-R Media](#cd-r-media)
 *   [Usage](#usage)
-*   [Installing From Source](#source)
-*   [Bundled Software & Licensing](#bundled)
+*   [Building From Source](#building-from-source)
+*   [License](#license)
 
-Downloads
----------
+## Downloads
 
 ### v1.0.8 (9/28/2022)
 
@@ -52,10 +45,9 @@ Changes:
 *   Added sanity checks to the `dcdib` script (thanks [hackerb9](https://github.com/hackerb9)).
 *   Dropped Mac OS/Mac OS X/\*BSD support.
 
-CD-R Media & The Sega Dreamcast
--------------------------------
+## CD-R Media
 
-Only use high-quality CD-R media. If you want good results burning backups for your Sega Dreamcast your CD-R media should contain:
+It is recommend to only use high-quality CD-R media. If you want good results burning backups for your Sega Dreamcast your CD-R media should contain:
 
 *   High quality dye (SuperAZO, AZO, or Phthalocyanine).
 *   A highly reflective layer system.
@@ -125,8 +117,7 @@ _If your wondering why_, root privileges are required to ensure that buffer unde
 
 ![DCDIB usage 3](images/dcdib-usage-3.png)
 
-Installing From Source
-----------------------
+## Building From Source
 
 Installing from source allows you to compile your own DCDIB release for a different Linux version, distribution, and or CPU architecture (i.e. ARM, x86 32-bit, etc.).
 
@@ -145,8 +136,7 @@ Now that the entire DCDIB source tree is recursively cloned, `cd` into the `drea
 
 If you want to clean your DCDIB source tree of all built binaries/releases, simply execute `./build clean`. The `clean` argument will tell the `build` script to simply exit after resetting the source tree.
 
-Bundled Software & Licensing
-----------------------------
+## License
 
 DCDIB itself is released into the public domain, see the file `dcdib.txt` in the `licenses` directory of each DCDIB release.
 
