@@ -1,9 +1,14 @@
 #!/bin/bash
-version=1.0.8
-arch=$(uname -p)
+
+# Dreamcast CDI Burner build script
+
 set -e
+version=v1.0.8
+arch=$(uname -p)
+
 cd "$(dirname "$0")"
 rm -rf build-tmp dcdib-$version-$arch dcdib-$version-$arch.zip
+
 # Just clean built binaries/releases from source and exit now if given the argument 'clean'
 if [ "$1" == "clean" ]; then
     exit 0
@@ -21,20 +26,24 @@ cd ../../
 cp -rv cdrtools build-tmp
 cd build-tmp/cdrtools
 make GMAKE_NOWARN=true
+
 # Use * here because the begining name of the parent folder differs by architecture/OS/compiler
 ../../pled/pled ./cdrecord/OBJ/*cc/cdrecord
+
 # dump shared libraries/wrapper/executable from cdrecord to release bin directory
 cp -rp cdrecord-pled/* ../../dcdib-$version-$arch/bin
 cd ../../
 cp -rp dcdib dcdib-$version-$arch/
 rm -rf build-tmp
-chmod -R 775 dcdib-$version-$arch/bin
+
 # Copy licenses to release
 cp -rp unlicense.txt dcdib-$version-$arch/licenses/dcdib.txt
 cp -rp pled/unlicense.txt dcdib-$version-$arch/licenses/pled.txt
 cp -rp cdirip/LICENSE dcdib-$version-$arch/licenses/cdirip-gpl2.txt
 cp -rp cdrtools/GPL-2.0.txt dcdib-$version-$arch/licenses/cdrecord-gpl2.txt
 cp -rp cdrtools/CDDL.Schily.txt dcdib-$version-$arch/licenses/cdrecord-cddl.txt
+
 # Copy documentation to release
-cp -rp readme.html readme.md images dcdib-$version-$arch/
+cp -rp readme.md images dcdib-$version-$arch/
+chmod -R 777 dcdib-$version-$arch/bin
 zip -r dcdib-$version-$arch.zip dcdib-$version-$arch
