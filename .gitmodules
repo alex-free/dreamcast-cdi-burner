@@ -7,3 +7,6 @@
 [submodule "pled"]
 	path = pled
 	url = https://github.com/alex-free/pled
+[submodule "p7zip"]
+	path = p7zip
+	url = https://github.com/p7zip-project/p7zip.git

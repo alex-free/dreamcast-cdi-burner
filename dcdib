@@ -1,30 +1,14 @@
 #!/bin/bash
 
-version="1.0.8"
-# When this script exits, automatically delete the temp directory.
-cleanup() 
-{ 
-    if [[ -e "$tmp" ]]; then  
-        rm -r "$tmp"   
-    fi
-}
-trap cleanup EXIT
+version="v1.0.9"
 
-# Print out any uncaught errors.
-err() 
-{	
-    echo "Uncaught error in $0:$BASH_LINENO" >&2
-}
-trap err ERR
+# Slowest supported by your burner is the default, but some speeds are better then others depening on drive. TODO: Make an argument that specifies this
+burn_speed=1
 
-# If any command unexpectedly exits with an error, quit the whole script. 
-set -e 
 # Save the main directory containing the dcdib script so we can use absolute filepaths to execute cdrecord from inside the tmp directory we create next
 cd "$(dirname "$0")"
-main="$(pwd)"
-# Put temp directory in /tmp (or whatever the OS prefers)
-tmp=$(mktemp -d --tmpdir cdib.XXX)
-echo -e "Dreamcast CDI Burner v$version\nBy Alex Free\n"
+
+echo -e "Dreamcast CDI Burner $version\nBy Alex Free\n"
 
 unmount_cd () 
 {
@@ -35,64 +19,103 @@ unmount_cd ()
 }
 
 if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
-    echo -e "Usage:\ndcdib <file.cdi> <cd burner device>\n\n<file.cdi> is the .cdi file you'd like to burn to a CD-R.\n\n<cd burner device> is OPTIONAL and should only be given if the default CD burner device devname is not working for your OS.\n"
+    echo -e "Usage:\ndcdib <file> <cd burner device>\n\n<file> is either a CDI file OR a supported compressed archive (7z/xz/cab/zip/gzip/bzip2/tar) containing a CDI file.\n\n<cd burner device> is OPTIONAL and should only be given if the default CD burner device devname is not working for your OS."
     exit 1
 fi
 
-# We need root for 2 reasons. 
-# 1) Ensures that buffer under-runs do not occur when burning (this has happened to me and will make a coaster!). 
-# 2) The PLED libraries do not work unless you are root for hardware access. This is a wont-fix issue.
 if [ $EUID -ne 0 ]; then
-    echo "Error: DCDIB requires sudo or root."
+    echo "Error: DCDIB requires sudo privilages to ensure that buffer under-runs do not occur when burning to disc, and to ensure succesful access to your burning hardware."
     exit 1
 fi
 
-if [ "$#" -eq 2 ]; then
-# Explicitly set your own device for the CD burner, which can change on different OSes.
+if [ "$#" -eq 2 ]; then # Explicitly set your own device for the CD burner, which can change on different OSes.
     echo -e "Info: Using explicitly specified CD burner device from second argument: "$2"\n"
     device="$2"
-else
-# This works on most Linux distros
+else # This works on most Linux distros
     echo -e "Info: Using default CD burner device: /dev/sr0\n"
     device="/dev/sr0"
 fi
 
+# When this script exits, automatically delete the temp directory.
+cleanup() 
+{ 
+    if [[ -e "$tmp" ]]; then
+        echo "Clearing temp files..."  
+        rm -r "$tmp"   
+    fi
+}
+trap cleanup EXIT
+
+# Put temp directory in /tmp (or whatever the OS prefers)
+tmp=$(mktemp -d --tmpdir cdib.XXX)
+
 if [ ! -f "$1" ]; then
-    echo "Error: Can not open CDI file: "$1"\n"
+    echo "Error: Can not open file: "$1"\n"
     exit 1
 else
-    unmount_cd
-    echo "Extracting "$1"...\n"
-    bin/cdirip "$1" $tmp 
-    cd $tmp
+ # Interesting, file command misreports cdi file type. So we need to use cdirip itself to see if it is a CDI file or not. If it isn't try to extract it with 7-zip
+    if bin/cdirip "$1" | grep "Unsupported image version" > /dev/null 2>&1; then
+        bin/7za e "$1" -o$tmp
+        multiple_cdi_files=$(ls -1a $tmp/*.cdi $tmp/*.CDI 2> /dev/null | wc -l)
+
+        if [[ $multiple_cdi_files -gt 1 ]]; then
+            echo -e "\nError: multiple CDI files found in archive file: $1 :\n"
+            ls -1a $tmp/*.cdi $tmp/*.CDI 2> /dev/null
+            echo -e "\nOnly one CDI file with extension .cdi or .CDI can be in the archive file: $1 for it to be supported for prooccessing by DCDIB"
+            exit 1
+        fi
+
+        if [[ $multiple_cdi_files -eq 0 ]]; then
+            echo "Error: No CDI file with either extension .cdi or .CDI found in the the archive file $1"
+            exit 1
+        fi
+        extracted_cdi_file=$(ls -1a  $tmp/*.cdi $tmp/*.CDI 2> /dev/null)
+       # echo "Extracting CDI file: $extracted_cdi_file..."
+        bin/cdirip "$extracted_cdi_file" $tmp
+    else
+        echo "Extracting CDI file: $1..."
+        bin/cdirip "$1" $tmp 
+    fi
 fi
+
+# Print out any uncaught errors.
+err() 
+{	
+    echo -e "\nUncaught error in $0, line number: $BASH_LINENO" >&2
+}
+trap err ERR
+
+# If any command unexpectedly exits with an error, quit the whole script. 
+set -e 
+
 # There are 2 different main kinds of CDI images that we need to burn differently. DATA session 1 + DATA session 2 and AUDIO session 1 + AUDIO session 2.
 # Technically you could however say there are 4 different kinds:
 # - Data ISO + DATA ISO
 # - WAV/audio track + DATA ISO
 # - Multiple CDDA WAVs/audio tracks + DATA ISO
 # - Multiple CDDA WAVs/audio tracks in an ISO + DATA ISO
-echo -e "\nBurning "$1"..."
-if [ -f "taudio01.wav" ]; then
+
+if [ -f "$tmp/taudio01.wav" ]; then
     echo "Detected CDI Type: WAV Track 1"
     unmount_cd
-    "$main"/bin/cdrecord -speed=8 -v dev=$device -dao -multi *.wav
+    bin/cdrecord -speed=$burn_speed -v dev=$device -dao -multi $tmp/*.wav
     unmount_cd
-    "$main"/bin/cdrecord -eject -overburn -speed=8 -v dev=$device -tao -xa *.iso
+    bin/cdrecord -eject -overburn -speed=$burn_speed -v dev=$device -tao -xa $tmp/*.iso
     unmount_cd
-elif [ -f "tdata01.iso" ]; then
+elif [ -f "$tmp/tdata01.iso" ]; then
     echo "Detected CDI Type: ISO Track 1"
     unmount_cd
-    "$main"/bin/cdrecord -speed=8 -v dev=$device -tao -multi -xa tdata01.iso
+    bin/cdrecord -speed=$burn_speed -v dev=$device -tao -multi -xa $tmp/tdata01.iso
     unmount_cd
-    "$main"/bin/cdrecord -eject -overburn -speed=8 -v dev=$device -tao -multi -xa tdata02.iso
+    bin/cdrecord -eject -overburn -speed=$burn_speed -v dev=$device -tao -multi -xa $tmp/tdata02.iso
     unmount_cd
 else
-    echo "Error: Failed To Find Burn Files, Nothing Burned!"
+    echo "Error: failed to Find burn files, nothing has been burned to disc!"
+    ls "$tmp"
     exit 1
 fi
 
 unmount_cd
-echo "Ejecting CD-ROM, please wait..."
+echo "Ejecting CD-R, please wait..."
 eject || true
 echo "Complete!"
