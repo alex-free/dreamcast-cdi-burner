@@ -29,29 +29,22 @@ DCDIB supports burning **all 4 Sega Dreamcast CDI file format types**:
 
 ## Downloads
 
-### v1.0.9 (3/28/2024)
+### v1.1.0 (5/24/2024)
 
-*   [DCDIB v1.0.9](https://github.com/alex-free/dreamcast-cdi-burner/releases/download/v1.0.9/dcdib-v1.0.9-x86_64.zip) _For x86\_64 Linux_.
+*   [DCDIB v1.1.0](https://github.com/alex-free/dreamcast-cdi-burner/releases/download/v1.1.0/dcdib-v1.1.0-x86_64.zip) _Portable Release For x86\_64 Linux_.
 
 Changes:
 
-*   Added compressed archive support, you can give Dreamcast CDI Burner a supported archive file (7z/xz/cab/zip/gzip/bzip2/tar) containing a CDI file and it will find and burn the CDI file.
+*   Updated CDRTools/CDRecord to the last official version by the original author, [version 3.02a9](https://github.com/alex-free/cdrtools).
 
-*  Updated [PLED](https://alex-free.github.io/pled) to v1.0.4, fixing building from source.
-
-*   `dcdib` and `build` script optimizations/cleanup.
-
-*   `build` script now installs build dependencies if the `apt` package manager is detected on your system.
+*   Fixed a bug where data type CDI files were not closed in the 2nd session during the final burn.
 
 [About previous versions](changelog.md).
 
 ## CD-R Media
 
-It is recommend to only use high-quality CD-R media. I recommend [CMC Pro 80 Minute CD-Rs](https://alex-free.github.io/psx-cdr/#cmc-pro-powered-by-taiyo-yuden-technology-80-minute) with a [Good CD-R Burner](https://alex-free.github.io/psx-cdr/#recommended-cd-r-burners). While some CDI files can fit on lower capacity CD-Rs (i.e. 74 minutes), most CDI files target 80 minute CD-Rs. 
+It is recommend to only use high-quality CD-R media with a Good CD-R Burner. My [Ultimate Guide To PSX CD-Rs](https://alex-free.github.io/psx-cdr) has a ton of info with that is also useful for Dreamcast in regards to good CD-R media and burners. The only thing specific to PSX is recommending 71 or 74 minute CD-Rs. While some CDI files can fit on lower capacity CD-Rs (i.e. 74 minutes), most CDI files target 80 minute CD-Rs. For CDI files targeting CD-R capacities larger then 80 minutes, such as 99 or 100 minute CD-Rs, be aware that not all 99 or 100 minute CD-Rs are compatible with the Dreamcast, and some burners don't even support writing that much data to a disc as it is way out of Red Book spec. Some specific brands/types of 99 and 100 minute CD-Rs DO however work, though I don't have any tests done myself yet.
 
-CDI files can however target CD-R capacities larger then 80 minutes, such as 99 or 100 minute CD-Rs. Not all CD-R 99 or 100 minute CD-Rs disc are compatible with the Dreamcast, and some burners don't even support writing that much data to a disc as it is way out of Red Book spec. Some specific brands/types of 99 and 100 minute CD-Rs DO however work, though I don't have any tests done myself yet.
-
-You should [experiment](https://alex-free.github.io/psx-cdr/#cd-r-burn-speed) with different burn speeds if you encounter disc read issues as it can affect how well the Dreamcast can read the CD-R as well.
 
 If you are still having issues booting even high quality CD-Rs on the Sega Dreamcast, consider wiping with a clean microfiber cloth from the inner ring to the outer edge of the CD-R in all directions and then trying to boot the disc again.
 

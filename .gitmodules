@@ -1,6 +1,6 @@
 [submodule "cdrtools"]
 	path = cdrtools
-	url = https://github.com/Distrotech/cdrtools
+	url = https://github.com/alex-free/cdrtools
 [submodule "cdirip"]
 	path = cdirip
 	url = https://github.com/jozip/cdirip

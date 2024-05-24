@@ -1,4 +1,4 @@
-# Building From Source
+# [Dreamcast CDI Burner](readme.md) -> Building From Source
 
 1) `git clone --recursive https://github.com/alex-free/dreamcast-cdi-burner`
 

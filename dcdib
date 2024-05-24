@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="v1.0.9"
+version="v1.1.0"
 
 # Slowest supported by your burner is the default, but some speeds are better then others depening on drive. TODO: Make an argument that specifies this
 burn_speed=1
@@ -107,7 +107,7 @@ elif [ -f "$tmp/tdata01.iso" ]; then
     unmount_cd
     bin/cdrecord -speed=$burn_speed -v dev=$device -tao -multi -xa $tmp/tdata01.iso
     unmount_cd
-    bin/cdrecord -eject -overburn -speed=$burn_speed -v dev=$device -tao -multi -xa $tmp/tdata02.iso
+    bin/cdrecord -eject -overburn -speed=$burn_speed -v dev=$device -tao -xa $tmp/tdata02.iso
     unmount_cd
 else
     echo "Error: failed to Find burn files, nothing has been burned to disc!"

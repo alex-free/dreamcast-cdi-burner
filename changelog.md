@@ -1,4 +1,18 @@
-# Changelog
+# [Dreamcast CDI Burner](readme.md) -> Changelog
+
+## v1.0.9 (3/28/2024)
+
+*   [DCDIB v1.0.9](https://github.com/alex-free/dreamcast-cdi-burner/releases/download/v1.0.9/dcdib-v1.0.9-x86_64.zip) _For x86\_64 Linux_.
+
+Changes:
+
+*   Added compressed archive support, you can give Dreamcast CDI Burner a supported archive file (7z/xz/cab/zip/gzip/bzip2/tar) containing a CDI file and it will find and burn the CDI file.
+
+*  Updated [PLED](https://alex-free.github.io/pled) to v1.0.4, fixing building from source.
+
+*   `dcdib` and `build` script optimizations/cleanup.
+
+*   `build` script now installs build dependencies if the `apt` package manager is detected on your system.
 
 ## v1.0.8 (9/28/2022)
 
