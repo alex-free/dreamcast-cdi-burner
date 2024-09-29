@@ -1,14 +1,6 @@
 #!/bin/bash
 
-version="v1.1.0"
-
-# Slowest supported by your burner is the default, but some speeds are better then others depening on drive. TODO: Make an argument that specifies this
-burn_speed=1
-
-# Save the main directory containing the dcdib script so we can use absolute filepaths to execute cdrecord from inside the tmp directory we create next
-cd "$(dirname "$0")"
-
-echo -e "Dreamcast CDI Burner $version\nBy Alex Free\n"
+version="v1.1.1"
 
 unmount_cd () 
 {
@@ -18,23 +10,71 @@ unmount_cd ()
     )> /dev/null 2>&1  || true
 }
 
-if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
-    echo -e "Usage:\ndcdib <file> <cd burner device>\n\n<file> is either a CDI file OR a supported compressed archive (7z/xz/cab/zip/gzip/bzip2/tar) containing a CDI file.\n\n<cd burner device> is OPTIONAL and should only be given if the default CD burner device devname is not working for your OS."
-    exit 1
-fi
+echo -e "Dreamcast CDI Burner (DCDIB) $version\n(c) 2024, Alex Free (3-BSD)\n"
+
+# Now that we are sure we are in the directory of this script, we can add all the self-contained binaries we need to the $PATH used within this script.
+PATH="${PWD}/bin"${PATH:+:${PATH}}
 
 if [ $EUID -ne 0 ]; then
-    echo "Error: DCDIB requires sudo privilages to ensure that buffer under-runs do not occur when burning to disc, and to ensure succesful access to your burning hardware."
+    echo "Error: DCDIB requires sudo privileges to ensure that buffer under-runs do not occur when burning to disc, and to ensure successful access to your burning hardware."
     exit 1
 fi
 
-if [ "$#" -eq 2 ]; then # Explicitly set your own device for the CD burner, which can change on different OSes.
-    echo -e "Info: Using explicitly specified CD burner device from second argument: "$2"\n"
-    device="$2"
-else # This works on most Linux distros
-    echo -e "Info: Using default CD burner device: /dev/sr0\n"
-    device="/dev/sr0"
+if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
+    echo -e "Error: DCDIB requires 1 or 2 arguments.\n\nUsage:\n\ndcdib <file>       Burn using <file> as input. <file> is either a CDI file OR a supported compressed archive (7z/xz/cab/zip/gzip/bzip2/tar) containing a CDI file.\n\ndcdib -c <file>     Check the self-boot method that <file> uses, without burning. If you have a late rev 1 Sega Dreamcast that can't boot the audio+data self-boot method used by many CDI files, this option can save you from some wasted CD-Rs.\n\ndcdib -s <burn speed>      Set burn speed to <burn speed> and exit.\n\ndcdib -b <burner>      Set burner to <burner> (i.e. \"/dev/sr0\")." 
+    exit 1
 fi
+
+if [ $# -eq 2 ]; then
+    if [ "$1" == "-s" ]; then
+        if [[ ! "$2" =~ ^[0-9]+$ ]]; then
+            echo "Error: specified burn speed: \"$2\" is not a number"
+            exit 1
+        fi
+
+        mkdir -p "$(dirname "$0")"/config
+        echo "$2" > "$(dirname "$0")"/config/burn-speed.txt
+        chmod -R 777 "$(dirname "$0")"/config
+        echo "Burn speed set to \"$2"\"
+        exit 0
+    elif [ "$1" == "-b" ]; then
+        mkdir -p "$(dirname "$0")"/config
+        echo "$2" > "$(dirname "$0")"/config/burner.txt
+        chmod -R 777 "$(dirname "$0")"/config
+        echo "Burner set to \"$2"\"
+        exit 0 
+    elif [ "$1" == "-c" ]; then
+        check_only=true
+        set -- "$2" "$1"
+    else
+        echo "Error: 2 arguments were given, and the first argument was not -s, -b, or -c."
+        exit 1
+    fi
+fi
+
+if [ ! -f ""$(dirname "$0")"/config/burn-speed.txt" ]; then
+    mkdir -p "$(dirname "$0")"/config
+    echo "Burn speed config not found, setting to default speed of 1x"
+    echo 1 > "$(dirname "$0")"/config/burn-speed.txt
+    chmod -R 777 "$(dirname "$0")"/config
+
+fi
+
+if [ ! -f ""$(dirname "$0")"/config/burner.txt" ]; then
+    mkdir -p "$(dirname "$0")"/config
+    echo "Burner config not found, setting to default value of /dev/sr0"
+    echo "/dev/sr0" > "$(dirname "$0")"/config/burner.txt
+    chmod -R 777 "$(dirname "$0")"/config
+fi
+
+burner=$(cat config/burner.txt)
+echo -e "\nBurner: $burner"
+
+burn_speed=$(cat config/burn-speed.txt)
+echo -e "\nBurn speed: "$burn_speed"x"
+
+# Put temp directory in /var/tmp to guarantee enough space.
+tmp=$(mktemp -d --tmpdir -p /var/tmp dcdib.XXX)
 
 # When this script exits, automatically delete the temp directory.
 cleanup() 
@@ -46,22 +86,19 @@ cleanup()
 }
 trap cleanup EXIT
 
-# Put temp directory in /tmp (or whatever the OS prefers)
-tmp=$(mktemp -d --tmpdir cdib.XXX)
-
 if [ ! -f "$1" ]; then
-    echo "Error: Can not open file: "$1"\n"
+    echo "Error: Can not open file: "$1""
     exit 1
 else
- # Interesting, file command misreports cdi file type. So we need to use cdirip itself to see if it is a CDI file or not. If it isn't try to extract it with 7-zip
-    if bin/cdirip "$1" | grep "Unsupported image version" > /dev/null 2>&1; then
-        bin/7za e "$1" -o$tmp
+ # Interesting, file command misreports cdi file type. So we need to use cdirip itself to see if it is a CDI file or not (executed from the $tmp dir). If it isn't try to extract it with 7-zip.
+    if cdirip "$1" "$tmp" | grep "Unsupported image version" > /dev/null 2>&1; then
+        7za e "$1" -o$tmp
         multiple_cdi_files=$(ls -1a $tmp/*.cdi $tmp/*.CDI 2> /dev/null | wc -l)
 
         if [[ $multiple_cdi_files -gt 1 ]]; then
             echo -e "\nError: multiple CDI files found in archive file: $1 :\n"
             ls -1a $tmp/*.cdi $tmp/*.CDI 2> /dev/null
-            echo -e "\nOnly one CDI file with extension .cdi or .CDI can be in the archive file: $1 for it to be supported for prooccessing by DCDIB"
+            echo -e "\nOnly one CDI file with extension .cdi or .CDI can be in the archive file: $1 for it to be supported for processing by DCDIB"
             exit 1
         fi
 
@@ -71,22 +108,13 @@ else
         fi
         extracted_cdi_file=$(ls -1a  $tmp/*.cdi $tmp/*.CDI 2> /dev/null)
        # echo "Extracting CDI file: $extracted_cdi_file..."
-        bin/cdirip "$extracted_cdi_file" $tmp
+        cdirip "$extracted_cdi_file" $tmp
     else
-        echo "Extracting CDI file: $1..."
-        bin/cdirip "$1" $tmp 
+        echo "Extracted CDI file: $1..."
     fi
 fi
 
-# Print out any uncaught errors.
-err() 
-{	
-    echo -e "\nUncaught error in $0, line number: $BASH_LINENO" >&2
-}
-trap err ERR
-
-# If any command unexpectedly exits with an error, quit the whole script. 
-set -e 
+set -e
 
 # There are 2 different main kinds of CDI images that we need to burn differently. DATA session 1 + DATA session 2 and AUDIO session 1 + AUDIO session 2.
 # Technically you could however say there are 4 different kinds:
@@ -96,19 +124,25 @@ set -e
 # - Multiple CDDA WAVs/audio tracks in an ISO + DATA ISO
 
 if [ -f "$tmp/taudio01.wav" ]; then
-    echo "Detected CDI Type: WAV Track 1"
+    echo -e "$1 uses the audio+data self-boot method. This disc will self-boot on all rev 0 and early rev 1 Sega Dreamcast consoles. Later rev 1 consoles can not boot this self-boot method."
+    if [ "$check_only" = true ]; then
+        exit 0
+    fi
+
     unmount_cd
-    bin/cdrecord -speed=$burn_speed -v dev=$device -dao -multi $tmp/*.wav
+    cdrecord -speed="$burn_speed" -v dev="$burner" -dao -multi $tmp/*.wav
     unmount_cd
-    bin/cdrecord -eject -overburn -speed=$burn_speed -v dev=$device -tao -xa $tmp/*.iso
-    unmount_cd
+    cdrecord -eject -overburn -speed="$burn_speed" -v dev="$burner" -tao -xa $tmp/*.iso
 elif [ -f "$tmp/tdata01.iso" ]; then
-    echo "Detected CDI Type: ISO Track 1"
+    echo -e "$1 uses the data+data self-boot method. This disc will self-boot on all rev 0 and rev 1 Sega Dreamcast consoles."
+    if [ "$check_only" = true ]; then
+        exit 0
+    fi
+
     unmount_cd
-    bin/cdrecord -speed=$burn_speed -v dev=$device -tao -multi -xa $tmp/tdata01.iso
+    cdrecord -speed="$burn_speed" -v dev="$burner" -tao -multi -xa $tmp/tdata01.iso
     unmount_cd
-    bin/cdrecord -eject -overburn -speed=$burn_speed -v dev=$device -tao -xa $tmp/tdata02.iso
-    unmount_cd
+    cdrecord -eject -overburn -speed="$burn_speed" -v dev="$burner" -tao -xa $tmp/tdata02.iso
 else
     echo "Error: failed to Find burn files, nothing has been burned to disc!"
     ls "$tmp"
@@ -116,6 +150,4 @@ else
 fi
 
 unmount_cd
-echo "Ejecting CD-R, please wait..."
-eject || true
 echo "Complete!"

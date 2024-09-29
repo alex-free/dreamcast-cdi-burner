@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Dreamcast CDI Burner build script
-version=v1.1.0
+version=v1.1.1
 
 # When this script exits, automatically delete the temp directory.
 cleanup() 
@@ -13,15 +13,8 @@ cleanup()
 }
 trap cleanup EXIT
 
-# Print out any uncaught errors.
-err() 
-{	
-    echo -e "\nUncaught error in $0, line number: $BASH_LINENO" >&2
-}
-trap err ERR
-
-# Put temp directory in /tmp (or whatever the OS prefers)
-tmp=$(mktemp -d --tmpdir cdib.XXX)
+# Put temp directory in /var/tmp to guarantee enough space.
+tmp=$(mktemp -d --tmpdir -p /var/tmp dcdib.XXX)
 
 set -e
 arch=$(uname -m)
@@ -54,13 +47,13 @@ make -C $tmp/cdrtools
 # Use * here because the begining name of the parent folder differs by architecture/OS/compiler
 pled/pled $tmp/cdrtools/cdrecord/OBJ/*cc/cdrecord dcdib-$version-$arch/bin
 
-cp unlicense.md dcdib-$version-$arch/licenses/dcdib.md
+cp license.md dcdib-$version-$arch/licenses/dcdib.md
 cp pled/unlicense.md dcdib-$version-$arch/licenses/pled.txt
 cp cdirip/LICENSE dcdib-$version-$arch/licenses/cdirip-gpl2.txt
 cp cdrtools/GPL-2.0.txt dcdib-$version-$arch/licenses/cdrecord-gpl2.txt
 cp cdrtools/CDDL.Schily.txt dcdib-$version-$arch/licenses/cdrecord-cddl.txt
 cp p7zip/DOC/License.txt dcdib-$version-$arch/licenses/p7zip.txt
 
-cp -r dcdib readme.md images dcdib-$version-$arch/
+cp -r dcdib readme.md changelog.md build.md images dcdib-$version-$arch/
 chmod -R 777 dcdib-$version-$arch
 zip -r dcdib-$version-$arch.zip dcdib-$version-$arch

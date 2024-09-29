@@ -1,5 +1,27 @@
 # [Dreamcast CDI Burner](readme.md) -> Changelog
 
+## v1.1.1 (9/28/2024)
+
+*   [DCDIB v1.1.1](https://github.com/alex-free/dreamcast-cdi-burner/releases/download/v1.1.1/dcdib-v1.1.1-x86_64.zip) _Portable Release For x86\_64 Linux_.
+
+Changes:
+
+*   Updated [PLED](https://github.com/alex-free/pled) to the latest version 1.0.5.
+
+*   Temp file directory has been moved from `/tmp` to `/var/tmp`.
+
+[About previous versions](changelog.md).
+
+## v1.1.0 (5/24/2024)
+
+*   [DCDIB v1.1.0](https://github.com/alex-free/dreamcast-cdi-burner/releases/download/v1.1.0/dcdib-v1.1.0-x86_64.zip) _Portable Release For x86\_64 Linux_.
+
+Changes:
+
+*   Updated CDRTools/CDRecord to the last official version by the original author, [version 3.02a9](https://github.com/alex-free/cdrtools).
+
+*   Fixed a bug where data type CDI files were not closed in the 2nd session during the final burn.
+
 ## v1.0.9 (3/28/2024)
 
 *   [DCDIB v1.0.9](https://github.com/alex-free/dreamcast-cdi-burner/releases/download/v1.0.9/dcdib-v1.0.9-x86_64.zip) _For x86\_64 Linux_.
