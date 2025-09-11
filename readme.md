@@ -55,12 +55,13 @@ DCDIB supports burning **all 4 Sega Dreamcast CDI file format types**:
 
  The ability to use self-booting CDIs on an unmodified Sega Dreamcast depends on the console revision that you own. There are 2 different CDI methods, audio+data and data+data.
 
-| Console | Can Use AUDIO+DATA Self-Boot Method? | Can DATA+DATA Self-Boot Method ?|
+| NTSC-U/PAL Revision | Can Use AUDIO+DATA Self-Boot Method? | Can DATA+DATA Self-Boot Method ?|
 | --------| ---------------------------- | ------------------------------|
 | Rev 0 | Yes. | Yes. |
 | Early Rev 1 (September 1999 to May 2000 or possibly a bit earlier) | Yes. | Yes. |
-| Late Rev 1 (June 2000 or possibly a bit earlier to October 2000 | No. | YES. |
-| Rev 2 (October 2000) | No. | No. |
+| Late Rev 1 (June 2000 or possibly a bit earlier to October 2000) | No. | Yes. |
+| Early Rev 2 (October 2000 - early November 2000) | No. | Yes. |
+| Late Rev 2 (late November 2000 - 2001) | No. | No. |
 
 To find the console revision, flip the entire console upside-down and look for the number 0, 1, or 2 in a circle on the model sticker as displayed below:
 
